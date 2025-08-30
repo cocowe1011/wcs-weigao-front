@@ -334,15 +334,12 @@ export default {
 .homePage {
   width: 100%;
   height: 100%;
-  background: url(./img/background.png) no-repeat;
-  background-size: 100% 100%;
+  background: linear-gradient(135deg, #e3e9f3 0%, #eef2f7 50%, #f5f7fa 100%);
   .maskDiv {
     width: 100%;
     height: 100%;
     opacity: 1;
-    background: rgba(246, 247, 251, 0.6);
-    box-shadow: 0px 60px 90px 0px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(60px);
+    background: transparent;
     &-top {
       height: 55px;
       width: 100%;

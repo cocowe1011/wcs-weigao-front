@@ -7637,7 +7637,6 @@ export default {
           display: flex;
           background: rgba(30, 42, 56, 0.9);
           border-radius: 12px;
-          backdrop-filter: blur(10px);
           padding: 15px;
           gap: 20px;
           overflow: hidden;
