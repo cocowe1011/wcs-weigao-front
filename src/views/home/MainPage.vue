@@ -2464,7 +2464,7 @@ export default {
         cart1: { min: 615, max: 1230 }, // y轴范围615-1230
         cart2: { min: 647, max: 1067 }, // y轴范围647-1067
         cart3: { min: 647, max: 1066 }, // y轴范围647-1066
-        cart4: { min: 340, max: 1230 } // y轴范围425-1230
+        cart4: { min: 348, max: 1230 } // y轴范围425-1230
       },
       carts: [
         {
@@ -2495,7 +2495,7 @@ export default {
           id: 4,
           name: '小车4',
           x: 2510,
-          y: 350, // 对应PLC值0的位置（y轴最小值）
+          y: 348, // 对应PLC值0的位置（y轴最小值）
           width: 72,
           image: require('@/assets/changzhou-img/cart4.png')
         }
@@ -4334,10 +4334,10 @@ export default {
             this.outWarehouseLoading = true;
             this.outWarehouseExecuting = true;
             this.outWarehouseTrayCode = tray.trayCode;
+            this.queues[15].trayInfo.shift();
             // 更新需进货数量并写入PLC
             this.updateOutNeedAndWrite();
             this.callWmsUnloadGoods(tray.trayCode, 1, 'D');
-            this.queues[15].trayInfo.shift();
           } else {
             this.addLog('D出货队列空，无法出库');
             break;
@@ -4385,10 +4385,10 @@ export default {
             this.outWarehouseLoading = true;
             this.outWarehouseExecuting = true;
             this.outWarehouseTrayCode = tray.trayCode;
+            this.queues[16].trayInfo.shift();
             // 更新需进货数量并写入PLC
             this.updateOutNeedAndWrite();
             this.callWmsUnloadGoods(tray.trayCode, 1, 'E');
-            this.queues[16].trayInfo.shift();
           } else {
             this.addLog('E出货队列空，无法出库');
             break;
@@ -5182,7 +5182,7 @@ export default {
           } else {
             this.addLog(
               `WMS出货接口调用失败，托盘号：${trayCode}，状态：${statusText}，错误信息：${
-                res.data?.msg || '未知错误'
+                res.msg || '未知错误'
               }`
             );
           }
@@ -6657,6 +6657,13 @@ export default {
             }, 100);
             return;
           }
+          // 重新计算并写入需进货数量
+          const arrived = Number(this.dDisinfectionInQuantity) || 0;
+          const need = Math.max(0, Number(this.dExecQty) - arrived);
+          this.dNeedQty = need;
+          this.addLog(`D允许上货时重新计算需进货数量: ${need}`);
+          this.writeWordWithCancel('DBW552', need);
+          // 发送允许上货信号
           ipcRenderer.send('writeValuesToPLC', 'DBW520', 1);
           this.addLog('D允许上货');
         } else {
@@ -6694,6 +6701,13 @@ export default {
             }, 100);
             return;
           }
+          // 重新计算并写入需进货数量
+          const arrived = Number(this.eDisinfectionInQuantity) || 0;
+          const need = Math.max(0, Number(this.eExecQty) - arrived);
+          this.eNeedQty = need;
+          this.addLog(`E允许上货时重新计算需进货数量: ${need}`);
+          this.writeWordWithCancel('DBW554', need);
+          // 发送允许上货信号
           ipcRenderer.send('writeValuesToPLC', 'DBW522', 1);
           this.addLog('E允许上货');
         } else {
