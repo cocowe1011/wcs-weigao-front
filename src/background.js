@@ -709,10 +709,11 @@ var variables = {
   DBW554: 'DB101,INT554', // WCS-E灭菌柜当前需要进货数量
   DBW556: 'DB101,INT556', // 备用地址
   DBW558: 'DB101,INT558', // WCS-预热前小车信号请求尾托盘标识
-  DBW560: 'DB101,INT560' // 出库当前需进货数量
+  DBW560: 'DB101,INT560', // 出库当前需进货数量
+  DBW562: 'DB101,INT562' // 无码上货模式
 };
 
-var writeStrArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var writeStrArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
 var writeAddArr = [
   'DBW500',
   'DBW502',
@@ -740,7 +741,8 @@ var writeAddArr = [
   'DBW548',
   'DBW550',
   'DBW552',
-  'DBW554'
+  'DBW554',
+  'DBW562'
 ];
 
 // 给PLC写值

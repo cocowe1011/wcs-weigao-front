@@ -259,12 +259,20 @@
                         type="primary"
                         size="mini"
                         @click="sendToPreheatingRoom"
+                        :loading="preheatingRoomLoading"
                         style="width: 100%"
                         >执行</el-button
                       >
+                      <el-button
+                        v-if="preheatExecuting"
+                        type="danger"
+                        size="mini"
+                        @click="cancelPreheatingRoom"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
+                      >
                       <div
                         style="
-                          margin-top: 4px;
                           font-size: 12px;
                           color: #9fe3d3;
                           text-align: center;
@@ -319,8 +327,17 @@
                         type="primary"
                         size="mini"
                         @click="sendToDisinfectionRoom"
+                        :loading="disinfectionRoomLoading"
                         style="width: 100%"
                         >执行</el-button
+                      >
+                      <el-button
+                        v-if="disinfectionExecuting"
+                        type="danger"
+                        size="mini"
+                        @click="cancelDisinfectionRoom"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
                       >
                       <div
                         style="display: flex; align-items: center"
@@ -381,8 +398,17 @@
                         type="primary"
                         size="mini"
                         @click="sendDisinfectionRoomToWarehouse"
+                        :loading="analysisRoomLoading"
                         style="width: 100%"
                         >执行</el-button
+                      >
+                      <el-button
+                        v-if="analysisExecuting"
+                        type="danger"
+                        size="mini"
+                        @click="cancelAnalysisRoom"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
                       >
                       <div
                         style="display: flex; align-items: center"
@@ -424,7 +450,17 @@
                         type="primary"
                         size="mini"
                         @click="sendToWarehouse"
+                        :loading="outWarehouseLoading"
+                        style="width: 100%"
                         >执行</el-button
+                      >
+                      <el-button
+                        v-if="outWarehouseExecuting"
+                        type="danger"
+                        size="mini"
+                        @click="cancelOutWarehouse"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
                       >
                       <span
                         style="font-size: 12px; color: #fff; color: greenyellow"
@@ -661,7 +697,6 @@
                           v-if="!dExecuting"
                           type="primary"
                           size="mini"
-                          :loading="dConfirmLoading"
                           @click="confirmDExecution"
                           style="font-size: 10px; padding: 2px 6px"
                           >确定</el-button
@@ -725,7 +760,6 @@
                           v-if="!eExecuting"
                           type="primary"
                           size="mini"
-                          :loading="eConfirmLoading"
                           @click="confirmEExecution"
                           style="font-size: 10px; padding: 2px 6px"
                           >确定</el-button
@@ -2430,7 +2464,7 @@ export default {
         cart1: { min: 615, max: 1230 }, // y轴范围615-1230
         cart2: { min: 647, max: 1067 }, // y轴范围647-1067
         cart3: { min: 647, max: 1066 }, // y轴范围647-1066
-        cart4: { min: 425, max: 1230 } // y轴范围425-1230
+        cart4: { min: 340, max: 1230 } // y轴范围425-1230
       },
       carts: [
         {
@@ -2461,7 +2495,7 @@ export default {
           id: 4,
           name: '小车4',
           x: 2510,
-          y: 425, // 对应PLC值0的位置（y轴最小值）
+          y: 350, // 对应PLC值0的位置（y轴最小值）
           width: 72,
           image: require('@/assets/changzhou-img/cart4.png')
         }
@@ -2883,6 +2917,12 @@ export default {
       preheatExecQty: undefined,
       preheatExecuting: false,
       preheatNeedQty: 0,
+      // 预热到灭菌执行状态
+      disinfectionExecuting: false,
+      // 灭菌到解析执行状态
+      analysisExecuting: false,
+      // 出库执行状态
+      outWarehouseExecuting: false,
       // 灭菌、解析、出库显示
       disinfectionNeedQty: 0,
       analysisNeedQty: 0,
@@ -2890,12 +2930,15 @@ export default {
       // D/E 执行与显示
       dExecQty: undefined,
       dExecuting: false,
-      dConfirmLoading: false,
       dNeedQty: 0,
       eExecQty: undefined,
       eExecuting: false,
-      eConfirmLoading: false,
       eNeedQty: 0,
+      // 四个主要功能的loading状态
+      preheatingRoomLoading: false,
+      disinfectionRoomLoading: false,
+      analysisRoomLoading: false,
+      outWarehouseLoading: false,
       // 管理员密码验证相关
       adminPasswordDialogVisible: false,
       adminPasswordLoading: false,
@@ -3125,12 +3168,7 @@ export default {
     preheatingRoomSelected(newVal) {
       if (!this.isDataReady) return;
       if (!newVal) {
-        this.preheatExecuting = false;
-        this.preheatExecQty = undefined;
-        this.preheatNeedQty = 0;
-        this.preWarmTrayCode = '';
-        this.addLog(`写入PLC DBW546（预热房需进货数量）: 0 - 不执行`);
-        this.writeWordWithCancel('DBW546', 0);
+        this.cancelPreheatingRoom();
       } else {
         this.updatePreheatNeedAndWrite();
       }
@@ -3153,9 +3191,7 @@ export default {
     disinfectionRoomSelectedFrom(newVal) {
       if (!this.isDataReady) return;
       if (!newVal) {
-        this.disinfectionNeedQty = 0;
-        this.addLog(`写入PLC DBW548（灭菌柜需进货数量）: 0 - 不执行`);
-        this.writeWordWithCancel('DBW548', 0);
+        this.cancelDisinfectionRoom();
       } else {
         this.updateDisinfectionNeedAndWrite();
       }
@@ -3178,9 +3214,7 @@ export default {
     warehouseSelectedFrom(newVal) {
       if (!this.isDataReady) return;
       if (!newVal) {
-        this.analysisNeedQty = 0;
-        this.addLog(`写入PLC DBW550（解析柜需进货数量）: 0 - 不执行`);
-        this.writeWordWithCancel('DBW550', 0);
+        this.cancelAnalysisRoom();
       } else {
         this.updateAnalysisNeedAndWrite();
       }
@@ -3202,7 +3236,11 @@ export default {
     // 切换出库选择，更新DBW560
     outWarehouseSelected(newVal) {
       if (!this.isDataReady) return;
-      this.updateOutNeedAndWrite();
+      if (!newVal) {
+        this.cancelOutWarehouse();
+      } else {
+        this.updateOutNeedAndWrite();
+      }
 
       // 检查出库选择冲突：出库选择A，灭菌到解析的解析就不能选择A
       if (newVal && this.warehouseSelectedTo === newVal) {
@@ -4268,6 +4306,17 @@ export default {
           this.addLog(
             `D下货数量从0到${newVal}，移动${moveCount}个托盘到D出货队列`
           );
+
+          // 上下货队列移动时，发送不允许上货
+          this.allowUploadD = false;
+          this.handleAllowUpload('D');
+          // 显示提示消息
+          this.$message({
+            message: 'D灭菌柜已完成上下货队列移动，自动取消上货允许',
+            type: 'info',
+            duration: 3000,
+            showClose: true
+          });
         } else {
           this.addLog('D下货数量从0增加，但上货队列无托盘可移动');
         }
@@ -4280,6 +4329,13 @@ export default {
             const tray = this.queues[15].trayInfo[0];
             this.addLog(`托盘信息：${tray.trayCode} 出库`);
             this.currentOutTrayInfo = tray;
+            // 更新出库选择状态为D，状态变为执行中
+            this.outWarehouseSelected = 'D';
+            this.outWarehouseLoading = true;
+            this.outWarehouseExecuting = true;
+            this.outWarehouseTrayCode = tray.trayCode;
+            // 更新需进货数量并写入PLC
+            this.updateOutNeedAndWrite();
             this.callWmsUnloadGoods(tray.trayCode, 1, 'D');
             this.queues[15].trayInfo.shift();
           } else {
@@ -4302,6 +4358,17 @@ export default {
           this.addLog(
             `E下货数量从0到${newVal}，移动${moveCount}个托盘到E出货队列`
           );
+
+          // 上下货队列移动时，发送不允许上货
+          this.allowUploadE = false;
+          this.handleAllowUpload('E');
+          // 显示提示消息
+          this.$message({
+            message: 'E灭菌柜已完成上下货队列移动，自动取消上货允许',
+            type: 'info',
+            duration: 3000,
+            showClose: true
+          });
         } else {
           this.addLog('E下货数量从0增加，但上货队列无托盘可移动');
         }
@@ -4313,6 +4380,13 @@ export default {
             const tray = this.queues[16].trayInfo[0];
             this.addLog(`托盘信息：${tray.trayCode} 出库`);
             this.currentOutTrayInfo = tray;
+            // 更新出库选择状态为E，状态变为执行中
+            this.outWarehouseSelected = 'E';
+            this.outWarehouseLoading = true;
+            this.outWarehouseExecuting = true;
+            this.outWarehouseTrayCode = tray.trayCode;
+            // 更新需进货数量并写入PLC
+            this.updateOutNeedAndWrite();
             this.callWmsUnloadGoods(tray.trayCode, 1, 'E');
             this.queues[16].trayInfo.shift();
           } else {
@@ -4488,21 +4562,6 @@ export default {
           `D灭菌柜上货数量增加到${newVal}，重新计算需进货数量: ${need}`
         );
         this.writeWordWithCancel('DBW552', need);
-
-        // 如果需进货数量为0，取消允许上货并取消执行状态
-        if (need === 0) {
-          this.allowUploadD = false;
-          this.handleAllowUpload('D');
-          // 取消执行状态
-          this.dExecuting = false;
-          // 显示提示消息
-          this.$message({
-            message: 'D灭菌柜已到达执行数量，自动取消执行状态',
-            type: 'info',
-            duration: 3000,
-            showClose: true
-          });
-        }
       }
     },
     // 监听E灭菌柜上货数量变化，重新计算需进货数量
@@ -4517,26 +4576,54 @@ export default {
           `E灭菌柜上货数量增加到${newVal}，重新计算需进货数量: ${need}`
         );
         this.writeWordWithCancel('DBW554', need);
-
-        // 如果需进货数量为0，取消允许上货并取消执行状态
-        if (need === 0) {
-          this.allowUploadE = false;
-          this.handleAllowUpload('E');
-          // 取消执行状态
-          this.eExecuting = false;
-          // 显示提示消息
-          this.$message({
-            message: 'E灭菌柜已到达执行数量，自动取消执行状态',
-            type: 'info',
-            duration: 3000,
-            showClose: true
-          });
-        }
       }
     }
     // ---- 监听指定队列的 trayInfo 变化结束 ----
   },
   methods: {
+    // 取消预热房执行
+    cancelPreheatingRoom() {
+      this.preheatingRoomLoading = false;
+      this.preheatingRoomSelected = null;
+      this.preheatExecQty = undefined;
+      this.preheatNeedQty = 0;
+      this.preheatExecuting = false;
+      this.preWarmTrayCode = '';
+      this.writeWordWithCancel('DBW546', 0);
+      this.addLog('预热房选择已取消，切换为不执行状态');
+    },
+    // 取消预热房到灭菌柜执行
+    cancelDisinfectionRoom() {
+      this.disinfectionRoomLoading = false;
+      this.disinfectionRoomSelectedFrom = null;
+      this.disinfectionRoomSelectedTo = null;
+      this.disinfectionNeedQty = 0;
+      this.disinfectionTrayCode = '';
+      this.disinfectionExecuting = false;
+      this.writeWordWithCancel('DBW548', 0);
+      this.addLog('预热房到灭菌柜选择已取消，切换为不执行状态');
+    },
+    // 取消灭菌柜到解析房执行
+    cancelAnalysisRoom() {
+      this.analysisRoomLoading = false;
+      this.warehouseSelectedFrom = null;
+      this.warehouseSelectedTo = null;
+      this.analysisNeedQty = 0;
+      this.analysisTrayCode = '';
+      this.analysisExecuting = false;
+      this.writeWordWithCancel('DBW550', 0);
+      this.addLog('灭菌柜到解析房选择已取消，切换为不执行状态');
+    },
+    // 取消出库执行
+    cancelOutWarehouse() {
+      this.outWarehouseLoading = false;
+      this.outWarehouseSelected = null;
+      this.outNeedQty = 0;
+      this.outWarehouseTrayCode = '';
+      this.outWarehouseExecuting = false;
+      this.writeWordWithCancel('DBW552', 0);
+      this.addLog('出库选择已取消，切换为不执行状态');
+    },
     // 由来源名称映射到端口键值
     getPortKeyByTrayFrom(trayFrom) {
       if (!trayFrom) return '';
@@ -5114,10 +5201,14 @@ export default {
       this.noCodeUpload = !this.noCodeUpload;
       if (this.noCodeUpload) {
         this.$message.success('已启用无码上货模式，触发光电信号将直接添加托盘');
-        this.addLog('无码上货模式已启用');
+        this.addLog('无码上货模式已启用，已给PLC，DBW562发送2');
+        // 无码模式发2
+        ipcRenderer.send('writeValuesToPLC', 'DBW562', 2);
       } else {
-        this.$message.info('已关闭无码上货模式，恢复正常扫码流程');
+        this.$message.info('已关闭无码上货模式，已给PLC，DBW562发送1');
         this.addLog('无码上货模式已关闭');
+        // 有码模式发1
+        ipcRenderer.send('writeValuesToPLC', 'DBW562', 1);
       }
     },
     changeQueueExpanded() {
@@ -5777,6 +5868,7 @@ export default {
         if (preheatCount >= 16) {
           const oldSelection = this.preheatingRoomSelected;
           this.preheatingRoomSelected = null;
+          this.preheatingRoomLoading = false; // 恢复loading状态
           this.addLog(`预热房${oldSelection}已满16个托盘，自动切换为不执行`);
         }
       }
@@ -5789,6 +5881,7 @@ export default {
         if (sterilizeCount >= 16) {
           const oldSelection = this.disinfectionRoomSelectedTo;
           this.disinfectionRoomSelectedTo = null;
+          this.disinfectionRoomLoading = false; // 恢复loading状态
           this.addLog(
             `灭菌房目的地${oldSelection}已满16个托盘，自动切换为不执行`
           );
@@ -5803,6 +5896,7 @@ export default {
         if (analysisCount >= 16) {
           const oldSelection = this.warehouseSelectedTo;
           this.warehouseSelectedTo = null;
+          this.analysisRoomLoading = false; // 恢复loading状态
           this.addLog(
             `解析库目的地${oldSelection}已满16个托盘，自动切换为不执行`
           );
@@ -5841,6 +5935,7 @@ export default {
       ) {
         const oldSelection = this.preheatingRoomSelected;
         this.preheatingRoomSelected = null;
+        this.preheatingRoomLoading = false; // 恢复loading状态
         this.preWarmTrayCode = '';
         this.$message.warning(
           `预热房${oldSelection}执行中需进货数量为0，已自动切换为不执行`
@@ -5877,6 +5972,7 @@ export default {
         const oldTo = this.disinfectionRoomSelectedTo;
         this.disinfectionRoomSelectedFrom = null;
         this.disinfectionRoomSelectedTo = null;
+        this.disinfectionRoomLoading = false; // 恢复loading状态
         this.disinfectionTrayCode = '';
         this.$message.warning(
           `预热房到灭菌柜执行中需进货数量为0，已自动切换为不执行`
@@ -5912,6 +6008,7 @@ export default {
         const oldTo = this.warehouseSelectedTo;
         this.warehouseSelectedFrom = null;
         this.warehouseSelectedTo = null;
+        this.analysisRoomLoading = false; // 恢复loading状态
         this.analysisTrayCode = '';
         this.$message.warning(
           `灭菌柜到解析房执行中需进货数量为0，已自动切换为不执行`
@@ -5955,6 +6052,7 @@ export default {
       ) {
         const oldSelection = this.outWarehouseSelected;
         this.outWarehouseSelected = null;
+        this.outWarehouseLoading = false; // 恢复loading状态
         this.outWarehouseTrayCode = '';
         this.$message.warning(
           `出库${oldSelection}执行中需进货数量为0，已自动切换为不执行`
@@ -5977,20 +6075,12 @@ export default {
         return;
       }
       this.dExecuting = true;
-      this.dConfirmLoading = true;
       const arrived = Number(this.dDisinfectionInQuantity) || 0;
       const need = Math.max(0, Number(this.dExecQty) - arrived);
       this.dNeedQty = need;
-      // 当需进货数量为0时，取消允许上货
-      if (need === 0) {
-        this.allowUploadD = false;
-        this.handleAllowUpload('D');
-      }
+
       this.addLog(`写入PLC DBW552（D灭菌柜需进货数量）: ${need}`);
       this.writeWordWithCancel('DBW552', need);
-      setTimeout(() => {
-        this.dConfirmLoading = false;
-      }, 2000);
     },
     cancelDExecution() {
       this.dExecuting = false;
@@ -6007,28 +6097,17 @@ export default {
       if (!this.eExecQty || this.eExecQty <= 0) {
         this.eNeedQty = 0;
         this.eExecuting = false;
-        // 当需进货数量为0时，取消允许上货
-        this.allowUploadE = false;
-        this.handleAllowUpload('E');
         this.addLog(`写入PLC DBW554（E灭菌柜需进货数量）: 0 - 未设置数量`);
         this.writeWordWithCancel('DBW554', 0);
         return;
       }
       this.eExecuting = true;
-      this.eConfirmLoading = true;
       const arrived = Number(this.eDisinfectionInQuantity) || 0;
       const need = Math.max(0, Number(this.eExecQty) - arrived);
       this.eNeedQty = need;
-      // 当需进货数量为0时，取消允许上货
-      if (need === 0) {
-        this.allowUploadE = false;
-        this.handleAllowUpload('E');
-      }
+
       this.addLog(`写入PLC DBW554（E灭菌柜需进货数量）: ${need}`);
       this.writeWordWithCancel('DBW554', need);
-      setTimeout(() => {
-        this.eConfirmLoading = false;
-      }, 2000);
     },
     cancelEExecution() {
       this.eExecuting = false;
@@ -6087,16 +6166,28 @@ export default {
         this.$message.warning('请先选择预热房');
         return;
       }
+
+      // 判断起始地数量是否大于0（系统队列数量和PLC缓冲区数量都要大于0）
+      const systemQueueCount =
+        this.queues[2] && Array.isArray(this.queues[2].trayInfo)
+          ? this.queues[2].trayInfo.length
+          : 0;
+      const plcBufferCount = this.bufferQuantity || 0;
+
+      if (systemQueueCount <= 0 || plcBufferCount <= 0) {
+        this.$message.warning('缓冲区队列中没有可用的托盘，请检查起始地数量');
+        return;
+      }
       // 锁定预热需进货量并写入DBW546
       if (this.preheatExecQty && this.preheatExecQty > 0) {
+        // 设置loading状态
+        this.preheatingRoomLoading = true;
         this.preheatExecuting = true;
         this.updatePreheatNeedAndWrite();
       } else {
         // 未设置需进货量直接执行，写0
-        this.preheatExecuting = false;
-        this.preheatNeedQty = 0;
-        this.addLog(`写入PLC DBW546（预热房需进货数量）: 0 - 未设置数量`);
-        this.writeWordWithCancel('DBW546', 0);
+        this.$message.warning('未填写执行数量，不可执行！');
+        return;
       }
       // 映射预热房选项到队列索引和子队列名称前缀
       const roomMappings = {
@@ -6223,6 +6314,42 @@ export default {
         this.$message.warning('请先选择完整');
         return;
       }
+
+      // 判断起始地数量是否大于0
+      let sourceQueueIndex;
+      if (this.disinfectionRoomSelectedFrom === 'A') {
+        sourceQueueIndex = 3;
+      } else if (this.disinfectionRoomSelectedFrom === 'B') {
+        sourceQueueIndex = 4;
+      } else if (this.disinfectionRoomSelectedFrom === 'C') {
+        sourceQueueIndex = 5;
+      }
+
+      // 判断起始地数量是否大于0（系统队列数量和PLC预热房数量都要大于0）
+      const systemQueueCount =
+        this.queues[sourceQueueIndex] &&
+        Array.isArray(this.queues[sourceQueueIndex].trayInfo)
+          ? this.queues[sourceQueueIndex].trayInfo.length
+          : 0;
+
+      let plcPreheatCount = 0;
+      if (this.disinfectionRoomSelectedFrom === 'A') {
+        plcPreheatCount = this.aLineQuantity.a1 || 0;
+      } else if (this.disinfectionRoomSelectedFrom === 'B') {
+        plcPreheatCount = this.bLineQuantity.b1 || 0;
+      } else if (this.disinfectionRoomSelectedFrom === 'C') {
+        plcPreheatCount = this.cLineQuantity.c1 || 0;
+      }
+
+      if (systemQueueCount <= 0 || plcPreheatCount <= 0) {
+        this.$message.warning(
+          `${this.disinfectionRoomSelectedFrom}预热房中没有可用的托盘，请检查起始地数量`
+        );
+        return;
+      }
+      // 设置loading状态和执行状态
+      this.disinfectionRoomLoading = true;
+      this.disinfectionExecuting = true;
       if (this.disinfectionRoomSelectedFrom === 'A') {
         ipcRenderer.send('writeSingleValueToPLC', 'DBW526', 1);
         setTimeout(() => {
@@ -6271,6 +6398,42 @@ export default {
         this.$message.warning('请先选择完整');
         return;
       }
+
+      // 判断起始地数量是否大于0
+      let sourceQueueIndex;
+      if (this.warehouseSelectedFrom === 'A') {
+        sourceQueueIndex = 6;
+      } else if (this.warehouseSelectedFrom === 'B') {
+        sourceQueueIndex = 7;
+      } else if (this.warehouseSelectedFrom === 'C') {
+        sourceQueueIndex = 8;
+      }
+
+      // 判断起始地数量是否大于0（系统队列数量和PLC灭菌柜数量都要大于0）
+      const systemQueueCount =
+        this.queues[sourceQueueIndex] &&
+        Array.isArray(this.queues[sourceQueueIndex].trayInfo)
+          ? this.queues[sourceQueueIndex].trayInfo.length
+          : 0;
+
+      let plcDisinfectionCount = 0;
+      if (this.warehouseSelectedFrom === 'A') {
+        plcDisinfectionCount = this.aLineQuantity.a2 || 0;
+      } else if (this.warehouseSelectedFrom === 'B') {
+        plcDisinfectionCount = this.bLineQuantity.b2 || 0;
+      } else if (this.warehouseSelectedFrom === 'C') {
+        plcDisinfectionCount = this.cLineQuantity.c2 || 0;
+      }
+
+      if (systemQueueCount <= 0 || plcDisinfectionCount <= 0) {
+        this.$message.warning(
+          `${this.warehouseSelectedFrom}灭菌柜中没有可用的托盘，请检查起始地数量`
+        );
+        return;
+      }
+      // 设置loading状态和执行状态
+      this.analysisRoomLoading = true;
+      this.analysisExecuting = true;
       if (this.warehouseSelectedFrom === 'A') {
         ipcRenderer.send('writeSingleValueToPLC', 'DBW530', 1);
         setTimeout(() => {
@@ -6319,6 +6482,50 @@ export default {
         this.$message.warning('请先选择完整');
         return;
       }
+
+      // 判断起始地数量是否大于0
+      let sourceQueueIndex;
+      if (this.outWarehouseSelected === 'A') {
+        sourceQueueIndex = 9;
+      } else if (this.outWarehouseSelected === 'B') {
+        sourceQueueIndex = 10;
+      } else if (this.outWarehouseSelected === 'C') {
+        sourceQueueIndex = 11;
+      } else if (this.outWarehouseSelected === 'D') {
+        sourceQueueIndex = 15;
+      } else if (this.outWarehouseSelected === 'E') {
+        sourceQueueIndex = 16;
+      }
+
+      // 判断起始地数量是否大于0（系统队列数量和PLC解析库数量都要大于0）
+      const systemQueueCount =
+        this.queues[sourceQueueIndex] &&
+        Array.isArray(this.queues[sourceQueueIndex].trayInfo)
+          ? this.queues[sourceQueueIndex].trayInfo.length
+          : 0;
+
+      let plcWarehouseCount = 0;
+      if (this.outWarehouseSelected === 'A') {
+        plcWarehouseCount = this.aLineQuantity.a3 || 0;
+      } else if (this.outWarehouseSelected === 'B') {
+        plcWarehouseCount = this.bLineQuantity.b3 || 0;
+      } else if (this.outWarehouseSelected === 'C') {
+        plcWarehouseCount = this.cLineQuantity.c3 || 0;
+      } else if (this.outWarehouseSelected === 'D') {
+        plcWarehouseCount = this.dDisinfectionOutQuantity || 0;
+      } else if (this.outWarehouseSelected === 'E') {
+        plcWarehouseCount = this.eDisinfectionOutQuantity || 0;
+      }
+
+      if (systemQueueCount <= 0 || plcWarehouseCount <= 0) {
+        this.$message.warning(
+          `${this.outWarehouseSelected}解析库中没有可用的托盘，请检查起始地数量`
+        );
+        return;
+      }
+      // 设置loading状态和执行状态
+      this.outWarehouseLoading = true;
+      this.outWarehouseExecuting = true;
       if (this.outWarehouseSelected === 'A') {
         ipcRenderer.send('writeSingleValueToPLC', 'DBW534', 1);
         setTimeout(() => {
@@ -6423,6 +6630,35 @@ export default {
         }
       } else if (type === 'D') {
         if (this.allowUploadD) {
+          // 检查E是否已经允许上货，如果是则禁止D允许上货
+          if (this.allowUploadE) {
+            this.$message.warning(
+              'D和E灭菌柜不能同时允许上货，请先取消E灭菌柜的上货允许！'
+            );
+            this.allowUploadD = false;
+            return;
+          }
+          // 检查是否填写了执行数量并确认
+          if (!this.dExecQty || this.dExecQty <= 0) {
+            this.$message.warning(
+              '请先填写D灭菌柜执行数量并点击确定后再允许上货！'
+            );
+            // 不立即重置复选框，让用户手动取消或先填写数量
+            setTimeout(() => {
+              this.allowUploadD = false;
+            }, 100);
+            return;
+          }
+          if (!this.dExecuting) {
+            this.$message.warning(
+              '请先填写D灭菌柜执行数量并点击确定后再允许上货！'
+            );
+            // 不立即重置复选框，让用户手动取消或先确认执行
+            setTimeout(() => {
+              this.allowUploadD = false;
+            }, 100);
+            return;
+          }
           ipcRenderer.send('writeValuesToPLC', 'DBW520', 1);
           this.addLog('D允许上货');
         } else {
@@ -6431,6 +6667,35 @@ export default {
         }
       } else if (type === 'E') {
         if (this.allowUploadE) {
+          // 检查D是否已经允许上货，如果是则禁止E允许上货
+          if (this.allowUploadD) {
+            this.$message.warning(
+              'D和E灭菌柜不能同时允许上货，请先取消D灭菌柜的上货允许！'
+            );
+            this.allowUploadE = false;
+            return;
+          }
+          // 检查是否填写了执行数量并确认
+          if (!this.eExecQty || this.eExecQty <= 0) {
+            this.$message.warning(
+              '请先填写E灭菌柜执行数量并点击确定后再允许上货！'
+            );
+            // 不立即重置复选框，让用户手动取消或先填写数量
+            setTimeout(() => {
+              this.allowUploadE = false;
+            }, 100);
+            return;
+          }
+          if (!this.eExecuting) {
+            this.$message.warning(
+              '请先填写E灭菌柜执行数量并点击确定后再允许上货！'
+            );
+            // 不立即重置复选框，让用户手动取消或先确认执行
+            setTimeout(() => {
+              this.allowUploadE = false;
+            }, 100);
+            return;
+          }
           ipcRenderer.send('writeValuesToPLC', 'DBW522', 1);
           this.addLog('E允许上货');
         } else {
@@ -7246,14 +7511,6 @@ export default {
                 font-size: 11px;
                 border-radius: 3px;
                 padding: 0 8px;
-              }
-              .preheating-room-marker :deep(.el-button) {
-                background-color: rgba(255, 255, 255, 0.2);
-                border-color: rgba(255, 255, 255, 0.3);
-                font-size: 11px;
-                height: 24px;
-                width: 100%;
-                padding: 4px 8px;
               }
             }
           }
