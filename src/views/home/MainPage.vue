@@ -4852,7 +4852,6 @@ export default {
           if (tray.trayCode === trayCode) {
             this.addLog(`托盘号：${trayCode} 已在上货区上货`);
             this.$message.warning(`托盘号：${trayCode} 已在上货区上货`);
-            this.sendErrorForPort(portKey);
             return; // 这样就会跳出整个 addToUpLoadQueue 方法
           }
         }
@@ -4953,7 +4952,6 @@ export default {
           if (tray.trayCode === trayCode) {
             this.addLog(`托盘号：${trayCode} 已在${trayFrom}队列中`);
             this.$message.warning(`托盘号：${trayCode} 已在${trayFrom}队列中`);
-            this.sendErrorForPort(portKey);
             return;
           }
         }
