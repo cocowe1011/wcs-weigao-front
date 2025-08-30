@@ -5175,7 +5175,7 @@ export default {
 
       HttpUtilwms.post('/api/app/unload_goods', params)
         .then((res) => {
-          if (res.data && res.data.code === 200) {
+          if (res.code === 200) {
             this.addLog(
               `WMS出货接口调用成功，托盘号：${trayCode}，状态：${statusText}`
             );
