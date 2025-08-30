@@ -2919,8 +2919,12 @@ export default {
       preheatNeedQty: 0,
       // 预热到灭菌执行状态
       disinfectionExecuting: false,
+      // 预热到灭菌的目标总数量（起始地队列数量+目的地已有队列数量）
+      disinfectionTargetTotal: 0,
       // 灭菌到解析执行状态
       analysisExecuting: false,
+      // 灭菌到解析的目标总数量（起始地队列数量+目的地已有队列数量）
+      analysisTargetTotal: 0,
       // 出库执行状态
       outWarehouseExecuting: false,
       // 灭菌、解析、出库显示
@@ -3893,6 +3897,18 @@ export default {
       if (this.warehouseSelectedFrom === 'A') {
         this.updateAnalysisNeedAndWrite();
       }
+      // 检查是否需要停止执行：如果目的地队列数量等于目标总数量
+      if (
+        this.disinfectionRoomSelectedTo === 'A' &&
+        this.disinfectionExecuting
+      ) {
+        if (newVal === this.disinfectionTargetTotal) {
+          this.cancelDisinfectionRoom();
+          this.addLog(
+            `预热房到灭菌柜执行完成，目的地A2队列数量达到目标总数量${this.disinfectionTargetTotal}，已自动停止执行`
+          );
+        }
+      }
       // 检查目的地限制 - 只有当当前选择的灭菌房目的地是A时才检查
       if (this.disinfectionRoomSelectedTo === 'A') {
         this.checkDestinationLimit();
@@ -3956,6 +3972,18 @@ export default {
       if (this.warehouseSelectedFrom === 'B') {
         this.updateAnalysisNeedAndWrite();
       }
+      // 检查是否需要停止执行：如果目的地队列数量等于目标总数量
+      if (
+        this.disinfectionRoomSelectedTo === 'B' &&
+        this.disinfectionExecuting
+      ) {
+        if (newVal === this.disinfectionTargetTotal) {
+          this.cancelDisinfectionRoom();
+          this.addLog(
+            `预热房到灭菌柜执行完成，目的地B2队列数量达到目标总数量${this.disinfectionTargetTotal}，已自动停止执行`
+          );
+        }
+      }
       // 检查目的地限制 - 只有当当前选择的灭菌房目的地是B时才检查
       if (this.disinfectionRoomSelectedTo === 'B') {
         this.checkDestinationLimit();
@@ -4018,6 +4046,18 @@ export default {
       // 动态更新与写入：解析需求
       if (this.warehouseSelectedFrom === 'C') {
         this.updateAnalysisNeedAndWrite();
+      }
+      // 检查是否需要停止执行：如果目的地队列数量等于目标总数量
+      if (
+        this.disinfectionRoomSelectedTo === 'C' &&
+        this.disinfectionExecuting
+      ) {
+        if (newVal === this.disinfectionTargetTotal) {
+          this.cancelDisinfectionRoom();
+          this.addLog(
+            `预热房到灭菌柜执行完成，目的地C2队列数量达到目标总数量${this.disinfectionTargetTotal}，已自动停止执行`
+          );
+        }
       }
       // 检查目的地限制 - 只有当当前选择的灭菌房目的地是C时才检查
       if (this.disinfectionRoomSelectedTo === 'C') {
@@ -4102,6 +4142,15 @@ export default {
             // 不是设置出库A3的，但是A3却减少了，说明有问题，直接报警
             this.addLog('未设置出库A3，程序错误！报警！');
           }
+        }
+      }
+      // 检查是否需要停止执行：如果目的地队列数量等于目标总数量
+      if (this.warehouseSelectedTo === 'A' && this.analysisExecuting) {
+        if (newVal === this.analysisTargetTotal) {
+          this.cancelAnalysisRoom();
+          this.addLog(
+            `灭菌柜到解析房执行完成，目的地A3队列数量达到目标总数量${this.analysisTargetTotal}，已自动停止执行`
+          );
         }
       }
       // 检查目的地限制 - 只有当当前选择的解析库目的地是A时才检查
@@ -4193,6 +4242,15 @@ export default {
           }
         }
       }
+      // 检查是否需要停止执行：如果目的地队列数量等于目标总数量
+      if (this.warehouseSelectedTo === 'B' && this.analysisExecuting) {
+        if (newVal === this.analysisTargetTotal) {
+          this.cancelAnalysisRoom();
+          this.addLog(
+            `灭菌柜到解析房执行完成，目的地B3队列数量达到目标总数量${this.analysisTargetTotal}，已自动停止执行`
+          );
+        }
+      }
       // 检查目的地限制 - 只有当当前选择的解析库目的地是B时才检查
       if (this.warehouseSelectedTo === 'B') {
         this.checkDestinationLimit();
@@ -4280,6 +4338,15 @@ export default {
             // 不是设置出库C3的，但是C3却减少了，说明有问题，直接报警
             this.addLog('未设置出库C3，程序错误！报警！');
           }
+        }
+      }
+      // 检查是否需要停止执行：如果目的地队列数量等于目标总数量
+      if (this.warehouseSelectedTo === 'C' && this.analysisExecuting) {
+        if (newVal === this.analysisTargetTotal) {
+          this.cancelAnalysisRoom();
+          this.addLog(
+            `灭菌柜到解析房执行完成，目的地C3队列数量达到目标总数量${this.analysisTargetTotal}，已自动停止执行`
+          );
         }
       }
       // 检查目的地限制 - 只有当当前选择的解析库目的地是C时才检查
@@ -5959,27 +6026,6 @@ export default {
       );
       this.disinfectionNeedQty = leftFromPreheat;
 
-      // 当正在执行且需进货数量为0时，自动切换为不执行
-      if (
-        leftFromPreheat === 0 &&
-        (this.disinfectionRoomSelectedFrom ||
-          this.disinfectionRoomSelectedTo) &&
-        this.disinfectionTrayCode
-      ) {
-        const oldFrom = this.disinfectionRoomSelectedFrom;
-        const oldTo = this.disinfectionRoomSelectedTo;
-        this.disinfectionRoomSelectedFrom = null;
-        this.disinfectionRoomSelectedTo = null;
-        this.disinfectionRoomLoading = false; // 恢复loading状态
-        this.disinfectionTrayCode = '';
-        this.$message.warning(
-          `预热房到灭菌柜执行中需进货数量为0，已自动切换为不执行`
-        );
-        this.addLog(
-          `预热房${oldFrom}到灭菌柜${oldTo}执行中需进货数量为0，已自动切换为不执行`
-        );
-      }
-
       this.addLog(`写入PLC DBW548（灭菌柜需进货数量）: ${leftFromPreheat}`);
       this.writeWordWithCancel('DBW548', leftFromPreheat);
     },
@@ -5995,26 +6041,6 @@ export default {
         this.warehouseSelectedFrom
       );
       this.analysisNeedQty = leftFromSterilize;
-
-      // 当正在执行且需进货数量为0时，自动切换为不执行
-      if (
-        leftFromSterilize === 0 &&
-        (this.warehouseSelectedFrom || this.warehouseSelectedTo) &&
-        this.analysisTrayCode
-      ) {
-        const oldFrom = this.warehouseSelectedFrom;
-        const oldTo = this.warehouseSelectedTo;
-        this.warehouseSelectedFrom = null;
-        this.warehouseSelectedTo = null;
-        this.analysisRoomLoading = false; // 恢复loading状态
-        this.analysisTrayCode = '';
-        this.$message.warning(
-          `灭菌柜到解析房执行中需进货数量为0，已自动切换为不执行`
-        );
-        this.addLog(
-          `灭菌柜${oldFrom}到解析库${oldTo}执行中需进货数量为0，已自动切换为不执行`
-        );
-      }
 
       this.addLog(`写入PLC DBW550（解析柜需进货数量）: ${leftFromSterilize}`);
       this.writeWordWithCancel('DBW550', leftFromSterilize);
@@ -6345,6 +6371,13 @@ export default {
         );
         return;
       }
+      // 计算并存储目标总数量：起始地队列数量 + 目的地已有队列数量
+      const sourceQueueCount = systemQueueCount;
+      const destinationQueueCount = this.getSterilizeCountFor(
+        this.disinfectionRoomSelectedTo
+      );
+      this.disinfectionTargetTotal = sourceQueueCount + destinationQueueCount;
+
       // 设置loading状态和执行状态
       this.disinfectionRoomLoading = true;
       this.disinfectionExecuting = true;
@@ -6429,6 +6462,13 @@ export default {
         );
         return;
       }
+      // 计算并存储目标总数量：起始地队列数量 + 目的地已有队列数量
+      const sourceQueueCount = systemQueueCount;
+      const destinationQueueCount = this.getAnalysisCountFor(
+        this.warehouseSelectedTo
+      );
+      this.analysisTargetTotal = sourceQueueCount + destinationQueueCount;
+
       // 设置loading状态和执行状态
       this.analysisRoomLoading = true;
       this.analysisExecuting = true;
