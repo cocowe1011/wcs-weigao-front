@@ -4959,6 +4959,7 @@ export default {
                   productName: paramInsert.productName,
                   isTerile: paramInsert.isTerile,
                   receiptOrderCode: paramInsert.receiptOrderCode,
+                  state: '0',
                   sendTo: '' // 发到哪个预热房，发送的时候更新
                 };
                 this.queues[0].trayInfo.push(trayInfo);
@@ -5122,6 +5123,7 @@ export default {
         orderId: 'NO-ORDER',
         productCode: 'NO-PRODUCT',
         productName: '无码产品',
+        state: '0',
         isTerile: nonSterile ? 0 : 1
       };
       const queueIndex = trayFrom === 'D' ? 12 : 13;
