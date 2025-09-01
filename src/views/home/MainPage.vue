@@ -162,7 +162,7 @@
                 />
                 <!-- 修改队列标识 -->
                 <div
-                  v-for="marker in queueMarkers"
+                  v-for="marker in queueMarkers.filter((m) => m.id !== 15)"
                   :key="marker.id"
                   class="queue-marker"
                   :data-x="marker.x"
@@ -213,9 +213,6 @@
                     }}</span>
                     <span class="queue-marker-count" v-if="marker.id === 14">{{
                       eDisinfectionInQuantity
-                    }}</span>
-                    <span class="queue-marker-count" v-if="marker.id === 15">{{
-                      nonSterileunload
                     }}</span>
                     <span class="queue-marker-count" v-if="marker.id === 16">{{
                       dDisinfectionOutQuantity
@@ -673,6 +670,7 @@
                           >允许上货</el-checkbox
                         >
                         <el-checkbox
+                          v-show="false"
                           v-model="nonSterileD"
                           @change="
                             handleNonSterileChange('nonSterileD', 'D灭菌柜')
@@ -736,6 +734,7 @@
                           >允许上货</el-checkbox
                         >
                         <el-checkbox
+                          v-show="false"
                           v-model="nonSterileE"
                           @change="
                             handleNonSterileChange('nonSterileE', 'E灭菌柜')
@@ -1641,13 +1640,13 @@
             <!-- 左侧队列列表 -->
             <div class="queue-container-left">
               <div
-                v-for="(queue, index) in queues"
-                :key="'queue-' + queue.id + '-' + index"
+                v-for="(queue, filteredIndex) in filteredQueues"
+                :key="'queue-' + queue.id + '-' + filteredIndex"
                 class="queue"
-                :class="{ active: selectedQueueIndex === index }"
-                @click="showTrays(index)"
+                :class="{ active: selectedQueueIndex === queue.id - 1 }"
+                @click="showTrays(queue.id - 1)"
                 @dragover.prevent
-                @drop="handleDrop(index)"
+                @drop="handleDrop(queue.id - 1)"
               >
                 <span class="queue-name">{{ queue.queueName }}</span>
                 <span class="tray-count">{{
@@ -1716,13 +1715,33 @@
                       </div>
                       <span class="tray-time">{{ tray.time }}</span>
                     </div>
-                    <el-button
-                      type="danger"
-                      size="mini"
-                      icon="el-icon-delete"
-                      circle
-                      @click.stop="deleteTray(tray)"
-                    ></el-button>
+                    <div class="tray-actions">
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        icon="el-icon-arrow-up"
+                        circle
+                        :disabled="index === 0"
+                        @click.stop="moveTrayUp(index)"
+                        class="move-btn"
+                      ></el-button>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        icon="el-icon-arrow-down"
+                        circle
+                        :disabled="index === nowTrays.length - 1"
+                        @click.stop="moveTrayDown(index)"
+                        class="move-btn"
+                      ></el-button>
+                      <el-button
+                        type="danger"
+                        size="mini"
+                        icon="el-icon-delete"
+                        circle
+                        @click.stop="deleteTray(tray, index)"
+                      ></el-button>
+                    </div>
                   </div>
                 </template>
                 <div v-else class="empty-state">
@@ -2222,29 +2241,107 @@
                   </div>
                 </div>
               </div>
-              <!-- 非灭菌缓存区数量控制 -->
-              <div class="quantity-group">
-                <div class="quantity-title">非灭菌缓存区数量:</div>
-                <div class="quantity-controls">
-                  <div class="quantity-item">
-                    <span class="quantity-value">{{ nonSterileunload }}</span>
-                    <div class="quantity-buttons">
-                      <button
-                        @click="updateNonSterileUnload(1)"
-                        class="quantity-btn plus"
-                      >
-                        +
-                      </button>
-                      <button
-                        @click="updateNonSterileUnload(-1)"
-                        class="quantity-btn minus"
-                      >
-                        -
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            </div>
+          </div>
+
+          <!-- 添加PLC变量写入测试部分 -->
+          <div class="test-section">
+            <span class="test-label">PLC变量写入测试:</span>
+            <div class="qrcode-test-container">
+              <!-- 入库1线 -->
+              <div class="qrcode-input-group">
+                <div class="send-label">入库1线:</div>
+                <el-input
+                  v-model="plcWriteValues.inboundLine1"
+                  size="small"
+                  placeholder="数值"
+                  class="qrcode-input"
+                  type="number"
+                ></el-input>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="writeInboundLine1"
+                  :loading="plcWriteLoading.inboundLine1"
+                >
+                  写入
+                </el-button>
               </div>
+
+              <!-- 入库2线 -->
+              <div class="qrcode-input-group">
+                <div class="send-label">入库2线:</div>
+                <el-input
+                  v-model="plcWriteValues.inboundLine2"
+                  size="small"
+                  placeholder="数值"
+                  class="qrcode-input"
+                  type="number"
+                ></el-input>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="writeInboundLine2"
+                  :loading="plcWriteLoading.inboundLine2"
+                >
+                  写入
+                </el-button>
+              </div>
+
+              <!-- 缓存1#线 -->
+              <div class="qrcode-input-group">
+                <div class="send-label">缓存1#线:</div>
+                <el-input
+                  v-model="plcWriteValues.bufferLine1"
+                  size="small"
+                  placeholder="数值"
+                  class="qrcode-input"
+                  type="number"
+                ></el-input>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="writeBufferLine1"
+                  :loading="plcWriteLoading.bufferLine1"
+                >
+                  写入
+                </el-button>
+              </div>
+
+              <!-- 缓存2#线 -->
+              <div class="qrcode-input-group">
+                <div class="send-label">缓存2#线:</div>
+                <el-input
+                  v-model="plcWriteValues.bufferLine2"
+                  size="small"
+                  placeholder="数值"
+                  class="qrcode-input"
+                  type="number"
+                ></el-input>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="writeBufferLine2"
+                  :loading="plcWriteLoading.bufferLine2"
+                >
+                  写入
+                </el-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 上货一键放行按钮 -->
+          <div class="test-section">
+            <span class="test-label">上货一键放行:</span>
+            <div class="qrcode-test-container">
+              <el-button
+                type="success"
+                size="small"
+                @click="releaseUpload"
+                :loading="plcWriteLoading.releaseUpload"
+              >
+                上货一键放行
+              </el-button>
             </div>
           </div>
         </div>
@@ -2859,6 +2956,21 @@ export default {
       elevatorDDisinfectionScanCode: '',
       // 一楼E灭菌柜接货站台扫码数据（托盘号）
       elevatorEDisinfectionScanCode: '',
+      // PLC变量写入测试值
+      plcWriteValues: {
+        inboundLine1: '',
+        inboundLine2: '',
+        bufferLine1: '',
+        bufferLine2: ''
+      },
+      // PLC写入loading状态
+      plcWriteLoading: {
+        inboundLine1: false,
+        inboundLine2: false,
+        bufferLine1: false,
+        bufferLine2: false,
+        releaseUpload: false
+      },
       // 添加复选框状态-一楼允许上货
       allowUploadOne: false,
       // 添加复选框状态-一楼是否非灭菌（默认灭菌）
@@ -2966,6 +3078,9 @@ export default {
     },
     unreadAlarms() {
       return this.alarmLogs.filter((log) => log.unread).length;
+    },
+    filteredQueues() {
+      return this.queues.filter((q) => q.id !== 15);
     },
     selectedQueue() {
       return this.queues[this.selectedQueueIndex];
@@ -3511,10 +3626,40 @@ export default {
     },
     // 请求上位机下发任务(判断去灭菌还是非灭菌）
     requestUploadTask: {
-      async handler(newVal) {
+      async handler(newVal, oldVal) {
         // 只有在数据准备就绪后才执行监听逻辑
         if (!this.isDataReady) return;
 
+        // 当信号从1变为0时，执行队列移动逻辑
+        if (oldVal === 1 && newVal === 0) {
+          this.addLog('请求上位机下发任务信号由1变0，开始执行队列移动');
+          // 执行缓冲区队列移动逻辑：把分发区的符合条件的托盘移动到缓冲区
+          if (this.queues[1]?.trayInfo && this.queues[1].trayInfo.length > 0) {
+            // 查找state为1，并且isTerile为1的第一个托盘，加入到缓冲区队列
+            const targetTrayIndex = this.queues[1].trayInfo.findIndex(
+              (tray) => tray.state === '1' && tray.isTerile === 1
+            );
+            if (targetTrayIndex !== -1) {
+              // 找到符合条件的托盘
+              const targetTray = this.queues[1].trayInfo[targetTrayIndex];
+              this.addLog(`${targetTray.trayCode} 由分发区进入缓冲区`);
+              // 把符合条件的托盘信息加入到缓冲区
+              this.queues[2].trayInfo.push(targetTray);
+              // 从分发区删除该托盘信息
+              this.queues[1].trayInfo.splice(targetTrayIndex, 1);
+              // 如果缓冲区达到16个，则显示小车1设置去哪个预热房的按钮
+              if (this.queues[2].trayInfo.length === 16) {
+                this.showCar1SetPreheatingRoom = true;
+              }
+            } else {
+              this.addLog('分发区没有找到符合条件的托盘(已执行且灭菌的托盘)');
+            }
+          } else {
+            this.addLog('分发区没有托盘信息，无法执行队列移动');
+          }
+        }
+
+        // 当信号从0变为1时，执行原有的灭菌/非灭菌判断逻辑
         if (newVal === 1) {
           this.addLog('请求上位机下发任务(判断去灭菌还是非灭菌）');
           // 先筛选出分发区中未处理过的第一个托盘数据，属性state等于'1'代表已经处理过。'0'代表没有处理过
@@ -3573,38 +3718,13 @@ export default {
         // 只有在数据准备就绪后才执行监听逻辑
         if (!this.isDataReady) return;
 
-        // 判断与老数据相比是增加1还是减少1，如果增加1则把分发区的第一个托盘信息加入到缓冲区，同时把原队列的第一个托盘信息删除
+        // 当数量增加时，检查是否达到16个来显示入库按钮
         if (newVal > oldVal) {
-          if (this.queues[1].trayInfo.length > 0) {
-            // 查找state为1，并且isTerile为1的第一个托盘，加入到缓冲区队列
-            const targetTrayIndex = this.queues[1].trayInfo.findIndex(
-              (tray) => tray.state === '1' && tray.isTerile === 1
-            );
-            if (targetTrayIndex !== -1) {
-              // 找到符合条件的托盘
-              this.addLog(
-                this.queues[1].trayInfo[targetTrayIndex].trayCode +
-                  '进入缓冲区。'
-              );
-              // 把符合条件的托盘信息加入到缓冲区
-              this.queues[2].trayInfo.push(
-                this.queues[1].trayInfo[targetTrayIndex]
-              );
-              // 从分发区删除该托盘信息
-              this.queues[1].trayInfo.splice(targetTrayIndex, 1);
-            } else {
-              this.addLog('分发区没有找到符合条件的托盘(已执行且灭菌的托盘)');
-            }
-            // 如果bufferQuantity达到16个，则显示小车1设置去哪个预热房的按钮
-            if (newVal === 16) {
-              this.showCar1SetPreheatingRoom = true;
-            }
-          } else {
-            this.addLog(
-              '缓冲区数量增加，但是分发区没有找到符合条件的托盘(已执行且灭菌的托盘)'
-            );
+          // 如果bufferQuantity达到16个，则显示小车1设置去哪个预热房的按钮
+          if (newVal === 16) {
+            this.showCar1SetPreheatingRoom = true;
           }
-        } else {
+        } else if (newVal < oldVal) {
           // 减少到0说明不再执行了。
           if (newVal === 0) {
             this.preWarmTrayCode = '';
@@ -5631,6 +5751,17 @@ export default {
         : [];
 
       try {
+        // 确认移动操作
+        await this.$confirm(
+          `确认将托盘 ${this.draggedTray.id} 从 ${sourceQueue.queueName} 移动到 ${targetQueue.queueName}？`,
+          '移动托盘确认',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        );
+
         if (!this.draggedTray.id) {
           throw new Error('托盘信息无效');
         }
@@ -5670,6 +5801,10 @@ export default {
           duration: 2000
         });
       } catch (error) {
+        if (error === 'cancel') {
+          // 用户取消操作
+          return;
+        }
         console.error('移动托盘时出错:', error);
         this.$message.error(error.message || '移动托盘失败，请重试');
       } finally {
@@ -5698,23 +5833,24 @@ export default {
         this.$message.error('找不到队列ID: ' + queueId);
       }
     },
-    async deleteTray(tray) {
+    async deleteTray(tray, index) {
       if (!this.selectedQueue) return;
 
       try {
         // 确认是否删除
-        await this.$confirm('确认要删除该托盘吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        });
-
-        // 从队列中移除托盘
-        const trayIndex = this.selectedQueue.trayInfo.findIndex(
-          (t) => t.trayCode === tray.id
+        await this.$confirm(
+          '确认要删除该托盘吗？删除后请注意是否需要同步修改PLC队列数据！',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
         );
-        if (trayIndex > -1) {
-          this.selectedQueue.trayInfo.splice(trayIndex, 1);
+
+        // 从队列中移除托盘，直接使用传递的index
+        if (index >= 0 && index < this.selectedQueue.trayInfo.length) {
+          this.selectedQueue.trayInfo.splice(index, 1);
 
           // 更新队列数据
           this.updateQueueTrays(
@@ -5736,6 +5872,102 @@ export default {
         if (error !== 'cancel') {
           this.$message.error('删除托盘失败，请重试');
         }
+      }
+    },
+    // 上移托盘
+    async moveTrayUp(index) {
+      if (!this.selectedQueue || index <= 0) return;
+
+      try {
+        // 获取当前队列的托盘信息
+        const trayInfo = Array.isArray(this.selectedQueue.trayInfo)
+          ? this.selectedQueue.trayInfo
+          : [];
+
+        const currentTray = trayInfo[index];
+        const prevTray = trayInfo[index - 1];
+
+        // 确认上移操作
+        await this.$confirm(
+          `确认将托盘 ${currentTray.trayCode} 上移一位（与 ${prevTray.trayCode} 交换位置）？`,
+          '上移托盘确认',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        );
+
+        // 交换位置
+        trayInfo[index] = prevTray;
+        trayInfo[index - 1] = currentTray;
+
+        // 更新队列数据
+        this.updateQueueTrays(this.selectedQueue.id, trayInfo);
+
+        // 刷新显示
+        this.showTrays(this.selectedQueueIndex);
+
+        // 添加操作日志
+        this.addLog(
+          `托盘 ${currentTray.trayCode} 在 ${this.selectedQueue.queueName} 中上移`
+        );
+
+        this.$message.success('托盘上移成功');
+      } catch (error) {
+        if (error === 'cancel') {
+          // 用户取消操作
+          return;
+        }
+        this.$message.error('托盘上移失败，请重试');
+      }
+    },
+    // 下移托盘
+    async moveTrayDown(index) {
+      if (!this.selectedQueue || index >= this.nowTrays.length - 1) return;
+
+      try {
+        // 获取当前队列的托盘信息
+        const trayInfo = Array.isArray(this.selectedQueue.trayInfo)
+          ? this.selectedQueue.trayInfo
+          : [];
+
+        const currentTray = trayInfo[index];
+        const nextTray = trayInfo[index + 1];
+
+        // 确认下移操作
+        await this.$confirm(
+          `确认将托盘 ${currentTray.trayCode} 下移一位（与 ${nextTray.trayCode} 交换位置）？`,
+          '下移托盘确认',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        );
+
+        // 交换位置
+        trayInfo[index] = nextTray;
+        trayInfo[index + 1] = currentTray;
+
+        // 更新队列数据
+        this.updateQueueTrays(this.selectedQueue.id, trayInfo);
+
+        // 刷新显示
+        this.showTrays(this.selectedQueueIndex);
+
+        // 添加操作日志
+        this.addLog(
+          `托盘 ${currentTray.trayCode} 在 ${this.selectedQueue.queueName} 中下移`
+        );
+
+        this.$message.success('托盘下移成功');
+      } catch (error) {
+        if (error === 'cancel') {
+          // 用户取消操作
+          return;
+        }
+        this.$message.error('托盘下移失败，请重试');
       }
     },
     showAddTrayDialog() {
@@ -6154,12 +6386,6 @@ export default {
     updateBufferQuantity(change) {
       this.bufferQuantity = Math.max(0, parseInt(this.bufferQuantity) + change);
     },
-    updateNonSterileUnload(change) {
-      this.nonSterileunload = Math.max(
-        0,
-        parseInt(this.nonSterileunload) + change
-      );
-    },
     // 测试模式：调节 D/E 的进货、出货数量（会触发对应 watch）
     updateDInQuantity(change) {
       this.dDisinfectionInQuantity = Math.max(
@@ -6184,6 +6410,113 @@ export default {
         0,
         parseInt(this.eDisinfectionOutQuantity) + change
       );
+    },
+    // PLC变量写入测试方法
+    writeInboundLine1() {
+      const value = parseInt(this.plcWriteValues.inboundLine1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      // 设置loading状态
+      this.plcWriteLoading.inboundLine1 = true;
+      // 先写入控制按钮值1
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 1);
+      // 再写入目标变量值
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW564', value);
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW564');
+        // 取消loading，清零数值，显示成功提示
+        this.plcWriteLoading.inboundLine1 = false;
+        this.plcWriteValues.inboundLine1 = '';
+        this.$message.success('入库1线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DB101.DBW564（入库1线）: ${value}，2秒后恢复`);
+    },
+    writeInboundLine2() {
+      const value = parseInt(this.plcWriteValues.inboundLine2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      // 设置loading状态
+      this.plcWriteLoading.inboundLine2 = true;
+      // 先写入控制按钮值2
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 2);
+      // 再写入目标变量值
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW566', value);
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW566');
+        // 取消loading，清零数值，显示成功提示
+        this.plcWriteLoading.inboundLine2 = false;
+        this.plcWriteValues.inboundLine2 = '';
+        this.$message.success('入库2线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DB101.DBW566（入库2线）: ${value}，2秒后恢复`);
+    },
+    writeBufferLine1() {
+      const value = parseInt(this.plcWriteValues.bufferLine1);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      // 设置loading状态
+      this.plcWriteLoading.bufferLine1 = true;
+      // 先写入控制按钮值3
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 3);
+      // 再写入目标变量值
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW568', value);
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW568');
+        // 取消loading，清零数值，显示成功提示
+        this.plcWriteLoading.bufferLine1 = false;
+        this.plcWriteValues.bufferLine1 = '';
+        this.$message.success('缓存1#线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DB101.DBW568（缓存1#线）: ${value}，2秒后恢复`);
+    },
+    writeBufferLine2() {
+      const value = parseInt(this.plcWriteValues.bufferLine2);
+      if (isNaN(value)) {
+        this.$message.warning('请输入有效的数值');
+        return;
+      }
+      // 设置loading状态
+      this.plcWriteLoading.bufferLine2 = true;
+      // 先写入控制按钮值4
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 4);
+      // 再写入目标变量值
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW570', value);
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW570');
+        // 取消loading，清零数值，显示成功提示
+        this.plcWriteLoading.bufferLine2 = false;
+        this.plcWriteValues.bufferLine2 = '';
+        this.$message.success('缓存2#线写入成功');
+      }, 2000);
+      this.addLog(`写入PLC DB101.DBW570（缓存2#线）: ${value}，2秒后恢复`);
+    },
+    releaseUpload() {
+      // 设置loading状态
+      this.plcWriteLoading.releaseUpload = true;
+      // 写入控制按钮值5
+      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 5);
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
+        // 取消loading，显示成功提示
+        this.plcWriteLoading.releaseUpload = false;
+        this.$message.success('上货一键放行成功');
+      }, 2000);
+      this.addLog('上货一键放行，写入PLC DB101.DBW572: 5，2秒后恢复');
     },
     // 移除旧的D/E数量调节函数，D/E数量由PLC提供
     // 发送到预热房的方法
@@ -7859,7 +8192,9 @@ export default {
                     color: rgba(255, 255, 255, 0.5);
                   }
                 }
-                .el-button {
+                .tray-actions {
+                  display: flex;
+                  gap: 4px;
                   position: absolute;
                   right: 10px;
                   top: 50%;
@@ -7867,12 +8202,38 @@ export default {
                   opacity: 0;
                   transition: opacity 0.3s ease;
                 }
+
+                .move-btn {
+                  width: 24px;
+                  height: 24px;
+                  padding: 0;
+                  border-radius: 50%;
+
+                  &:disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                  }
+
+                  &:not(.is-disabled):hover {
+                    background-color: #409eff;
+                    border-color: #409eff;
+                  }
+                }
+
+                .el-button {
+                  &:not(.move-btn) {
+                    width: 24px;
+                    height: 24px;
+                    padding: 0;
+                    border-radius: 50%;
+                  }
+                }
               }
               .tray-item:hover {
                 background: rgba(48, 65, 85, 1);
                 border-color: rgba(10, 197, 168, 0.5);
                 transform: translateX(2px);
-                .el-button {
+                .tray-actions {
                   opacity: 1;
                 }
               }
@@ -8214,6 +8575,13 @@ export default {
 
 .qrcode-label {
   width: 80px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+}
+
+.send-label {
+  width: 60px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.8);
   text-align: right;
