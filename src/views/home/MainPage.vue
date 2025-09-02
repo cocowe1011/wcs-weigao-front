@@ -77,6 +77,7 @@
               <i class="el-icon-error"></i><span>全线停止</span>
             </button>
             <button
+              v-show="false"
               @click="toggleButtonState('reset')"
               :class="{ pressed: buttonStates.reset }"
             >
@@ -1928,6 +1929,22 @@
                 >
                   预热小车前请求 ({{ requestUploadTaskPreheatingCar }})
                 </el-button>
+                <el-button
+                  type="success"
+                  size="small"
+                  style="margin-left: 0px"
+                  @click="triggerDDisinfectionOutSignal"
+                >
+                  D出货请求信号 ({{ dDisinfectionOutSignal }})
+                </el-button>
+                <el-button
+                  type="success"
+                  size="small"
+                  style="margin-left: 0px"
+                  @click="triggerEDisinfectionOutSignal"
+                >
+                  E出货请求信号 ({{ eDisinfectionOutSignal }})
+                </el-button>
               </div>
             </div>
           </div>
@@ -2737,6 +2754,507 @@ export default {
         { id: 17, name: 'E出货', queueId: 17, x: 2210, y: 320 }
       ],
       logId: 1000, // 添加一个日志ID计数器
+      // 报警点位数据 - 用于监听报警状态变化
+      alarmPoints: {
+        DBW370: 0, // 提升机相关报警
+        DBW372: 0, // 提升机相关报警
+        DBW374: 0, // 门安全故障相关报警
+        DBW376: 0, // 备用报警点位
+        DBW378: 0, // 链条电机相关报警
+        DBW380: 0, // 链条电机相关报警
+        DBW382: 0, // 链条电机相关报警
+        DBW386: 0, // 预热进口小车相关报警
+        DBW388: 0, // 预热进口小车相关报警
+        DBW390: 0, // A1-1预热相关报警
+        DBW392: 0, // B1-1预热相关报警
+        DBW394: 0, // C1-1预热相关报警
+        DBW396: 0, // 预热出小车相关报警
+        DBW398: 0, // 预热出小车相关报警
+        DBW400: 0, // A2-1灭菌相关报警
+        DBW402: 0, // B2-1灭菌相关报警
+        DBW404: 0, // C2-1灭菌相关报警
+        DBW406: 0, // 解析进小车相关报警
+        DBW408: 0, // 解析进小车相关报警
+        DBW410: 0, // A3-1解析相关报警
+        DBW412: 0, // B3-1解析相关报警
+        DBW414: 0, // C3-1解析相关报警
+        DBW416: 0, // 解析出小车相关报警
+        DBW418: 0, // 解析出小车相关报警
+        DBW420: 0, // 立库对接相关报警
+        DBW422: 0, // D柜相关报警
+        DBW424: 0 // E柜相关报警
+      },
+      // 报警点位映射表 - 从报警JSON文件解析而来
+      alarmMapping: {
+        'DB101.DBW370': {
+          bit0: '1楼接货一线滚筒电机启动故障_提升机',
+          bit1: '1楼接货一线滚筒电机运行超时_提升机',
+          bit2: '1楼接货二线滚筒电机启动故障_提升机',
+          bit3: '1楼接货二线滚筒电机运行超时_提升机',
+          bit4: '2楼接货一线滚筒电机启动故障_提升机',
+          bit5: '2楼接货一线滚筒电机运行超时_提升机',
+          bit6: '2楼接货二线滚筒电机启动故障_提升机',
+          bit7: '2楼接货二线滚筒电机运行超时_提升机',
+          bit8: '3楼接货一线滚筒电机启动故障_提升机',
+          bit9: '3楼接货一线滚筒电机运行超时_提升机',
+          bit10: '3楼接货二线滚筒电机启动故障_提升机',
+          bit11: '3楼接货二线滚筒电机运行超时_提升机',
+          bit12: '4楼接货一线滚筒电机启动故障_提升机',
+          bit13: '4楼接货一线滚筒电机运行超时_提升机',
+          bit14: '4楼接货二线滚筒电机启动故障_提升机',
+          bit15: '4楼接货二线滚筒电机运行超时_提升机'
+        },
+        'DB101.DBW372': {
+          bit0: '轿厢滚筒电机启动故障_提升机',
+          bit1: '轿厢滚筒电机抱闸启动故障_提升机',
+          bit2: '',
+          bit3: '轿厢电机运行超时_提升机',
+          bit4: '轿厢滚筒变频器故障_提升机',
+          bit5: '1楼出货滚筒电机启动故障_提升机',
+          bit6: '1楼出货滚筒电机抱闸启动故障_提升机',
+          bit7: '1楼出货滚筒电机运行超时_提升机',
+          bit8: '1楼出货滚筒变频器故障_提升机',
+          bit9: '升降主电机启动故障_提升机',
+          bit10: '升降主电机抱闸启动故障_提升机',
+          bit11: '升降主电机变频器故障_提升机',
+          bit12: '一层下极限位故障',
+          bit13: '四层上极限位故障',
+          bit14: '配重极限位故障',
+          bit15: ''
+        },
+        'DB101.DBW374': {
+          bit0: '一层A口门安全故障',
+          bit1: '一层B口门安全故障',
+          bit2: '二层门安全故障',
+          bit3: '三层门安全故障',
+          bit4: '四层门安全故障',
+          bit5: '轿厢A安全故障',
+          bit6: '轿厢B安全故障',
+          bit7: '一层平层检测异常',
+          bit8: '二层平层检测异常',
+          bit9: '三层平层检测异常',
+          bit10: '四层平层检测异常',
+          bit11: '轿厢接货停靠错误',
+          bit12: '一层急停故障',
+          bit13: '二层急停故障',
+          bit14: '三层急停故障',
+          bit15: '柜门急停故障'
+        },
+        'DB101.DBW378': {
+          bit0: '1#链条电机启动故障',
+          bit1: '1#链条运行超时',
+          bit2: '1#链条进出货超时',
+          bit3: '1#线体数量超限',
+          bit4: '2#链条电机启动故障',
+          bit5: '2#链条运行超时',
+          bit6: '2#链条进出货超时',
+          bit7: '2#线体数量超限',
+          bit8: '1#辊道电机启动故障',
+          bit9: '1#辊道电机运行超时',
+          bit10: '1#顶升变频器启动故障',
+          bit11: '1#顶升辊道电机运行超时',
+          bit12: '1#顶升电机运行超时',
+          bit13: '1#顶升变频器故障',
+          bit14: '顶升链条电机启动故障',
+          bit15: '顶升链条电机运行超时'
+        },
+        'DB101.DBW380': {
+          bit0: '2#顶升变频启动故障',
+          bit1: '2#顶升辊道电机运行超时',
+          bit2: '2#顶升电机运行超时',
+          bit3: '2#顶升变频器故障',
+          bit4: '2#辊道电机启动故障',
+          bit5: '2#辊道电机运行超时',
+          bit6: '容错辊道电机启动故障',
+          bit7: '容错辊道电机运行超时',
+          bit8: '对接辊道电机启动故障',
+          bit9: '对接辊道电机运行超时',
+          bit10: '3#链条电机启动故障',
+          bit11: '3#链条运行超时',
+          bit12: '3#链条进出货超时',
+          bit13: '3#线体数量超限',
+          bit14: '4#链条电机启动故障',
+          bit15: '4#链条运行超时'
+        },
+        'DB101.DBW382': {
+          bit0: '4#链条进出货超时',
+          bit1: '4#线体数量超限',
+          bit2: '',
+          bit3: '',
+          bit4: '',
+          bit5: '',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW386': {
+          bit0: '小车数据故障_预热进口小车',
+          bit1: '小车行走电机启动故障_预热进口小车',
+          bit2: '小车行走电机抱闸启动故障_预热进口小车',
+          bit3: '小车输送电机启动故障_预热进口小车',
+          bit4: '小车输送电机运行超时故障_预热进口小车',
+          bit5: '小车前进接货停靠故障_预热进口小车',
+          bit6: '小车前进送货停靠故障_预热进口小车',
+          bit7: '小车后退接货停靠故障_预热进口小车',
+          bit8: '小车后退送货停靠故障_预热进口小车',
+          bit9: '小车暂停故障_预热进口小车',
+          bit10: '小车前极限故障_预热进口小车',
+          bit11: '小车后极限故障_预热进口小车',
+          bit12: '小车进口安全故障_预热进口小车',
+          bit13: '小车出口安全故障_预热进口小车',
+          bit14: '小车进货超限_预热进口小车',
+          bit15: '小车接送货停靠位置异常_预热进口小车'
+        },
+        'DB101.DBW388': {
+          bit0: '小车行走变频器故障_预热进口小车',
+          bit1: '',
+          bit2: '',
+          bit3: '',
+          bit4: '',
+          bit5: '',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW390': {
+          bit0: '电机启动故障_A1-1预热',
+          bit1: '电机运行故障_A1-1预热',
+          bit2: '自动进出货运行超时故障_A1-1预热',
+          bit3: '线体数量超限_A1-1预热',
+          bit4: '急停故障_A1-1预热',
+          bit5: '电机启动故障_A1-2预热',
+          bit6: '电机运行故障_A1-2预热',
+          bit7: '自动进出货运行超时故障_A1-2预热',
+          bit8: '线体数量超限_A1-2预热',
+          bit9: '急停故障_A1-2预热',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW392': {
+          bit0: '电机启动故障_B1-1预热',
+          bit1: '电机运行故障_B1-1预热',
+          bit2: '自动进出货运行超时故障_B1-1预热',
+          bit3: '线体数量超限_B1-1预热',
+          bit4: '急停故障_B1-1预热',
+          bit5: '电机启动故障_B1-2预热',
+          bit6: '电机运行故障_B1-2预热',
+          bit7: '自动进出货运行超时故障_B1-2预热',
+          bit8: '线体数量超限_B1-2预热',
+          bit9: '急停故障_B1-2预热',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW394': {
+          bit0: '电机启动故障_C1-1预热',
+          bit1: '电机运行故障_C1-1预热',
+          bit2: '自动进出货运行超时故障_C1-1预热',
+          bit3: '线体数量超限_C1-1预热',
+          bit4: '急停故障_C1-1预热',
+          bit5: '电机启动故障_C1-2预热',
+          bit6: '电机启动故障_C1-2预热',
+          bit7: '自动进出货运行超时故障_C1-2预热',
+          bit8: '线体数量超限_C1-2预热',
+          bit9: '急停故障_C1-2预热',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW396': {
+          bit0: '小车数据故障_预热出小车',
+          bit1: '小车行走电机启动故障_预热出小车',
+          bit2: '小车行走电机抱闸启动故障_预热出小车',
+          bit3: '小车输送1#电机启动故障_预热出小车',
+          bit4: '小车输送1#电机运行超时故障_预热出小车',
+          bit5: '小车输送2#电机启动故障_预热出小车',
+          bit6: '小车输送2#电机运行超时故障_预热出小车',
+          bit7: '小车前进接货停靠故障_预热出小车',
+          bit8: '小车前进送货停靠故障_预热出小车',
+          bit9: '小车后退接货停靠故障_预热出小车',
+          bit10: '小车后退送货停靠故障_预热出小车',
+          bit11: '小车暂停故障_预热出小车',
+          bit12: '小车前极限故障_预热出小车',
+          bit13: '小车后极限故障_预热出小车',
+          bit14: '小车进口安全故障_预热出小车',
+          bit15: '小车出口安全故障_预热出小车'
+        },
+        'DB101.DBW398': {
+          bit0: '小车1#线进货超限_预热出小车',
+          bit1: '小车2#线进货超限_预热出小车',
+          bit2: '小车接送货停靠位置异常_预热出小车',
+          bit3: '小车变频器故障_预热出小车',
+          bit4: '',
+          bit5: '',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW400': {
+          bit0: '电机启动故障_A2-1灭菌',
+          bit1: '电机运行故障_A2-1灭菌',
+          bit2: '自动进出货运行超时故障_A2-1灭菌',
+          bit3: '线体数量超限_A2-1灭菌',
+          bit4: '急停故障_A2-1灭菌',
+          bit5: '电机启动故障_A2-2灭菌',
+          bit6: '电机启动故障_A2-2灭菌',
+          bit7: '自动进出货运行超时故障_A2-2灭菌',
+          bit8: '线体数量超限_A2-2灭菌',
+          bit9: '急停故障_A2-2灭菌',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW402': {
+          bit0: '电机启动故障_B2-1灭菌',
+          bit1: '电机运行故障_B2-1灭菌',
+          bit2: '自动进出货运行超时故障_B2-1灭菌',
+          bit3: '线体数量超限_B2-1灭菌',
+          bit4: '急停故障_B2-1灭菌',
+          bit5: '电机启动故障_B2-2灭菌',
+          bit6: '电机启动故障_B2-2灭菌',
+          bit7: '自动进出货运行超时故障_B2-2灭菌',
+          bit8: '线体数量超限_B2-2灭菌',
+          bit9: '急停故障_B2-2灭菌',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW404': {
+          bit0: '电机启动故障_C2-1灭菌',
+          bit1: '电机运行故障_C2-1灭菌',
+          bit2: '自动进出货运行超时故障_C2-1灭菌',
+          bit3: '线体数量超限_C2-1灭菌',
+          bit4: '急停故障_C2-1灭菌',
+          bit5: '电机启动故障_C2-2灭菌',
+          bit6: '电机启动故障_C2-2灭菌',
+          bit7: '自动进出货运行超时故障_C2-2灭菌',
+          bit8: '线体数量超限_C2-2灭菌',
+          bit9: '急停故障_C2-2灭菌',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW406': {
+          bit0: '小车数据故障_解析进小车',
+          bit1: '小车行走电机启动故障_解析进小车',
+          bit2: '小车行走电机抱闸启动故障_解析进小车',
+          bit3: '小车输送1#电机启动故障_解析进小车',
+          bit4: '小车输送1#电机运行超时故障_解析进小车',
+          bit5: '小车输送2#电机启动故障_解析进小车',
+          bit6: '小车输送2#电机运行超时故障_解析进小车',
+          bit7: '小车前进接货停靠故障_解析进小车',
+          bit8: '小车前进送货停靠故障_解析进小车',
+          bit9: '小车后退接货停靠故障_解析进小车',
+          bit10: '小车后退送货停靠故障_解析进小车',
+          bit11: '小车暂停故障_解析进小车',
+          bit12: '小车前极限故障_解析进小车',
+          bit13: '小车后极限故障_解析进小车',
+          bit14: '小车进口安全故障_解析进小车',
+          bit15: '小车出口安全故障_解析进小车'
+        },
+        'DB101.DBW408': {
+          bit0: '小车1#线进货超限_解析进小车',
+          bit1: '小车2#线进货超限_解析进小车',
+          bit2: '小车接送货停靠位置异常_解析进小车',
+          bit3: '小车行走变频器故障_解析进小车',
+          bit4: '',
+          bit5: '',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW410': {
+          bit0: '电机启动故障_A3-1解析',
+          bit1: '电机运行故障_A3-1解析',
+          bit2: '自动进出货运行超时故障_A3-1解析',
+          bit3: '线体数量超限_A3-1解析',
+          bit4: '急停故障_A3-1解析',
+          bit5: '电机启动故障_A3-2解析',
+          bit6: '电机启动故障_A3-2解析',
+          bit7: '自动进出货运行超时故障_A3-2解析',
+          bit8: '线体数量超限_A3-2解析',
+          bit9: '急停故障_A3-2解析',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW412': {
+          bit0: '电机启动故障_B3-1解析',
+          bit1: '电机运行故障_B3-1解析',
+          bit2: '自动进出货运行超时故障_B3-1解析',
+          bit3: '线体数量超限_B3-1解析',
+          bit4: '急停故障_B3-1解析',
+          bit5: '电机启动故障_B3-2解析',
+          bit6: '电机启动故障_B3-2解析',
+          bit7: '自动进出货运行超时故障_B3-2解析',
+          bit8: '线体数量超限_B3-2解析',
+          bit9: '急停故障_B3-2解析',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW414': {
+          bit0: '电机启动故障_C3-1解析',
+          bit1: '电机运行故障_C3-1解析',
+          bit2: '自动进出货运行超时故障_C3-1解析',
+          bit3: '线体数量超限_C3-1解析',
+          bit4: '急停故障_C3-1解析',
+          bit5: '电机启动故障_C3-2解析',
+          bit6: '电机启动故障_C3-2解析',
+          bit7: '自动进出货运行超时故障_C3-2解析',
+          bit8: '线体数量超限_C3-2解析',
+          bit9: '急停故障_C3-2解析',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW416': {
+          bit0: '小车数据故障_解析出小车',
+          bit1: '小车行走电机启动故障_解析出小车',
+          bit2: '小车行走电机抱闸启动故障_解析出小车',
+          bit3: '小车输送1#电机启动故障_解析出小车',
+          bit4: '小车输送1#电机运行超时故障_解析出小车',
+          bit5: '小车输送2#电机启动故障_解析出小车',
+          bit6: '小车输送2#电机运行超时故障_解析出小车',
+          bit7: '小车前进接货停靠故障_解析出小车',
+          bit8: '小车前进送货停靠故障_解析出小车',
+          bit9: '小车后退接货停靠故障_解析出小车',
+          bit10: '小车后退送货停靠故障_解析出小车',
+          bit11: '小车暂停故障_解析出小车',
+          bit12: '小车前极限故障_解析出小车',
+          bit13: '小车后极限故障_解析出小车',
+          bit14: '小车进口安全故障_解析出小车',
+          bit15: '小车出口安全故障_解析出小车'
+        },
+        'DB101.DBW418': {
+          bit0: '小车1#线进货超限_解析出小车',
+          bit1: '小车2#线进货超限_解析出小车',
+          bit2: '小车接送货停靠位置异常_解析出小车',
+          bit3: '小车行走变频器故障_解析出小车',
+          bit4: '',
+          bit5: '',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW420': {
+          bit0: '电机启动故障_立库对接1线',
+          bit1: '电机运行故障_立库对接1线',
+          bit2: '自动进出货运行超时故障_立库对接1线',
+          bit3: '急停故障_立库对接1线',
+          bit4: '电机启动故障_立库对接2线',
+          bit5: '电机运行故障_立库对接2线',
+          bit6: '自动进出货运行超时故障_立库对接2线',
+          bit7: '急停故障_立库对接2线',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW422': {
+          bit0: 'D柜上线输送电机启动故障',
+          bit1: 'D柜上线输送电机运行超时',
+          bit2: 'D柜上线气缸升降运行超时',
+          bit3: 'D柜上线气缸推盘运行超时',
+          bit4: 'D柜下线输送电机启动故障',
+          bit5: 'D柜下线输送电机运行超时',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        },
+        'DB101.DBW424': {
+          bit0: 'E柜上线输送电机启动故障',
+          bit1: 'E柜上线输送电机运行超时',
+          bit2: 'E柜上线气缸升降运行超时',
+          bit3: 'E柜上线气缸推盘运行超时',
+          bit4: 'E柜下线输送电机启动故障',
+          bit5: 'E柜下线输送电机运行超时',
+          bit6: '',
+          bit7: '',
+          bit8: '',
+          bit9: '',
+          bit10: '',
+          bit11: '',
+          bit12: '',
+          bit13: '',
+          bit14: '',
+          bit15: ''
+        }
+      },
       // 输送线当前运行状态-读取PLC
       conveyorStatus: '',
       // 允许进料反馈-读取PLC
@@ -3272,6 +3790,35 @@ export default {
       this.cartPositionValues.cart3 = Number(values.DBW92 ?? 0);
       this.cartPositionValues.cart4 = Number(values.DBW94 ?? 0);
 
+      // 更新报警点位数据
+      this.alarmPoints.DBW370 = Number(values.DBW370 ?? 0);
+      this.alarmPoints.DBW372 = Number(values.DBW372 ?? 0);
+      this.alarmPoints.DBW374 = Number(values.DBW374 ?? 0);
+      this.alarmPoints.DBW376 = Number(values.DBW376 ?? 0);
+      this.alarmPoints.DBW378 = Number(values.DBW378 ?? 0);
+      this.alarmPoints.DBW380 = Number(values.DBW380 ?? 0);
+      this.alarmPoints.DBW382 = Number(values.DBW382 ?? 0);
+      this.alarmPoints.DBW386 = Number(values.DBW386 ?? 0);
+      this.alarmPoints.DBW388 = Number(values.DBW388 ?? 0);
+      this.alarmPoints.DBW390 = Number(values.DBW390 ?? 0);
+      this.alarmPoints.DBW392 = Number(values.DBW392 ?? 0);
+      this.alarmPoints.DBW394 = Number(values.DBW394 ?? 0);
+      this.alarmPoints.DBW396 = Number(values.DBW396 ?? 0);
+      this.alarmPoints.DBW398 = Number(values.DBW398 ?? 0);
+      this.alarmPoints.DBW400 = Number(values.DBW400 ?? 0);
+      this.alarmPoints.DBW402 = Number(values.DBW402 ?? 0);
+      this.alarmPoints.DBW404 = Number(values.DBW404 ?? 0);
+      this.alarmPoints.DBW406 = Number(values.DBW406 ?? 0);
+      this.alarmPoints.DBW408 = Number(values.DBW408 ?? 0);
+      this.alarmPoints.DBW410 = Number(values.DBW410 ?? 0);
+      this.alarmPoints.DBW412 = Number(values.DBW412 ?? 0);
+      this.alarmPoints.DBW414 = Number(values.DBW414 ?? 0);
+      this.alarmPoints.DBW416 = Number(values.DBW416 ?? 0);
+      this.alarmPoints.DBW418 = Number(values.DBW418 ?? 0);
+      this.alarmPoints.DBW420 = Number(values.DBW420 ?? 0);
+      this.alarmPoints.DBW422 = Number(values.DBW422 ?? 0);
+      this.alarmPoints.DBW424 = Number(values.DBW424 ?? 0);
+
       // 只在第一次接收到数据时设置标志位为 true
       if (!this.isDataReady) {
         this.isDataReady = true;
@@ -3708,6 +4255,7 @@ export default {
 
         // 请求上位机下发任务(预热小车前）
         if (newVal === 1) {
+          this.addLog('收到-请求上位机下发任务(预热小车前)');
           this.sendToPreheatingRoom();
         }
       }
@@ -4508,29 +5056,7 @@ export default {
           this.addLog('D下货数量从0增加，但上货队列无托盘可移动');
         }
       }
-      // 说明是减少了,说明是出库了（对下货队列进行出货）
-      if (newVal < oldVal) {
-        const decreaseCount = oldVal - newVal;
-        for (let i = 0; i < decreaseCount; i++) {
-          if (this.queues[15].trayInfo.length > 0) {
-            const tray = this.queues[15].trayInfo[0];
-            this.addLog(`托盘信息：${tray.trayCode} 出库`);
-            this.currentOutTrayInfo = tray;
-            // 更新出库选择状态为D，状态变为执行中
-            this.outWarehouseSelected = 'D';
-            this.outWarehouseLoading = true;
-            this.outWarehouseExecuting = true;
-            this.outWarehouseTrayCode = tray.trayCode;
-            this.queues[15].trayInfo.shift();
-            // 更新需进货数量并写入PLC
-            this.updateOutNeedAndWrite();
-            this.callWmsUnloadGoods(tray.trayCode, 1, 'D');
-          } else {
-            this.addLog('D出货队列空，无法出库');
-            break;
-          }
-        }
-      }
+      // DE出货不再监听队列数量减少，改为收到出货请求再进行出货
     },
     // E下货数量变化：0->N 时移动所有在队托盘到E出货队列；减少时按数量出货
     eDisinfectionOutQuantity(newVal, oldVal) {
@@ -4560,30 +5086,8 @@ export default {
           this.addLog('E下货数量从0增加，但上货队列无托盘可移动');
         }
       }
-      if (newVal < oldVal) {
-        const decreaseCount = oldVal - newVal;
-        for (let i = 0; i < decreaseCount; i++) {
-          if (this.queues[16].trayInfo.length > 0) {
-            const tray = this.queues[16].trayInfo[0];
-            this.addLog(`托盘信息：${tray.trayCode} 出库`);
-            this.currentOutTrayInfo = tray;
-            // 更新出库选择状态为E，状态变为执行中
-            this.outWarehouseSelected = 'E';
-            this.outWarehouseLoading = true;
-            this.outWarehouseExecuting = true;
-            this.outWarehouseTrayCode = tray.trayCode;
-            this.queues[16].trayInfo.shift();
-            // 更新需进货数量并写入PLC
-            this.updateOutNeedAndWrite();
-            this.callWmsUnloadGoods(tray.trayCode, 1, 'E');
-          } else {
-            this.addLog('E出货队列空，无法出库');
-            break;
-          }
-        }
-      }
     },
-    // 监听D/E出货请求信号：1则发送对应出货命令
+    // 监听D/E出货请求信号：1则发送对应出货命令并执行出货逻辑
     dDisinfectionOutSignal(newVal, oldVal) {
       if (newVal === 1 && oldVal !== 1) {
         ipcRenderer.send('writeSingleValueToPLC', 'DBW536', 1);
@@ -4591,6 +5095,24 @@ export default {
           ipcRenderer.send('cancelWriteToPLC', 'DBW536');
         }, 2000);
         this.addLog('收到D出货请求信号，已发送D出货命令');
+
+        // 执行D出货逻辑
+        if (this.queues[15].trayInfo.length > 0) {
+          const tray = this.queues[15].trayInfo[0];
+          this.addLog(`托盘信息：${tray.trayCode} 出库`);
+          this.currentOutTrayInfo = tray;
+          // 更新出库选择状态为D，状态变为执行中
+          this.outWarehouseSelected = 'D';
+          this.outWarehouseLoading = true;
+          this.outWarehouseExecuting = true;
+          this.outWarehouseTrayCode = tray.trayCode;
+          this.queues[15].trayInfo.shift();
+          // 更新需进货数量并写入PLC
+          this.updateOutNeedAndWrite();
+          this.callWmsUnloadGoods(tray.trayCode, 1, 'D');
+        } else {
+          this.addLog('D出货队列空，无法出库');
+        }
       }
     },
     eDisinfectionOutSignal(newVal, oldVal) {
@@ -4600,6 +5122,24 @@ export default {
           ipcRenderer.send('cancelWriteToPLC', 'DBW536');
         }, 2000);
         this.addLog('收到E出货请求信号，已发送E出货命令');
+
+        // 执行E出货逻辑
+        if (this.queues[16].trayInfo.length > 0) {
+          const tray = this.queues[16].trayInfo[0];
+          this.addLog(`托盘信息：${tray.trayCode} 出库`);
+          this.currentOutTrayInfo = tray;
+          // 更新出库选择状态为E，状态变为执行中
+          this.outWarehouseSelected = 'E';
+          this.outWarehouseLoading = true;
+          this.outWarehouseExecuting = true;
+          this.outWarehouseTrayCode = tray.trayCode;
+          this.queues[16].trayInfo.shift();
+          // 更新需进货数量并写入PLC
+          this.updateOutNeedAndWrite();
+          this.callWmsUnloadGoods(tray.trayCode, 1, 'E');
+        } else {
+          this.addLog('E出货队列空，无法出库');
+        }
       }
     },
     // ---- 新增：监听小车位置数值变化 ----
@@ -4764,8 +5304,41 @@ export default {
         );
         this.writeWordWithCancel('DBW554', need);
       }
-    }
+    },
     // ---- 监听指定队列的 trayInfo 变化结束 ----
+
+    // 报警点位监听 - 监听所有报警点位的变化
+    alarmPoints: {
+      handler(newVal, oldVal) {
+        if (!this.isDataReady || !oldVal) return;
+
+        // 遍历所有报警点位，检查位变化
+        Object.keys(newVal).forEach((address) => {
+          const newValue = newVal[address];
+          const oldValue = oldVal[address];
+
+          if (newValue !== oldValue) {
+            // 检查每一位的变化
+            for (let bit = 0; bit < 16; bit++) {
+              const newBit = (newValue >> bit) & 1;
+              const oldBit = (oldValue >> bit) & 1;
+
+              // 如果位从0变为1，触发报警
+              if (oldBit === 0 && newBit === 1) {
+                const dbAddress = `DB101.${address}`;
+                const bitKey = `bit${bit}`;
+                const alarmMessage = this.alarmMapping[dbAddress]?.[bitKey];
+
+                if (alarmMessage && alarmMessage.trim() !== '') {
+                  this.addLog(`报警: ${alarmMessage}`, 'alarm');
+                }
+              }
+            }
+          }
+        });
+      },
+      deep: true
+    }
   },
   methods: {
     // 取消预热房执行
@@ -6534,6 +7107,7 @@ export default {
       const plcBufferCount = this.bufferQuantity || 0;
 
       if (systemQueueCount <= 0 || plcBufferCount <= 0) {
+        this.addLog('缓冲区队列中没有可用的托盘，请检查起始地数量');
         this.$message.warning('缓冲区队列中没有可用的托盘，请检查起始地数量');
         return;
       }
@@ -6599,6 +7173,7 @@ export default {
         }
 
         if (!trayFoundAndUpdated) {
+          this.addLog('缓冲区队列没有需要发送的托盘信息');
           this.$message.warning('缓冲区队列没有需要发送的托盘信息');
           return;
         }
@@ -6965,6 +7540,20 @@ export default {
       this.requestUploadTaskPreheatingCar = 1;
       setTimeout(() => {
         this.requestUploadTaskPreheatingCar = 0;
+      }, 1000);
+    },
+    // 触发D出货请求信号
+    triggerDDisinfectionOutSignal() {
+      this.dDisinfectionOutSignal = 1;
+      setTimeout(() => {
+        this.dDisinfectionOutSignal = 0;
+      }, 1000);
+    },
+    // 触发E出货请求信号
+    triggerEDisinfectionOutSignal() {
+      this.eDisinfectionOutSignal = 1;
+      setTimeout(() => {
+        this.eDisinfectionOutSignal = 0;
       }, 1000);
     },
     handleAllowUpload(type) {
@@ -7468,7 +8057,7 @@ export default {
       .operation-panel {
         .operation-buttons {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           gap: 8px;
           margin-top: 5px;
           padding: 5px;

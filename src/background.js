@@ -580,6 +580,34 @@ function conPLC() {
           conn.addItems('DBB310');
           //E扫码
           conn.addItems('DBB340');
+          // 报警点位读取
+          conn.addItems('DBW370'); // 提升机相关报警
+          conn.addItems('DBW372'); // 提升机相关报警
+          conn.addItems('DBW374'); // 门安全故障相关报警
+          conn.addItems('DBW376'); // 备用报警点位
+          conn.addItems('DBW378'); // 链条电机相关报警
+          conn.addItems('DBW380'); // 链条电机相关报警
+          conn.addItems('DBW382'); // 链条电机相关报警
+          conn.addItems('DBW386'); // 预热进口小车相关报警
+          conn.addItems('DBW388'); // 预热进口小车相关报警
+          conn.addItems('DBW390'); // A1-1预热相关报警
+          conn.addItems('DBW392'); // B1-1预热相关报警
+          conn.addItems('DBW394'); // C1-1预热相关报警
+          conn.addItems('DBW396'); // 预热出小车相关报警
+          conn.addItems('DBW398'); // 预热出小车相关报警
+          conn.addItems('DBW400'); // A2-1灭菌相关报警
+          conn.addItems('DBW402'); // B2-1灭菌相关报警
+          conn.addItems('DBW404'); // C2-1灭菌相关报警
+          conn.addItems('DBW406'); // 解析进小车相关报警
+          conn.addItems('DBW408'); // 解析进小车相关报警
+          conn.addItems('DBW410'); // A3-1解析相关报警
+          conn.addItems('DBW412'); // B3-1解析相关报警
+          conn.addItems('DBW414'); // C3-1解析相关报警
+          conn.addItems('DBW416'); // 解析出小车相关报警
+          conn.addItems('DBW418'); // 解析出小车相关报警
+          conn.addItems('DBW420'); // 立库对接相关报警
+          conn.addItems('DBW422'); // D柜相关报警
+          conn.addItems('DBW424'); // E柜相关报警
           setInterval(() => {
             conn.readAllItems(valuesReady);
           }, 200);
@@ -715,7 +743,35 @@ var variables = {
   DBW566: 'DB101,INT566', // 入库2线
   DBW568: 'DB101,INT568', // 缓存1#线
   DBW570: 'DB101,INT570', // 缓存2#线
-  DBW572: 'DB101,INT572' // 控制按钮
+  DBW572: 'DB101,INT572', // 控制按钮
+  // 报警点位映射
+  DBW370: 'DB101,INT370', // 提升机相关报警
+  DBW372: 'DB101,INT372', // 提升机相关报警
+  DBW374: 'DB101,INT374', // 门安全故障相关报警
+  DBW376: 'DB101,INT376', // 备用报警点位
+  DBW378: 'DB101,INT378', // 链条电机相关报警
+  DBW380: 'DB101,INT380', // 链条电机相关报警
+  DBW382: 'DB101,INT382', // 链条电机相关报警
+  DBW386: 'DB101,INT386', // 预热进口小车相关报警
+  DBW388: 'DB101,INT388', // 预热进口小车相关报警
+  DBW390: 'DB101,INT390', // A1-1预热相关报警
+  DBW392: 'DB101,INT392', // B1-1预热相关报警
+  DBW394: 'DB101,INT394', // C1-1预热相关报警
+  DBW396: 'DB101,INT396', // 预热出小车相关报警
+  DBW398: 'DB101,INT398', // 预热出小车相关报警
+  DBW400: 'DB101,INT400', // A2-1灭菌相关报警
+  DBW402: 'DB101,INT402', // B2-1灭菌相关报警
+  DBW404: 'DB101,INT404', // C2-1灭菌相关报警
+  DBW406: 'DB101,INT406', // 解析进小车相关报警
+  DBW408: 'DB101,INT408', // 解析进小车相关报警
+  DBW410: 'DB101,INT410', // A3-1解析相关报警
+  DBW412: 'DB101,INT412', // B3-1解析相关报警
+  DBW414: 'DB101,INT414', // C3-1解析相关报警
+  DBW416: 'DB101,INT416', // 解析出小车相关报警
+  DBW418: 'DB101,INT418', // 解析出小车相关报警
+  DBW420: 'DB101,INT420', // 立库对接相关报警
+  DBW422: 'DB101,INT422', // D柜相关报警
+  DBW424: 'DB101,INT424' // E柜相关报警
 };
 
 var writeStrArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
