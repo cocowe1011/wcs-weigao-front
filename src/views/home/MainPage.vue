@@ -4317,17 +4317,19 @@ export default {
           if (newVal < oldVal) {
             if (this.queues[14].trayInfo.length > 0) {
               // 把非灭菌缓存区的第一个元素数据展示到下货
-              this.addLog(
-                `托盘信息：${this.queues[14].trayInfo[0].trayCode} 出库`
-              );
-              this.currentOutTrayInfo = this.queues[14].trayInfo[0];
+              const tray = this.queues[14].trayInfo[0];
+              this.addLog(`托盘信息：${tray.trayCode} 出库`);
+              this.currentOutTrayInfo = tray;
               console.log(this.currentOutTrayInfo);
 
               // 调用WMS出货接口（非灭菌出货，state: 0）
-              this.callWmsUnloadGoods(this.queues[14].trayInfo[0].trayCode, 0);
+              this.callWmsUnloadGoods(tray.trayCode, 0);
 
               // 删除非灭菌缓存区的第一个元素
               this.queues[14].trayInfo.shift();
+
+              // 更新订单状态为已完成
+              this.updateOrderStatus(tray);
             }
           }
         }
@@ -4795,12 +4797,13 @@ export default {
             for (let i = 0; i < decreaseCount; i++) {
               if (this.queues[9].trayInfo.length > 0) {
                 // 把A3队列的第一个元素数据展示到下货
-                this.addLog(
-                  `托盘信息：${this.queues[9].trayInfo[0].trayCode} 出库`
-                );
-                this.currentOutTrayInfo = this.queues[9].trayInfo[0];
+                const tray = this.queues[9].trayInfo[0];
+                this.addLog(`托盘信息：${tray.trayCode} 出库`);
+                this.currentOutTrayInfo = tray;
                 // 删除A3队列的第一个元素
                 this.queues[9].trayInfo.shift();
+                // 更新订单状态为已完成
+                this.updateOrderStatus(tray);
               } else {
                 this.addLog('A3队列空，无法出库');
                 break;
@@ -4893,12 +4896,13 @@ export default {
             for (let i = 0; i < decreaseCount; i++) {
               if (this.queues[10].trayInfo.length > 0) {
                 // 把B3队列的第一个元素数据展示到下货
-                this.addLog(
-                  `托盘信息：${this.queues[10].trayInfo[0].trayCode} 出库`
-                );
-                this.currentOutTrayInfo = this.queues[10].trayInfo[0];
+                const tray = this.queues[10].trayInfo[0];
+                this.addLog(`托盘信息：${tray.trayCode} 出库`);
+                this.currentOutTrayInfo = tray;
                 // 删除B3队列的第一个元素
                 this.queues[10].trayInfo.shift();
+                // 更新订单状态为已完成
+                this.updateOrderStatus(tray);
               } else {
                 this.addLog('B3队列空，无法出库');
                 break;
@@ -4991,12 +4995,13 @@ export default {
             for (let i = 0; i < decreaseCount; i++) {
               if (this.queues[11].trayInfo.length > 0) {
                 // 把C3队列的第一个元素数据展示到下货
-                this.addLog(
-                  `托盘信息：${this.queues[11].trayInfo[0].trayCode} 出库`
-                );
-                this.currentOutTrayInfo = this.queues[11].trayInfo[0];
+                const tray = this.queues[11].trayInfo[0];
+                this.addLog(`托盘信息：${tray.trayCode} 出库`);
+                this.currentOutTrayInfo = tray;
                 // 删除C3队列的第一个元素
                 this.queues[11].trayInfo.shift();
+                // 更新订单状态为已完成
+                this.updateOrderStatus(tray);
               } else {
                 this.addLog('C3队列空，无法出库');
                 break;
@@ -5110,6 +5115,8 @@ export default {
           // 更新需进货数量并写入PLC
           this.updateOutNeedAndWrite();
           this.callWmsUnloadGoods(tray.trayCode, 1, 'D');
+          // 更新订单状态为已完成
+          this.updateOrderStatus(tray);
         } else {
           this.addLog('D出货队列空，无法出库');
         }
@@ -5137,6 +5144,8 @@ export default {
           // 更新需进货数量并写入PLC
           this.updateOutNeedAndWrite();
           this.callWmsUnloadGoods(tray.trayCode, 1, 'E');
+          // 更新订单状态为已完成
+          this.updateOrderStatus(tray);
         } else {
           this.addLog('E出货队列空，无法出库');
         }
@@ -5289,6 +5298,14 @@ export default {
           `D灭菌柜上货数量增加到${newVal}，重新计算需进货数量: ${need}`
         );
         this.writeWordWithCancel('DBW552', need);
+
+        // 检查D上货数量是否达到8，如果达到则自动取消上货执行
+        if (this.dDisinfectionInQuantity >= 8) {
+          this.allowUploadD = false;
+          this.handleAllowUpload('D');
+          this.addLog('D上货数量达到8，自动取消上货执行');
+          this.$message.warning('D上货队列已满，自动取消上货执行');
+        }
       }
     },
     // 监听E灭菌柜上货数量变化，重新计算需进货数量
@@ -5303,6 +5320,14 @@ export default {
           `E灭菌柜上货数量增加到${newVal}，重新计算需进货数量: ${need}`
         );
         this.writeWordWithCancel('DBW554', need);
+
+        // 检查E上货数量是否达到8，如果达到则自动取消上货执行
+        if (this.eDisinfectionInQuantity >= 8) {
+          this.allowUploadE = false;
+          this.handleAllowUpload('E');
+          this.addLog('E上货数量达到8，自动取消上货执行');
+          this.$message.warning('E上货队列已满，自动取消上货执行');
+        }
       }
     },
     // ---- 监听指定队列的 trayInfo 变化结束 ----
@@ -5341,6 +5366,37 @@ export default {
     }
   },
   methods: {
+    // 更新订单状态为已完成
+    async updateOrderStatus(tray) {
+      if (!tray || !tray.orderId || !tray.trayCode) {
+        this.addLog(
+          `订单状态更新失败：托盘信息不完整 - 订单号: ${tray?.orderId}, 托盘号: ${tray?.trayCode}`
+        );
+        return;
+      }
+
+      try {
+        const params = {
+          orderId: tray.orderId,
+          trayCode: tray.trayCode
+        };
+        this.addLog(
+          `出库回更订单，托盘号：${tray.trayCode}，订单号：${tray.orderId}`
+        );
+        const response = await HttpUtil.post(
+          '/order/updateByOrderIdAndTrayCode',
+          params
+        );
+        if (response && response.data === 1) {
+          this.addLog(`订单 ${tray.orderId} 状态更新成功，已标记为已完成`);
+        } else {
+          this.addLog(`订单 ${tray.orderId} 状态更新失败：接口返回数据异常`);
+        }
+      } catch (error) {
+        this.addLog(`订单 ${tray.orderId} 状态更新异常: ${error.message}`);
+        console.error('订单状态更新异常:', error);
+      }
+    },
     // 取消预热房执行
     cancelPreheatingRoom() {
       this.preheatingRoomLoading = false;
@@ -7592,6 +7648,12 @@ export default {
         }
       } else if (type === 'D') {
         if (this.allowUploadD) {
+          // 检查D上货数量是否已满（等于8）
+          if (this.dDisinfectionInQuantity >= 8) {
+            this.$message.warning('D上货队列已满，无法开始上货执行');
+            this.allowUploadD = false;
+            return;
+          }
           // 检查E是否已经允许上货，如果是则禁止D允许上货
           if (this.allowUploadE) {
             this.$message.warning(
@@ -7636,6 +7698,12 @@ export default {
         }
       } else if (type === 'E') {
         if (this.allowUploadE) {
+          // 检查E上货数量是否已满（等于8）
+          if (this.eDisinfectionInQuantity >= 8) {
+            this.$message.warning('E上货队列已满，无法开始上货执行');
+            this.allowUploadE = false;
+            return;
+          }
           // 检查D是否已经允许上货，如果是则禁止E允许上货
           if (this.allowUploadD) {
             this.$message.warning(

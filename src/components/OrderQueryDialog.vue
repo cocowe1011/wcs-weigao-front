@@ -27,10 +27,8 @@
           style="width: 150px"
           clearable
         >
-          <el-option label="待执行" :value="0"></el-option>
-          <el-option label="执行中" :value="1"></el-option>
-          <el-option label="已暂停" :value="2"></el-option>
-          <el-option label="已完成" :value="3"></el-option>
+          <el-option label="执行中" :value="0"></el-option>
+          <el-option label="已完成" :value="1"></el-option>
         </el-select>
       </div>
       <div class="query-item">
@@ -242,10 +240,8 @@ export default {
     // 获取订单状态文本
     getStatusText(status) {
       const statusMap = {
-        0: '待执行',
-        1: '执行中',
-        2: '已暂停',
-        3: '已完成'
+        0: '执行中',
+        1: '已完成'
       };
       return statusMap[status] || '未知';
     },
@@ -253,10 +249,8 @@ export default {
     // 获取订单状态标签类型
     getStatusType(status) {
       const typeMap = {
-        0: 'info', // 待执行 - 灰色
-        1: 'warning', // 执行中 - 橙色
-        2: 'danger', // 已暂停 - 红色
-        3: 'success' // 已完成 - 绿色
+        0: 'warning', // 待执行 - 灰色
+        1: 'success' // 执行中 - 橙色
       };
       return typeMap[status] || 'info';
     },
