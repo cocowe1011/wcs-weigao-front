@@ -610,6 +610,11 @@ function conPLC() {
           conn.addItems('DBW418'); // 立库对接相关报警
           conn.addItems('DBW420'); // D柜相关报警
           conn.addItems('DBW422'); // E柜相关报警
+          conn.addItems('DBW424'); // 上货1数量
+          conn.addItems('DBW426'); // 上货2数量
+          conn.addItems('DBW428'); // 缓存区1数量
+          conn.addItems('DBW430'); // 缓存区2数量
+          conn.addItems('DBW432'); // 预热、灭菌、解析柜状态
           setInterval(() => {
             conn.readAllItems(valuesReady);
           }, 200);
@@ -778,7 +783,12 @@ var variables = {
   DBW416: 'DB101,INT416', // 解析出小车相关报警
   DBW418: 'DB101,INT418', // 立库对接相关报警
   DBW420: 'DB101,INT420', // D柜相关报警
-  DBW422: 'DB101,INT422' // E柜相关报警
+  DBW422: 'DB101,INT422', // E柜相关报警
+  DBW424: 'DB101,INT424', // 上货1数量
+  DBW426: 'DB101,INT426', // 上货2数量
+  DBW428: 'DB101,INT428', // 缓存区1数量
+  DBW430: 'DB101,INT430', // 缓存区2数量
+  DBW432: 'DB101,INT432' // 预热、灭菌、解析柜状态
 };
 
 var writeStrArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];

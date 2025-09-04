@@ -224,6 +224,158 @@
                     <span class="queue-marker-name">{{ marker.name }}</span>
                   </div>
                 </div>
+
+                <!-- 上货1数量标记 -->
+                <div
+                  class="queue-marker special-queue"
+                  data-x="900"
+                  data-y="1350"
+                  style="
+                    position: absolute;
+                    transform: translate(-50%, -50%);
+                    z-index: 10;
+                  "
+                >
+                  <div class="queue-marker-content">
+                    <span class="queue-marker-count">
+                      {{ upLoad1Quantity }}
+                    </span>
+                    <span class="queue-marker-name">上货1</span>
+                  </div>
+                </div>
+
+                <!-- 上货2数量标记 -->
+                <div
+                  class="queue-marker special-queue"
+                  data-x="1700"
+                  data-y="1350"
+                  style="
+                    position: absolute;
+                    transform: translate(-50%, -50%);
+                    z-index: 10;
+                  "
+                >
+                  <div class="queue-marker-content">
+                    <span class="queue-marker-count">
+                      {{ upLoad2Quantity }}
+                    </span>
+                    <span class="queue-marker-name">上货2</span>
+                  </div>
+                </div>
+
+                <!-- 缓存区1数量标记 -->
+                <div
+                  class="queue-marker special-queue"
+                  data-x="1725"
+                  data-y="1230"
+                  style="
+                    position: absolute;
+                    transform: translate(-50%, -50%);
+                    z-index: 10;
+                  "
+                >
+                  <div class="queue-marker-content">
+                    <span class="queue-marker-count">
+                      {{ buffer1Quantity }}
+                    </span>
+                    <span class="queue-marker-name">缓存1</span>
+                  </div>
+                </div>
+
+                <!-- 缓存区2数量标记 -->
+                <div
+                  class="queue-marker special-queue"
+                  data-x="1000"
+                  data-y="1230"
+                  style="
+                    position: absolute;
+                    transform: translate(-50%, -50%);
+                    z-index: 10;
+                  "
+                >
+                  <div class="queue-marker-content">
+                    <span class="queue-marker-count">
+                      {{ buffer2Quantity }}
+                    </span>
+                    <span class="queue-marker-name">缓存2</span>
+                  </div>
+                </div>
+
+                <!-- 预热、灭菌、解析柜状态标签 - 按功能分组 -->
+                <!-- 预热完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1070" data-y="955">
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit0 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    A1预热完成
+                  </el-tag>
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit3 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    B1预热完成
+                  </el-tag>
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit6 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    C1预热完成
+                  </el-tag>
+                </div>
+
+                <!-- 灭菌完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1670" data-y="955">
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit1 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    A2灭菌完成
+                  </el-tag>
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit4 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    B2灭菌完成
+                  </el-tag>
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit7 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    C2灭菌完成
+                  </el-tag>
+                </div>
+
+                <!-- 解析完成状态标签 -->
+                <div class="analysis-status-marker" data-x="2250" data-y="955">
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit2 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    A3解析完成
+                  </el-tag>
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit5 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    B3解析完成
+                  </el-tag>
+                  <el-tag
+                    v-show="preheatingDisinfectionAnalysisState.bit8 === '1'"
+                    type="success"
+                    size="small"
+                  >
+                    C3解析完成
+                  </el-tag>
+                </div>
                 <div
                   class="preheating-room-marker"
                   data-x="610"
@@ -1701,7 +1853,10 @@
                                 selectedQueue.queueName
                               )
                             "
-                            >预热房位置：{{ tray.sendTo }}</span
+                            >预热房位置：{{ tray.sendTo }}
+                            <span class="sequence-number"
+                              >(序号：{{ tray.sequenceNumber }})</span
+                            ></span
                           ><span v-else>
                             {{ tray.isTerile === 1 ? '消毒' : '不消毒' }}</span
                           ></span
@@ -3585,7 +3740,27 @@ export default {
         ]
       },
       // 当前要修改的非灭菌复选框信息
-      currentNonSterileCheckbox: null
+      currentNonSterileCheckbox: null,
+      // 上货1数量-读取PLC
+      upLoad1Quantity: 0,
+      // 上货2数量-读取PLC
+      upLoad2Quantity: 0,
+      // 缓存区1数量-读取PLC
+      buffer1Quantity: 0,
+      // 缓存区2数量-读取PLC
+      buffer2Quantity: 0,
+      // 预热、灭菌、解析柜状态-读取PLC
+      preheatingDisinfectionAnalysisState: {
+        bit0: '0', // A1预热完成
+        bit1: '0', // A2灭菌完成
+        bit2: '0', // A3解析完成
+        bit3: '0', // B1预热完成
+        bit4: '0', // B2灭菌完成
+        bit5: '0', // B3解析完成
+        bit6: '0', // C1预热完成
+        bit7: '0', // C2灭菌完成
+        bit8: '0' // C3解析完成
+      }
     };
   },
   computed: {
@@ -3789,6 +3964,23 @@ export default {
       this.cartPositionValues.cart2 = Number(values.DBW90 ?? 0);
       this.cartPositionValues.cart3 = Number(values.DBW92 ?? 0);
       this.cartPositionValues.cart4 = Number(values.DBW94 ?? 0);
+
+      this.upLoad1Quantity = Number(values.DBW424);
+      this.upLoad2Quantity = Number(values.DBW426);
+      this.buffer1Quantity = Number(values.DBW428);
+      this.buffer2Quantity = Number(values.DBW430);
+
+      // 预热、灭菌、解析柜状态-读取PLC
+      let word432 = this.convertToWord(values.DBW432);
+      this.preheatingDisinfectionAnalysisState.bit0 = getBit(word432, 8);
+      this.preheatingDisinfectionAnalysisState.bit1 = getBit(word432, 9);
+      this.preheatingDisinfectionAnalysisState.bit2 = getBit(word432, 10);
+      this.preheatingDisinfectionAnalysisState.bit3 = getBit(word432, 11);
+      this.preheatingDisinfectionAnalysisState.bit4 = getBit(word432, 12);
+      this.preheatingDisinfectionAnalysisState.bit5 = getBit(word432, 13);
+      this.preheatingDisinfectionAnalysisState.bit6 = getBit(word432, 14);
+      this.preheatingDisinfectionAnalysisState.bit7 = getBit(word432, 15);
+      this.preheatingDisinfectionAnalysisState.bit8 = getBit(word432, 0);
 
       // 更新报警点位数据 - 统一使用convertToWord处理word数据
       // 先保存旧值用于报警检查
@@ -4364,9 +4556,16 @@ export default {
           // 批量移动托盘
           for (let i = 0; i < increaseCount; i++) {
             if (this.queues[2].trayInfo.length > 0) {
-              this.addLog(this.queues[2].trayInfo[0].trayCode + '进入A1队列。');
+              const tray = this.queues[2].trayInfo[0];
+              // 设置托盘顺序编号
+              this.setTraySequenceNumber(tray, 3);
+              this.addLog(
+                this.queues[2].trayInfo[0].trayCode +
+                  '进入A1队列，顺序编号：' +
+                  tray.sequenceNumber
+              );
               // 把缓冲区的托盘信息加入到A1队列
-              this.queues[3].trayInfo.push(this.queues[2].trayInfo[0]);
+              this.queues[3].trayInfo.push(tray);
               this.queues[2].trayInfo.shift();
             }
           }
@@ -4380,8 +4579,15 @@ export default {
           );
           // 移动所有可用的托盘
           while (this.queues[2].trayInfo.length > 0) {
-            this.addLog(this.queues[2].trayInfo[0].trayCode + '进入A1队列。');
-            this.queues[3].trayInfo.push(this.queues[2].trayInfo[0]);
+            const tray = this.queues[2].trayInfo[0];
+            // 设置托盘顺序编号
+            this.setTraySequenceNumber(tray, 3);
+            this.addLog(
+              this.queues[2].trayInfo[0].trayCode +
+                '进入A1队列，顺序编号：' +
+                tray.sequenceNumber
+            );
+            this.queues[3].trayInfo.push(tray);
             this.queues[2].trayInfo.shift();
           }
           this.showCar1SetPreheatingRoom = false;
@@ -4422,9 +4628,16 @@ export default {
           // 批量移动托盘
           for (let i = 0; i < increaseCount; i++) {
             if (this.queues[2].trayInfo.length > 0) {
-              this.addLog(this.queues[2].trayInfo[0].trayCode + '进入B1队列。');
+              const tray = this.queues[2].trayInfo[0];
+              // 设置托盘顺序编号
+              this.setTraySequenceNumber(tray, 4);
+              this.addLog(
+                this.queues[2].trayInfo[0].trayCode +
+                  '进入B1队列，顺序编号：' +
+                  tray.sequenceNumber
+              );
               // 把缓冲区的托盘信息加入到B1队列
-              this.queues[4].trayInfo.push(this.queues[2].trayInfo[0]);
+              this.queues[4].trayInfo.push(tray);
               this.queues[2].trayInfo.shift();
             }
           }
@@ -4438,8 +4651,15 @@ export default {
           );
           // 移动所有可用的托盘
           while (this.queues[2].trayInfo.length > 0) {
-            this.addLog(this.queues[2].trayInfo[0].trayCode + '进入B1队列。');
-            this.queues[4].trayInfo.push(this.queues[2].trayInfo[0]);
+            const tray = this.queues[2].trayInfo[0];
+            // 设置托盘顺序编号
+            this.setTraySequenceNumber(tray, 4);
+            this.addLog(
+              this.queues[2].trayInfo[0].trayCode +
+                '进入B1队列，顺序编号：' +
+                tray.sequenceNumber
+            );
+            this.queues[4].trayInfo.push(tray);
             this.queues[2].trayInfo.shift();
           }
           this.showCar1SetPreheatingRoom = false;
@@ -4480,9 +4700,16 @@ export default {
           // 批量移动托盘
           for (let i = 0; i < increaseCount; i++) {
             if (this.queues[2].trayInfo.length > 0) {
-              this.addLog(this.queues[2].trayInfo[0].trayCode + '进入C1队列。');
+              const tray = this.queues[2].trayInfo[0];
+              // 设置托盘顺序编号
+              this.setTraySequenceNumber(tray, 5);
+              this.addLog(
+                this.queues[2].trayInfo[0].trayCode +
+                  '进入C1队列，顺序编号：' +
+                  tray.sequenceNumber
+              );
               // 把缓冲区的托盘信息加入到C1队列
-              this.queues[5].trayInfo.push(this.queues[2].trayInfo[0]);
+              this.queues[5].trayInfo.push(tray);
               this.queues[2].trayInfo.shift();
             }
           }
@@ -4496,8 +4723,15 @@ export default {
           );
           // 移动所有可用的托盘
           while (this.queues[2].trayInfo.length > 0) {
-            this.addLog(this.queues[2].trayInfo[0].trayCode + '进入C1队列。');
-            this.queues[5].trayInfo.push(this.queues[2].trayInfo[0]);
+            const tray = this.queues[2].trayInfo[0];
+            // 设置托盘顺序编号
+            this.setTraySequenceNumber(tray, 5);
+            this.addLog(
+              this.queues[2].trayInfo[0].trayCode +
+                '进入C1队列，顺序编号：' +
+                tray.sequenceNumber
+            );
+            this.queues[5].trayInfo.push(tray);
             this.queues[2].trayInfo.shift();
           }
           this.showCar1SetPreheatingRoom = false;
@@ -6233,7 +6467,7 @@ export default {
         if (!imageWrapper) return;
 
         const markers = imageWrapper.querySelectorAll(
-          '.marker, .marker-with-panel, .marker-with-button, .queue-marker, .motor-marker, .preheating-room-marker'
+          '.marker, .marker-with-panel, .marker-with-button, .queue-marker, .motor-marker, .preheating-room-marker, .analysis-status-marker'
         );
         const carts = imageWrapper.querySelectorAll('.cart-container');
         const wrapperRect = imageWrapper.getBoundingClientRect();
@@ -6343,7 +6577,8 @@ export default {
             time: tray.trayTime || '',
             isTerile: tray.isTerile,
             sendTo: tray.sendTo || '', // 添加sendTo属性
-            state: tray.state || '' // 添加state属性
+            state: tray.state || '', // 添加state属性
+            sequenceNumber: tray.sequenceNumber || '' // 添加sequenceNumber属性
           }))
           .filter((tray) => tray.id); // 过滤掉没有 id 的托盘
       } catch (error) {
@@ -6692,7 +6927,8 @@ export default {
           batchId: this.newTrayForm.batchId,
           isTerile: this.newTrayForm.isSterile ? 1 : 0,
           state: '0',
-          sendTo: ''
+          sendTo: '',
+          sequenceNumber: null
         };
 
         // 确保trayInfo是数组
@@ -7162,6 +7398,24 @@ export default {
       this.addLog('上货一键放行，写入PLC DBW572_BIT4: true，2秒后恢复');
     },
     // 移除旧的D/E数量调节函数，D/E数量由PLC提供
+    // 设置托盘顺序编号的方法
+    setTraySequenceNumber(tray, queueIndex) {
+      if (
+        !tray ||
+        !this.queues[queueIndex] ||
+        !Array.isArray(this.queues[queueIndex].trayInfo)
+      ) {
+        return;
+      }
+
+      // 计算顺序编号：队列中已有托盘的数量 + 1
+      const existingTrayCount = this.queues[queueIndex].trayInfo.filter(
+        (t) => t.sequenceNumber && t.sequenceNumber > 0
+      ).length;
+
+      // 确保Vue响应式更新
+      this.$set(tray, 'sequenceNumber', existingTrayCount + 1);
+    },
     // 发送到预热房的方法
     sendToPreheatingRoom() {
       if (!this.preheatingRoomSelected) {
@@ -8570,6 +8824,22 @@ export default {
                 border-radius: 3px;
                 padding: 0 8px;
               }
+
+              /* 解析状态标签样式 */
+              .analysis-status-marker {
+                position: absolute;
+                transform: translate(-50%, -50%);
+                z-index: 15;
+                display: flex;
+                gap: 6px;
+              }
+
+              /* 自定义状态标签样式，让绿色更突出 */
+              .analysis-status-marker :deep(.el-tag) {
+                background-color: #00cc44;
+                border: 1px solid #00aa33;
+                color: #ffffff;
+              }
             }
           }
         }
@@ -8631,6 +8901,26 @@ export default {
                 border-color: rgba(64, 158, 255, 0.6);
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
               }
+
+              /* 特殊队列标记样式 - 上货1、上货2、缓存区1、缓存区2 */
+              .special-queue {
+                background: rgba(0, 123, 191, 0.9) !important;
+                border: 1px solid rgba(0, 123, 191, 0.7) !important;
+              }
+
+              .special-queue .queue-marker-count {
+                color: #ffffff !important;
+              }
+
+              .special-queue .queue-marker-name {
+                color: #ffffff !important;
+              }
+
+              .special-queue:hover {
+                background: rgba(0, 123, 191, 0.95) !important;
+                border-color: rgba(40, 167, 235, 0.8) !important;
+              }
+
               /* 添加小车样式 */
               .cart-container {
                 position: absolute;
@@ -8856,6 +9146,12 @@ export default {
                       padding: 2px 8px;
                       border-radius: 4px;
                       white-space: nowrap;
+
+                      .sequence-number {
+                        color: #ffa500;
+                        font-weight: bold;
+                        margin-left: 4px;
+                      }
                     }
                   }
                   .tray-time {
