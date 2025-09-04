@@ -2763,26 +2763,26 @@ export default {
         DBW378: 0, // 链条电机相关报警
         DBW380: 0, // 链条电机相关报警
         DBW382: 0, // 链条电机相关报警
+        DBW384: 0, // 预热进口小车相关报警
         DBW386: 0, // 预热进口小车相关报警
-        DBW388: 0, // 预热进口小车相关报警
-        DBW390: 0, // A1-1预热相关报警
-        DBW392: 0, // B1-1预热相关报警
-        DBW394: 0, // C1-1预热相关报警
+        DBW388: 0, // A1-1预热相关报警
+        DBW390: 0, // B1-1预热相关报警
+        DBW392: 0, // C1-1预热相关报警
+        DBW394: 0, // 预热出小车相关报警
         DBW396: 0, // 预热出小车相关报警
-        DBW398: 0, // 预热出小车相关报警
-        DBW400: 0, // A2-1灭菌相关报警
-        DBW402: 0, // B2-1灭菌相关报警
-        DBW404: 0, // C2-1灭菌相关报警
+        DBW398: 0, // A2-1灭菌相关报警
+        DBW400: 0, // B2-1灭菌相关报警
+        DBW402: 0, // C2-1灭菌相关报警
+        DBW404: 0, // 解析进小车相关报警
         DBW406: 0, // 解析进小车相关报警
-        DBW408: 0, // 解析进小车相关报警
-        DBW410: 0, // A3-1解析相关报警
-        DBW412: 0, // B3-1解析相关报警
-        DBW414: 0, // C3-1解析相关报警
+        DBW408: 0, // A3-1解析相关报警
+        DBW410: 0, // B3-1解析相关报警
+        DBW412: 0, // C3-1解析相关报警
+        DBW414: 0, // 解析出小车相关报警
         DBW416: 0, // 解析出小车相关报警
-        DBW418: 0, // 解析出小车相关报警
-        DBW420: 0, // 立库对接相关报警
-        DBW422: 0, // D柜相关报警
-        DBW424: 0 // E柜相关报警
+        DBW418: 0, // 立库对接相关报警
+        DBW420: 0, // D柜相关报警
+        DBW422: 0 // E柜相关报警
       },
       // 报警点位映射表 - 从报警JSON文件解析而来
       alarmMapping: {
@@ -2894,7 +2894,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW386': {
+        'DB101.DBW384': {
           bit0: '小车数据故障_预热进口小车',
           bit1: '小车行走电机启动故障_预热进口小车',
           bit2: '小车行走电机抱闸启动故障_预热进口小车',
@@ -2912,7 +2912,7 @@ export default {
           bit14: '小车进货超限_预热进口小车',
           bit15: '小车接送货停靠位置异常_预热进口小车'
         },
-        'DB101.DBW388': {
+        'DB101.DBW386': {
           bit0: '小车行走变频器故障_预热进口小车',
           bit1: '',
           bit2: '',
@@ -2930,7 +2930,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW390': {
+        'DB101.DBW388': {
           bit0: '电机启动故障_A1-1预热',
           bit1: '电机运行故障_A1-1预热',
           bit2: '自动进出货运行超时故障_A1-1预热',
@@ -2948,7 +2948,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW392': {
+        'DB101.DBW390': {
           bit0: '电机启动故障_B1-1预热',
           bit1: '电机运行故障_B1-1预热',
           bit2: '自动进出货运行超时故障_B1-1预热',
@@ -2966,7 +2966,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW394': {
+        'DB101.DBW392': {
           bit0: '电机启动故障_C1-1预热',
           bit1: '电机运行故障_C1-1预热',
           bit2: '自动进出货运行超时故障_C1-1预热',
@@ -2984,7 +2984,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW396': {
+        'DB101.DBW394': {
           bit0: '小车数据故障_预热出小车',
           bit1: '小车行走电机启动故障_预热出小车',
           bit2: '小车行走电机抱闸启动故障_预热出小车',
@@ -3002,7 +3002,7 @@ export default {
           bit14: '小车进口安全故障_预热出小车',
           bit15: '小车出口安全故障_预热出小车'
         },
-        'DB101.DBW398': {
+        'DB101.DBW396': {
           bit0: '小车1#线进货超限_预热出小车',
           bit1: '小车2#线进货超限_预热出小车',
           bit2: '小车接送货停靠位置异常_预热出小车',
@@ -3020,7 +3020,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW400': {
+        'DB101.DBW398': {
           bit0: '电机启动故障_A2-1灭菌',
           bit1: '电机运行故障_A2-1灭菌',
           bit2: '自动进出货运行超时故障_A2-1灭菌',
@@ -3038,7 +3038,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW402': {
+        'DB101.DBW400': {
           bit0: '电机启动故障_B2-1灭菌',
           bit1: '电机运行故障_B2-1灭菌',
           bit2: '自动进出货运行超时故障_B2-1灭菌',
@@ -3056,7 +3056,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW404': {
+        'DB101.DBW402': {
           bit0: '电机启动故障_C2-1灭菌',
           bit1: '电机运行故障_C2-1灭菌',
           bit2: '自动进出货运行超时故障_C2-1灭菌',
@@ -3074,7 +3074,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW406': {
+        'DB101.DBW404': {
           bit0: '小车数据故障_解析进小车',
           bit1: '小车行走电机启动故障_解析进小车',
           bit2: '小车行走电机抱闸启动故障_解析进小车',
@@ -3092,7 +3092,7 @@ export default {
           bit14: '小车进口安全故障_解析进小车',
           bit15: '小车出口安全故障_解析进小车'
         },
-        'DB101.DBW408': {
+        'DB101.DBW406': {
           bit0: '小车1#线进货超限_解析进小车',
           bit1: '小车2#线进货超限_解析进小车',
           bit2: '小车接送货停靠位置异常_解析进小车',
@@ -3110,7 +3110,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW410': {
+        'DB101.DBW408': {
           bit0: '电机启动故障_A3-1解析',
           bit1: '电机运行故障_A3-1解析',
           bit2: '自动进出货运行超时故障_A3-1解析',
@@ -3128,7 +3128,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW412': {
+        'DB101.DBW410': {
           bit0: '电机启动故障_B3-1解析',
           bit1: '电机运行故障_B3-1解析',
           bit2: '自动进出货运行超时故障_B3-1解析',
@@ -3146,7 +3146,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW414': {
+        'DB101.DBW412': {
           bit0: '电机启动故障_C3-1解析',
           bit1: '电机运行故障_C3-1解析',
           bit2: '自动进出货运行超时故障_C3-1解析',
@@ -3164,7 +3164,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW416': {
+        'DB101.DBW414': {
           bit0: '小车数据故障_解析出小车',
           bit1: '小车行走电机启动故障_解析出小车',
           bit2: '小车行走电机抱闸启动故障_解析出小车',
@@ -3182,7 +3182,7 @@ export default {
           bit14: '小车进口安全故障_解析出小车',
           bit15: '小车出口安全故障_解析出小车'
         },
-        'DB101.DBW418': {
+        'DB101.DBW416': {
           bit0: '小车1#线进货超限_解析出小车',
           bit1: '小车2#线进货超限_解析出小车',
           bit2: '小车接送货停靠位置异常_解析出小车',
@@ -3200,7 +3200,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW420': {
+        'DB101.DBW418': {
           bit0: '电机启动故障_立库对接1线',
           bit1: '电机运行故障_立库对接1线',
           bit2: '自动进出货运行超时故障_立库对接1线',
@@ -3218,7 +3218,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW422': {
+        'DB101.DBW420': {
           bit0: 'D柜上线输送电机启动故障',
           bit1: 'D柜上线输送电机运行超时',
           bit2: 'D柜上线气缸升降运行超时',
@@ -3236,7 +3236,7 @@ export default {
           bit14: '',
           bit15: ''
         },
-        'DB101.DBW424': {
+        'DB101.DBW422': {
           bit0: 'E柜上线输送电机启动故障',
           bit1: 'E柜上线输送电机运行超时',
           bit2: 'E柜上线气缸升降运行超时',
@@ -3798,6 +3798,7 @@ export default {
       this.alarmPoints.DBW378 = Number(values.DBW378 ?? 0);
       this.alarmPoints.DBW380 = Number(values.DBW380 ?? 0);
       this.alarmPoints.DBW382 = Number(values.DBW382 ?? 0);
+      this.alarmPoints.DBW384 = Number(values.DBW384 ?? 0);
       this.alarmPoints.DBW386 = Number(values.DBW386 ?? 0);
       this.alarmPoints.DBW388 = Number(values.DBW388 ?? 0);
       this.alarmPoints.DBW390 = Number(values.DBW390 ?? 0);
@@ -3817,7 +3818,6 @@ export default {
       this.alarmPoints.DBW418 = Number(values.DBW418 ?? 0);
       this.alarmPoints.DBW420 = Number(values.DBW420 ?? 0);
       this.alarmPoints.DBW422 = Number(values.DBW422 ?? 0);
-      this.alarmPoints.DBW424 = Number(values.DBW424 ?? 0);
 
       // 只在第一次接收到数据时设置标志位为 true
       if (!this.isDataReady) {
@@ -5337,19 +5337,31 @@ export default {
       handler(newVal, oldVal) {
         if (!this.isDataReady || !oldVal) return;
 
+        // 使用与其它点位相同的bit处理逻辑
+        const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
+
         // 遍历所有报警点位，检查位变化
         Object.keys(newVal).forEach((address) => {
           const newValue = newVal[address];
           const oldValue = oldVal[address];
 
           if (newValue !== oldValue) {
-            // 检查每一位的变化
+            // 检查每一位的变化 (按照其他点位的bit映射规则)
             for (let bit = 0; bit < 16; bit++) {
-              const newBit = (newValue >> bit) & 1;
-              const oldBit = (oldValue >> bit) & 1;
+              let bitIndex;
+              if (bit < 8) {
+                // bit0-bit7: 使用bitIndex=8-15
+                bitIndex = bit + 8;
+              } else {
+                // bit8-bit15: 使用bitIndex=0-7
+                bitIndex = bit - 8;
+              }
+
+              const newBit = getBit(newValue, bitIndex);
+              const oldBit = getBit(oldValue, bitIndex);
 
               // 如果位从0变为1，触发报警
-              if (oldBit === 0 && newBit === 1) {
+              if (oldBit === '0' && newBit === '1') {
                 const dbAddress = `DB101.${address}`;
                 const bitKey = `bit${bit}`;
                 const alarmMessage = this.alarmMapping[dbAddress]?.[bitKey];
