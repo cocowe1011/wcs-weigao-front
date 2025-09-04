@@ -3790,34 +3790,34 @@ export default {
       this.cartPositionValues.cart3 = Number(values.DBW92 ?? 0);
       this.cartPositionValues.cart4 = Number(values.DBW94 ?? 0);
 
-      // 更新报警点位数据
-      this.alarmPoints.DBW370 = Number(values.DBW370 ?? 0);
-      this.alarmPoints.DBW372 = Number(values.DBW372 ?? 0);
-      this.alarmPoints.DBW374 = Number(values.DBW374 ?? 0);
-      this.alarmPoints.DBW376 = Number(values.DBW376 ?? 0);
-      this.alarmPoints.DBW378 = Number(values.DBW378 ?? 0);
-      this.alarmPoints.DBW380 = Number(values.DBW380 ?? 0);
-      this.alarmPoints.DBW382 = Number(values.DBW382 ?? 0);
-      this.alarmPoints.DBW384 = Number(values.DBW384 ?? 0);
-      this.alarmPoints.DBW386 = Number(values.DBW386 ?? 0);
-      this.alarmPoints.DBW388 = Number(values.DBW388 ?? 0);
-      this.alarmPoints.DBW390 = Number(values.DBW390 ?? 0);
-      this.alarmPoints.DBW392 = Number(values.DBW392 ?? 0);
-      this.alarmPoints.DBW394 = Number(values.DBW394 ?? 0);
-      this.alarmPoints.DBW396 = Number(values.DBW396 ?? 0);
-      this.alarmPoints.DBW398 = Number(values.DBW398 ?? 0);
-      this.alarmPoints.DBW400 = Number(values.DBW400 ?? 0);
-      this.alarmPoints.DBW402 = Number(values.DBW402 ?? 0);
-      this.alarmPoints.DBW404 = Number(values.DBW404 ?? 0);
-      this.alarmPoints.DBW406 = Number(values.DBW406 ?? 0);
-      this.alarmPoints.DBW408 = Number(values.DBW408 ?? 0);
-      this.alarmPoints.DBW410 = Number(values.DBW410 ?? 0);
-      this.alarmPoints.DBW412 = Number(values.DBW412 ?? 0);
-      this.alarmPoints.DBW414 = Number(values.DBW414 ?? 0);
-      this.alarmPoints.DBW416 = Number(values.DBW416 ?? 0);
-      this.alarmPoints.DBW418 = Number(values.DBW418 ?? 0);
-      this.alarmPoints.DBW420 = Number(values.DBW420 ?? 0);
-      this.alarmPoints.DBW422 = Number(values.DBW422 ?? 0);
+      // 更新报警点位数据 - 统一使用convertToWord处理word数据
+      this.alarmPoints.DBW370 = this.convertToWord(values.DBW370 ?? 0);
+      this.alarmPoints.DBW372 = this.convertToWord(values.DBW372 ?? 0);
+      this.alarmPoints.DBW374 = this.convertToWord(values.DBW374 ?? 0);
+      this.alarmPoints.DBW376 = this.convertToWord(values.DBW376 ?? 0);
+      this.alarmPoints.DBW378 = this.convertToWord(values.DBW378 ?? 0);
+      this.alarmPoints.DBW380 = this.convertToWord(values.DBW380 ?? 0);
+      this.alarmPoints.DBW382 = this.convertToWord(values.DBW382 ?? 0);
+      this.alarmPoints.DBW384 = this.convertToWord(values.DBW384 ?? 0);
+      this.alarmPoints.DBW386 = this.convertToWord(values.DBW386 ?? 0);
+      this.alarmPoints.DBW388 = this.convertToWord(values.DBW388 ?? 0);
+      this.alarmPoints.DBW390 = this.convertToWord(values.DBW390 ?? 0);
+      this.alarmPoints.DBW392 = this.convertToWord(values.DBW392 ?? 0);
+      this.alarmPoints.DBW394 = this.convertToWord(values.DBW394 ?? 0);
+      this.alarmPoints.DBW396 = this.convertToWord(values.DBW396 ?? 0);
+      this.alarmPoints.DBW398 = this.convertToWord(values.DBW398 ?? 0);
+      this.alarmPoints.DBW400 = this.convertToWord(values.DBW400 ?? 0);
+      this.alarmPoints.DBW402 = this.convertToWord(values.DBW402 ?? 0);
+      this.alarmPoints.DBW404 = this.convertToWord(values.DBW404 ?? 0);
+      this.alarmPoints.DBW406 = this.convertToWord(values.DBW406 ?? 0);
+      this.alarmPoints.DBW408 = this.convertToWord(values.DBW408 ?? 0);
+      this.alarmPoints.DBW410 = this.convertToWord(values.DBW410 ?? 0);
+      this.alarmPoints.DBW412 = this.convertToWord(values.DBW412 ?? 0);
+      this.alarmPoints.DBW414 = this.convertToWord(values.DBW414 ?? 0);
+      this.alarmPoints.DBW416 = this.convertToWord(values.DBW416 ?? 0);
+      this.alarmPoints.DBW418 = this.convertToWord(values.DBW418 ?? 0);
+      this.alarmPoints.DBW420 = this.convertToWord(values.DBW420 ?? 0);
+      this.alarmPoints.DBW422 = this.convertToWord(values.DBW422 ?? 0);
 
       // 只在第一次接收到数据时设置标志位为 true
       if (!this.isDataReady) {
@@ -5363,7 +5363,7 @@ export default {
               // 如果位从0变为1，触发报警
               if (oldBit === '0' && newBit === '1') {
                 const dbAddress = `DB101.${address}`;
-                const bitKey = `bit${bit}`;
+                const bitKey = `bit${bitIndex}`;
                 const alarmMessage = this.alarmMapping[dbAddress]?.[bitKey];
 
                 if (alarmMessage && alarmMessage.trim() !== '') {
