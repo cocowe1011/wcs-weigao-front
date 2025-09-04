@@ -3791,6 +3791,9 @@ export default {
       this.cartPositionValues.cart4 = Number(values.DBW94 ?? 0);
 
       // 更新报警点位数据 - 统一使用convertToWord处理word数据
+      // 先保存旧值用于报警检查
+      const oldAlarmPoints = { ...this.alarmPoints };
+
       this.alarmPoints.DBW370 = this.convertToWord(values.DBW370 ?? 0);
       this.alarmPoints.DBW372 = this.convertToWord(values.DBW372 ?? 0);
       this.alarmPoints.DBW374 = this.convertToWord(values.DBW374 ?? 0);
@@ -3818,6 +3821,9 @@ export default {
       this.alarmPoints.DBW418 = this.convertToWord(values.DBW418 ?? 0);
       this.alarmPoints.DBW420 = this.convertToWord(values.DBW420 ?? 0);
       this.alarmPoints.DBW422 = this.convertToWord(values.DBW422 ?? 0);
+
+      // 手动检查报警点位变化并触发报警
+      this.checkAlarmPoints(oldAlarmPoints);
 
       // 只在第一次接收到数据时设置标志位为 true
       if (!this.isDataReady) {
@@ -5329,55 +5335,51 @@ export default {
           this.$message.warning('E上货队列已满，自动取消上货执行');
         }
       }
-    },
-    // ---- 监听指定队列的 trayInfo 变化结束 ----
-
-    // 报警点位监听 - 监听所有报警点位的变化
-    alarmPoints: {
-      handler(newVal, oldVal) {
-        if (!this.isDataReady || !oldVal) return;
-
-        // 使用与其它点位相同的bit处理逻辑
-        const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
-
-        // 遍历所有报警点位，检查位变化
-        Object.keys(newVal).forEach((address) => {
-          const newValue = newVal[address];
-          const oldValue = oldVal[address];
-
-          if (newValue !== oldValue) {
-            // 检查每一位的变化 (按照其他点位的bit映射规则)
-            for (let bit = 0; bit < 16; bit++) {
-              let bitIndex;
-              if (bit < 8) {
-                // bit0-bit7: 使用bitIndex=8-15
-                bitIndex = bit + 8;
-              } else {
-                // bit8-bit15: 使用bitIndex=0-7
-                bitIndex = bit - 8;
-              }
-
-              const newBit = getBit(newValue, bitIndex);
-              const oldBit = getBit(oldValue, bitIndex);
-
-              // 如果位从0变为1，触发报警
-              if (oldBit === '0' && newBit === '1') {
-                const dbAddress = `DB101.${address}`;
-                const bitKey = `bit${bitIndex}`;
-                const alarmMessage = this.alarmMapping[dbAddress]?.[bitKey];
-
-                if (alarmMessage && alarmMessage.trim() !== '') {
-                  this.addLog(`报警: ${alarmMessage}`, 'alarm');
-                }
-              }
-            }
-          }
-        });
-      },
-      deep: true
     }
   },
   methods: {
+    // 检查报警点位变化并触发报警
+    checkAlarmPoints(oldAlarmPoints) {
+      if (!this.isDataReady) return;
+
+      // 使用与其它点位相同的bit处理逻辑
+      const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
+
+      // 遍历所有报警点位，检查位变化
+      Object.keys(this.alarmPoints).forEach((address) => {
+        const newValue = this.alarmPoints[address];
+        const oldValue = oldAlarmPoints[address];
+
+        // 比较具体的值而不是对象引用
+        if (newValue !== oldValue) {
+          // 检查每一位的变化 (按照其他点位的bit映射规则)
+          for (let bit = 0; bit < 16; bit++) {
+            let bitIndex;
+            if (bit < 8) {
+              // bit0-bit7: 使用bitIndex=8-15
+              bitIndex = bit + 8;
+            } else {
+              // bit8-bit15: 使用bitIndex=0-7
+              bitIndex = bit - 8;
+            }
+
+            const newBit = getBit(newValue, bitIndex);
+            const oldBit = getBit(oldValue, bitIndex);
+
+            // 如果位从0变为1，触发报警
+            if (oldBit === '0' && newBit === '1') {
+              const dbAddress = `DB101.${address}`;
+              const bitKey = `bit${bitIndex}`;
+              const alarmMessage = this.alarmMapping[dbAddress]?.[bitKey];
+
+              if (alarmMessage && alarmMessage.trim() !== '') {
+                this.addLog(`报警: ${alarmMessage}`, 'alarm');
+              }
+            }
+          }
+        }
+      });
+    },
     // 更新订单状态为已完成
     async updateOrderStatus(tray) {
       if (!tray || !tray.orderId || !tray.trayCode) {
@@ -7061,14 +7063,14 @@ export default {
       }
       // 设置loading状态
       this.plcWriteLoading.inboundLine1 = true;
-      // 先写入控制按钮值1
-      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 1);
       // 再写入目标变量值
       ipcRenderer.send('writeSingleValueToPLC', 'DBW564', value);
+      // 先写入控制按钮值1
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572_BIT0', true);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
         ipcRenderer.send('cancelWriteToPLC', 'DBW564');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572_BIT0');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.inboundLine1 = false;
         this.plcWriteValues.inboundLine1 = '';
@@ -7084,14 +7086,14 @@ export default {
       }
       // 设置loading状态
       this.plcWriteLoading.inboundLine2 = true;
-      // 先写入控制按钮值2
-      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 2);
       // 再写入目标变量值
       ipcRenderer.send('writeSingleValueToPLC', 'DBW566', value);
+      // 先写入控制按钮值2
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572_BIT1', true);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
         ipcRenderer.send('cancelWriteToPLC', 'DBW566');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572_BIT1');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.inboundLine2 = false;
         this.plcWriteValues.inboundLine2 = '';
@@ -7107,14 +7109,14 @@ export default {
       }
       // 设置loading状态
       this.plcWriteLoading.bufferLine1 = true;
-      // 先写入控制按钮值3
-      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 3);
       // 再写入目标变量值
       ipcRenderer.send('writeSingleValueToPLC', 'DBW568', value);
+      // 先写入控制按钮值3
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572_BIT2', true);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
         ipcRenderer.send('cancelWriteToPLC', 'DBW568');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572_BIT2');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.bufferLine1 = false;
         this.plcWriteValues.bufferLine1 = '';
@@ -7130,14 +7132,14 @@ export default {
       }
       // 设置loading状态
       this.plcWriteLoading.bufferLine2 = true;
-      // 先写入控制按钮值4
-      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 4);
       // 再写入目标变量值
       ipcRenderer.send('writeSingleValueToPLC', 'DBW570', value);
+      // 先写入控制按钮值4
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572_BIT3', true);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
         ipcRenderer.send('cancelWriteToPLC', 'DBW570');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572_BIT3');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.bufferLine2 = false;
         this.plcWriteValues.bufferLine2 = '';
@@ -7149,15 +7151,15 @@ export default {
       // 设置loading状态
       this.plcWriteLoading.releaseUpload = true;
       // 写入控制按钮值5
-      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 5);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572_BIT4', true);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572_BIT4');
         // 取消loading，显示成功提示
         this.plcWriteLoading.releaseUpload = false;
         this.$message.success('上货一键放行成功');
       }, 2000);
-      this.addLog('上货一键放行，写入PLC DBW572: 5，2秒后恢复');
+      this.addLog('上货一键放行，写入PLC DBW572_BIT4: true，2秒后恢复');
     },
     // 移除旧的D/E数量调节函数，D/E数量由PLC提供
     // 发送到预热房的方法

@@ -288,6 +288,7 @@ app.on('ready', () => {
               DBW82: 0,
               DBW84: 0,
               DBW86: 0,
+              DBW394: 0, // DBW394调试值：0
               DBB160: 'HF800SR-1-H                   ',
               DBB190: '83048880004868800784          ',
               DBB220: 'HF800SR-1-H                   ',
@@ -326,6 +327,7 @@ app.on('ready', () => {
               DBW82: 0,
               DBW84: 0,
               DBW86: 0,
+              DBW394: 32, // DBW394调试值：0x0020 (32)
               DBB160: 'HF800SR-1-H                   ',
               DBB190: '83048880004868800784          ',
               DBB220: 'HF800SR-1-H                   ',
@@ -337,7 +339,7 @@ app.on('ready', () => {
         }
         revert = !revert;
       }
-    }, 100);
+    }, 500);
   }
   setAppTray();
   if (process.env.NODE_ENV === 'production') {
@@ -743,7 +745,12 @@ var variables = {
   DBW566: 'DB101,INT566', // 入库2线
   DBW568: 'DB101,INT568', // 缓存1#线
   DBW570: 'DB101,INT570', // 缓存2#线
-  DBW572: 'DB101,INT572', // 控制按钮
+  DBW572_BIT0: 'DB101,X572.0', // 控制按钮
+  DBW572_BIT1: 'DB101,X572.1', // 控制按钮
+  DBW572_BIT2: 'DB101,X572.2', // 控制按钮
+  DBW572_BIT3: 'DB101,X572.3', // 控制按钮
+  DBW572_BIT4: 'DB101,X572.4', // 控制按钮
+  DBW572_BIT5: 'DB101,X572.5', // 控制按钮
   // 报警点位映射
   DBW370: 'DB101,INT370', // 提升机相关报警
   DBW372: 'DB101,INT372', // 提升机相关报警
