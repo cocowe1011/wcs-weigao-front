@@ -7062,19 +7062,19 @@ export default {
       // 设置loading状态
       this.plcWriteLoading.inboundLine1 = true;
       // 先写入控制按钮值1
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 1);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 1);
       // 再写入目标变量值
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW564', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW564', value);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW564');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW564');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.inboundLine1 = false;
         this.plcWriteValues.inboundLine1 = '';
         this.$message.success('入库1线写入成功');
       }, 2000);
-      this.addLog(`写入PLC DB101.DBW564（入库1线）: ${value}，2秒后恢复`);
+      this.addLog(`写入PLC DBW564（入库1线）: ${value}，2秒后恢复`);
     },
     writeInboundLine2() {
       const value = parseInt(this.plcWriteValues.inboundLine2);
@@ -7085,19 +7085,19 @@ export default {
       // 设置loading状态
       this.plcWriteLoading.inboundLine2 = true;
       // 先写入控制按钮值2
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 2);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 2);
       // 再写入目标变量值
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW566', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW566', value);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW566');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW566');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.inboundLine2 = false;
         this.plcWriteValues.inboundLine2 = '';
         this.$message.success('入库2线写入成功');
       }, 2000);
-      this.addLog(`写入PLC DB101.DBW566（入库2线）: ${value}，2秒后恢复`);
+      this.addLog(`写入PLC DBW566（入库2线）: ${value}，2秒后恢复`);
     },
     writeBufferLine1() {
       const value = parseInt(this.plcWriteValues.bufferLine1);
@@ -7108,19 +7108,19 @@ export default {
       // 设置loading状态
       this.plcWriteLoading.bufferLine1 = true;
       // 先写入控制按钮值3
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 3);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 3);
       // 再写入目标变量值
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW568', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW568', value);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW568');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW568');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.bufferLine1 = false;
         this.plcWriteValues.bufferLine1 = '';
         this.$message.success('缓存1#线写入成功');
       }, 2000);
-      this.addLog(`写入PLC DB101.DBW568（缓存1#线）: ${value}，2秒后恢复`);
+      this.addLog(`写入PLC DBW568（缓存1#线）: ${value}，2秒后恢复`);
     },
     writeBufferLine2() {
       const value = parseInt(this.plcWriteValues.bufferLine2);
@@ -7131,33 +7131,33 @@ export default {
       // 设置loading状态
       this.plcWriteLoading.bufferLine2 = true;
       // 先写入控制按钮值4
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 4);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 4);
       // 再写入目标变量值
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW570', value);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW570', value);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW570');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW570');
         // 取消loading，清零数值，显示成功提示
         this.plcWriteLoading.bufferLine2 = false;
         this.plcWriteValues.bufferLine2 = '';
         this.$message.success('缓存2#线写入成功');
       }, 2000);
-      this.addLog(`写入PLC DB101.DBW570（缓存2#线）: ${value}，2秒后恢复`);
+      this.addLog(`写入PLC DBW570（缓存2#线）: ${value}，2秒后恢复`);
     },
     releaseUpload() {
       // 设置loading状态
       this.plcWriteLoading.releaseUpload = true;
       // 写入控制按钮值5
-      ipcRenderer.send('writeSingleValueToPLC', 'DB101.DBW572', 5);
+      ipcRenderer.send('writeSingleValueToPLC', 'DBW572', 5);
       // 2秒后取消写入
       setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'DB101.DBW572');
+        ipcRenderer.send('cancelWriteToPLC', 'DBW572');
         // 取消loading，显示成功提示
         this.plcWriteLoading.releaseUpload = false;
         this.$message.success('上货一键放行成功');
       }, 2000);
-      this.addLog('上货一键放行，写入PLC DB101.DBW572: 5，2秒后恢复');
+      this.addLog('上货一键放行，写入PLC DBW572: 5，2秒后恢复');
     },
     // 移除旧的D/E数量调节函数，D/E数量由PLC提供
     // 发送到预热房的方法
