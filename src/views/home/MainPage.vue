@@ -6334,11 +6334,12 @@ export default {
               receivedPkgQuantity: res.data.items[0].receivedPkgQuantity
             };
             HttpUtil.post('/order/insert', paramInsert).then((resInsert) => {
-              if (resInsert.data == 1) {
+              if (resInsert.data) {
                 this.addLog(
                   trayFrom + `上货区队列添加货物：${trayCode}，插入成功`
                 );
                 const trayInfo = {
+                  mainId: resInsert.data.id,
                   trayCode: trayCode,
                   trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
                   orderId: paramInsert.orderId,
@@ -6504,9 +6505,10 @@ export default {
               receivedPkgQuantity: res.data.items[0].receivedPkgQuantity
             };
             HttpUtil.post('/order/insert', paramInsert).then((resInsert) => {
-              if (resInsert.data == 1) {
+              if (resInsert.data) {
                 this.addLog(`${trayFrom}队列添加货物：${trayCode}，插入成功`);
                 const trayInfo = {
+                  mainId: resInsert.data.id,
                   trayCode: trayCode,
                   trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
                   orderId: paramInsert.orderId,
