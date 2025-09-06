@@ -6297,7 +6297,7 @@ export default {
         return;
       }
       // *******************从这开始往下注释**************************
-      遍历上货区托盘号，先通过托盘号判断此托盘是不是已经在上货区上货了
+      // 遍历上货区托盘号，先通过托盘号判断此托盘是不是已经在上货区上货了
       if (this.queues[0].trayInfo.length > 0) {
         for (const tray of this.queues[0].trayInfo) {
           if (tray.trayCode === trayCode) {
