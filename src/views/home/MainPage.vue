@@ -46,6 +46,22 @@
                   </div>
                 </div>
               </div>
+              <div class="data-card">
+                <div class="data-card-border">
+                  <div class="data-card-border-borderTop">物料编号</div>
+                  <div class="data-card-border-borderDown">
+                    {{ nowScanTrayInfo.productCode || '--' }}
+                  </div>
+                </div>
+              </div>
+              <div class="data-card">
+                <div class="data-card-border">
+                  <div class="data-card-border-borderTop">备注</div>
+                  <div class="data-card-border-borderDown">
+                    {{ nowScanTrayInfo.batchNo || '--' }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1869,6 +1885,27 @@
                           }}</span
                         >
                       </div>
+                      <div class="tray-info-row">
+                        <span class="tray-detail"
+                          >订单ID：{{ tray.orderId || '--' }}</span
+                        >
+                        <span class="tray-detail"
+                          >物料编码：{{ tray.productCode || '--' }}</span
+                        >
+                      </div>
+                      <div class="tray-info-row">
+                        <span class="tray-detail"
+                          >产品名称：{{ tray.productName || '--' }}</span
+                        >
+                        <span class="tray-detail"
+                          >规格：{{ tray.unit || '--' }}</span
+                        >
+                      </div>
+                      <div class="tray-info-row">
+                        <span class="tray-detail"
+                          >备注：{{ tray.batchNo || '--' }}</span
+                        >
+                      </div>
                       <span class="tray-time">{{ tray.time }}</span>
                     </div>
                     <div class="tray-actions">
@@ -2566,7 +2603,7 @@
     <el-dialog
       title="托盘检索"
       :visible.sync="traySearchDialogVisible"
-      width="600px"
+      width="821px"
       append-to-body
       :close-on-click-modal="false"
     >
@@ -2582,65 +2619,105 @@
               placeholder="请输入托盘号进行查询"
               clearable
             >
-              <el-button
-                slot="append"
-                icon="el-icon-search"
-                @click="searchTray"
-                :loading="searchLoading"
-              >
-                查询
-              </el-button>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="订单号" prop="orderId">
+            <el-input
+              v-model="traySearchForm.orderId"
+              placeholder="请输入订单号进行查询"
+              clearable
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item label="物料编码" prop="productCode">
+            <el-input
+              v-model="traySearchForm.productCode"
+              placeholder="请输入物料编码进行查询"
+              clearable
+            >
+            </el-input>
+          </el-form-item>
+          <el-form-item label="物料名称" prop="productName">
+            <el-input
+              v-model="traySearchForm.productName"
+              placeholder="请输入物料名称进行查询"
+              clearable
+            >
             </el-input>
           </el-form-item>
         </el-form>
 
         <!-- 查询结果展示 -->
-        <div v-if="searchResult" class="search-result">
-          <el-divider content-position="left">查询结果</el-divider>
-          <div class="result-content">
-            <div class="result-item">
-              <span class="result-label">托盘号：</span>
-              <span class="result-value">{{ searchResult.trayCode }}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">当前队列：</span>
-              <span class="result-value">{{ searchResult.queueName }}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">批次号：</span>
-              <span class="result-value">{{
-                searchResult.batchId || '--'
-              }}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">是否灭菌：</span>
-              <span class="result-value">{{
-                searchResult.isTerile === 1 ? '灭菌' : '不灭菌'
-              }}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">进入时间：</span>
-              <span class="result-value">{{ searchResult.time || '--' }}</span>
-            </div>
-            <div v-if="searchResult.sendTo" class="result-item">
-              <span class="result-label">预热房位置：</span>
-              <span class="result-value">{{ searchResult.sendTo }}</span>
-            </div>
-            <div v-if="searchResult.state !== undefined" class="result-item">
-              <span class="result-label">PLC命令状态：</span>
-              <span class="result-value">{{
-                searchResult.state === '0' ? '未执行' : '已执行'
-              }}</span>
-            </div>
-          </div>
+        <div
+          v-if="searchResults && searchResults.length > 0"
+          class="search-result"
+        >
+          <el-divider content-position="left">
+            查询结果 (共 {{ searchResults.length }} 个托盘)
+          </el-divider>
+          <el-table :data="searchResults" style="width: 100%" stripe border>
+            <el-table-column
+              prop="trayCode"
+              label="托盘号"
+              width="180"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="orderId"
+              label="订单号"
+              width="180"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.orderId || '--' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="productCode"
+              label="物料编码"
+              width="150"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.productCode || '--' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="productName"
+              label="物料名称"
+              width="150"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.productName || '--' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="queueName"
+              label="当前队列"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <span style="color: red; font-weight: bold">{{
+                  scope.row.queueName
+                }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
 
         <!-- 无结果提示 -->
-        <div v-else-if="hasSearched && !searchResult" class="no-result">
+        <div
+          v-else-if="
+            hasSearched && (!searchResults || searchResults.length === 0)
+          "
+          class="no-result"
+        >
           <el-divider content-position="left">查询结果</el-divider>
           <div class="no-result-content">
             <i class="el-icon-warning"></i>
-            <p>未找到托盘号为 "{{ traySearchForm.trayCode }}" 的托盘信息</p>
+            <p>未找到符合条件的托盘信息</p>
           </div>
         </div>
       </div>
@@ -2781,9 +2858,12 @@ export default {
       traySearchDialogVisible: false,
       searchLoading: false,
       traySearchForm: {
-        trayCode: ''
+        trayCode: '',
+        orderId: '',
+        productCode: '',
+        productName: ''
       },
-      searchResult: null,
+      searchResults: [],
       hasSearched: false,
       isSubmitting: false,
       newTrayForm: {
@@ -6216,8 +6296,8 @@ export default {
         this.sendErrorForPort(portKey);
         return;
       }
-
-      // 遍历上货区托盘号，先通过托盘号判断此托盘是不是已经在上货区上货了
+      // *******************从这开始往下注释**************************
+      遍历上货区托盘号，先通过托盘号判断此托盘是不是已经在上货区上货了
       if (this.queues[0].trayInfo.length > 0) {
         for (const tray of this.queues[0].trayInfo) {
           if (tray.trayCode === trayCode) {
@@ -6248,7 +6328,10 @@ export default {
               inPut: res.data.items[0].inPut,
               isTerile: nonSterile ? 0 : res.data.items[0].isTerile,
               detailList: JSON.stringify(res.data.items),
-              orderStatus: '0'
+              orderStatus: '0',
+              batchNo: res.data.items[0].batchNo,
+              unit: res.data.items[0].unit,
+              receivedPkgQuantity: res.data.items[0].receivedPkgQuantity
             };
             HttpUtil.post('/order/insert', paramInsert).then((resInsert) => {
               if (resInsert.data == 1) {
@@ -6264,7 +6347,10 @@ export default {
                   isTerile: paramInsert.isTerile,
                   receiptOrderCode: paramInsert.receiptOrderCode,
                   state: '0',
-                  sendTo: '' // 发到哪个预热房，发送的时候更新
+                  sendTo: '', // 发到哪个预热房，发送的时候更新
+                  batchNo: paramInsert.batchNo,
+                  unit: paramInsert.unit,
+                  receivedPkgQuantity: paramInsert.receivedPkgQuantity
                 };
                 this.queues[0].trayInfo.push(trayInfo);
                 this.addLog(trayFrom + `上货区队列添加货物：${trayCode}`);
@@ -6275,7 +6361,9 @@ export default {
                   orderId: trayInfo.orderId,
                   productName: trayInfo.productName,
                   isTerile: trayInfo.isTerile === 1 ? '消毒' : '不消毒',
-                  inPut: trayFrom
+                  inPut: trayFrom,
+                  batchNo: trayInfo.batchNo,
+                  productCode: trayInfo.productCode
                 };
               }
             });
@@ -6297,7 +6385,7 @@ export default {
           this.sendErrorForPort(portKey);
           this.nowScanTrayInfo = {};
         });
-      // 本地测试代码
+      // *******************本地测试代码,本地测试时，上面注释，下面打开**********************
       // const tmpTrayCode = new Date().getTime();
       // const paramInsert = {
       //   orderId: tmpTrayCode,
@@ -6308,7 +6396,10 @@ export default {
       //   inPut: 1,
       //   isTerile: nonSterile ? 0 : 1,
       //   detailList: 'xixixi',
-      //   orderStatus: '0'
+      //   orderStatus: '0',
+      //   batchNo: '螺口22G*11/2',
+      //   unit: '箱',
+      //   receivedPkgQuantity: '100'
       // };
       // HttpUtil.post('/order/insert', paramInsert).then((resInsert) => {
       //   if (resInsert.data) {
@@ -6335,7 +6426,10 @@ export default {
       //       // 解析间信息
       //       analysisRoom: '',
       //       inAnalysisRoomTime: null,
-      //       outAnalysisRoomTime: null
+      //       outAnalysisRoomTime: null, // 发到哪个预热房，发送的时候更新
+      //       batchNo: paramInsert.batchNo,
+      //       unit: paramInsert.unit,
+      //       receivedPkgQuantity: paramInsert.receivedPkgQuantity
       //     };
       //     this.queues[0].trayInfo.push(trayInfo);
       //     this.addLog(trayFrom + `上货区队列添加货物：${trayCode}`);
@@ -6346,7 +6440,9 @@ export default {
       //       orderId: trayInfo.orderId,
       //       productName: trayInfo.productName,
       //       isTerile: trayInfo.isTerile === 1 ? '消毒' : '不消毒',
-      //       inPut: trayFrom
+      //       inPut: trayFrom,
+      //       batchNo: trayInfo.batchNo,
+      //       productCode: trayInfo.productCode
       //     };
       //   }
       // });
@@ -6402,7 +6498,10 @@ export default {
               inPut: res.data.items[0].inPut,
               isTerile: nonSterile ? 0 : res.data.items[0].isTerile,
               detailList: JSON.stringify(res.data.items),
-              orderStatus: '0'
+              orderStatus: '0',
+              batchNo: res.data.items[0].batchNo,
+              unit: res.data.items[0].unit,
+              receivedPkgQuantity: res.data.items[0].receivedPkgQuantity
             };
             HttpUtil.post('/order/insert', paramInsert).then((resInsert) => {
               if (resInsert.data == 1) {
@@ -6417,6 +6516,9 @@ export default {
                   receiptOrderCode: paramInsert.receiptOrderCode,
                   state: '0',
                   sendTo: '', // 发到哪个预热房，发送的时候更新
+                  batchNo: paramInsert.batchNo,
+                  unit: paramInsert.unit,
+                  receivedPkgQuantity: paramInsert.receivedPkgQuantity,
                   // 预热间信息
                   preheatingRoom: '',
                   inPreheatingRoomTime: null,
@@ -6439,7 +6541,9 @@ export default {
                   orderId: trayInfo.orderId,
                   productName: trayInfo.productName,
                   isTerile: trayInfo.isTerile === 1 ? '消毒' : '不消毒',
-                  inPut: trayFrom
+                  inPut: trayFrom,
+                  batchNo: trayInfo.batchNo,
+                  productCode: trayInfo.productCode
                 };
               }
             });
@@ -6974,7 +7078,12 @@ export default {
             isTerile: tray.isTerile,
             sendTo: tray.sendTo || '', // 添加sendTo属性
             state: tray.state || '', // 添加state属性
-            sequenceNumber: tray.sequenceNumber || '' // 添加sequenceNumber属性
+            sequenceNumber: tray.sequenceNumber || '', // 添加sequenceNumber属性
+            orderId: tray.orderId || '', // 添加订单ID
+            productCode: tray.productCode || '', // 添加物料编码
+            productName: tray.productName || '', // 添加产品名称
+            unit: tray.unit || '', // 添加规格
+            batchNo: tray.batchNo || '' // 添加备注
           }))
           .filter((tray) => tray.id); // 过滤掉没有 id 的托盘
       } catch (error) {
@@ -7256,49 +7365,94 @@ export default {
     showTraySearchDialog() {
       this.traySearchDialogVisible = true;
       this.traySearchForm.trayCode = '';
-      this.searchResult = null;
+      this.traySearchForm.orderId = '';
+      this.traySearchForm.productCode = '';
+      this.traySearchForm.productName = '';
+      this.searchResults = [];
       this.hasSearched = false;
     },
     // 托盘检索方法
     async searchTray() {
-      if (!this.traySearchForm.trayCode.trim()) {
-        this.$message.warning('请输入托盘号');
+      // 检查至少有一个查询条件
+      const hasSearchCondition =
+        this.traySearchForm.trayCode.trim() ||
+        this.traySearchForm.orderId.trim() ||
+        this.traySearchForm.productCode.trim() ||
+        this.traySearchForm.productName.trim();
+
+      if (!hasSearchCondition) {
+        this.$message.warning('请至少输入一个查询条件');
         return;
       }
 
       this.searchLoading = true;
       this.hasSearched = true;
-      this.searchResult = null;
+      this.searchResults = [];
 
       try {
-        const trayCode = this.traySearchForm.trayCode.trim();
+        const searchCriteria = {
+          trayCode: this.traySearchForm.trayCode.trim(),
+          orderId: this.traySearchForm.orderId.trim(),
+          productCode: this.traySearchForm.productCode.trim(),
+          productName: this.traySearchForm.productName.trim()
+        };
 
-        // 在所有队列中查找托盘
-        let foundTray = null;
-        let foundQueueName = '';
+        // 在所有队列中查找符合条件的托盘
+        const foundTrays = [];
 
         for (const queue of this.queues) {
           if (queue.trayInfo && Array.isArray(queue.trayInfo)) {
-            const tray = queue.trayInfo.find((t) => t.trayCode === trayCode);
-            if (tray) {
-              foundTray = tray;
-              foundQueueName = queue.queueName;
-              break;
+            for (const tray of queue.trayInfo) {
+              // 检查是否符合所有输入的查询条件
+              let matches = true;
+
+              if (
+                searchCriteria.trayCode &&
+                String(tray.trayCode || '').trim() !==
+                  String(searchCriteria.trayCode).trim()
+              ) {
+                matches = false;
+              }
+              if (
+                searchCriteria.orderId &&
+                (!tray.orderId ||
+                  !tray.orderId.includes(searchCriteria.orderId))
+              ) {
+                matches = false;
+              }
+              if (
+                searchCriteria.productCode &&
+                (!tray.productCode ||
+                  !tray.productCode.includes(searchCriteria.productCode))
+              ) {
+                matches = false;
+              }
+              if (
+                searchCriteria.productName &&
+                (!tray.productName ||
+                  !tray.productName.includes(searchCriteria.productName))
+              ) {
+                matches = false;
+              }
+
+              if (matches) {
+                foundTrays.push({
+                  ...tray,
+                  queueName: queue.queueName
+                });
+              }
             }
           }
         }
 
-        if (foundTray) {
-          this.searchResult = {
-            ...foundTray,
-            queueName: foundQueueName
-          };
+        if (foundTrays.length > 0) {
+          this.searchResults = foundTrays;
           this.addLog(
-            `托盘检索成功：${trayCode} 当前在 ${foundQueueName} 队列`
+            `托盘检索成功：找到 ${foundTrays.length} 个符合条件的托盘`
           );
         } else {
-          this.searchResult = null;
-          this.addLog(`托盘检索：未找到托盘号 ${trayCode}`);
+          this.searchResults = [];
+          this.addLog('托盘检索：未找到符合条件的托盘');
         }
       } catch (error) {
         console.error('托盘检索失败:', error);
@@ -9528,7 +9682,7 @@ export default {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    gap: 10px;
+                    gap: 8px;
                     .tray-name {
                       font-weight: 500;
                       color: rgba(255, 255, 255, 0.9);
@@ -9548,6 +9702,15 @@ export default {
                         font-weight: bold;
                         margin-left: 4px;
                       }
+                    }
+
+                    .tray-detail {
+                      font-size: 11px;
+                      color: rgba(255, 255, 255, 0.7);
+                      word-break: break-word;
+                      line-height: 1.4;
+                      flex: 1;
+                      text-align: left;
                     }
                   }
                   .tray-time {
@@ -10153,39 +10316,6 @@ export default {
 .tray-search-form {
   .search-result {
     margin-top: 20px;
-
-    .result-content {
-      background: rgba(30, 42, 56, 0.8);
-      border-radius: 8px;
-      padding: 15px;
-      border: 1px solid rgba(10, 197, 168, 0.2);
-
-      .result-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        .result-label {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 14px;
-          min-width: 100px;
-        }
-
-        .result-value {
-          color: #0ac5a8;
-          font-weight: bold;
-          font-size: 14px;
-          text-align: right;
-          flex: 1;
-          margin-left: 15px;
-        }
-      }
-    }
   }
 
   .no-result {

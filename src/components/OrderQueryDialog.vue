@@ -2,7 +2,7 @@
   <el-dialog
     title="订单查询"
     :visible.sync="dialogVisible"
-    width="90%"
+    width="95%"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
     append-to-body
@@ -15,6 +15,33 @@
         <el-input
           v-model="queryForm.productName"
           placeholder="请输入产品名称"
+          style="width: 200px"
+          clearable
+        ></el-input>
+      </div>
+      <div class="query-item">
+        <label>订单号：</label>
+        <el-input
+          v-model="queryForm.orderId"
+          placeholder="请输入订单号"
+          style="width: 200px"
+          clearable
+        ></el-input>
+      </div>
+      <div class="query-item">
+        <label>托盘码：</label>
+        <el-input
+          v-model="queryForm.trayCode"
+          placeholder="请输入托盘码"
+          style="width: 200px"
+          clearable
+        ></el-input>
+      </div>
+      <div class="query-item">
+        <label>物料编码：</label>
+        <el-input
+          v-model="queryForm.productCode"
+          placeholder="请输入物料编码"
           style="width: 200px"
           clearable
         ></el-input>
@@ -65,6 +92,12 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="productCode"
+          label="物料编码"
+          min-width="120"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
           prop="trayCode"
           label="托盘码"
           width="120"
@@ -99,6 +132,25 @@
             {{ getInPutText(scope.row.inPut) }}
           </template>
         </el-table-column>
+        <el-table-column
+          prop="batchNo"
+          label="备注，批号"
+          width="120"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="unit"
+          label="规格"
+          width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="receivedPkgQuantity"
+          label="规格数量"
+          width="100"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
         <el-table-column
           prop="insertTime"
           label="创建时间"
@@ -200,6 +252,9 @@ export default {
       loading: false,
       queryForm: {
         productName: '',
+        orderId: '',
+        trayCode: '',
+        productCode: '',
         orderStatus: null
       },
       tableData: [],
@@ -272,6 +327,9 @@ export default {
     handleReset() {
       this.queryForm = {
         productName: '',
+        orderId: '',
+        trayCode: '',
+        productCode: '',
         orderStatus: null
       };
       this.pagination.pageNum = 1;
