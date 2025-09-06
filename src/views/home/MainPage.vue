@@ -76,7 +76,7 @@
               icon="el-icon-search"
               @click="showOrderQueryDialog"
             >
-              查询订单
+              查询历史订单
             </el-button>
           </div>
           <div class="operation-buttons">
@@ -317,9 +317,9 @@
                   </div>
                 </div>
 
-                <!-- 预热、灭菌、解析柜状态标签 - 按功能分组 -->
-                <!-- 预热完成状态标签 -->
-                <div class="analysis-status-marker" data-x="1070" data-y="955">
+                <!-- 预热、灭菌、解析柜状态标签 - 每个标签独立位置 -->
+                <!-- A1预热完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1160" data-y="1170">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit0 === '1'"
                     type="success"
@@ -327,6 +327,10 @@
                   >
                     A1预热完成
                   </el-tag>
+                </div>
+
+                <!-- B1预热完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1160" data-y="955">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit3 === '1'"
                     type="success"
@@ -334,6 +338,10 @@
                   >
                     B1预热完成
                   </el-tag>
+                </div>
+
+                <!-- C1预热完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1160" data-y="735">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit6 === '1'"
                     type="success"
@@ -343,8 +351,8 @@
                   </el-tag>
                 </div>
 
-                <!-- 灭菌完成状态标签 -->
-                <div class="analysis-status-marker" data-x="1670" data-y="955">
+                <!-- A2灭菌完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1740" data-y="1160">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit1 === '1'"
                     type="success"
@@ -352,6 +360,10 @@
                   >
                     A2灭菌完成
                   </el-tag>
+                </div>
+
+                <!-- B2灭菌完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1740" data-y="955">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit4 === '1'"
                     type="success"
@@ -359,6 +371,10 @@
                   >
                     B2灭菌完成
                   </el-tag>
+                </div>
+
+                <!-- C2灭菌完成状态标签 -->
+                <div class="analysis-status-marker" data-x="1740" data-y="735">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit7 === '1'"
                     type="success"
@@ -368,8 +384,8 @@
                   </el-tag>
                 </div>
 
-                <!-- 解析完成状态标签 -->
-                <div class="analysis-status-marker" data-x="2250" data-y="955">
+                <!-- A3解析完成状态标签 -->
+                <div class="analysis-status-marker" data-x="2180" data-y="1165">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit2 === '1'"
                     type="success"
@@ -377,6 +393,10 @@
                   >
                     A3解析完成
                   </el-tag>
+                </div>
+
+                <!-- B3解析完成状态标签 -->
+                <div class="analysis-status-marker" data-x="2180" data-y="955">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit5 === '1'"
                     type="success"
@@ -384,6 +404,10 @@
                   >
                     B3解析完成
                   </el-tag>
+                </div>
+
+                <!-- C3解析完成状态标签 -->
+                <div class="analysis-status-marker" data-x="2180" data-y="740">
                   <el-tag
                     v-show="preheatingDisinfectionAnalysisState.bit8 === '1'"
                     type="success"
@@ -1869,12 +1893,13 @@
                                 selectedQueue.queueName
                               )
                             "
-                            >预热房位置：{{ tray.sendTo }}
-                            <span class="sequence-number"
-                              >(序号：{{ tray.sequenceNumber }})</span
-                            ></span
+                            >预热房位置：{{ tray.sendTo }}</span
                           ><span v-else>
                             {{ tray.isTerile === 1 ? '消毒' : '不消毒' }}</span
+                          ><span
+                            v-if="tray.sequenceNumber > 0"
+                            class="sequence-number"
+                            >(序号：{{ tray.sequenceNumber }})</span
                           ></span
                         >
                         <span
@@ -2613,38 +2638,50 @@
           ref="traySearchForm"
           label-width="100px"
         >
-          <el-form-item label="托盘号" prop="trayCode">
-            <el-input
-              v-model="traySearchForm.trayCode"
-              placeholder="请输入托盘号进行查询"
-              clearable
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item label="订单号" prop="orderId">
-            <el-input
-              v-model="traySearchForm.orderId"
-              placeholder="请输入订单号进行查询"
-              clearable
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item label="物料编码" prop="productCode">
-            <el-input
-              v-model="traySearchForm.productCode"
-              placeholder="请输入物料编码进行查询"
-              clearable
-            >
-            </el-input>
-          </el-form-item>
-          <el-form-item label="物料名称" prop="productName">
-            <el-input
-              v-model="traySearchForm.productName"
-              placeholder="请输入物料名称进行查询"
-              clearable
-            >
-            </el-input>
-          </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="托盘号" prop="trayCode">
+                <el-input
+                  v-model="traySearchForm.trayCode"
+                  placeholder="请输入托盘号进行查询"
+                  clearable
+                >
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="订单号" prop="orderId">
+                <el-input
+                  v-model="traySearchForm.orderId"
+                  placeholder="请输入订单号进行查询"
+                  clearable
+                >
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="物料编码" prop="productCode">
+                <el-input
+                  v-model="traySearchForm.productCode"
+                  placeholder="请输入物料编码进行查询"
+                  clearable
+                >
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="物料名称" prop="productName">
+                <el-input
+                  v-model="traySearchForm.productName"
+                  placeholder="请输入物料名称进行查询"
+                  clearable
+                >
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
 
         <!-- 查询结果展示 -->
@@ -2655,7 +2692,14 @@
           <el-divider content-position="left">
             查询结果 (共 {{ searchResults.length }} 个托盘)
           </el-divider>
-          <el-table :data="searchResults" style="width: 100%" stripe border>
+          <el-table
+            :data="searchResults"
+            style="width: 100%"
+            stripe
+            border
+            height="300"
+            :max-height="300"
+          >
             <el-table-column
               prop="trayCode"
               label="托盘号"
@@ -7418,21 +7462,25 @@ export default {
               if (
                 searchCriteria.orderId &&
                 (!tray.orderId ||
-                  !tray.orderId.includes(searchCriteria.orderId))
+                  !String(tray.orderId).includes(searchCriteria.orderId))
               ) {
                 matches = false;
               }
               if (
                 searchCriteria.productCode &&
                 (!tray.productCode ||
-                  !tray.productCode.includes(searchCriteria.productCode))
+                  !String(tray.productCode).includes(
+                    searchCriteria.productCode
+                  ))
               ) {
                 matches = false;
               }
               if (
                 searchCriteria.productName &&
                 (!tray.productName ||
-                  !tray.productName.includes(searchCriteria.productName))
+                  !String(tray.productName).includes(
+                    searchCriteria.productName
+                  ))
               ) {
                 matches = false;
               }
@@ -8637,10 +8685,10 @@ export default {
 .smart-workshop {
   width: 100%;
   height: 100%;
+  background: radial-gradient(circle, #83b3de, #ffffff);
   position: relative;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(circle, #1a2035, #0f1620);
   padding: 0;
   font-family: 'Roboto', sans-serif;
   overflow: hidden;
@@ -8691,14 +8739,14 @@ export default {
       width: 420px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 8px;
+      gap: 5px;
+      padding: 5px;
       box-sizing: border-box;
       flex-shrink: 0;
       overflow: hidden;
       .plc-info-section,
       .operation-panel {
-        background: rgba(30, 42, 56, 0.8);
+        background: #052438;
         padding: 10px;
         border-radius: 15px;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
@@ -8712,6 +8760,8 @@ export default {
           color: #0ac5a8;
           font-weight: 900;
           margin-bottom: 5px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
           .section-title {
             display: flex;
             align-items: center;
@@ -8794,7 +8844,7 @@ export default {
         }
       }
       .log-section {
-        background: rgba(30, 42, 56, 0.8);
+        background: #052438;
         padding: 10px;
         border-radius: 15px;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
@@ -8990,7 +9040,7 @@ export default {
     .main-content {
       flex: 1;
       display: flex;
-      padding: 8px 8px 8px 0px;
+      padding: 5px 5px 5px 0px;
       box-sizing: border-box;
       overflow: hidden;
       height: 100%;
@@ -9382,8 +9432,6 @@ export default {
                 position: absolute;
                 transform: translate(-50%, -50%);
                 z-index: 15;
-                display: flex;
-                gap: 6px;
               }
 
               /* 自定义状态标签样式，让绿色更突出 */
@@ -9397,7 +9445,7 @@ export default {
         }
         .floor-left {
           flex: 1;
-          background: rgba(30, 42, 56, 0.8);
+          background: #07293e;
           padding: 10px;
           border-radius: 15px;
           box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
@@ -9508,7 +9556,7 @@ export default {
     pointer-events: auto;
     /* 基础样式 */
     .queue-section {
-      background: rgba(30, 42, 56, 0.95);
+      background: rgba(30, 42, 56);
       border-radius: 15px;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
       color: #f5f5f5;
