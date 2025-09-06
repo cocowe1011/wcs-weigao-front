@@ -2,7 +2,7 @@
   <el-dialog
     title="订单查询"
     :visible.sync="dialogVisible"
-    width="1200px"
+    width="90%"
     :close-on-click-modal="false"
     :modal-append-to-body="false"
     append-to-body
@@ -108,6 +108,60 @@
         <el-table-column
           prop="finishTime"
           label="完成时间"
+          width="180"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="preheatingRoom"
+          label="预热间"
+          width="120"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="inPreheatingRoomTime"
+          label="进入预热间时间"
+          width="180"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="outPreheatingRoomTime"
+          label="离开预热间时间"
+          width="180"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="sterilizationRoom"
+          label="灭菌间"
+          width="120"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="inSterilizationRoomTime"
+          label="进入灭菌间时间"
+          width="180"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="outSterilizationRoomTime"
+          label="离开灭菌间时间"
+          width="180"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="analysisRoom"
+          label="解析间"
+          width="120"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="inAnalysisRoomTime"
+          label="进入解析间时间"
+          width="180"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="outAnalysisRoomTime"
+          label="离开解析间时间"
           width="180"
           show-overflow-tooltip
         ></el-table-column>

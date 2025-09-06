@@ -4559,11 +4559,17 @@ export default {
               const tray = this.queues[2].trayInfo[0];
               // 设置托盘顺序编号
               this.setTraySequenceNumber(tray, 3);
+              const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+              this.$set(tray, 'preheatingRoom', 'A1');
+              this.$set(tray, 'inPreheatingRoomTime', currentTime);
               this.addLog(
-                this.queues[2].trayInfo[0].trayCode +
-                  '进入A1队列，顺序编号：' +
-                  tray.sequenceNumber
+                `托盘 ${tray.trayCode} 进入预热间 A1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
               );
+              // 更新到后台
+              this.updateTrayInfo(tray, {
+                preheatingRoom: 'A1',
+                inPreheatingRoomTime: currentTime
+              });
               // 把缓冲区的托盘信息加入到A1队列
               this.queues[3].trayInfo.push(tray);
               this.queues[2].trayInfo.shift();
@@ -4582,11 +4588,17 @@ export default {
             const tray = this.queues[2].trayInfo[0];
             // 设置托盘顺序编号
             this.setTraySequenceNumber(tray, 3);
+            const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+            this.$set(tray, 'preheatingRoom', 'A1');
+            this.$set(tray, 'inPreheatingRoomTime', currentTime);
             this.addLog(
-              this.queues[2].trayInfo[0].trayCode +
-                '进入A1队列，顺序编号：' +
-                tray.sequenceNumber
+              `托盘 ${tray.trayCode} 进入预热间 A1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
             );
+            // 更新到后台
+            this.updateTrayInfo(tray, {
+              preheatingRoom: 'A1',
+              inPreheatingRoomTime: currentTime
+            });
             this.queues[3].trayInfo.push(tray);
             this.queues[2].trayInfo.shift();
           }
@@ -4631,11 +4643,17 @@ export default {
               const tray = this.queues[2].trayInfo[0];
               // 设置托盘顺序编号
               this.setTraySequenceNumber(tray, 4);
+              const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+              this.$set(tray, 'preheatingRoom', 'B1');
+              this.$set(tray, 'inPreheatingRoomTime', currentTime);
               this.addLog(
-                this.queues[2].trayInfo[0].trayCode +
-                  '进入B1队列，顺序编号：' +
-                  tray.sequenceNumber
+                `托盘 ${tray.trayCode} 进入预热间 B1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
               );
+              // 更新到后台
+              this.updateTrayInfo(tray, {
+                preheatingRoom: 'B1',
+                inPreheatingRoomTime: currentTime
+              });
               // 把缓冲区的托盘信息加入到B1队列
               this.queues[4].trayInfo.push(tray);
               this.queues[2].trayInfo.shift();
@@ -4654,11 +4672,17 @@ export default {
             const tray = this.queues[2].trayInfo[0];
             // 设置托盘顺序编号
             this.setTraySequenceNumber(tray, 4);
+            const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+            this.$set(tray, 'preheatingRoom', 'B1');
+            this.$set(tray, 'inPreheatingRoomTime', currentTime);
             this.addLog(
-              this.queues[2].trayInfo[0].trayCode +
-                '进入B1队列，顺序编号：' +
-                tray.sequenceNumber
+              `托盘 ${tray.trayCode} 进入预热间 B1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
             );
+            // 更新到后台
+            this.updateTrayInfo(tray, {
+              preheatingRoom: 'B1',
+              inPreheatingRoomTime: currentTime
+            });
             this.queues[4].trayInfo.push(tray);
             this.queues[2].trayInfo.shift();
           }
@@ -4703,11 +4727,17 @@ export default {
               const tray = this.queues[2].trayInfo[0];
               // 设置托盘顺序编号
               this.setTraySequenceNumber(tray, 5);
+              const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+              this.$set(tray, 'preheatingRoom', 'C1');
+              this.$set(tray, 'inPreheatingRoomTime', currentTime);
               this.addLog(
-                this.queues[2].trayInfo[0].trayCode +
-                  '进入C1队列，顺序编号：' +
-                  tray.sequenceNumber
+                `托盘 ${tray.trayCode} 进入预热间 C1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
               );
+              // 更新到后台
+              this.updateTrayInfo(tray, {
+                preheatingRoom: 'C1',
+                inPreheatingRoomTime: currentTime
+              });
               // 把缓冲区的托盘信息加入到C1队列
               this.queues[5].trayInfo.push(tray);
               this.queues[2].trayInfo.shift();
@@ -4726,11 +4756,17 @@ export default {
             const tray = this.queues[2].trayInfo[0];
             // 设置托盘顺序编号
             this.setTraySequenceNumber(tray, 5);
+            const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+            this.$set(tray, 'preheatingRoom', 'C1');
+            this.$set(tray, 'inPreheatingRoomTime', currentTime);
             this.addLog(
-              this.queues[2].trayInfo[0].trayCode +
-                '进入C1队列，顺序编号：' +
-                tray.sequenceNumber
+              `托盘 ${tray.trayCode} 进入预热间 C1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
             );
+            // 更新到后台
+            this.updateTrayInfo(tray, {
+              preheatingRoom: 'C1',
+              inPreheatingRoomTime: currentTime
+            });
             this.queues[5].trayInfo.push(tray);
             this.queues[2].trayInfo.shift();
           }
@@ -4780,7 +4816,21 @@ export default {
               // 批量移动托盘
               for (let i = 0; i < increaseCount; i++) {
                 if (sourceQueue.trayInfo.length > 0) {
-                  this.queues[6].trayInfo.push(sourceQueue.trayInfo[0]);
+                  const tray = sourceQueue.trayInfo[0];
+                  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                  this.$set(tray, 'outPreheatingRoomTime', currentTime);
+                  this.$set(tray, 'sterilizationRoom', 'A2');
+                  this.$set(tray, 'inSterilizationRoomTime', currentTime);
+                  this.addLog(
+                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 A2，时间：${currentTime}`
+                  );
+                  // 更新到后台
+                  this.updateTrayInfo(tray, {
+                    outPreheatingRoomTime: currentTime,
+                    sterilizationRoom: 'A2',
+                    inSterilizationRoomTime: currentTime
+                  });
+                  this.queues[6].trayInfo.push(tray);
                   sourceQueue.trayInfo.shift();
                 }
               }
@@ -4793,7 +4843,21 @@ export default {
               );
               // 移动所有可用的托盘
               while (sourceQueue.trayInfo.length > 0) {
-                this.queues[6].trayInfo.push(sourceQueue.trayInfo[0]);
+                const tray = sourceQueue.trayInfo[0];
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outPreheatingRoomTime', currentTime);
+                this.$set(tray, 'sterilizationRoom', 'A2');
+                this.$set(tray, 'inSterilizationRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 A2，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outPreheatingRoomTime: currentTime,
+                  sterilizationRoom: 'A2',
+                  inSterilizationRoomTime: currentTime
+                });
+                this.queues[6].trayInfo.push(tray);
                 sourceQueue.trayInfo.shift();
               }
             }
@@ -4855,7 +4919,21 @@ export default {
               // 批量移动托盘
               for (let i = 0; i < increaseCount; i++) {
                 if (sourceQueue.trayInfo.length > 0) {
-                  this.queues[7].trayInfo.push(sourceQueue.trayInfo[0]);
+                  const tray = sourceQueue.trayInfo[0];
+                  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                  this.$set(tray, 'outPreheatingRoomTime', currentTime);
+                  this.$set(tray, 'sterilizationRoom', 'B2');
+                  this.$set(tray, 'inSterilizationRoomTime', currentTime);
+                  this.addLog(
+                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 B2，时间：${currentTime}`
+                  );
+                  // 更新到后台
+                  this.updateTrayInfo(tray, {
+                    outPreheatingRoomTime: currentTime,
+                    sterilizationRoom: 'B2',
+                    inSterilizationRoomTime: currentTime
+                  });
+                  this.queues[7].trayInfo.push(tray);
                   sourceQueue.trayInfo.shift();
                 }
               }
@@ -4868,7 +4946,21 @@ export default {
               );
               // 移动所有可用的托盘
               while (sourceQueue.trayInfo.length > 0) {
-                this.queues[7].trayInfo.push(sourceQueue.trayInfo[0]);
+                const tray = sourceQueue.trayInfo[0];
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outPreheatingRoomTime', currentTime);
+                this.$set(tray, 'sterilizationRoom', 'B2');
+                this.$set(tray, 'inSterilizationRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 B2，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outPreheatingRoomTime: currentTime,
+                  sterilizationRoom: 'B2',
+                  inSterilizationRoomTime: currentTime
+                });
+                this.queues[7].trayInfo.push(tray);
                 sourceQueue.trayInfo.shift();
               }
             }
@@ -4930,7 +5022,21 @@ export default {
               // 批量移动托盘
               for (let i = 0; i < increaseCount; i++) {
                 if (sourceQueue.trayInfo.length > 0) {
-                  this.queues[8].trayInfo.push(sourceQueue.trayInfo[0]);
+                  const tray = sourceQueue.trayInfo[0];
+                  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                  this.$set(tray, 'outPreheatingRoomTime', currentTime);
+                  this.$set(tray, 'sterilizationRoom', 'C2');
+                  this.$set(tray, 'inSterilizationRoomTime', currentTime);
+                  this.addLog(
+                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 C2，时间：${currentTime}`
+                  );
+                  // 更新到后台
+                  this.updateTrayInfo(tray, {
+                    outPreheatingRoomTime: currentTime,
+                    sterilizationRoom: 'C2',
+                    inSterilizationRoomTime: currentTime
+                  });
+                  this.queues[8].trayInfo.push(tray);
                   sourceQueue.trayInfo.shift();
                 }
               }
@@ -4943,7 +5049,21 @@ export default {
               );
               // 移动所有可用的托盘
               while (sourceQueue.trayInfo.length > 0) {
-                this.queues[8].trayInfo.push(sourceQueue.trayInfo[0]);
+                const tray = sourceQueue.trayInfo[0];
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outPreheatingRoomTime', currentTime);
+                this.$set(tray, 'sterilizationRoom', 'C2');
+                this.$set(tray, 'inSterilizationRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 C2，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outPreheatingRoomTime: currentTime,
+                  sterilizationRoom: 'C2',
+                  inSterilizationRoomTime: currentTime
+                });
+                this.queues[8].trayInfo.push(tray);
                 sourceQueue.trayInfo.shift();
               }
             }
@@ -5005,7 +5125,21 @@ export default {
               // 批量移动托盘
               for (let i = 0; i < increaseCount; i++) {
                 if (sourceQueue.trayInfo.length > 0) {
-                  this.queues[9].trayInfo.push(sourceQueue.trayInfo[0]);
+                  const tray = sourceQueue.trayInfo[0];
+                  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                  this.$set(tray, 'outSterilizationRoomTime', currentTime);
+                  this.$set(tray, 'analysisRoom', 'A3');
+                  this.$set(tray, 'inAnalysisRoomTime', currentTime);
+                  this.addLog(
+                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 A3，时间：${currentTime}`
+                  );
+                  // 更新到后台
+                  this.updateTrayInfo(tray, {
+                    outSterilizationRoomTime: currentTime,
+                    analysisRoom: 'A3',
+                    inAnalysisRoomTime: currentTime
+                  });
+                  this.queues[9].trayInfo.push(tray);
                   sourceQueue.trayInfo.shift();
                 }
               }
@@ -5018,7 +5152,21 @@ export default {
               );
               // 移动所有可用的托盘
               while (sourceQueue.trayInfo.length > 0) {
-                this.queues[9].trayInfo.push(sourceQueue.trayInfo[0]);
+                const tray = sourceQueue.trayInfo[0];
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outSterilizationRoomTime', currentTime);
+                this.$set(tray, 'analysisRoom', 'A3');
+                this.$set(tray, 'inAnalysisRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 A3，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outSterilizationRoomTime: currentTime,
+                  analysisRoom: 'A3',
+                  inAnalysisRoomTime: currentTime
+                });
+                this.queues[9].trayInfo.push(tray);
                 sourceQueue.trayInfo.shift();
               }
             }
@@ -5040,6 +5188,15 @@ export default {
                 const tray = this.queues[9].trayInfo[0];
                 this.addLog(`托盘信息：${tray.trayCode} 出库`);
                 this.currentOutTrayInfo = tray;
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outAnalysisRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开解析间 ${tray.analysisRoom}，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outAnalysisRoomTime: currentTime
+                });
                 // 删除A3队列的第一个元素
                 this.queues[9].trayInfo.shift();
                 // 更新订单状态为已完成
@@ -5104,7 +5261,21 @@ export default {
               // 批量移动托盘
               for (let i = 0; i < increaseCount; i++) {
                 if (sourceQueue.trayInfo.length > 0) {
-                  this.queues[10].trayInfo.push(sourceQueue.trayInfo[0]);
+                  const tray = sourceQueue.trayInfo[0];
+                  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                  this.$set(tray, 'outSterilizationRoomTime', currentTime);
+                  this.$set(tray, 'analysisRoom', 'B3');
+                  this.$set(tray, 'inAnalysisRoomTime', currentTime);
+                  this.addLog(
+                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 B3，时间：${currentTime}`
+                  );
+                  // 更新到后台
+                  this.updateTrayInfo(tray, {
+                    outSterilizationRoomTime: currentTime,
+                    analysisRoom: 'B3',
+                    inAnalysisRoomTime: currentTime
+                  });
+                  this.queues[10].trayInfo.push(tray);
                   sourceQueue.trayInfo.shift();
                 }
               }
@@ -5117,7 +5288,22 @@ export default {
               );
               // 移动所有可用的托盘
               while (sourceQueue.trayInfo.length > 0) {
-                this.queues[10].trayInfo.push(sourceQueue.trayInfo[0]);
+                const tray = sourceQueue.trayInfo[0];
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                // 记录离开灭菌间和进入解析间的时间
+                this.$set(tray, 'outSterilizationRoomTime', currentTime);
+                this.$set(tray, 'analysisRoom', 'B3');
+                this.$set(tray, 'inAnalysisRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 B3，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outSterilizationRoomTime: currentTime,
+                  analysisRoom: 'B3',
+                  inAnalysisRoomTime: currentTime
+                });
+                this.queues[10].trayInfo.push(tray);
                 sourceQueue.trayInfo.shift();
               }
             }
@@ -5139,6 +5325,16 @@ export default {
                 const tray = this.queues[10].trayInfo[0];
                 this.addLog(`托盘信息：${tray.trayCode} 出库`);
                 this.currentOutTrayInfo = tray;
+                // 记录离开解析间的时间
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outAnalysisRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开解析间 ${tray.analysisRoom}，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outAnalysisRoomTime: currentTime
+                });
                 // 删除B3队列的第一个元素
                 this.queues[10].trayInfo.shift();
                 // 更新订单状态为已完成
@@ -5203,7 +5399,21 @@ export default {
               // 批量移动托盘
               for (let i = 0; i < increaseCount; i++) {
                 if (sourceQueue.trayInfo.length > 0) {
-                  this.queues[11].trayInfo.push(sourceQueue.trayInfo[0]);
+                  const tray = sourceQueue.trayInfo[0];
+                  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                  this.$set(tray, 'outSterilizationRoomTime', currentTime);
+                  this.$set(tray, 'analysisRoom', 'C3');
+                  this.$set(tray, 'inAnalysisRoomTime', currentTime);
+                  this.addLog(
+                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 C3，时间：${currentTime}`
+                  );
+                  // 更新到后台
+                  this.updateTrayInfo(tray, {
+                    outSterilizationRoomTime: currentTime,
+                    analysisRoom: 'C3',
+                    inAnalysisRoomTime: currentTime
+                  });
+                  this.queues[11].trayInfo.push(tray);
                   sourceQueue.trayInfo.shift();
                 }
               }
@@ -5216,7 +5426,22 @@ export default {
               );
               // 移动所有可用的托盘
               while (sourceQueue.trayInfo.length > 0) {
-                this.queues[11].trayInfo.push(sourceQueue.trayInfo[0]);
+                const tray = sourceQueue.trayInfo[0];
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                // 记录离开灭菌间和进入解析间的时间
+                this.$set(tray, 'outSterilizationRoomTime', currentTime);
+                this.$set(tray, 'analysisRoom', 'C3');
+                this.$set(tray, 'inAnalysisRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 C3，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outSterilizationRoomTime: currentTime,
+                  analysisRoom: 'C3',
+                  inAnalysisRoomTime: currentTime
+                });
+                this.queues[11].trayInfo.push(tray);
                 sourceQueue.trayInfo.shift();
               }
             }
@@ -5238,6 +5463,18 @@ export default {
                 const tray = this.queues[11].trayInfo[0];
                 this.addLog(`托盘信息：${tray.trayCode} 出库`);
                 this.currentOutTrayInfo = tray;
+
+                // 记录离开解析间的时间
+                const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                this.$set(tray, 'outAnalysisRoomTime', currentTime);
+                this.addLog(
+                  `托盘 ${tray.trayCode} 离开解析间 ${tray.analysisRoom}，时间：${currentTime}`
+                );
+                // 更新到后台
+                this.updateTrayInfo(tray, {
+                  outAnalysisRoomTime: currentTime
+                });
+
                 // 删除C3队列的第一个元素
                 this.queues[11].trayInfo.shift();
                 // 更新订单状态为已完成
@@ -5616,33 +5853,103 @@ export default {
     },
     // 更新订单状态为已完成
     async updateOrderStatus(tray) {
-      if (!tray || !tray.orderId || !tray.trayCode) {
+      if (!tray || !tray.orderId || !tray.trayCode || !tray.mainId) {
         this.addLog(
-          `订单状态更新失败：托盘信息不完整 - 订单号: ${tray?.orderId}, 托盘号: ${tray?.trayCode}`
+          `订单状态更新失败：托盘信息不完整或为无码模式上货 - 订单号: ${tray?.orderId}, 托盘号: ${tray?.trayCode}, 主键: ${tray?.mainId}`
         );
         return;
       }
 
       try {
         const params = {
-          orderId: tray.orderId,
-          trayCode: tray.trayCode
+          id: tray.mainId,
+          finishTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+          orderStatus: 1
         };
         this.addLog(
-          `出库回更订单，托盘号：${tray.trayCode}，订单号：${tray.orderId}`
+          `出库回更订单，托盘号：${tray.trayCode}，订单号：${tray.orderId}，主键：${tray.mainId}`
         );
-        const response = await HttpUtil.post(
-          '/order/updateByOrderIdAndTrayCode',
-          params
-        );
+        const response = await HttpUtil.post('/order/update', params);
         if (response && response.data === 1) {
-          this.addLog(`订单 ${tray.orderId} 状态更新成功，已标记为已完成`);
+          this.addLog(
+            `订单 ${tray.orderId}，托盘号 ${tray.trayCode} 状态更新成功，已标记为已完成`
+          );
         } else {
-          this.addLog(`订单 ${tray.orderId} 状态更新失败：接口返回数据异常`);
+          this.addLog(
+            `订单 ${tray.orderId}，托盘号 ${tray.trayCode} 状态更新失败：接口返回数据异常`
+          );
         }
       } catch (error) {
-        this.addLog(`订单 ${tray.orderId} 状态更新异常: ${error.message}`);
-        console.error('订单状态更新异常:', error);
+        this.addLog(
+          `订单 ${tray.orderId}，托盘号 ${tray.trayCode} 状态更新异常: ${error.message}`
+        );
+      }
+    },
+    // 更新托盘预热、灭菌、解析信息到后台
+    async updateTrayInfo(tray, updateFields = {}) {
+      if (!tray || !tray.mainId || !tray.trayCode) {
+        this.addLog(
+          `托盘信息更新失败：托盘信息不完整 - 托盘号: ${tray?.trayCode}, 主键: ${tray?.mainId}`
+        );
+        return;
+      }
+
+      try {
+        const params = {
+          id: tray.mainId,
+          // 预热间信息
+          preheatingRoom:
+            updateFields.preheatingRoom !== undefined
+              ? updateFields.preheatingRoom
+              : tray.preheatingRoom,
+          inPreheatingRoomTime:
+            updateFields.inPreheatingRoomTime !== undefined
+              ? updateFields.inPreheatingRoomTime
+              : tray.inPreheatingRoomTime,
+          outPreheatingRoomTime:
+            updateFields.outPreheatingRoomTime !== undefined
+              ? updateFields.outPreheatingRoomTime
+              : tray.outPreheatingRoomTime,
+          // 灭菌间信息
+          sterilizationRoom:
+            updateFields.sterilizationRoom !== undefined
+              ? updateFields.sterilizationRoom
+              : tray.sterilizationRoom,
+          inSterilizationRoomTime:
+            updateFields.inSterilizationRoomTime !== undefined
+              ? updateFields.inSterilizationRoomTime
+              : tray.inSterilizationRoomTime,
+          outSterilizationRoomTime:
+            updateFields.outSterilizationRoomTime !== undefined
+              ? updateFields.outSterilizationRoomTime
+              : tray.outSterilizationRoomTime,
+          // 解析间信息
+          analysisRoom:
+            updateFields.analysisRoom !== undefined
+              ? updateFields.analysisRoom
+              : tray.analysisRoom,
+          inAnalysisRoomTime:
+            updateFields.inAnalysisRoomTime !== undefined
+              ? updateFields.inAnalysisRoomTime
+              : tray.inAnalysisRoomTime,
+          outAnalysisRoomTime:
+            updateFields.outAnalysisRoomTime !== undefined
+              ? updateFields.outAnalysisRoomTime
+              : tray.outAnalysisRoomTime
+        };
+
+        this.addLog(
+          `更新托盘信息，托盘号：${tray.trayCode}，主键：${tray.mainId}`
+        );
+
+        const response = await HttpUtil.post('/order/update', params);
+        if (response && response.data === 1) {
+          this.addLog(`托盘 ${tray.trayCode} 信息更新成功`);
+        } else {
+          this.addLog(`托盘 ${tray.trayCode} 信息更新失败：接口返回数据异常`);
+        }
+      } catch (error) {
+        this.addLog(`托盘 ${tray.trayCode} 信息更新异常: ${error.message}`);
       }
     },
     // 取消预热房执行
@@ -5990,6 +6297,59 @@ export default {
           this.sendErrorForPort(portKey);
           this.nowScanTrayInfo = {};
         });
+      // 本地测试代码
+      // const tmpTrayCode = new Date().getTime();
+      // const paramInsert = {
+      //   orderId: tmpTrayCode,
+      //   productCode: '234',
+      //   productName: '一次性输液器',
+      //   trayCode: tmpTrayCode,
+      //   receiptOrderCode: tmpTrayCode,
+      //   inPut: 1,
+      //   isTerile: nonSterile ? 0 : 1,
+      //   detailList: 'xixixi',
+      //   orderStatus: '0'
+      // };
+      // HttpUtil.post('/order/insert', paramInsert).then((resInsert) => {
+      //   if (resInsert.data) {
+      //     this.addLog(trayFrom + `上货区队列添加货物：${trayCode}，插入成功`);
+      //     const trayInfo = {
+      //       mainId: resInsert.data.id,
+      //       trayCode: tmpTrayCode,
+      //       trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      //       orderId: paramInsert.orderId,
+      //       productCode: paramInsert.productCode,
+      //       productName: paramInsert.productName,
+      //       isTerile: paramInsert.isTerile,
+      //       receiptOrderCode: paramInsert.receiptOrderCode,
+      //       state: '0',
+      //       sendTo: '', // 发到哪个预热房，发送的时候更新
+      //       // 预热间信息
+      //       preheatingRoom: '',
+      //       inPreheatingRoomTime: null,
+      //       outPreheatingRoomTime: null,
+      //       // 灭菌间信息
+      //       sterilizationRoom: '',
+      //       inSterilizationRoomTime: null,
+      //       outSterilizationRoomTime: null,
+      //       // 解析间信息
+      //       analysisRoom: '',
+      //       inAnalysisRoomTime: null,
+      //       outAnalysisRoomTime: null
+      //     };
+      //     this.queues[0].trayInfo.push(trayInfo);
+      //     this.addLog(trayFrom + `上货区队列添加货物：${trayCode}`);
+      //     // 扫码正常：允许通行并异常复位
+      //     this.sendAllowForPort(portKey);
+      //     this.nowScanTrayInfo = {
+      //       trayCode: trayInfo.trayCode,
+      //       orderId: trayInfo.orderId,
+      //       productName: trayInfo.productName,
+      //       isTerile: trayInfo.isTerile === 1 ? '消毒' : '不消毒',
+      //       inPut: trayFrom
+      //     };
+      //   }
+      // });
     },
     // 添加扫码数据到D队列,
     addToUpLoadQueueDE(trayCode, trayFrom, nonSterile) {
@@ -6056,7 +6416,19 @@ export default {
                   isTerile: paramInsert.isTerile,
                   receiptOrderCode: paramInsert.receiptOrderCode,
                   state: '0',
-                  sendTo: '' // 发到哪个预热房，发送的时候更新
+                  sendTo: '', // 发到哪个预热房，发送的时候更新
+                  // 预热间信息
+                  preheatingRoom: '',
+                  inPreheatingRoomTime: null,
+                  outPreheatingRoomTime: null,
+                  // 灭菌间信息
+                  sterilizationRoom: '',
+                  inSterilizationRoomTime: null,
+                  outSterilizationRoomTime: null,
+                  // 解析间信息
+                  analysisRoom: '',
+                  inAnalysisRoomTime: null,
+                  outAnalysisRoomTime: null
                 };
                 this.queues[queueIndex].trayInfo.push(trayInfo);
                 this.addLog(`${trayFrom}队列添加货物：${trayCode}`);
@@ -6100,7 +6472,19 @@ export default {
         productName: '无码产品',
         isTerile: nonSterile ? 0 : 1,
         state: '0',
-        sendTo: ''
+        sendTo: '',
+        // 预热间信息
+        preheatingRoom: '',
+        inPreheatingRoomTime: null,
+        outPreheatingRoomTime: null,
+        // 灭菌间信息
+        sterilizationRoom: '',
+        inSterilizationRoomTime: null,
+        outSterilizationRoomTime: null,
+        // 解析间信息
+        analysisRoom: '',
+        inAnalysisRoomTime: null,
+        outAnalysisRoomTime: null
       };
       this.queues[0].trayInfo.push(trayInfo);
       this.addLog(trayFrom + `无码上货区队列添加货物：no-tray-code`);
@@ -6121,7 +6505,19 @@ export default {
         productCode: 'NO-PRODUCT',
         productName: '无码产品',
         state: '0',
-        isTerile: nonSterile ? 0 : 1
+        isTerile: nonSterile ? 0 : 1,
+        // 预热间信息
+        preheatingRoom: '',
+        inPreheatingRoomTime: null,
+        outPreheatingRoomTime: null,
+        // 灭菌间信息
+        sterilizationRoom: '',
+        inSterilizationRoomTime: null,
+        outSterilizationRoomTime: null,
+        // 解析间信息
+        analysisRoom: '',
+        inAnalysisRoomTime: null,
+        outAnalysisRoomTime: null
       };
       const queueIndex = trayFrom === 'D' ? 12 : 13;
       this.queues[queueIndex].trayInfo.push(trayInfo);
