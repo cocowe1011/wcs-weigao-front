@@ -3613,8 +3613,8 @@ export default {
       },
       // D线电机运行信号-读取PLC
       dLineMotorRunning: {
-        bit0: '0', // D-1#电机运行信号
-        bit1: '0' // D-2#电机运行信号
+        bit0: '0', // D1-1#电机运行信号
+        bit1: '0' // D1-2#电机运行信号
       },
       // D线光电检测信号-读取PLC
       dLinePhotoelectricSignal: {
@@ -3626,8 +3626,8 @@ export default {
       },
       // E线电机运行信号-读取PLC
       eLineMotorRunning: {
-        bit0: '0', // E-1#电机运行信号
-        bit1: '0' // E-2#电机运行信号
+        bit0: '0', // E1-1#电机运行信号
+        bit1: '0' // E1-2#电机运行信号
       },
       // E线光电检测信号-读取PLC
       eLinePhotoelectricSignal: {
@@ -3984,6 +3984,30 @@ export default {
       this.cLinePhotoelectricSignal.bit7 = getBit(word16, 15);
       this.cLinePhotoelectricSignal.bit8 = getBit(word16, 0);
       this.cLinePhotoelectricSignal.bit9 = getBit(word16, 1);
+
+      // D线电机运行信号-读取PLC
+      let word18 = this.convertToWord(values.DBW18);
+      this.dLineMotorRunning.bit0 = getBit(word18, 8);
+      this.dLineMotorRunning.bit1 = getBit(word18, 9);
+
+      // D线光电检测信号-读取PLC
+      let word20 = this.convertToWord(values.DBW20);
+      this.dLinePhotoelectricSignal.bit1 = getBit(word20, 9);
+      this.dLinePhotoelectricSignal.bit2 = getBit(word20, 10);
+      this.dLinePhotoelectricSignal.bit3 = getBit(word20, 11);
+      this.dLinePhotoelectricSignal.bit4 = getBit(word20, 12);
+
+      // E线电机运行信号-读取PLC
+      let word22 = this.convertToWord(values.DBW22);
+      this.eLineMotorRunning.bit0 = getBit(word22, 8);
+      this.eLineMotorRunning.bit1 = getBit(word22, 9);
+
+      // E线光电检测信号-读取PLC
+      let word24 = this.convertToWord(values.DBW24);
+      this.eLinePhotoelectricSignal.bit1 = getBit(word24, 9);
+      this.eLinePhotoelectricSignal.bit2 = getBit(word24, 10);
+      this.eLinePhotoelectricSignal.bit3 = getBit(word24, 11);
+      this.eLinePhotoelectricSignal.bit4 = getBit(word24, 12);
 
       // 缓冲区数量-读取PLC
       this.bufferQuantity = Number(values.DBW28);
