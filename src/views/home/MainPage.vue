@@ -713,19 +713,38 @@
                   </div>
                 </div>
                 <!-- 无码上货按钮 -->
-                <div class="marker-with-button" data-x="200" data-y="1650">
-                  <el-button
-                    :type="noCodeUpload ? 'success' : 'primary'"
-                    size="mini"
-                    @click="toggleNoCodeUpload"
-                    :icon="noCodeUpload ? 'el-icon-loading' : 'el-icon-setting'"
-                  >
-                    {{
-                      noCodeUpload
-                        ? '正在使用无码上货模式'
-                        : '设置为无码上货模式'
-                    }}
-                  </el-button>
+                <div class="marker-with-button" data-x="450" data-y="1650">
+                  <div style="display: flex; align-items: center">
+                    <el-button
+                      :type="noCodeUpload ? 'success' : 'primary'"
+                      size="mini"
+                      @click="toggleNoCodeUpload"
+                      :icon="
+                        noCodeUpload ? 'el-icon-loading' : 'el-icon-setting'
+                      "
+                    >
+                      {{
+                        noCodeUpload
+                          ? '正在使用无码上货模式'
+                          : '设置为无码上货模式'
+                      }}
+                    </el-button>
+                    <!-- 当前运行模式状态显示 -->
+                    <div
+                      class="mode-status-display"
+                      style="
+                        margin-left: 10px;
+                        font-weight: bold;
+                        color: #f56c6c;
+                        font-size: 20px;
+                        white-space: nowrap;
+                      "
+                    >
+                      <span style="color: #606266">当前运行模式：</span
+                      >{{ noCodeUpload ? '无码模式' : '有码模式' }}
+                      <!-- 深灰标签 + 红色状态 -->
+                    </div>
+                  </div>
                 </div>
                 <!-- 下货信息展示 -->
                 <div class="marker-with-panel" data-x="2750" data-y="130">
