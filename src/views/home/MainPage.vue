@@ -3865,6 +3865,8 @@ export default {
       },
       // 当前要修改的非灭菌复选框信息
       currentNonSterileCheckbox: null,
+      // 当前操作类型
+      currentOperation: null,
       // 上货1数量-读取PLC
       upLoad1Quantity: 0,
       // 上货2数量-读取PLC
@@ -6759,23 +6761,59 @@ export default {
                   this.$message.success(`${location}非灭菌状态修改成功`);
                 }
 
+                // 处理无码模式切换
+                if (this.currentOperation === 'toggleNoCodeUpload') {
+                  this.noCodeUpload = !this.noCodeUpload;
+                  if (this.noCodeUpload) {
+                    this.$message.success(
+                      '已启用无码上货模式，触发光电信号将直接添加托盘'
+                    );
+                    this.addLog('无码上货模式已启用，已给PLC，DBW562发送2');
+                    // 无码模式发2
+                    ipcRenderer.send('writeValuesToPLC', 'DBW562', 2);
+                  } else {
+                    this.$message.info(
+                      '已关闭无码上货模式，已给PLC，DBW562发送1'
+                    );
+                    this.addLog('无码上货模式已关闭');
+                    // 有码模式发1
+                    ipcRenderer.send('writeValuesToPLC', 'DBW562', 1);
+                  }
+                }
+
                 // 关闭对话框
                 this.adminPasswordDialogVisible = false;
                 this.currentNonSterileCheckbox = null;
+                this.currentOperation = null;
               } else {
                 // 登录失败
-                this.$message.error('管理员账号或密码错误，无法修改非灭菌状态');
-                this.addLog(
-                  `管理员权限验证失败，${this.currentNonSterileCheckbox?.location}非灭菌状态修改被拒绝`
-                );
+                if (this.currentOperation === 'toggleNoCodeUpload') {
+                  this.$message.error(
+                    '管理员账号或密码错误，无法切换无码上货模式'
+                  );
+                  this.addLog('管理员权限验证失败，无码上货模式切换被拒绝');
+                } else {
+                  this.$message.error(
+                    '管理员账号或密码错误，无法修改非灭菌状态'
+                  );
+                  this.addLog(
+                    `管理员权限验证失败，${this.currentNonSterileCheckbox?.location}非灭菌状态修改被拒绝`
+                  );
+                }
               }
             })
             .catch((err) => {
               // 接口调用失败
               this.$message.error('验证失败，请检查网络连接');
-              this.addLog(
-                `管理员权限验证接口调用失败，${this.currentNonSterileCheckbox?.location}非灭菌状态修改被拒绝`
-              );
+              if (this.currentOperation === 'toggleNoCodeUpload') {
+                this.addLog(
+                  '管理员权限验证接口调用失败，无码上货模式切换被拒绝'
+                );
+              } else {
+                this.addLog(
+                  `管理员权限验证接口调用失败，${this.currentNonSterileCheckbox?.location}非灭菌状态修改被拒绝`
+                );
+              }
             })
             .finally(() => {
               this.adminPasswordLoading = false;
@@ -6788,8 +6826,13 @@ export default {
     cancelAdminPassword() {
       this.adminPasswordDialogVisible = false;
       this.currentNonSterileCheckbox = null;
+      this.currentOperation = null;
       this.adminPasswordForm.password = '';
-      this.$message.info('已取消非灭菌状态修改');
+      if (this.currentOperation === 'toggleNoCodeUpload') {
+        this.$message.info('已取消无码上货模式切换');
+      } else {
+        this.$message.info('已取消非灭菌状态修改');
+      }
     },
     // 调用WMS出货接口
     callWmsUnloadGoods(trayCode, state, queueType = '') {
@@ -6832,18 +6875,17 @@ export default {
     },
     // 切换无码上货状态
     toggleNoCodeUpload() {
-      this.noCodeUpload = !this.noCodeUpload;
-      if (this.noCodeUpload) {
-        this.$message.success('已启用无码上货模式，触发光电信号将直接添加托盘');
-        this.addLog('无码上货模式已启用，已给PLC，DBW562发送2');
-        // 无码模式发2
-        ipcRenderer.send('writeValuesToPLC', 'DBW562', 2);
-      } else {
-        this.$message.info('已关闭无码上货模式，已给PLC，DBW562发送1');
-        this.addLog('无码上货模式已关闭');
-        // 有码模式发1
-        ipcRenderer.send('writeValuesToPLC', 'DBW562', 1);
-      }
+      // 显示管理员密码验证对话框
+      this.currentOperation = 'toggleNoCodeUpload';
+      this.adminPasswordDialogVisible = true;
+      this.adminPasswordForm.password = '';
+
+      // 聚焦到密码输入框
+      this.$nextTick(() => {
+        this.$refs.adminPasswordForm.$el
+          .querySelector('input[type="password"]')
+          .focus();
+      });
     },
     changeQueueExpanded() {
       this.isQueueExpanded = !this.isQueueExpanded;
