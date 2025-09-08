@@ -8093,13 +8093,13 @@ export default {
         return;
       }
 
-      // 计算顺序编号：队列中已有托盘的数量 + 1
+      // 计算顺序编号：队列中已有托盘的数量 + 1，然后除以2向上取整（两个一组排序）
       const existingTrayCount = this.queues[queueIndex].trayInfo.filter(
         (t) => t.sequenceNumber && t.sequenceNumber > 0
       ).length;
 
       // 确保Vue响应式更新
-      this.$set(tray, 'sequenceNumber', existingTrayCount + 1);
+      this.$set(tray, 'sequenceNumber', Math.ceil((existingTrayCount + 1) / 2));
     },
     // 发送到预热房的方法
     sendToPreheatingRoom() {
