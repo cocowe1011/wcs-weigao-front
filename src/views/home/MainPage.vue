@@ -1816,7 +1816,7 @@
     <div
       class="side-info-panel-queue"
       :style="{
-        width: isQueueExpanded ? '800px' : 'auto',
+        width: isQueueExpanded ? '850px' : 'auto',
         height: isQueueExpanded ? 'calc(100% - 40px)' : 'auto'
       }"
     >
@@ -1904,30 +1904,45 @@
                     <div class="tray-info">
                       <div class="tray-info-row">
                         <span class="tray-name">{{ tray.name }}</span>
-                        <span class="tray-batch">
+                        <div class="tray-batch-group">
+                          <span class="tray-batch">
+                            <span>
+                              {{
+                                tray.isTerile === 1 ? '消毒' : '不消毒'
+                              }}</span
+                            >
+                          </span>
                           <span
+                            class="tray-batch"
                             v-if="
                               tray.sendTo &&
-                              ['A1', 'B1', 'C1'].includes(
+                              ['A1', 'B1', 'C1', '缓存区'].includes(
                                 selectedQueue.queueName
                               )
                             "
-                            >预热房位置：{{ tray.sendTo }}</span
-                          ><span v-else>
-                            {{ tray.isTerile === 1 ? '消毒' : '不消毒' }}</span
-                          ><span
+                            >{{
+                              ['A1', 'B1', 'C1'].includes(
+                                selectedQueue.queueName
+                              )
+                                ? '预热房位置：'
+                                : '预热房发送中：'
+                            }}{{ tray.sendTo }}</span
+                          >
+                          <span
+                            class="tray-batch"
                             v-if="tray.sequenceNumber > 0"
-                            class="sequence-number"
-                            >(序号：{{ tray.sequenceNumber }})</span
-                          ></span
-                        >
-                        <span
-                          class="tray-batch"
-                          v-if="selectedQueue.queueName == '分发区'"
-                          >PLC命令：{{
-                            tray.state === '0' ? '未执行' : '已执行'
-                          }}</span
-                        >
+                            ><span class="sequence-number"
+                              >(序号：{{ tray.sequenceNumber }})</span
+                            ></span
+                          >
+                          <span
+                            class="tray-batch"
+                            v-if="selectedQueue.queueName == '分发区'"
+                            >PLC命令：{{
+                              tray.state === '0' ? '未执行' : '已执行'
+                            }}</span
+                          >
+                        </div>
                       </div>
                       <div class="tray-info-row">
                         <span class="tray-detail"
@@ -4623,6 +4638,11 @@ export default {
         // 请求上位机下发任务(预热小车前）
         if (newVal === 1) {
           this.addLog('收到-请求上位机下发任务(预热小车前)');
+          // 判断当前有没有执行中的预热房
+          if (!this.preheatExecuting) {
+            this.addLog('当前没有执行中的预热房，无法执行预热小车前信号请求');
+            return;
+          }
           this.sendToPreheatingRoom();
         }
       }
@@ -4719,58 +4739,49 @@ export default {
         }
 
         const increaseCount = newVal - oldVal;
-        const availableTrays = this.queues[2].trayInfo || [];
+        let movedCount = 0;
 
-        if (availableTrays.length >= increaseCount) {
-          // 批量移动托盘
-          for (let i = 0; i < increaseCount; i++) {
-            if (this.queues[2].trayInfo.length > 0) {
-              const tray = this.queues[2].trayInfo[0];
-              // 设置托盘顺序编号
-              this.setTraySequenceNumber(tray, 3);
-              const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-              this.$set(tray, 'preheatingRoom', 'A1');
-              this.$set(tray, 'inPreheatingRoomTime', currentTime);
-              this.addLog(
-                `托盘 ${tray.trayCode} 进入预热间 A1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
-              );
-              // 更新到后台
-              this.updateTrayInfo(tray, {
-                preheatingRoom: 'A1',
-                inPreheatingRoomTime: currentTime
-              });
-              // 把缓冲区的托盘信息加入到A1队列
-              this.queues[3].trayInfo.push(tray);
-              this.queues[2].trayInfo.shift();
-            }
-          }
-          // 如果缓冲区队列数量变为0，则重新隐藏小车1设置去哪个预热房的按钮
-          if (this.queues[2].trayInfo.length === 0) {
-            this.showCar1SetPreheatingRoom = false;
-          }
-        } else {
-          this.addLog(
-            `A1队列数量增加${increaseCount}，但缓冲区托盘不足，仅移动${availableTrays.length}个托盘`
+        // 移动指定数量的A1托盘
+        for (let i = 0; i < increaseCount; i++) {
+          // 找到第一个sendTo为A1-1或A1-2的托盘
+          const trayIndex = this.queues[2].trayInfo.findIndex(
+            (tray) => tray.sendTo === 'A1-1' || tray.sendTo === 'A1-2'
           );
-          // 移动所有可用的托盘
-          while (this.queues[2].trayInfo.length > 0) {
-            const tray = this.queues[2].trayInfo[0];
+
+          if (trayIndex !== -1) {
+            const tray = this.queues[2].trayInfo[trayIndex];
             // 设置托盘顺序编号
             this.setTraySequenceNumber(tray, 3);
             const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             this.$set(tray, 'preheatingRoom', 'A1');
             this.$set(tray, 'inPreheatingRoomTime', currentTime);
             this.addLog(
-              `托盘 ${tray.trayCode} 进入预热间 A1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
+              `托盘 ${tray.trayCode} 进入预热间 A1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}，目标位置：${tray.sendTo}`
             );
             // 更新到后台
             this.updateTrayInfo(tray, {
               preheatingRoom: 'A1',
               inPreheatingRoomTime: currentTime
             });
+            // 把缓冲区的托盘信息加入到A1队列
             this.queues[3].trayInfo.push(tray);
-            this.queues[2].trayInfo.shift();
+            this.queues[2].trayInfo.splice(trayIndex, 1);
+            movedCount++;
+          } else {
+            // 没有更多匹配的托盘，跳出循环
+            break;
           }
+        }
+
+        // 记录移动结果
+        if (movedCount < increaseCount) {
+          this.addLog(
+            `A1队列数量增加${increaseCount}，但缓冲区中sendTo为A1的托盘不足，仅移动${movedCount}个托盘`
+          );
+        }
+
+        // 如果缓冲区队列数量变为0，则重新隐藏小车1设置去哪个预热房的按钮
+        if (this.queues[2].trayInfo.length === 0) {
           this.showCar1SetPreheatingRoom = false;
         }
       }
@@ -4803,58 +4814,49 @@ export default {
         }
 
         const increaseCount = newVal - oldVal;
-        const availableTrays = this.queues[2].trayInfo || [];
+        let movedCount = 0;
 
-        if (availableTrays.length >= increaseCount) {
-          // 批量移动托盘
-          for (let i = 0; i < increaseCount; i++) {
-            if (this.queues[2].trayInfo.length > 0) {
-              const tray = this.queues[2].trayInfo[0];
-              // 设置托盘顺序编号
-              this.setTraySequenceNumber(tray, 4);
-              const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-              this.$set(tray, 'preheatingRoom', 'B1');
-              this.$set(tray, 'inPreheatingRoomTime', currentTime);
-              this.addLog(
-                `托盘 ${tray.trayCode} 进入预热间 B1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
-              );
-              // 更新到后台
-              this.updateTrayInfo(tray, {
-                preheatingRoom: 'B1',
-                inPreheatingRoomTime: currentTime
-              });
-              // 把缓冲区的托盘信息加入到B1队列
-              this.queues[4].trayInfo.push(tray);
-              this.queues[2].trayInfo.shift();
-            }
-          }
-          // 如果缓冲区队列数量变为0，则重新隐藏小车1设置去哪个预热房的按钮
-          if (this.queues[2].trayInfo.length === 0) {
-            this.showCar1SetPreheatingRoom = false;
-          }
-        } else {
-          this.addLog(
-            `B1队列数量增加${increaseCount}，但缓冲区托盘不足，仅移动${availableTrays.length}个托盘`
+        // 移动指定数量的B1托盘
+        for (let i = 0; i < increaseCount; i++) {
+          // 找到第一个sendTo为B1-1或B1-2的托盘
+          const trayIndex = this.queues[2].trayInfo.findIndex(
+            (tray) => tray.sendTo === 'B1-1' || tray.sendTo === 'B1-2'
           );
-          // 移动所有可用的托盘
-          while (this.queues[2].trayInfo.length > 0) {
-            const tray = this.queues[2].trayInfo[0];
+
+          if (trayIndex !== -1) {
+            const tray = this.queues[2].trayInfo[trayIndex];
             // 设置托盘顺序编号
             this.setTraySequenceNumber(tray, 4);
             const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             this.$set(tray, 'preheatingRoom', 'B1');
             this.$set(tray, 'inPreheatingRoomTime', currentTime);
             this.addLog(
-              `托盘 ${tray.trayCode} 进入预热间 B1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
+              `托盘 ${tray.trayCode} 进入预热间 B1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}，目标位置：${tray.sendTo}`
             );
             // 更新到后台
             this.updateTrayInfo(tray, {
               preheatingRoom: 'B1',
               inPreheatingRoomTime: currentTime
             });
+            // 把缓冲区的托盘信息加入到B1队列
             this.queues[4].trayInfo.push(tray);
-            this.queues[2].trayInfo.shift();
+            this.queues[2].trayInfo.splice(trayIndex, 1);
+            movedCount++;
+          } else {
+            // 没有更多匹配的托盘，跳出循环
+            break;
           }
+        }
+
+        // 记录移动结果
+        if (movedCount < increaseCount) {
+          this.addLog(
+            `B1队列数量增加${increaseCount}，但缓冲区中sendTo为B1的托盘不足，仅移动${movedCount}个托盘`
+          );
+        }
+
+        // 如果缓冲区队列数量变为0，则重新隐藏小车1设置去哪个预热房的按钮
+        if (this.queues[2].trayInfo.length === 0) {
           this.showCar1SetPreheatingRoom = false;
         }
       }
@@ -4887,58 +4889,49 @@ export default {
         }
 
         const increaseCount = newVal - oldVal;
-        const availableTrays = this.queues[2].trayInfo || [];
+        let movedCount = 0;
 
-        if (availableTrays.length >= increaseCount) {
-          // 批量移动托盘
-          for (let i = 0; i < increaseCount; i++) {
-            if (this.queues[2].trayInfo.length > 0) {
-              const tray = this.queues[2].trayInfo[0];
-              // 设置托盘顺序编号
-              this.setTraySequenceNumber(tray, 5);
-              const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-              this.$set(tray, 'preheatingRoom', 'C1');
-              this.$set(tray, 'inPreheatingRoomTime', currentTime);
-              this.addLog(
-                `托盘 ${tray.trayCode} 进入预热间 C1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
-              );
-              // 更新到后台
-              this.updateTrayInfo(tray, {
-                preheatingRoom: 'C1',
-                inPreheatingRoomTime: currentTime
-              });
-              // 把缓冲区的托盘信息加入到C1队列
-              this.queues[5].trayInfo.push(tray);
-              this.queues[2].trayInfo.shift();
-            }
-          }
-          // 如果缓冲区队列数量变为0，则重新隐藏小车1设置去哪个预热房的按钮
-          if (this.queues[2].trayInfo.length === 0) {
-            this.showCar1SetPreheatingRoom = false;
-          }
-        } else {
-          this.addLog(
-            `C1队列数量增加${increaseCount}，但缓冲区托盘不足，仅移动${availableTrays.length}个托盘`
+        // 移动指定数量的C1托盘
+        for (let i = 0; i < increaseCount; i++) {
+          // 找到第一个sendTo为C1-1或C1-2的托盘
+          const trayIndex = this.queues[2].trayInfo.findIndex(
+            (tray) => tray.sendTo === 'C1-1' || tray.sendTo === 'C1-2'
           );
-          // 移动所有可用的托盘
-          while (this.queues[2].trayInfo.length > 0) {
-            const tray = this.queues[2].trayInfo[0];
+
+          if (trayIndex !== -1) {
+            const tray = this.queues[2].trayInfo[trayIndex];
             // 设置托盘顺序编号
             this.setTraySequenceNumber(tray, 5);
             const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             this.$set(tray, 'preheatingRoom', 'C1');
             this.$set(tray, 'inPreheatingRoomTime', currentTime);
             this.addLog(
-              `托盘 ${tray.trayCode} 进入预热间 C1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}`
+              `托盘 ${tray.trayCode} 进入预热间 C1，时间：${currentTime}，顺序编号：${tray.sequenceNumber}，目标位置：${tray.sendTo}`
             );
             // 更新到后台
             this.updateTrayInfo(tray, {
               preheatingRoom: 'C1',
               inPreheatingRoomTime: currentTime
             });
+            // 把缓冲区的托盘信息加入到C1队列
             this.queues[5].trayInfo.push(tray);
-            this.queues[2].trayInfo.shift();
+            this.queues[2].trayInfo.splice(trayIndex, 1);
+            movedCount++;
+          } else {
+            // 没有更多匹配的托盘，跳出循环
+            break;
           }
+        }
+
+        // 记录移动结果
+        if (movedCount < increaseCount) {
+          this.addLog(
+            `C1队列数量增加${increaseCount}，但缓冲区中sendTo为C1的托盘不足，仅移动${movedCount}个托盘`
+          );
+        }
+
+        // 如果缓冲区队列数量变为0，则重新隐藏小车1设置去哪个预热房的按钮
+        if (this.queues[2].trayInfo.length === 0) {
           this.showCar1SetPreheatingRoom = false;
         }
       }
@@ -8108,6 +8101,32 @@ export default {
         return;
       }
 
+      // 检查缓存区队列中是否已经有sendTo是选择预热房的托盘
+      if (this.queues[2] && Array.isArray(this.queues[2].trayInfo)) {
+        const conflictTrays = this.queues[2].trayInfo.filter((tray) => {
+          if (!tray.sendTo) return false;
+          // 检查sendTo是否匹配当前选择的预热房
+          const selectedRoom = this.preheatingRoomSelected;
+          return tray.sendTo.startsWith(selectedRoom + '1-');
+        });
+
+        if (conflictTrays.length > 0) {
+          const conflictTrayCodes = conflictTrays
+            .map((tray) => tray.trayCode)
+            .join('、');
+          this.addLog(
+            `缓存区队列中已有托盘（${conflictTrayCodes}）的预热房选择是${this.preheatingRoomSelected}，无法执行预热房操作，请先进行处理`
+          );
+          this.$message({
+            message: `⚠️ 缓存区队列中已有托盘（${conflictTrayCodes}）的预热房选择是${this.preheatingRoomSelected}，无法执行预热房操作，请先进行处理`,
+            type: 'warning',
+            duration: 5000,
+            showClose: true
+          });
+          return;
+        }
+      }
+
       // 判断起始地数量是否大于0（系统队列数量和PLC缓冲区数量都要大于0）
       const systemQueueCount =
         this.queues[2] && Array.isArray(this.queues[2].trayInfo)
@@ -9824,6 +9843,14 @@ export default {
                       font-size: 14px;
                     }
 
+                    .tray-batch-group {
+                      display: flex;
+                      align-items: center;
+                      gap: 4px;
+                      flex-wrap: wrap;
+                      justify-content: flex-end;
+                    }
+
                     .tray-batch {
                       font-size: 12px;
                       color: #0ac5a8;
@@ -9944,7 +9971,7 @@ export default {
     /* 展开状态的样式 */
     .queue-section.expanded {
       padding: 15px;
-      width: 800px;
+      width: 850px;
       height: 100%;
       display: flex;
       flex-direction: column;
