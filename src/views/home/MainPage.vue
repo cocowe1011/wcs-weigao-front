@@ -56,7 +56,7 @@
               </div>
               <div class="data-card">
                 <div class="data-card-border">
-                  <div class="data-card-border-borderTop">备注</div>
+                  <div class="data-card-border-borderTop">批次</div>
                   <div class="data-card-border-borderDown">
                     {{ nowScanTrayInfo.batchNo || '--' }}
                   </div>
@@ -1962,7 +1962,10 @@
                       </div>
                       <div class="tray-info-row">
                         <span class="tray-detail"
-                          >备注：{{ tray.batchNo || '--' }}</span
+                          >批次：{{ tray.batchNo || '--' }}</span
+                        >
+                        <span class="tray-detail"
+                          >备注：{{ tray.remark || '--' }}</span
                         >
                       </div>
                       <span class="tray-time">{{ tray.time }}</span>
@@ -6412,6 +6415,7 @@ export default {
               detailList: JSON.stringify(res.data.items),
               orderStatus: '0',
               batchNo: res.data.items[0].batchNo,
+              remark: res.data.items[0].remark,
               unit: res.data.items[0].unit,
               receivedPkgQuantity: res.data.items[0].receivedPkgQuantity
             };
@@ -6432,6 +6436,7 @@ export default {
                   state: '0',
                   sendTo: '', // 发到哪个预热房，发送的时候更新
                   batchNo: paramInsert.batchNo,
+                  remark: paramInsert.remark,
                   unit: paramInsert.unit,
                   receivedPkgQuantity: paramInsert.receivedPkgQuantity
                 };
@@ -6446,6 +6451,7 @@ export default {
                   isTerile: trayInfo.isTerile === 1 ? '消毒' : '不消毒',
                   inPut: trayFrom,
                   batchNo: trayInfo.batchNo,
+                  remark: trayInfo.remark,
                   productCode: trayInfo.productCode
                 };
               }
@@ -6583,6 +6589,7 @@ export default {
               detailList: JSON.stringify(res.data.items),
               orderStatus: '0',
               batchNo: res.data.items[0].batchNo,
+              remark: res.data.items[0].remark,
               unit: res.data.items[0].unit,
               receivedPkgQuantity: res.data.items[0].receivedPkgQuantity
             };
@@ -6601,6 +6608,7 @@ export default {
                   state: '0',
                   sendTo: '', // 发到哪个预热房，发送的时候更新
                   batchNo: paramInsert.batchNo,
+                  remark: paramInsert.remark,
                   unit: paramInsert.unit,
                   receivedPkgQuantity: paramInsert.receivedPkgQuantity,
                   // 预热间信息
@@ -6627,6 +6635,7 @@ export default {
                   isTerile: trayInfo.isTerile === 1 ? '消毒' : '不消毒',
                   inPut: trayFrom,
                   batchNo: trayInfo.batchNo,
+                  remark: trayInfo.remark,
                   productCode: trayInfo.productCode
                 };
               }
@@ -7207,7 +7216,8 @@ export default {
             productCode: tray.productCode || '', // 添加物料编码
             productName: tray.productName || '', // 添加产品名称
             unit: tray.unit || '', // 添加规格
-            batchNo: tray.batchNo || '' // 添加备注
+            batchNo: tray.batchNo || '', // 添加批次
+            remark: tray.remark || '' // 添加备注
           }))
           .filter((tray) => tray.id); // 过滤掉没有 id 的托盘
       } catch (error) {
