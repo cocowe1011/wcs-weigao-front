@@ -1916,15 +1916,32 @@
                             class="tray-batch"
                             v-if="
                               tray.sendTo &&
-                              ['A1', 'B1', 'C1', '缓存区'].includes(
-                                selectedQueue.queueName
-                              )
+                              [
+                                'A1',
+                                'B1',
+                                'C1',
+                                'A2',
+                                'B2',
+                                'C2',
+                                'A3',
+                                'B3',
+                                'C3',
+                                '缓存区'
+                              ].includes(selectedQueue.queueName)
                             "
                             >{{
                               ['A1', 'B1', 'C1'].includes(
                                 selectedQueue.queueName
                               )
                                 ? '预热房位置：'
+                                : ['A2', 'B2', 'C2'].includes(
+                                    selectedQueue.queueName
+                                  )
+                                ? '灭菌柜位置：'
+                                : ['A3', 'B3', 'C3'].includes(
+                                    selectedQueue.queueName
+                                  )
+                                ? '解析柜位置：'
                                 : '预热房发送中：'
                             }}{{ tray.sendTo }}</span
                           >
@@ -4986,8 +5003,24 @@ export default {
                   this.$set(tray, 'outPreheatingRoomTime', currentTime);
                   this.$set(tray, 'sterilizationRoom', 'A2');
                   this.$set(tray, 'inSterilizationRoomTime', currentTime);
+
+                  // 计算灭菌柜的sendTo编号：A1-1→A2-1, A1-2→A2-2
+                  if (tray.sendTo) {
+                    const originalSendTo = tray.sendTo;
+                    if (originalSendTo.startsWith('A1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `A2-${suffix}`;
+                    } else if (originalSendTo.startsWith('B1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `A2-${suffix}`; // 进入A灭菌柜
+                    } else if (originalSendTo.startsWith('C1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `A2-${suffix}`; // 进入A灭菌柜
+                    }
+                  }
+
                   this.addLog(
-                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 A2，时间：${currentTime}`
+                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 A2，时间：${currentTime}，目标位置：${tray.sendTo}`
                   );
                   // 更新到后台
                   this.updateTrayInfo(tray, {
@@ -5013,8 +5046,24 @@ export default {
                 this.$set(tray, 'outPreheatingRoomTime', currentTime);
                 this.$set(tray, 'sterilizationRoom', 'A2');
                 this.$set(tray, 'inSterilizationRoomTime', currentTime);
+
+                // 计算灭菌柜的sendTo编号：A1-1→A2-1, A1-2→A2-2
+                if (tray.sendTo) {
+                  const originalSendTo = tray.sendTo;
+                  if (originalSendTo.startsWith('A1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `A2-${suffix}`;
+                  } else if (originalSendTo.startsWith('B1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `A2-${suffix}`; // 进入A灭菌柜
+                  } else if (originalSendTo.startsWith('C1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `A2-${suffix}`; // 进入A灭菌柜
+                  }
+                }
+
                 this.addLog(
-                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 A2，时间：${currentTime}`
+                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 A2，时间：${currentTime}，目标位置：${tray.sendTo}`
                 );
                 // 更新到后台
                 this.updateTrayInfo(tray, {
@@ -5089,8 +5138,24 @@ export default {
                   this.$set(tray, 'outPreheatingRoomTime', currentTime);
                   this.$set(tray, 'sterilizationRoom', 'B2');
                   this.$set(tray, 'inSterilizationRoomTime', currentTime);
+
+                  // 计算灭菌柜的sendTo编号：A1-1→B2-1, A1-2→B2-2
+                  if (tray.sendTo) {
+                    const originalSendTo = tray.sendTo;
+                    if (originalSendTo.startsWith('A1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `B2-${suffix}`; // 进入B灭菌柜
+                    } else if (originalSendTo.startsWith('B1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `B2-${suffix}`;
+                    } else if (originalSendTo.startsWith('C1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `B2-${suffix}`; // 进入B灭菌柜
+                    }
+                  }
+
                   this.addLog(
-                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 B2，时间：${currentTime}`
+                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 B2，时间：${currentTime}，目标位置：${tray.sendTo}`
                   );
                   // 更新到后台
                   this.updateTrayInfo(tray, {
@@ -5116,8 +5181,24 @@ export default {
                 this.$set(tray, 'outPreheatingRoomTime', currentTime);
                 this.$set(tray, 'sterilizationRoom', 'B2');
                 this.$set(tray, 'inSterilizationRoomTime', currentTime);
+
+                // 计算灭菌柜的sendTo编号：A1-1→B2-1, A1-2→B2-2
+                if (tray.sendTo) {
+                  const originalSendTo = tray.sendTo;
+                  if (originalSendTo.startsWith('A1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `B2-${suffix}`; // 进入B灭菌柜
+                  } else if (originalSendTo.startsWith('B1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `B2-${suffix}`;
+                  } else if (originalSendTo.startsWith('C1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `B2-${suffix}`; // 进入B灭菌柜
+                  }
+                }
+
                 this.addLog(
-                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 B2，时间：${currentTime}`
+                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 B2，时间：${currentTime}，目标位置：${tray.sendTo}`
                 );
                 // 更新到后台
                 this.updateTrayInfo(tray, {
@@ -5192,8 +5273,24 @@ export default {
                   this.$set(tray, 'outPreheatingRoomTime', currentTime);
                   this.$set(tray, 'sterilizationRoom', 'C2');
                   this.$set(tray, 'inSterilizationRoomTime', currentTime);
+
+                  // 计算灭菌柜的sendTo编号：A1-1→C2-1, A1-2→C2-2
+                  if (tray.sendTo) {
+                    const originalSendTo = tray.sendTo;
+                    if (originalSendTo.startsWith('A1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `C2-${suffix}`; // 进入C灭菌柜
+                    } else if (originalSendTo.startsWith('B1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `C2-${suffix}`; // 进入C灭菌柜
+                    } else if (originalSendTo.startsWith('C1-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `C2-${suffix}`;
+                    }
+                  }
+
                   this.addLog(
-                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 C2，时间：${currentTime}`
+                    `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 C2，时间：${currentTime}，目标位置：${tray.sendTo}`
                   );
                   // 更新到后台
                   this.updateTrayInfo(tray, {
@@ -5219,8 +5316,24 @@ export default {
                 this.$set(tray, 'outPreheatingRoomTime', currentTime);
                 this.$set(tray, 'sterilizationRoom', 'C2');
                 this.$set(tray, 'inSterilizationRoomTime', currentTime);
+
+                // 计算灭菌柜的sendTo编号：A1-1→C2-1, A1-2→C2-2
+                if (tray.sendTo) {
+                  const originalSendTo = tray.sendTo;
+                  if (originalSendTo.startsWith('A1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `C2-${suffix}`; // 进入C灭菌柜
+                  } else if (originalSendTo.startsWith('B1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `C2-${suffix}`; // 进入C灭菌柜
+                  } else if (originalSendTo.startsWith('C1-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `C2-${suffix}`;
+                  }
+                }
+
                 this.addLog(
-                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 C2，时间：${currentTime}`
+                  `托盘 ${tray.trayCode} 离开预热间 ${tray.preheatingRoom}，进入灭菌间 C2，时间：${currentTime}，目标位置：${tray.sendTo}`
                 );
                 // 更新到后台
                 this.updateTrayInfo(tray, {
@@ -5295,8 +5408,24 @@ export default {
                   this.$set(tray, 'outSterilizationRoomTime', currentTime);
                   this.$set(tray, 'analysisRoom', 'A3');
                   this.$set(tray, 'inAnalysisRoomTime', currentTime);
+
+                  // 计算解析柜的sendTo编号：A2-1→A3-1, A2-2→A3-2
+                  if (tray.sendTo) {
+                    const originalSendTo = tray.sendTo;
+                    if (originalSendTo.startsWith('A2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `A3-${suffix}`;
+                    } else if (originalSendTo.startsWith('B2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `A3-${suffix}`; // 进入A解析柜
+                    } else if (originalSendTo.startsWith('C2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `A3-${suffix}`; // 进入A解析柜
+                    }
+                  }
+
                   this.addLog(
-                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 A3，时间：${currentTime}`
+                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 A3，时间：${currentTime}，目标位置：${tray.sendTo}`
                   );
                   // 更新到后台
                   this.updateTrayInfo(tray, {
@@ -5322,8 +5451,24 @@ export default {
                 this.$set(tray, 'outSterilizationRoomTime', currentTime);
                 this.$set(tray, 'analysisRoom', 'A3');
                 this.$set(tray, 'inAnalysisRoomTime', currentTime);
+
+                // 计算解析柜的sendTo编号：A2-1→A3-1, A2-2→A3-2
+                if (tray.sendTo) {
+                  const originalSendTo = tray.sendTo;
+                  if (originalSendTo.startsWith('A2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `A3-${suffix}`;
+                  } else if (originalSendTo.startsWith('B2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `A3-${suffix}`; // 进入A解析柜
+                  } else if (originalSendTo.startsWith('C2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `A3-${suffix}`; // 进入A解析柜
+                  }
+                }
+
                 this.addLog(
-                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 A3，时间：${currentTime}`
+                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 A3，时间：${currentTime}，目标位置：${tray.sendTo}`
                 );
                 // 更新到后台
                 this.updateTrayInfo(tray, {
@@ -5431,8 +5576,24 @@ export default {
                   this.$set(tray, 'outSterilizationRoomTime', currentTime);
                   this.$set(tray, 'analysisRoom', 'B3');
                   this.$set(tray, 'inAnalysisRoomTime', currentTime);
+
+                  // 计算解析柜的sendTo编号：A2-1→B3-1, A2-2→B3-2
+                  if (tray.sendTo) {
+                    const originalSendTo = tray.sendTo;
+                    if (originalSendTo.startsWith('A2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `B3-${suffix}`; // 进入B解析柜
+                    } else if (originalSendTo.startsWith('B2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `B3-${suffix}`;
+                    } else if (originalSendTo.startsWith('C2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `B3-${suffix}`; // 进入B解析柜
+                    }
+                  }
+
                   this.addLog(
-                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 B3，时间：${currentTime}`
+                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 B3，时间：${currentTime}，目标位置：${tray.sendTo}`
                   );
                   // 更新到后台
                   this.updateTrayInfo(tray, {
@@ -5459,8 +5620,24 @@ export default {
                 this.$set(tray, 'outSterilizationRoomTime', currentTime);
                 this.$set(tray, 'analysisRoom', 'B3');
                 this.$set(tray, 'inAnalysisRoomTime', currentTime);
+
+                // 计算解析柜的sendTo编号：A2-1→B3-1, A2-2→B3-2
+                if (tray.sendTo) {
+                  const originalSendTo = tray.sendTo;
+                  if (originalSendTo.startsWith('A2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `B3-${suffix}`; // 进入B解析柜
+                  } else if (originalSendTo.startsWith('B2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `B3-${suffix}`;
+                  } else if (originalSendTo.startsWith('C2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `B3-${suffix}`; // 进入B解析柜
+                  }
+                }
+
                 this.addLog(
-                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 B3，时间：${currentTime}`
+                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 B3，时间：${currentTime}，目标位置：${tray.sendTo}`
                 );
                 // 更新到后台
                 this.updateTrayInfo(tray, {
@@ -5569,8 +5746,24 @@ export default {
                   this.$set(tray, 'outSterilizationRoomTime', currentTime);
                   this.$set(tray, 'analysisRoom', 'C3');
                   this.$set(tray, 'inAnalysisRoomTime', currentTime);
+
+                  // 计算解析柜的sendTo编号：A2-1→C3-1, A2-2→C3-2
+                  if (tray.sendTo) {
+                    const originalSendTo = tray.sendTo;
+                    if (originalSendTo.startsWith('A2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `C3-${suffix}`; // 进入C解析柜
+                    } else if (originalSendTo.startsWith('B2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `C3-${suffix}`; // 进入C解析柜
+                    } else if (originalSendTo.startsWith('C2-')) {
+                      const suffix = originalSendTo.substring(3); // 获取-1或-2
+                      tray.sendTo = `C3-${suffix}`;
+                    }
+                  }
+
                   this.addLog(
-                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 C3，时间：${currentTime}`
+                    `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 C3，时间：${currentTime}，目标位置：${tray.sendTo}`
                   );
                   // 更新到后台
                   this.updateTrayInfo(tray, {
@@ -5597,8 +5790,24 @@ export default {
                 this.$set(tray, 'outSterilizationRoomTime', currentTime);
                 this.$set(tray, 'analysisRoom', 'C3');
                 this.$set(tray, 'inAnalysisRoomTime', currentTime);
+
+                // 计算解析柜的sendTo编号：A2-1→C3-1, A2-2→C3-2
+                if (tray.sendTo) {
+                  const originalSendTo = tray.sendTo;
+                  if (originalSendTo.startsWith('A2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `C3-${suffix}`; // 进入C解析柜
+                  } else if (originalSendTo.startsWith('B2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `C3-${suffix}`; // 进入C解析柜
+                  } else if (originalSendTo.startsWith('C2-')) {
+                    const suffix = originalSendTo.substring(3); // 获取-1或-2
+                    tray.sendTo = `C3-${suffix}`;
+                  }
+                }
+
                 this.addLog(
-                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 C3，时间：${currentTime}`
+                  `托盘 ${tray.trayCode} 离开灭菌间 ${tray.sterilizationRoom}，进入解析间 C3，时间：${currentTime}，目标位置：${tray.sendTo}`
                 );
                 // 更新到后台
                 this.updateTrayInfo(tray, {
@@ -6896,6 +7105,16 @@ export default {
     },
     // 切换无码上货状态
     toggleNoCodeUpload() {
+      // 检查是否要从无码模式切换到有码模式
+      if (this.noCodeUpload) {
+        // 检查上货区队列是否还有托盘
+        if (this.queues[0].trayInfo.length > 0) {
+          this.$message.warning('上货区队列有货，禁止切换，请先进行处理！');
+          this.addLog('无码模式切换到有码模式被拒绝：上货区队列还有托盘');
+          return;
+        }
+      }
+
       // 显示管理员密码验证对话框
       this.currentOperation = 'toggleNoCodeUpload';
       this.adminPasswordDialogVisible = true;

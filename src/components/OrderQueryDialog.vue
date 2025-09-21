@@ -134,7 +134,13 @@
         </el-table-column>
         <el-table-column
           prop="batchNo"
-          label="备注，批号"
+          label="批次"
+          width="120"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="remark"
+          label="备注"
           width="120"
           show-overflow-tooltip
         ></el-table-column>
