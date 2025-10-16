@@ -207,6 +207,39 @@
                 >
                   <img :src="cart.image" :alt="cart.name" class="cart-image" />
                 </div>
+                <!-- 托盘流动线元素 -->
+                <div
+                  v-for="flowLine in trayFlowLines"
+                  :key="'flow-line-' + flowLine.id"
+                  class="tray-flow-line"
+                  :data-x="flowLine.x"
+                  :data-y="flowLine.y"
+                  :data-width="flowLine.width"
+                  :data-height="flowLine.height"
+                  :data-flow-line-id="flowLine.id"
+                  :style="{
+                    width: flowLine.width + 'px',
+                    height: flowLine.height + 'px',
+                    transform: `translate(-50%, -50%) rotateZ(${flowLine.rotation}deg)`,
+                    '--tray-item-width':
+                      flowLine.width / flowLine.trayCount + 'px'
+                  }"
+                >
+                  <div
+                    v-for="item in flowLine.trayCount"
+                    :key="item"
+                    class="tray-flow-item"
+                    :style="{
+                      animationDuration: flowLine.speed + 's'
+                    }"
+                  >
+                    <img
+                      src="@/assets/weigao-img/tray.png"
+                      alt="托盘"
+                      class="tray-flow-image"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -700,6 +733,39 @@ export default {
           image: require('@/assets/weigao-img/cart1.png')
         }
       ],
+      // 托盘流动线配置
+      trayFlowLines: [
+        {
+          id: 1,
+          x: 690, // 线的中心X坐标
+          y: 780, // 线的中心Y坐标
+          width: 1080, // 线的宽度
+          height: 22, // 线的高度
+          rotation: 180, // 旋转角度
+          trayCount: 28, // 托盘数量
+          speed: 2 // 流动速度（秒）
+        },
+        {
+          id: 2,
+          x: 1275, // 线的中心X坐标
+          y: 535, // 线的中心Y坐标
+          width: 530, // 线的宽度
+          height: 20, // 线的高度
+          rotation: 90, // 旋转角度
+          trayCount: 15, // 托盘数量
+          speed: 2 // 流动速度（秒）
+        },
+        {
+          id: 3,
+          x: 1300, // 线的中心X坐标
+          y: 589, // 线的中心Y坐标
+          width: 420, // 线的宽度
+          height: 20, // 线的高度
+          rotation: 90, // 旋转角度
+          trayCount: 12, // 托盘数量
+          speed: 2 // 流动速度（秒）
+        }
+      ],
       // 小车位置数值-读取PLC
       cartPositionValues: {
         cart1: 250 // DBW88, 范围0-1010
@@ -1106,6 +1172,7 @@ export default {
           '.marker, .marker-with-panel, .marker-with-button, .queue-marker, .motor-marker, .preheating-room-marker, .analysis-status-marker'
         );
         const carts = imageWrapper.querySelectorAll('.cart-container');
+        const flowLines = imageWrapper.querySelectorAll('.tray-flow-line');
         const wrapperRect = imageWrapper.getBoundingClientRect();
 
         // 计算图片的实际显示区域
@@ -1137,6 +1204,42 @@ export default {
             cart.style.top = `${imageOffsetY + y * scaleY}px`;
             if (!isNaN(width)) {
               cart.style.width = `${width * scaleX}px`;
+            }
+          }
+        });
+
+        // 更新托盘流动线的位置和大小
+        flowLines.forEach((flowLine) => {
+          const x = parseFloat(flowLine.dataset.x);
+          const y = parseFloat(flowLine.dataset.y);
+          const width = parseFloat(flowLine.dataset.width);
+          const height = parseFloat(flowLine.dataset.height);
+
+          if (!isNaN(x) && !isNaN(y)) {
+            flowLine.style.left = `${imageOffsetX + x * scaleX}px`;
+            flowLine.style.top = `${imageOffsetY + y * scaleY}px`;
+          }
+
+          if (!isNaN(width) && !isNaN(height)) {
+            const scaledWidth = width * scaleX;
+            const scaledHeight = height * scaleY;
+            flowLine.style.width = `${scaledWidth}px`;
+            flowLine.style.height = `${scaledHeight}px`;
+
+            // 从Vue绑定的trayCount计算托盘项宽度
+            // 需要通过flowLine找到对应的配置
+            const flowLineId = flowLine.getAttribute('data-flow-line-id');
+            if (flowLineId) {
+              const config = this.trayFlowLines.find(
+                (fl) => fl.id === parseInt(flowLineId)
+              );
+              if (config) {
+                const trayItemWidth = scaledWidth / config.trayCount;
+                flowLine.style.setProperty(
+                  '--tray-item-width',
+                  `${trayItemWidth}px`
+                );
+              }
             }
           }
         });
@@ -2607,6 +2710,46 @@ export default {
                 width: 100%;
                 height: auto;
                 object-fit: contain;
+              }
+
+              /* 托盘流动线样式 */
+              .tray-flow-line {
+                position: absolute;
+                z-index: 2;
+                overflow: hidden;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                backface-visibility: hidden; /* 防止闪烁 */
+              }
+
+              .tray-flow-item {
+                position: relative;
+                display: inline-block;
+                width: var(--tray-item-width);
+                height: 100%;
+                flex-shrink: 0;
+                animation: tray-flow-animation 2s linear infinite;
+                will-change: transform;
+              }
+
+              .tray-flow-image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+              }
+
+              @keyframes tray-flow-animation {
+                0% {
+                  transform: translate3d(
+                    calc(-1 * var(--tray-item-width)),
+                    0,
+                    0
+                  );
+                }
+                100% {
+                  transform: translate3d(0, 0, 0);
+                }
               }
             }
           }
