@@ -472,21 +472,6 @@
                   ></el-slider>
                 </div>
               </div>
-              <div class="cart-position-group">
-                <div class="cart-position-label">
-                  <span>小车2 (0-1010):</span>
-                  <span class="cart-value">{{ cartPositionValues.cart2 }}</span>
-                </div>
-                <div class="cart-position-slider-container">
-                  <el-slider
-                    v-model="cartPositionValues.cart2"
-                    :min="0"
-                    :max="1010"
-                    :step="1"
-                    class="cart-position-slider"
-                  ></el-slider>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -808,7 +793,152 @@ export default {
       queues: [
         {
           id: 1,
-          queueName: 'A1-2',
+          queueName: '预热1',
+          trayInfo: []
+        },
+        {
+          id: 2,
+          queueName: '灭菌1',
+          trayInfo: []
+        },
+        {
+          id: 3,
+          queueName: '预热2',
+          trayInfo: []
+        },
+        {
+          id: 4,
+          queueName: '灭菌2',
+          trayInfo: []
+        },
+        {
+          id: 5,
+          queueName: '预热3',
+          trayInfo: []
+        },
+        {
+          id: 6,
+          queueName: '灭菌3',
+          trayInfo: []
+        },
+        {
+          id: 7,
+          queueName: '预热4',
+          trayInfo: []
+        },
+        {
+          id: 8,
+          queueName: '灭菌4',
+          trayInfo: []
+        },
+        {
+          id: 9,
+          queueName: '预热5',
+          trayInfo: []
+        },
+        {
+          id: 10,
+          queueName: '灭菌5',
+          trayInfo: []
+        },
+        {
+          id: 11,
+          queueName: '预热6',
+          trayInfo: []
+        },
+        {
+          id: 12,
+          queueName: '灭菌6',
+          trayInfo: []
+        },
+        {
+          id: 13,
+          queueName: '预热7',
+          trayInfo: []
+        },
+        {
+          id: 14,
+          queueName: '灭菌7',
+          trayInfo: []
+        },
+        {
+          id: 15,
+          queueName: '预热8',
+          trayInfo: []
+        },
+        {
+          id: 16,
+          queueName: '灭菌8',
+          trayInfo: []
+        },
+        {
+          id: 17,
+          queueName: '预热9',
+          trayInfo: []
+        },
+        {
+          id: 18,
+          queueName: '灭菌9',
+          trayInfo: []
+        },
+        {
+          id: 19,
+          queueName: '预热10',
+          trayInfo: []
+        },
+        {
+          id: 20,
+          queueName: '灭菌10',
+          trayInfo: []
+        },
+        {
+          id: 21,
+          queueName: '预热11',
+          trayInfo: []
+        },
+        {
+          id: 22,
+          queueName: '灭菌11',
+          trayInfo: []
+        },
+        {
+          id: 23,
+          queueName: '预热12',
+          trayInfo: []
+        },
+        {
+          id: 24,
+          queueName: '灭菌12',
+          trayInfo: []
+        },
+        {
+          id: 25,
+          queueName: '预热13',
+          trayInfo: []
+        },
+        {
+          id: 26,
+          queueName: '灭菌13',
+          trayInfo: []
+        },
+        {
+          id: 27,
+          queueName: '预热14',
+          trayInfo: []
+        },
+        {
+          id: 28,
+          queueName: '灭菌14',
+          trayInfo: []
+        },
+        {
+          id: 29,
+          queueName: '预热15',
+          trayInfo: []
+        },
+        {
+          id: 30,
+          queueName: '灭菌15',
           trayInfo: []
         }
       ],

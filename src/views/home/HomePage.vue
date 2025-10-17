@@ -21,6 +21,7 @@
           >
             <el-menu-item index="1">首页</el-menu-item>
             <el-menu-item index="2">业务处理</el-menu-item>
+            <el-menu-item index="3">上货监控</el-menu-item>
             <el-menu-item index="5">关于</el-menu-item>
           </el-menu>
         </div>
@@ -177,6 +178,15 @@ export default {
             if (this.$route.path !== '/homePage/MainPage') {
               this.$router.replace({
                 path: '/homePage/MainPage'
+              });
+            }
+          });
+          break;
+        case '3':
+          this.$nextTick(() => {
+            if (this.$route.path !== '/homePage/sterilizationMonitor') {
+              this.$router.replace({
+                path: '/homePage/sterilizationMonitor'
               });
             }
           });

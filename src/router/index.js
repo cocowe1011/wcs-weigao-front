@@ -32,6 +32,11 @@ const routes = [
         name: 'MainPage'
       },
       {
+        path: 'sterilizationMonitor',
+        component: () => import('../views/home/SterilizationMonitor.vue'),
+        name: 'SterilizationMonitor'
+      },
+      {
         path: 'aboutPage',
         component: () => import('../views/home/AboutPage.vue'),
         name: 'AboutPage'
