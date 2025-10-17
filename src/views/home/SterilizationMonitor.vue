@@ -389,34 +389,14 @@ export default {
 
     .status-panel {
       border-radius: 16px;
-      border: 1px solid rgba(34, 211, 238, 0.3);
+      border: 1px solid rgba(6, 182, 212, 0.3);
       background: linear-gradient(
         135deg,
         rgba(15, 23, 42, 0.8) 0%,
         rgba(30, 41, 59, 0.6) 100%
       );
       padding: 20px;
-      box-shadow: 0 8px 32px rgba(34, 211, 238, 0.1);
       position: relative;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 16px;
-        padding: 1px;
-        background: linear-gradient(
-          135deg,
-          rgba(34, 211, 238, 0.3) 0%,
-          rgba(59, 130, 246, 0.2) 100%
-        );
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        mask-composite: xor;
-        pointer-events: none;
-      }
 
       .status-grid {
         display: grid;
@@ -439,6 +419,7 @@ export default {
             border-radius: 12px;
             padding: 16px;
             border: 1px solid rgba(34, 211, 238, 0.2);
+            border-left: 2px solid rgba(34, 211, 238, 0.6);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             position: relative;
@@ -449,20 +430,23 @@ export default {
               position: absolute;
               top: 0;
               left: 0;
-              right: 0;
-              height: 2px;
-              background: linear-gradient(90deg, #22d3ee 0%, #3b82f6 100%);
-              opacity: 0;
-              transition: opacity 0.3s ease;
+              width: 2px;
+              height: 100%;
+              background: linear-gradient(180deg, #22d3ee 0%, #3b82f6 100%);
+              opacity: 0.8;
+              transition: all 0.3s ease;
             }
 
             &:hover {
               transform: translateY(-2px);
               border-color: rgba(34, 211, 238, 0.4);
+              border-left-color: rgba(34, 211, 238, 1);
               box-shadow: 0 8px 24px rgba(34, 211, 238, 0.15);
 
               &::before {
                 opacity: 1;
+                width: 3px;
+                box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
               }
             }
 
