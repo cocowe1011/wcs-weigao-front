@@ -368,7 +368,6 @@ export default {
 
           .current-time {
             font-size: 28px;
-            font-family: 'Courier New', monospace;
             font-weight: bold;
             color: #22d3ee;
           }
