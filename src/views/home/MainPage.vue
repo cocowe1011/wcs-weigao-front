@@ -153,10 +153,8 @@
           </div>
         </div>
       </div>
-      <!-- 右侧内容区域 -->
       <div class="main-content">
         <div class="floor-container">
-          <!-- 左侧区域 -->
           <div class="floor-left">
             <div class="floor-title">
               <i class="el-icon-office-building"></i> 作业区域
@@ -638,7 +636,6 @@
 
 <script>
 import HttpUtil from '@/utils/HttpUtil';
-import HttpUtilwms from '@/utils/HttpUtilwms';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
@@ -687,7 +684,6 @@ export default {
       isQueueExpanded: false,
       selectedQueueIndex: 0,
       isDragging: false,
-      isRefreshing: false,
       addTrayDialogVisible: false,
       // 托盘检索相关
       traySearchDialogVisible: false,
@@ -717,153 +713,37 @@ export default {
         ]
       },
       queues: [
-        {
-          id: 1,
-          queueName: 'Y3215',
-          trayInfo: []
-        },
-        {
-          id: 2,
-          queueName: '3215',
-          trayInfo: []
-        },
-        {
-          id: 3,
-          queueName: 'Y3214',
-          trayInfo: []
-        },
-        {
-          id: 4,
-          queueName: '3214',
-          trayInfo: []
-        },
-        {
-          id: 5,
-          queueName: 'Y3213',
-          trayInfo: []
-        },
-        {
-          id: 6,
-          queueName: '3213',
-          trayInfo: []
-        },
-        {
-          id: 7,
-          queueName: 'Y3212',
-          trayInfo: []
-        },
-        {
-          id: 8,
-          queueName: '3212',
-          trayInfo: []
-        },
-        {
-          id: 9,
-          queueName: 'Y3211',
-          trayInfo: []
-        },
-        {
-          id: 10,
-          queueName: '3211',
-          trayInfo: []
-        },
-        {
-          id: 11,
-          queueName: 'Y3210',
-          trayInfo: []
-        },
-        {
-          id: 12,
-          queueName: '3210',
-          trayInfo: []
-        },
-        {
-          id: 13,
-          queueName: 'Y3209',
-          trayInfo: []
-        },
-        {
-          id: 14,
-          queueName: '3209',
-          trayInfo: []
-        },
-        {
-          id: 15,
-          queueName: 'Y3208',
-          trayInfo: []
-        },
-        {
-          id: 16,
-          queueName: '3208',
-          trayInfo: []
-        },
-        {
-          id: 17,
-          queueName: 'Y3207',
-          trayInfo: []
-        },
-        {
-          id: 18,
-          queueName: '3207',
-          trayInfo: []
-        },
-        {
-          id: 19,
-          queueName: 'Y3206',
-          trayInfo: []
-        },
-        {
-          id: 20,
-          queueName: '3206',
-          trayInfo: []
-        },
-        {
-          id: 21,
-          queueName: 'Y3205',
-          trayInfo: []
-        },
-        {
-          id: 22,
-          queueName: '3205',
-          trayInfo: []
-        },
-        {
-          id: 23,
-          queueName: 'Y3204',
-          trayInfo: []
-        },
-        {
-          id: 24,
-          queueName: '3204',
-          trayInfo: []
-        },
-        {
-          id: 25,
-          queueName: 'Y3203',
-          trayInfo: []
-        },
-        {
-          id: 26,
-          queueName: '3203',
-          trayInfo: []
-        },
-        {
-          id: 27,
-          queueName: 'Y3202',
-          trayInfo: []
-        },
-        {
-          id: 28,
-          queueName: '3202',
-          trayInfo: []
-        },
-        {
-          id: 29,
-          queueName: 'Y3201',
-          trayInfo: []
-        }
+        { id: 1, queueName: 'Y3215', trayInfo: [] },
+        { id: 2, queueName: '3215', trayInfo: [] },
+        { id: 3, queueName: 'Y3214', trayInfo: [] },
+        { id: 4, queueName: '3214', trayInfo: [] },
+        { id: 5, queueName: 'Y3213', trayInfo: [] },
+        { id: 6, queueName: '3213', trayInfo: [] },
+        { id: 7, queueName: 'Y3212', trayInfo: [] },
+        { id: 8, queueName: '3212', trayInfo: [] },
+        { id: 9, queueName: 'Y3211', trayInfo: [] },
+        { id: 10, queueName: '3211', trayInfo: [] },
+        { id: 11, queueName: 'Y3210', trayInfo: [] },
+        { id: 12, queueName: '3210', trayInfo: [] },
+        { id: 13, queueName: 'Y3209', trayInfo: [] },
+        { id: 14, queueName: '3209', trayInfo: [] },
+        { id: 15, queueName: 'Y3208', trayInfo: [] },
+        { id: 16, queueName: '3208', trayInfo: [] },
+        { id: 17, queueName: 'Y3207', trayInfo: [] },
+        { id: 18, queueName: '3207', trayInfo: [] },
+        { id: 19, queueName: 'Y3206', trayInfo: [] },
+        { id: 20, queueName: '3206', trayInfo: [] },
+        { id: 21, queueName: 'Y3205', trayInfo: [] },
+        { id: 22, queueName: '3205', trayInfo: [] },
+        { id: 23, queueName: 'Y3204', trayInfo: [] },
+        { id: 24, queueName: '3204', trayInfo: [] },
+        { id: 25, queueName: 'Y3203', trayInfo: [] },
+        { id: 26, queueName: '3203', trayInfo: [] },
+        { id: 27, queueName: 'Y3202', trayInfo: [] },
+        { id: 28, queueName: '3202', trayInfo: [] },
+        { id: 29, queueName: 'Y3201', trayInfo: [] }
       ],
-      // 添加队列位置标识数据
+      // 队列位置标识数据
       queueMarkers: [
         { id: 1, name: 'Y3215', queueId: 1, x: 1210, y: 630 },
         { id: 2, name: '3215', queueId: 2, x: 1210, y: 300 },
@@ -896,138 +776,7 @@ export default {
         { id: 29, name: 'Y3201', queueId: 29, x: 170, y: 630 },
         { id: 30, name: '3201', queueId: 30, x: 170, y: 300 }
       ],
-      logId: 1000, // 添加一个日志ID计数器=
-      // 输送线当前运行状态-读取PLC
-      conveyorStatus: '',
-      // A线电机运行信号-读取PLC
-      aLineMotorRunning: {
-        bit0: '0', // A1-1#电机运行信号
-        bit1: '0', // A1-2#电机运行信号
-        bit2: '0', // A2-1#电机运行信号
-        bit3: '0', // A2-2#电机运行信号
-        bit4: '0', // A3-1#电机运行信号
-        bit5: '0' // A3-2#电机运行信号
-      },
-      // A线光电检测信号-读取PLC
-      aLinePhotoelectricSignal: {
-        bit0: '0', // A-1#光电
-        bit1: '0', // A-2#光电
-        bit2: '0', // A-3#光电
-        bit3: '0', // A-4#光电
-        bit4: '0', // A-5#光电
-        bit5: '0', // A-6#光电
-        bit6: '0', // A-7#光电
-        bit7: '0', // A-8#光电
-        bit8: '0', // A-9#光电
-        bit9: '0' // A-10#光电
-      },
-      // B线电机运行信号-读取PLC
-      bLineMotorRunning: {
-        bit0: '0', // B1-1#电机运行信号
-        bit1: '0', // B1-2#电机运行信号
-        bit2: '0', // B2-1#电机运行信号
-        bit3: '0', // B2-2#电机运行信号
-        bit4: '0', // B3-1#电机运行信号
-        bit5: '0' // B3-2#电机运行信号
-      },
-      // B线光电检测信号-读取PLC
-      bLinePhotoelectricSignal: {
-        bit0: '0', // B-1#光电
-        bit1: '0', // B-2#光电
-        bit2: '0', // B-3#光电
-        bit3: '0', // B-4#光电
-        bit4: '0', // B-5#光电
-        bit5: '0', // B-6#光电
-        bit6: '0', // B-7#光电
-        bit7: '0', // B-8#光电
-        bit8: '0', // B-9#光电
-        bit9: '0' // B-10#光电
-      },
-      // C线电机运行信号-读取PLC
-      cLineMotorRunning: {
-        bit0: '0', // C1-1#电机运行信号
-        bit1: '0', // C1-2#电机运行信号
-        bit2: '0', // C2-1#电机运行信号
-        bit3: '0', // C2-2#电机运行信号
-        bit4: '0', // C3-1#电机运行信号
-        bit5: '0' // C3-2#电机运行信号
-      },
-      // C线光电检测信号-读取PLC
-      cLinePhotoelectricSignal: {
-        bit0: '0', // C-1#光电
-        bit1: '0', // C-2#光电
-        bit2: '0', // C-3#光电
-        bit3: '0', // C-4#光电
-        bit4: '0', // C-5#光电
-        bit5: '0', // C-6#光电
-        bit6: '0', // C-7#光电
-        bit7: '0', // C-8#光电
-        bit8: '0', // C-9#光电
-        bit9: '0' // C-10#光电
-      },
-      // D线电机运行信号-读取PLC
-      dLineMotorRunning: {
-        bit0: '0', // D1-1#电机运行信号
-        bit1: '0' // D1-2#电机运行信号
-      },
-      // D线光电检测信号-读取PLC
-      dLinePhotoelectricSignal: {
-        bit0: '0', // D-1#光电
-        bit1: '0', // D-2#光电
-        bit2: '0', // D-3#光电
-        bit3: '0', // D-4#光电
-        bit4: '0' // D-5#光电
-      },
-      // E线电机运行信号-读取PLC
-      eLineMotorRunning: {
-        bit0: '0', // E1-1#电机运行信号
-        bit1: '0' // E1-2#电机运行信号
-      },
-      // E线光电检测信号-读取PLC
-      eLinePhotoelectricSignal: {
-        bit0: '0', // E-1#光电
-        bit1: '0', // E-2#光电
-        bit2: '0', // E-3#光电
-        bit3: '0', // E-4#光电
-        bit4: '0' // E-5#光电
-      },
-      // 输送线故障反馈-读取PLC
-      conveyorFaultFeedback: {
-        bit0: '0', // A1预热故障
-        bit1: '0', // A2灭菌故障
-        bit2: '0', // A3解析故障
-        bit3: '0', // B1预热故障
-        bit4: '0', // B2灭菌故障
-        bit5: '0', // B3解析故障
-        bit6: '0', // C1预热故障
-        bit7: '0', // C2灭菌故障
-        bit8: '0', // C3解析故障
-        bit9: '0', // D灭菌故障
-        bit10: '0', // E灭菌故障
-        bit11: '0', // 提升机故障
-        bit12: '0', // 1#小车故障
-        bit13: '0', // 2#小车故障
-        bit14: '0', // 3#小车故障
-        bit15: '0' // 主柜急停
-      },
-      // A线数量-读取PLC
-      aLineQuantity: {
-        a1: 0,
-        a2: 0,
-        a3: 0
-      },
-      // B线数量-读取PLC
-      bLineQuantity: {
-        b1: 0,
-        b2: 0,
-        b3: 0
-      },
-      // C线数量-读取PLC
-      cLineQuantity: {
-        c1: 0,
-        c2: 0,
-        c3: 0
-      }
+      logId: 1000
     };
   },
   computed: {
@@ -1050,20 +799,16 @@ export default {
     this.initializeMarkers();
   },
   watch: {
-    // ---- 新增：监听指定队列的 trayInfo 变化 ----
+    // 监听上货区 (ID: 1)
     'queues.0.trayInfo': {
-      // 监听上货区 (ID: 1)
       deep: true,
       handler(newVal, oldVal) {
         this.updateQueueInfo(1);
       }
     },
-    // ---- 新增：监听小车位置数值变化 ----
+    // 监听小车位置数值变化
     'cartPositionValues.cart1'(newVal) {
       this.updateCartPositionByValue(1, newVal);
-    },
-    'cartPositionValues.cart2'(newVal) {
-      this.updateCartPositionByValue(2, newVal);
     }
   },
   methods: {
@@ -1214,11 +959,8 @@ export default {
         const imageWrapper = image.parentElement;
         if (!imageWrapper) return;
 
-        const markers = imageWrapper.querySelectorAll(
-          '.marker, .marker-with-panel, .marker-with-button, .queue-marker, .motor-marker, .preheating-room-marker, .analysis-status-marker'
-        );
+        const markers = imageWrapper.querySelectorAll('.queue-marker');
         const carts = imageWrapper.querySelectorAll('.cart-container');
-        const flowLines = imageWrapper.querySelectorAll('.tray-flow-line');
         const wrapperRect = imageWrapper.getBoundingClientRect();
 
         // 计算图片的实际显示区域
@@ -1250,42 +992,6 @@ export default {
             cart.style.top = `${imageOffsetY + y * scaleY}px`;
             if (!isNaN(width)) {
               cart.style.width = `${width * scaleX}px`;
-            }
-          }
-        });
-
-        // 更新托盘流动线的位置和大小
-        flowLines.forEach((flowLine) => {
-          const x = parseFloat(flowLine.dataset.x);
-          const y = parseFloat(flowLine.dataset.y);
-          const width = parseFloat(flowLine.dataset.width);
-          const height = parseFloat(flowLine.dataset.height);
-
-          if (!isNaN(x) && !isNaN(y)) {
-            flowLine.style.left = `${imageOffsetX + x * scaleX}px`;
-            flowLine.style.top = `${imageOffsetY + y * scaleY}px`;
-          }
-
-          if (!isNaN(width) && !isNaN(height)) {
-            const scaledWidth = width * scaleX;
-            const scaledHeight = height * scaleY;
-            flowLine.style.width = `${scaledWidth}px`;
-            flowLine.style.height = `${scaledHeight}px`;
-
-            // 从Vue绑定的trayCount计算托盘项宽度
-            // 需要通过flowLine找到对应的配置
-            const flowLineId = flowLine.getAttribute('data-flow-line-id');
-            if (flowLineId) {
-              const config = this.trayFlowLines.find(
-                (fl) => fl.id === parseInt(flowLineId)
-              );
-              if (config) {
-                const trayItemWidth = scaledWidth / config.trayCount;
-                flowLine.style.setProperty(
-                  '--tray-item-width',
-                  `${trayItemWidth}px`
-                );
-              }
             }
           }
         });
