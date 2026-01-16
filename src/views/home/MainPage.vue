@@ -157,7 +157,7 @@
         <div class="floor-container">
           <div class="floor-left">
             <div class="floor-title">
-              <i class="el-icon-office-building"></i> 作业区域
+              <i class="el-icon-set-up"></i> 作业区域
             </div>
             <div class="floor-image-container" ref="floorImageContainer">
               <div class="image-wrapper">
@@ -867,43 +867,10 @@ export default {
       // ==========================================================
       deviceNodes: [
         {
-          id: 'dev-001',
-          name: '入库口电机',
-          x: 200,
-          y: 380,
-          motorStatus: true, // 初始状态
-          sensorStatus: true,
-          trayId: 'T-202501',
-          destination: '灭菌房',
-          plcAddress: 'DB1.DBX0.0'
-        },
-        {
-          id: 'dev-002',
-          name: '灭菌线入口',
-          x: 350,
-          y: 380,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: null,
-          destination: null,
-          plcAddress: 'DB1.DBX0.1'
-        },
-        {
-          id: 'dev-003',
-          name: '打包机前段',
-          x: 500,
-          y: 450,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: null,
-          destination: null,
-          plcAddress: 'DB1.DBX0.2'
-        },
-        {
-          id: 'dev-004',
+          id: '01001',
           name: '立体库接口',
-          x: 800,
-          y: 500,
+          x: 1350,
+          y: 280,
           motorStatus: false,
           sensorStatus: true,
           trayId: 'T-202502',
@@ -911,17 +878,49 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         {
-          id: 'dev-005',
-          name: '出库缓存区',
-          x: 1000,
-          y: 550,
+          id: '01002',
+          name: '立体库接口',
+          x: 1310,
+          y: 280,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: null,
-          destination: null,
-          plcAddress: 'DB1.DBX0.4'
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        {
+          id: '01004',
+          name: '立体库接口',
+          x: 1275,
+          y: 280,
+          motorStatus: false,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        {
+          id: '01005',
+          name: '立体库接口',
+          x: 1275,
+          y: 310,
+          motorStatus: false,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        {
+          id: '01006',
+          name: '立体库接口',
+          x: 1275,
+          y: 340,
+          motorStatus: false,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
         }
-        // ... 你可以继续往下加 ...
       ],
 
       // 弹窗相关状态
