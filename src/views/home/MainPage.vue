@@ -1,5 +1,5 @@
 <template>
-  <div class="smart-workshop">
+  <div class="smart-workshop" @click="handleGlobalClick">
     <!-- 内容区包装器 -->
     <div class="content-wrapper">
       <!-- 左侧面板 -->
@@ -159,7 +159,7 @@
             <div class="floor-title">
               <i class="el-icon-office-building"></i> 作业区域
             </div>
-            <div class="floor-image-container">
+            <div class="floor-image-container" ref="floorImageContainer">
               <div class="image-wrapper">
                 <img
                   src="@/assets/weigao-img/image.png"
@@ -167,7 +167,24 @@
                   class="floor-image"
                   @load="updateMarkerPositions"
                 />
-                <!-- 修改队列标识 -->
+
+                <div
+                  v-for="node in deviceNodes"
+                  :key="node.id"
+                  class="device-signal-node"
+                  :class="{
+                    'status-active': node.motorStatus || node.sensorStatus,
+                    'status-idle': !node.motorStatus && !node.sensorStatus,
+                    'is-selected': currentSelectedNodeId === node.id
+                  }"
+                  :data-x="node.x"
+                  :data-y="node.y"
+                  @click.stop="handleNodeClick(node, $event)"
+                >
+                  <div class="signal-base">
+                    <div class="signal-core"></div>
+                  </div>
+                </div>
                 <div
                   v-for="marker in queueMarkers"
                   :key="marker.id"
@@ -198,13 +215,81 @@
                   <img :src="cart.image" :alt="cart.name" class="cart-image" />
                 </div>
               </div>
+
+              <transition name="fade-scale">
+                <div
+                  v-if="popoverVisible"
+                  class="singleton-popover"
+                  :style="popoverStyle"
+                  @click.stop
+                >
+                  <div class="popover-arrow"></div>
+
+                  <div class="popover-header">
+                    <span class="device-title">{{ popoverData.name }}</span>
+                    <i
+                      class="el-icon-close close-btn"
+                      @click="closePopover"
+                    ></i>
+                  </div>
+
+                  <div class="status-tiles">
+                    <div
+                      class="status-tile"
+                      :class="
+                        popoverData.motorStatus ? 'is-running' : 'is-stopped'
+                      "
+                    >
+                      <div class="icon-box">
+                        <i class="el-icon-cpu"></i>
+                      </div>
+                      <div class="text-box">
+                        <div class="label">电机状态</div>
+                        <div class="value">
+                          {{ popoverData.motorStatus ? '运行中' : '已停止' }}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="status-tile"
+                      :class="
+                        popoverData.sensorStatus ? 'is-active' : 'is-empty'
+                      "
+                    >
+                      <div class="icon-box">
+                        <i class="el-icon-view"></i>
+                      </div>
+                      <div class="text-box">
+                        <div class="label">光电检测</div>
+                        <div class="value">
+                          {{ popoverData.sensorStatus ? '有货物' : '无货物' }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="data-capsules">
+                    <div class="capsule-item">
+                      <span class="capsule-label">托盘 ID</span>
+                      <span class="capsule-value highlight">
+                        {{ popoverData.trayId || '--' }}
+                      </span>
+                    </div>
+                    <div class="capsule-item">
+                      <span class="capsule-label">任务目的地</span>
+                      <span class="capsule-value">
+                        {{ popoverData.destination || '无任务' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </transition>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 右侧队列信息区 -->
     <div
       class="side-info-panel-queue"
       :style="{
@@ -776,7 +861,13 @@ export default {
         { id: 29, name: 'Y3201', queueId: 29, x: 170, y: 630 },
         { id: 30, name: '3201', queueId: 30, x: 170, y: 300 }
       ],
-      logId: 1000
+      logId: 1000,
+      // ================= 新增：设备监控层数据 =================
+      deviceNodes: [], // 存储所有逻辑节点数据
+      popoverVisible: false,
+      popoverData: {}, // 当前弹窗显示的数据
+      currentSelectedNodeId: null, // 当前选中的节点ID
+      popoverPosition: { top: 0, left: 0 } // 弹窗相对容器的位置
     };
   },
   computed: {
@@ -793,10 +884,18 @@ export default {
     },
     selectedQueue() {
       return this.queues[this.selectedQueueIndex];
+    },
+    // 动态计算弹窗位置样式
+    popoverStyle() {
+      return {
+        top: `${this.popoverPosition.top}px`,
+        left: `${this.popoverPosition.left}px`
+      };
     }
   },
   mounted() {
     this.initializeMarkers();
+    this.initMockData(); // 初始化模拟数据
   },
   watch: {
     // 监听上货区 (ID: 1)
@@ -812,6 +911,77 @@ export default {
     }
   },
   methods: {
+    // ================= 新增：模拟数据初始化与交互逻辑 =================
+    initMockData() {
+      const mockNodes = [];
+      const statuses = [
+        { motor: true, sensor: true },
+        { motor: false, sensor: false },
+        { motor: true, sensor: false },
+        { motor: false, sensor: true }
+      ];
+
+      // 生成15个模拟节点，坐标参考现有队列分布 (x: 170-1210, y: 300-630)
+      for (let i = 0; i < 15; i++) {
+        const status = statuses[Math.floor(Math.random() * statuses.length)];
+        mockNodes.push({
+          id: `node-${i + 1}`,
+          name: `输送段 #${100 + i}`,
+          // 随机分布
+          x: 200 + Math.random() * 900,
+          y: 350 + Math.random() * 200,
+          motorStatus: status.motor,
+          sensorStatus: status.sensor,
+          trayId: status.sensor ? `TRAY-${2025000 + i}` : null,
+          destination: status.sensor
+            ? ['灭菌线', '打包机', '立体库'][Math.floor(Math.random() * 3)]
+            : null
+        });
+      }
+      this.deviceNodes = mockNodes;
+
+      // 数据更新后刷新位置
+      this.$nextTick(() => {
+        this.updateMarkerPositions();
+      });
+    },
+
+    // 核心交互：点击节点显示单例弹窗
+    handleNodeClick(node, event) {
+      this.popoverData = node;
+      this.currentSelectedNodeId = node.id;
+
+      // 1. 获取点击目标（小圆点）的屏幕矩形
+      const targetRect = event.currentTarget.getBoundingClientRect();
+
+      // 2. 获取容器（floor-image-container）的屏幕矩形
+      const container = this.$refs.floorImageContainer;
+      const containerRect = container.getBoundingClientRect();
+
+      // 3. 计算相对坐标
+      // 弹窗宽度约为320px，我们希望它居中显示在节点上方
+      // 左偏移 = (目标左边 - 容器左边) + 目标宽度的一半
+      // 上偏移 = (目标上边 - 容器上边) - 间距
+      const left = targetRect.left - containerRect.left + targetRect.width / 2;
+      const top = targetRect.top - containerRect.top - 12; // 留出一点空隙
+
+      this.popoverPosition = { left, top };
+      this.popoverVisible = true;
+    },
+
+    closePopover() {
+      this.popoverVisible = false;
+      this.currentSelectedNodeId = null;
+    },
+
+    handleGlobalClick() {
+      // 点击页面空白处关闭弹窗
+      if (this.popoverVisible) {
+        this.closePopover();
+      }
+    },
+    // ==========================================================
+
     changeQueueExpanded() {
       this.isQueueExpanded = !this.isQueueExpanded;
       // 当展开面板时，刷新当前选中队列的托盘信息
@@ -961,6 +1131,10 @@ export default {
 
         const markers = imageWrapper.querySelectorAll('.queue-marker');
         const carts = imageWrapper.querySelectorAll('.cart-container');
+        // ============= 新增：获取设备节点 =============
+        const nodes = imageWrapper.querySelectorAll('.device-signal-node');
+        // ===========================================
+
         const wrapperRect = imageWrapper.getBoundingClientRect();
 
         // 计算图片的实际显示区域
@@ -995,6 +1169,18 @@ export default {
             }
           }
         });
+
+        // ============= 新增：更新设备节点位置 =============
+        nodes.forEach((node) => {
+          const x = parseFloat(node.dataset.x);
+          const y = parseFloat(node.dataset.y);
+          if (!isNaN(x) && !isNaN(y)) {
+            // 使用与 marker 相同的逻辑进行绝对定位计算
+            node.style.left = `${imageOffsetX + x * scaleX}px`;
+            node.style.top = `${imageOffsetY + y * scaleY}px`;
+          }
+        });
+        // ================================================
       });
     },
     beforeDestroy() {
