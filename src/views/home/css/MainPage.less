@@ -380,7 +380,231 @@
                 /* 稍微加一点投影，让设备更有立体感浮在网格上 */
                 filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
               }
+              
+              /* ================== 新增：设备状态监控节点样式 ================== */
+              .device-signal-node {
+                position: absolute;
+                width: 16px; 
+                height: 16px;
+                transform: translate(-50%, -50%); /* 居中对齐 */
+                cursor: pointer;
+                z-index: 100;
+                transition: transform 0.2s;
+
+                &:hover {
+                  transform: translate(-50%, -50%) scale(1.3);
+                  z-index: 101;
+                }
+
+                &.is-selected {
+                  .signal-base {
+                    border-color: #fff;
+                    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+                  }
+                }
+
+                /* 金属底座 */
+                .signal-base {
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 50%;
+                  background: linear-gradient(135deg, #555, #222);
+                  border: 1px solid #666;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.8);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+
+                /* 发光核心 */
+                .signal-core {
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 50%;
+                  background-color: #333;
+                  transition: all 0.3s;
+                }
+
+                /* 状态颜色定义 */
+                &.status-active {
+                  .signal-core {
+                    background-color: #00ff00;
+                    box-shadow: 0 0 5px #00ff00, inset 0 0 2px #fff;
+                    animation: breathe 2s infinite ease-in-out;
+                  }
+                }
+
+                &.status-idle {
+                  .signal-core {
+                    background-color: #551111; /* 暗红色 */
+                    box-shadow: none;
+                  }
+                }
+              }
+
+              /* 呼吸动画 */
+              @keyframes breathe {
+                0%, 100% {
+                  opacity: 0.6;
+                  box-shadow: 0 0 4px #00ff00;
+                }
+                50% {
+                  opacity: 1;
+                  box-shadow: 0 0 12px #00ff00, 0 0 20px rgba(0, 255, 0, 0.4);
+                }
+              }
+              /* ========================================================== */
+
             }
+            
+            /* ============ 新增：Singleton Popover 样式 (仪表盘风格) ============ */
+            .singleton-popover {
+              position: absolute;
+              /* 初始不可见，通过 v-if 控制，transform 用于定位微调 (向上偏移100% + 箭头高度) */
+              transform: translate(-50%, -100%);
+              width: 320px;
+              background: #ffffff;
+              border-radius: 12px;
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+              padding: 0;
+              z-index: 9999;
+              display: flex;
+              flex-direction: column;
+              color: #333;
+              pointer-events: auto;
+              
+              /* 小三角 */
+              .popover-arrow {
+                position: absolute;
+                bottom: -8px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 0;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-top: 8px solid #fff;
+              }
+
+              .popover-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                border-bottom: 1px solid #eee;
+                
+                .device-title {
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #2c3e50;
+                }
+                
+                .close-btn {
+                  cursor: pointer;
+                  color: #999;
+                  font-size: 18px;
+                  &:hover { color: #f56c6c; }
+                }
+              }
+
+              .status-tiles {
+                display: flex;
+                padding: 16px;
+                gap: 12px;
+                
+                .status-tile {
+                  flex: 1;
+                  background: #f5f7fa;
+                  border-radius: 8px;
+                  padding: 12px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  border: 1px solid transparent;
+                  transition: all 0.3s;
+
+                  .icon-box {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    background: #e4e7ed;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                    color: #909399;
+                    flex-shrink: 0;
+                  }
+
+                  .text-box {
+                    .label { font-size: 10px; color: #909399; white-space: nowrap; }
+                    .value { font-size: 13px; font-weight: bold; color: #606266; white-space: nowrap; }
+                  }
+
+                  /* 状态：运行/活跃 */
+                  &.is-running, &.is-active {
+                    background: #f0f9eb;
+                    border-color: #e1f3d8;
+                    .icon-box { background: #67c23a; color: #fff; }
+                    .text-box .value { color: #67c23a; }
+                  }
+
+                  /* 状态：停止 */
+                  &.is-stopped {
+                    background: #fef0f0;
+                    border-color: #fde2e2;
+                    .icon-box { background: #f56c6c; color: #fff; }
+                    .text-box .value { color: #f56c6c; }
+                  }
+                  
+                   /* 状态：空 */
+                  &.is-empty {
+                     .text-box .value { color: #e6a23c; } /* 橙色提示无货 */
+                  }
+                }
+              }
+
+              .data-capsules {
+                padding: 0 16px 16px 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+
+                .capsule-item {
+                  display: flex;
+                  align-items: center;
+                  background: #f2f6fc;
+                  border-radius: 20px;
+                  padding: 6px 12px;
+                  font-size: 12px;
+
+                  .capsule-label {
+                    color: #909399;
+                    margin-right: auto;
+                  }
+                  
+                  .capsule-value {
+                    font-weight: 600;
+                    color: #303133;
+                    
+                    &.highlight {
+                      color: #409eff;
+                      font-family: monospace;
+                    }
+                  }
+                }
+              }
+            }
+
+            /* 弹窗过渡动画 */
+            .fade-scale-enter-active, .fade-scale-leave-active {
+              transition: all 0.2s ease;
+            }
+            .fade-scale-enter, .fade-scale-leave-to {
+              opacity: 0;
+              transform: translate(-50%, -90%) scale(0.9);
+            }
+            /* =================================================================== */
           }
         }
         .floor-left {

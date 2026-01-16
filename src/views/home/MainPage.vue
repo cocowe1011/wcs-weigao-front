@@ -240,9 +240,7 @@
                         popoverData.motorStatus ? 'is-running' : 'is-stopped'
                       "
                     >
-                      <div class="icon-box">
-                        <i class="el-icon-cpu"></i>
-                      </div>
+                      <div class="icon-box"><i class="el-icon-cpu"></i></div>
                       <div class="text-box">
                         <div class="label">电机状态</div>
                         <div class="value">
@@ -256,9 +254,7 @@
                         popoverData.sensorStatus ? 'is-active' : 'is-empty'
                       "
                     >
-                      <div class="icon-box">
-                        <i class="el-icon-view"></i>
-                      </div>
+                      <div class="icon-box"><i class="el-icon-view"></i></div>
                       <div class="text-box">
                         <div class="label">光电检测</div>
                         <div class="value">
@@ -270,7 +266,7 @@
 
                   <div class="data-capsules">
                     <div class="capsule-item">
-                      <span class="capsule-label">托盘 ID</span>
+                      <span class="capsule-label">托盘虚拟ID</span>
                       <span class="capsule-value highlight">
                         {{ popoverData.trayId || '--' }}
                       </span>
@@ -826,7 +822,8 @@ export default {
         { id: 26, queueName: '3203', trayInfo: [] },
         { id: 27, queueName: 'Y3202', trayInfo: [] },
         { id: 28, queueName: '3202', trayInfo: [] },
-        { id: 29, queueName: 'Y3201', trayInfo: [] }
+        { id: 29, queueName: 'Y3201', trayInfo: [] },
+        { id: 30, queueName: '3201', trayInfo: [] }
       ],
       // 队列位置标识数据
       queueMarkers: [
@@ -862,8 +859,72 @@ export default {
         { id: 30, name: '3201', queueId: 30, x: 170, y: 300 }
       ],
       logId: 1000,
-      // ================= 新增：设备监控层数据 =================
-      deviceNodes: [], // 存储所有逻辑节点数据
+
+      // ==========================================================
+      // 【修改结果】直接在 data 里定义好所有设备点位
+      //  无需额外的 init 方法，直接写死即可
+      //  以后后端数据来了，直接更新 this.deviceNodes 对应的字段
+      // ==========================================================
+      deviceNodes: [
+        {
+          id: 'dev-001',
+          name: '入库口电机',
+          x: 200,
+          y: 380,
+          motorStatus: true, // 初始状态
+          sensorStatus: true,
+          trayId: 'T-202501',
+          destination: '灭菌房',
+          plcAddress: 'DB1.DBX0.0'
+        },
+        {
+          id: 'dev-002',
+          name: '灭菌线入口',
+          x: 350,
+          y: 380,
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: null,
+          destination: null,
+          plcAddress: 'DB1.DBX0.1'
+        },
+        {
+          id: 'dev-003',
+          name: '打包机前段',
+          x: 500,
+          y: 450,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: null,
+          destination: null,
+          plcAddress: 'DB1.DBX0.2'
+        },
+        {
+          id: 'dev-004',
+          name: '立体库接口',
+          x: 800,
+          y: 500,
+          motorStatus: false,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        {
+          id: 'dev-005',
+          name: '出库缓存区',
+          x: 1000,
+          y: 550,
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: null,
+          destination: null,
+          plcAddress: 'DB1.DBX0.4'
+        }
+        // ... 你可以继续往下加 ...
+      ],
+
+      // 弹窗相关状态
       popoverVisible: false,
       popoverData: {}, // 当前弹窗显示的数据
       currentSelectedNodeId: null, // 当前选中的节点ID
@@ -895,7 +956,6 @@ export default {
   },
   mounted() {
     this.initializeMarkers();
-    this.initMockData(); // 初始化模拟数据
   },
   watch: {
     // 监听上货区 (ID: 1)
@@ -911,42 +971,8 @@ export default {
     }
   },
   methods: {
-    // ================= 新增：模拟数据初始化与交互逻辑 =================
-    initMockData() {
-      const mockNodes = [];
-      const statuses = [
-        { motor: true, sensor: true },
-        { motor: false, sensor: false },
-        { motor: true, sensor: false },
-        { motor: false, sensor: true }
-      ];
-
-      // 生成15个模拟节点，坐标参考现有队列分布 (x: 170-1210, y: 300-630)
-      for (let i = 0; i < 15; i++) {
-        const status = statuses[Math.floor(Math.random() * statuses.length)];
-        mockNodes.push({
-          id: `node-${i + 1}`,
-          name: `输送段 #${100 + i}`,
-          // 随机分布
-          x: 200 + Math.random() * 900,
-          y: 350 + Math.random() * 200,
-          motorStatus: status.motor,
-          sensorStatus: status.sensor,
-          trayId: status.sensor ? `TRAY-${2025000 + i}` : null,
-          destination: status.sensor
-            ? ['灭菌线', '打包机', '立体库'][Math.floor(Math.random() * 3)]
-            : null
-        });
-      }
-      this.deviceNodes = mockNodes;
-
-      // 数据更新后刷新位置
-      this.$nextTick(() => {
-        this.updateMarkerPositions();
-      });
-    },
-
-    // 核心交互：点击节点显示单例弹窗
+    // ================= 设备层交互逻辑 =================
+    // 1. 点击节点显示弹窗
     handleNodeClick(node, event) {
       this.popoverData = node;
       this.currentSelectedNodeId = node.id;
@@ -1123,6 +1149,7 @@ export default {
         window.addEventListener('resize', this.updateMarkerPositions);
       });
     },
+    // 修改：updateMarkerPositions 增加对 device-signal-node 的处理
     updateMarkerPositions() {
       const images = document.querySelectorAll('.floor-image');
       images.forEach((image) => {
