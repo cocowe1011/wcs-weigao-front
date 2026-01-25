@@ -619,60 +619,105 @@
           }
           .floor-image-container {
             .image-wrapper {
+              /* ================== 垂直容量进度条 (Vertical Capacity Bar) ================== */
               .queue-marker {
                 position: absolute;
                 transform: translate(-50%, -50%);
                 cursor: pointer;
                 z-index: 10;
-                background: rgba(10, 30, 50, 0.85);
-                padding: 4px 8px;
+                
+                /* 垂直进度条容器尺寸 - 高度由 JS 动态计算 */
+                width: 48px;
+                /* height 由 updateMarkerPositions() 根据图片缩放比例动态设置 */
+                
+                /* 半透明背景，漏出背景图片 */
+                background: rgba(8, 24, 40, 0.55);
+                border: 2px solid rgba(64, 158, 255, 0.6);
                 border-radius: 4px;
-                border: 1px solid rgba(64, 158, 255, 0.5);
-                transition: all 0.3s ease;
-                min-width: 40px;
-                text-align: center;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-                color: #ffffff;
+                
+                /* 无毛玻璃、无发光阴影 */
+                box-shadow: none;
+                
+                /* 布局 */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                
+                transition: border-color 0.2s ease;
+                overflow: hidden;
+                
+                /* 进度条填充层 - 从底部向上生长 */
+                .capacity-fill {
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  /* 纯色填充，半透明 */
+                  background: rgba(64, 158, 255, 0.45);
+                  transition: height 0.3s ease;
+                  pointer-events: none;
+                }
+                
+                /* 文字内容层 */
                 .queue-marker-content {
+                  position: relative;
+                  z-index: 2;
                   display: flex;
                   flex-direction: column;
                   align-items: center;
-                  color: #fff;
-                  font-size: 12px;
+                  justify-content: center;
+                  width: 100%;
+                  height: 100%;
+                  padding: 4px 2px;
+                  box-sizing: border-box;
+                  
                   .queue-marker-name {
+                    font-size: 11px;
+                    font-weight: 600;
                     color: #fff;
+                    /* 文字描边保证清晰度 */
+                    text-shadow:
+                      -1px -1px 0 rgba(0, 0, 0, 0.8),
+                       1px -1px 0 rgba(0, 0, 0, 0.8),
+                      -1px  1px 0 rgba(0, 0, 0, 0.8),
+                       1px  1px 0 rgba(0, 0, 0, 0.8);
+                    line-height: 1.2;
+                    text-align: center;
+                    word-break: break-all;
                   }
 
                   .queue-marker-count {
-                    font-size: 14px;
-                    font-weight: bold;
-                    color: #409eff;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #fff;
+                    /* 文字描边保证清晰度 */
+                    text-shadow:
+                      -1px -1px 0 rgba(0, 0, 0, 0.8),
+                       1px -1px 0 rgba(0, 0, 0, 0.8),
+                      -1px  1px 0 rgba(0, 0, 0, 0.8),
+                       1px  1px 0 rgba(0, 0, 0, 0.8);
+                    margin-top: 2px;
                   }
                 }
               }
+              
               .queue-marker:hover {
-                background: rgba(24, 61, 97, 0.9);
-                border-color: rgba(64, 158, 255, 0.6);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+                border-color: rgba(64, 158, 255, 0.9);
               }
 
               /* 特殊队列标记样式 - 上货1、上货2、缓存区1、缓存区2 */
               .special-queue {
-                background: rgba(0, 123, 191, 0.9) !important;
-                border: 1px solid rgba(0, 123, 191, 0.7) !important;
-              }
-
-              .special-queue .queue-marker-count {
-                color: #ffffff !important;
-              }
-
-              .special-queue .queue-marker-name {
-                color: #ffffff !important;
+                background: rgba(0, 90, 140, 0.5) !important;
+                border-color: rgba(0, 180, 220, 0.7) !important;
+                
+                .capacity-fill {
+                  background: rgba(0, 180, 220, 0.45) !important;
+                }
               }
 
               .special-queue:hover {
-                background: rgba(0, 123, 191, 0.95) !important;
-                border-color: rgba(40, 167, 235, 0.8) !important;
+                border-color: rgba(0, 200, 240, 0.9) !important;
               }
 
               /* 添加小车样式 */

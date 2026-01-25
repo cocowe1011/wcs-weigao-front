@@ -193,14 +193,19 @@
                   :data-y="marker.y"
                   @click="handleQueueMarkerClick(marker.queueId)"
                 >
+                  <!-- 进度条填充层 - 从底部向上生长 -->
+                  <div
+                    class="capacity-fill"
+                    :style="{
+                      height: getQueueCapacityPercent(marker.queueId) + '%'
+                    }"
+                  ></div>
                   <div class="queue-marker-content">
                     <span class="queue-marker-name">{{ marker.name }}</span>
-                    <span class="queue-marker-count"
-                      >({{
-                        queues.find((q) => q.id === marker.queueId)?.trayInfo
-                          ?.length || 0
-                      }})</span
-                    >
+                    <span class="queue-marker-count">{{
+                      queues.find((q) => q.id === marker.queueId)?.trayInfo
+                        ?.length || 0
+                    }}</span>
                   </div>
                 </div>
                 <!-- 修改小车元素 -->
@@ -827,36 +832,36 @@ export default {
       ],
       // 队列位置标识数据
       queueMarkers: [
-        { id: 1, name: 'Y3215', queueId: 1, x: 1210, y: 630 },
+        { id: 1, name: 'Y3215', queueId: 1, x: 1210, y: 615 },
         { id: 2, name: '3215', queueId: 2, x: 1210, y: 300 },
-        { id: 3, name: 'Y3214', queueId: 3, x: 1135, y: 630 },
+        { id: 3, name: 'Y3214', queueId: 3, x: 1135, y: 615 },
         { id: 4, name: '3214', queueId: 4, x: 1135, y: 300 },
-        { id: 5, name: 'Y3213', queueId: 5, x: 1065, y: 630 },
+        { id: 5, name: 'Y3213', queueId: 5, x: 1065, y: 615 },
         { id: 6, name: '3213', queueId: 6, x: 1065, y: 300 },
-        { id: 7, name: 'Y3212', queueId: 7, x: 990, y: 630 },
+        { id: 7, name: 'Y3212', queueId: 7, x: 990, y: 615 },
         { id: 8, name: '3212', queueId: 8, x: 990, y: 300 },
-        { id: 9, name: 'Y3211', queueId: 9, x: 915, y: 630 },
+        { id: 9, name: 'Y3211', queueId: 9, x: 915, y: 615 },
         { id: 10, name: '3211', queueId: 10, x: 915, y: 300 },
-        { id: 11, name: 'Y3210', queueId: 11, x: 842, y: 630 },
+        { id: 11, name: 'Y3210', queueId: 11, x: 842, y: 615 },
         { id: 12, name: '3210', queueId: 12, x: 842, y: 300 },
-        { id: 13, name: 'Y3209', queueId: 13, x: 767, y: 630 },
+        { id: 13, name: 'Y3209', queueId: 13, x: 767, y: 615 },
         { id: 14, name: '3209', queueId: 14, x: 767, y: 300 },
-        { id: 15, name: 'Y3208', queueId: 15, x: 692, y: 630 },
+        { id: 15, name: 'Y3208', queueId: 15, x: 692, y: 615 },
         { id: 16, name: '3208', queueId: 16, x: 692, y: 300 },
-        { id: 17, name: 'Y3207', queueId: 17, x: 620, y: 630 },
+        { id: 17, name: 'Y3207', queueId: 17, x: 620, y: 615 },
         { id: 18, name: '3207', queueId: 18, x: 620, y: 300 },
-        { id: 19, name: 'Y3206', queueId: 19, x: 545, y: 630 },
+        { id: 19, name: 'Y3206', queueId: 19, x: 545, y: 615 },
         { id: 20, name: '3206', queueId: 20, x: 545, y: 300 },
-        { id: 21, name: 'Y3205', queueId: 21, x: 470, y: 630 },
-        { id: 22, name: '3205', queueId: 22, x: 470, y: 300 },
-        { id: 23, name: 'Y3204', queueId: 23, x: 395, y: 630 },
-        { id: 24, name: '3204', queueId: 24, x: 395, y: 300 },
-        { id: 25, name: 'Y3203', queueId: 25, x: 320, y: 630 },
-        { id: 26, name: '3203', queueId: 26, x: 320, y: 300 },
-        { id: 27, name: 'Y3202', queueId: 27, x: 245, y: 630 },
-        { id: 28, name: '3202', queueId: 28, x: 245, y: 300 },
-        { id: 29, name: 'Y3201', queueId: 29, x: 170, y: 630 },
-        { id: 30, name: '3201', queueId: 30, x: 170, y: 300 }
+        { id: 21, name: 'Y3205', queueId: 21, x: 472, y: 615 },
+        { id: 22, name: '3205', queueId: 22, x: 472, y: 300 },
+        { id: 23, name: 'Y3204', queueId: 23, x: 397, y: 615 },
+        { id: 24, name: '3204', queueId: 24, x: 397, y: 300 },
+        { id: 25, name: 'Y3203', queueId: 25, x: 328, y: 615 },
+        { id: 26, name: '3203', queueId: 26, x: 328, y: 300 },
+        { id: 27, name: 'Y3202', queueId: 27, x: 253, y: 615 },
+        { id: 28, name: '3202', queueId: 28, x: 253, y: 300 },
+        { id: 29, name: 'Y3201', queueId: 29, x: 178, y: 615 },
+        { id: 30, name: '3201', queueId: 30, x: 178, y: 300 }
       ],
       logId: 1000,
 
@@ -2928,6 +2933,23 @@ export default {
     }
   },
   methods: {
+    // ================= 队列容量进度条 =================
+    /**
+     * 计算队列容量百分比
+     * @param {number} queueId - 队列ID
+     * @returns {number} 0-100 的百分比值
+     */
+    getQueueCapacityPercent(queueId) {
+      const queue = this.queues.find((q) => q.id === queueId);
+      if (!queue || !queue.trayInfo) return 0;
+
+      const currentCount = queue.trayInfo.length || 0;
+      // 默认最大容量为 10，可根据实际需求调整或从 marker 配置中读取
+      const maxCapacity = 10;
+      const percent = Math.min((currentCount / maxCapacity) * 100, 100);
+      return percent;
+    },
+
     // ================= 设备层交互逻辑 =================
     // 1. 点击节点显示弹窗
     handleNodeClick(node, event) {
@@ -3131,12 +3153,17 @@ export default {
         const imageOffsetX = (wrapperRect.width - displayedWidth) / 2;
         const imageOffsetY = (wrapperRect.height - displayedHeight) / 2;
 
+        // 进度条基础高度（对应原始图片尺寸）
+        const baseMarkerHeight = 275;
+
         markers.forEach((marker) => {
           const x = parseFloat(marker.dataset.x);
           const y = parseFloat(marker.dataset.y);
           if (!isNaN(x) && !isNaN(y)) {
             marker.style.left = `${imageOffsetX + x * scaleX}px`;
             marker.style.top = `${imageOffsetY + y * scaleY}px`;
+            // 高度跟随图片缩放比例
+            marker.style.height = `${baseMarkerHeight * scaleY}px`;
           }
         });
 
