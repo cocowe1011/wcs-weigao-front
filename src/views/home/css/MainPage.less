@@ -390,6 +390,20 @@
                 cursor: pointer;
                 z-index: 100;
                 transition: transform 0.2s;
+                box-sizing: border-box;
+
+                .tray-icon {
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  width: 22px;
+                  height: 22px;
+                  transform: translate(-50%, -50%);
+                  z-index: -1; /* 放在设备点底座下面 */
+                  pointer-events: none; /* 不干扰点击事件 */
+                  display: block;
+                  object-fit: contain;
+                }
 
                 &:hover {
                   transform: translate(-50%, -50%) scale(1.3);
@@ -406,6 +420,9 @@
 
                 /* 金属底座 */
                 .signal-base {
+                  position: absolute; /* 显式绝对定位 */
+                  top: 0;
+                  left: 0;
                   width: 100%;
                   height: 100%;
                   border-radius: 50%;
@@ -415,6 +432,7 @@
                   display: flex;
                   align-items: center;
                   justify-content: center;
+                  box-sizing: border-box;
                 }
 
                 /* 发光核心 */
@@ -675,7 +693,7 @@
                   .queue-marker-name {
                     font-size: 11px;
                     font-weight: 600;
-                    color: #fff;
+                    color: #00f3ff; /* 青色，与背景区分 */
                     /* 文字描边保证清晰度 */
                     text-shadow:
                       -1px -1px 0 rgba(0, 0, 0, 0.8),
@@ -690,7 +708,7 @@
                   .queue-marker-count {
                     font-size: 16px;
                     font-weight: 700;
-                    color: #fff;
+                    color: #ffffff; /* 保持白色，突出数量 */
                     /* 文字描边保证清晰度 */
                     text-shadow:
                       -1px -1px 0 rgba(0, 0, 0, 0.8),

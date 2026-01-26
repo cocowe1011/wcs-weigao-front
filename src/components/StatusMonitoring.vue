@@ -146,8 +146,8 @@ export default {
   height: 85px;
   border-radius: 50%;
   position: absolute;
-  right: 220px;
-  top: 65px;
+  right: 25px;
+  bottom: 25px;
   z-index: 4000;
   cursor: pointer;
   display: flex;
