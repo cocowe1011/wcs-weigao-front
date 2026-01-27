@@ -227,6 +227,58 @@
                 >
                   <img :src="cart.image" :alt="cart.name" class="cart-image" />
                 </div>
+                <div
+                  class="preheating-room-marker"
+                  data-x="1215"
+                  data-y="380"
+                  style="width: 160px"
+                >
+                  <div class="preheating-room-content">
+                    <div class="preheating-room-header">灭菌柜到解析房选择</div>
+                    <div class="preheating-room-body">
+                      <div style="display: flex; align-items: center">
+                        <el-select placeholder="灭菌" size="mini">
+                          <el-option label="不执行" :value="null"></el-option>
+                          <el-option label="A" value="A"></el-option>
+                          <el-option label="B" value="B"></el-option>
+                          <el-option label="C" value="C"></el-option>
+                        </el-select>
+                        <span
+                          style="font-size: 12px; color: #fff; margin-left: 5px"
+                          >到：</span
+                        >
+                        <el-select placeholder="解析" size="mini">
+                          <el-option label="不执行" :value="null"></el-option>
+                          <el-option label="A" value="A"></el-option>
+                          <el-option label="B" value="B"></el-option>
+                          <el-option label="C" value="C"></el-option>
+                        </el-select>
+                      </div>
+                      <el-button type="primary" size="mini" style="width: 100%"
+                        >执行</el-button
+                      >
+                      <el-button
+                        type="danger"
+                        size="mini"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
+                      >
+                      <div style="display: flex; align-items: center">
+                        <span
+                          style="
+                            font-size: 12px;
+                            color: #fff;
+                            color: greenyellow;
+                          "
+                          >执行中：T-202502</span
+                        >
+                      </div>
+                      <div style="font-size: 12px; color: #9fe3d3">
+                        需进货：<b>12</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <transition name="fade-scale">

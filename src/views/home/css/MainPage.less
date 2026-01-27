@@ -609,6 +609,195 @@
               transform: translate(-50%, -90%) scale(0.9);
             }
             /* =================================================================== */
+            /* 带数据面板的标识点样式 */
+            .marker-with-panel {
+              position: absolute;
+              width: 16px;
+              height: 16px;
+              transform: translate(-50%, -50%);
+              cursor: pointer;
+              z-index: 2;
+              .data-panel {
+                position: absolute;
+                background: linear-gradient(135deg, #0e1a27, #3c4c63);
+                border: 1px solid rgba(64, 158, 255, 0.3);
+                border-radius: 8px;
+                padding: 12px;
+                width: 170px;
+                // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                opacity: 0;
+                transition: all 0.3s ease;
+                pointer-events: none;
+                .data-panel-header {
+                  font-size: 14px;
+                  color: #409eff;
+                  margin-bottom: 6px;
+                  padding-bottom: 6px;
+                  border-bottom: 1px solid rgba(64, 158, 255, 0.2);
+                }
+                .data-panel-content {
+                  font-size: 12px;
+                  .data-panel-row {
+                    display: flex;
+                    justify-content: space-between;
+                    color: rgba(255, 255, 255, 0.9);
+                    .data-panel-label {
+                      color: rgba(255, 255, 255, 0.6);
+                      font-size: 12px;
+                    }
+                  }
+                  /* 新增：复选框组样式 */
+                  .checkbox-group {
+                    display: flex;
+                    justify-content: space-between; /* 或 space-between */
+                    align-items: center;
+                    padding-top: 5px; /* 增加一点顶部间距 */
+                  }
+
+                  .checkbox-group .el-checkbox {
+                    margin-right: 10px; /* 增加复选框之间的间距 */
+                  }
+
+                  /* 调整复选框标签颜色 */
+                  .checkbox-group :deep(.el-checkbox__label) {
+                    color: rgba(255, 255, 255, 0.8); /* 调整标签颜色 */
+                    font-size: 12px; /* 调整标签字体大小 */
+                  }
+
+                  /* 执行控制区域的特殊样式 */
+                  .exec-controls {
+                    display: flex;
+                    align-items: center;
+                    gap: 3px;
+                  }
+
+                  /* 调整选中状态下的颜色 */
+                  .checkbox-group
+                    :deep(
+                      .el-checkbox__input.is-checked + .el-checkbox__label
+                    ) {
+                    color: #0ac5a8; /* 选中时标签颜色 */
+                  }
+
+                  .checkbox-group
+                    :deep(
+                      .el-checkbox__input.is-checked .el-checkbox__inner
+                    ) {
+                    background-color: #0ac5a8; /* 选中时背景色 */
+                    border-color: #0ac5a8; /* 选中时边框色 */
+                  }
+                }
+              }
+
+              /* 管理员密码对话框样式 */
+              .admin-password-content {
+                padding: 20px 0;
+              }
+
+              .admin-password-content .el-form-item {
+                margin-bottom: 20px;
+              }
+
+              .admin-password-content .el-input {
+                width: 100%;
+              }
+
+              .dialog-footer {
+                text-align: right;
+                padding-top: 20px;
+              }
+              /* 面板位置样式 */
+              .data-panel.position-right {
+                left: calc(100% + 15px);
+                top: 50%;
+                transform: translateY(-50%);
+              }
+              .data-panel.position-left {
+                right: calc(100% + 15px);
+                top: 50%;
+                transform: translateY(-50%);
+              }
+              .data-panel.position-top {
+                bottom: calc(100% + 15px);
+                left: 50%;
+                transform: translateX(-50%);
+              }
+              .data-panel.position-bottom {
+                top: calc(100% + 15px);
+                left: 50%;
+                transform: translateX(-50%);
+              }
+              /* 始终显示的面板 */
+              .data-panel.always-show {
+                opacity: 1;
+                pointer-events: auto; /* 重新启用指针事件 */
+              }
+              /* 竖向布局样式 */
+              .data-panel.vertical-layout {
+                width: 110px;
+                padding: 8px;
+                .data-panel-row {
+                  flex-direction: column;
+                  gap: 4px;
+                  margin-bottom: 8px;
+                  padding-bottom: 8px;
+                  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                }
+                .data-panel-label {
+                  margin-bottom: 2px;
+                }
+              }
+            }
+            /* 悬停时显示面板 */
+            .marker-with-panel:hover .data-panel:not(.always-show) {
+              opacity: 1;
+            }
+
+            /* 预热房选择样式 */
+            .preheating-room-marker {
+              position: absolute;
+              transform: translate(-50%, -50%);
+              z-index: 10;
+              background: linear-gradient(135deg, #005aff 0%, #000000 100%);
+              border-radius: 5px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+              overflow: hidden;
+              width: 80px;
+              .preheating-room-content {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                .preheating-room-header {
+                  width: 100%;
+                  text-align: center;
+                  padding: 4px 0;
+                  font-size: 11px;
+                  color: white;
+                  background-color: rgba(0, 0, 0, 0.2);
+                  font-weight: bold;
+                }
+                .preheating-room-body {
+                  padding: 6px 8px;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  gap: 6px;
+                }
+              }
+            }
+            .preheating-room-marker :deep(.el-select) {
+              width: 100%;
+            }
+            .preheating-room-marker :deep(.el-input__inner) {
+              background-color: rgba(255, 255, 255, 0.15);
+              border-color: rgba(255, 255, 255, 0.2);
+              color: #fff;
+              height: 24px;
+              line-height: 24px;
+              font-size: 11px;
+              border-radius: 3px;
+              padding: 0 8px;
+            }
           }
         }
         .floor-left {
