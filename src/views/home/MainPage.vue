@@ -229,30 +229,32 @@
                 </div>
                 <div
                   class="preheating-room-marker"
-                  data-x="1215"
-                  data-y="380"
-                  style="width: 160px"
+                  data-x="65"
+                  data-y="450"
+                  style="width: 110px"
                 >
                   <div class="preheating-room-content">
                     <div class="preheating-room-header">灭菌柜到解析房选择</div>
                     <div class="preheating-room-body">
-                      <div style="display: flex; align-items: center">
-                        <el-select placeholder="灭菌" size="mini">
-                          <el-option label="不执行" :value="null"></el-option>
-                          <el-option label="A" value="A"></el-option>
-                          <el-option label="B" value="B"></el-option>
-                          <el-option label="C" value="C"></el-option>
-                        </el-select>
-                        <span
-                          style="font-size: 12px; color: #fff; margin-left: 5px"
-                          >到：</span
-                        >
-                        <el-select placeholder="解析" size="mini">
-                          <el-option label="不执行" :value="null"></el-option>
-                          <el-option label="A" value="A"></el-option>
-                          <el-option label="B" value="B"></el-option>
-                          <el-option label="C" value="C"></el-option>
-                        </el-select>
+                      <div class="route-select-container">
+                        <div class="route-row">
+                          <span class="route-label">灭菌：</span>
+                          <el-select placeholder="灭菌" size="mini">
+                            <el-option label="不执行" :value="null"></el-option>
+                            <el-option label="A" value="A"></el-option>
+                            <el-option label="B" value="B"></el-option>
+                            <el-option label="C" value="C"></el-option>
+                          </el-select>
+                        </div>
+                        <div class="route-row">
+                          <span class="route-label">解析：</span>
+                          <el-select placeholder="解析" size="mini">
+                            <el-option label="不执行" :value="null"></el-option>
+                            <el-option label="A" value="A"></el-option>
+                            <el-option label="B" value="B"></el-option>
+                            <el-option label="C" value="C"></el-option>
+                          </el-select>
+                        </div>
                       </div>
                       <el-button type="primary" size="mini" style="width: 100%"
                         >执行</el-button
@@ -264,17 +266,14 @@
                         >取消</el-button
                       >
                       <div style="display: flex; align-items: center">
-                        <span
-                          style="
-                            font-size: 12px;
-                            color: #fff;
-                            color: greenyellow;
-                          "
-                          >执行中：T-202502</span
+                        <span style="font-size: 12px; color: greenyellow"
+                          ><span style="font-size: 12px; color: #9fe3d3"
+                            >执行中：<br /></span
+                          >T-202502</span
                         >
                       </div>
                       <div style="font-size: 12px; color: #9fe3d3">
-                        需进货：<b>12</b>
+                        需进货：<b style="color: greenyellow">12</b>
                       </div>
                     </div>
                   </div>
@@ -3246,7 +3245,9 @@ export default {
         const markers = imageWrapper.querySelectorAll('.queue-marker');
         const carts = imageWrapper.querySelectorAll('.cart-container');
         // ============= 新增：获取设备节点 =============
-        const nodes = imageWrapper.querySelectorAll('.device-signal-node');
+        const nodes = imageWrapper.querySelectorAll(
+          '.device-signal-node, .preheating-room-marker'
+        );
         // ===========================================
 
         const wrapperRect = imageWrapper.getBoundingClientRect();

@@ -783,6 +783,30 @@
                   align-items: flex-start;
                   gap: 6px;
                 }
+                /* [新增样式开始]：控制上下布局 */
+                .route-select-container {
+                  width: 100%;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 5px;
+
+                  .route-row {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+
+                    .route-label {
+                      font-size: 12px;
+                      color: #fff;
+                      white-space: nowrap; /* 防止文字换行 */
+                    }
+                    /* 让下拉框占据剩余宽度 */
+                    .el-select {
+                      flex: 1; 
+                      width: auto; /* 覆盖原本可能的固定宽度 */
+                    }
+                  }
+                }
               }
             }
             .preheating-room-marker :deep(.el-select) {
