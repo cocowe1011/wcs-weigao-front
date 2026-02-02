@@ -425,151 +425,78 @@ function conPLC() {
             return variables[tag];
           }); // This sets the "translation" to allow us to work with object names
           logger.info('连接PLC成功');
-          // 输送线看门狗心跳
-          conn.addItems('DBW0');
-          // 输送线当前运行状态
-          conn.addItems('DBW2');
-          // 允许进料反馈
-          conn.addItems('DBW4');
-          // A线电机运行信号
-          conn.addItems('DBW6');
-          // A线光电检测信号
-          conn.addItems('DBW8');
-          // B线电机运行信号
-          conn.addItems('DBW10');
-          // B线光电检测信号
-          conn.addItems('DBW12');
-          // C线电机运行信号
-          conn.addItems('DBW14');
-          // C线光电检测信号
-          conn.addItems('DBW16');
-          // D线电机运行信号
-          conn.addItems('DBW18');
-          // D线光电检测信号
-          conn.addItems('DBW20');
-          // E线电机运行信号
-          conn.addItems('DBW22');
-          // E线光电检测信号
-          conn.addItems('DBW24');
-          // 输送线故障反馈
-          conn.addItems('DBW26');
-          // 缓存区数量
-          conn.addItems('DBW28');
-          // 请求上位机下发任务(判断去灭菌还是非灭菌）
-          conn.addItems('DBW30');
-          // 非灭菌缓存区数量
-          conn.addItems('DBW32');
-          // A1数量
-          conn.addItems('DBW34');
-          // A2数量
-          conn.addItems('DBW36');
-          // A3数量
-          conn.addItems('DBW38');
-          // B1数量
-          conn.addItems('DBW40');
-          // B2数量
-          conn.addItems('DBW42');
-          // B3数量
-          conn.addItems('DBW44');
-          // C1数量
-          conn.addItems('DBW46');
-          // C2数量
-          conn.addItems('DBW48');
-          // C3数量
-          conn.addItems('DBW50');
-          // D进货数量
-          conn.addItems('DBW52');
-          // D出货数量
-          conn.addItems('DBW54');
-          // D请求出货信号
-          conn.addItems('DBW56');
-          // E进货数量
-          conn.addItems('DBW58');
-          // E出货数量
-          conn.addItems('DBW60');
-          // E请求出货信号
-          conn.addItems('DBW62');
-          // E数量
-          conn.addItems('DBW58');
-          // 上货区电机运行信号（扫码后入队）
-          conn.addItems('DBW64');
-          // 上货区输送线光电信号
-          conn.addItems('DBW66');
-          // 预热前小车电机运行信号1#车
-          conn.addItems('DBW68');
-          // 预热前小车检测信号1#车
-          conn.addItems('DBW70');
-          // 灭菌前小车电机运行信号2#车
-          conn.addItems('DBW72');
-          // 灭菌前小车检测信号2#车
-          conn.addItems('DBW74');
-          // 解析前小车电机运行信号3#车
-          conn.addItems('DBW76');
-          // 解析前小车检测信号3#车
-          conn.addItems('DBW78');
-          // 解析后小车电机运行信号4#车
-          conn.addItems('DBW80');
-          // 解析后小车检测信号4#车
-          conn.addItems('DBW82');
-          // 扫码枪处光电信号
-          conn.addItems('DBW84');
-          // 请求上位机下发任务(预热小车前）
-          conn.addItems('DBW86');
-          // 预热前1#小车位置值
-          conn.addItems('DBW88');
-          // 灭菌前2#小车位置值
-          conn.addItems('DBW90');
-          // 解析出4#小车位置值
-          conn.addItems('DBW92');
-          // 灭菌前2#小车位置值
-          conn.addItems('DBW94');
-          // 提升机一楼接货站台扫码数据（托盘号）
-          conn.addItems('DBB160');
-          // 一楼顶升移栽区扫码数据（扫码后判断方向）（托盘号）
-          conn.addItems('DBB190');
-          // 提升机二楼接货站台扫码数据（托盘号）
-          conn.addItems('DBB220');
-          // 提升机三楼接货站台扫码数据（托盘号）
-          conn.addItems('DBB250');
-          // 提升机四楼接货站台扫码数据（托盘号）
-          conn.addItems('DBB280');
-          // D扫码
-          conn.addItems('DBB310');
-          //E扫码
-          conn.addItems('DBB340');
-          // 报警点位读取
-          conn.addItems('DBW370'); // 提升机相关报警
-          conn.addItems('DBW372'); // 提升机相关报警
-          conn.addItems('DBW374'); // 门安全故障相关报警
-          conn.addItems('DBW376'); // 备用报警点位
-          conn.addItems('DBW378'); // 链条电机相关报警
-          conn.addItems('DBW380'); // 链条电机相关报警
-          conn.addItems('DBW382'); // 链条电机相关报警
-          conn.addItems('DBW384'); // 预热进口小车相关报警
-          conn.addItems('DBW386'); // 预热进口小车相关报警
-          conn.addItems('DBW388'); // A1-1预热相关报警
-          conn.addItems('DBW390'); // B1-1预热相关报警
-          conn.addItems('DBW392'); // C1-1预热相关报警
-          conn.addItems('DBW394'); // 预热出小车相关报警
-          conn.addItems('DBW396'); // 预热出小车相关报警
-          conn.addItems('DBW398'); // A2-1灭菌相关报警
-          conn.addItems('DBW400'); // B2-1灭菌相关报警
-          conn.addItems('DBW402'); // C2-1灭菌相关报警
-          conn.addItems('DBW404'); // 解析进小车相关报警
-          conn.addItems('DBW406'); // 解析进小车相关报警
-          conn.addItems('DBW408'); // A3-1解析相关报警
-          conn.addItems('DBW410'); // B3-1解析相关报警
-          conn.addItems('DBW412'); // C3-1解析相关报警
-          conn.addItems('DBW414'); // 解析出小车相关报警
-          conn.addItems('DBW416'); // 解析出小车相关报警
-          conn.addItems('DBW418'); // 立库对接相关报警
-          conn.addItems('DBW420'); // D柜相关报警
-          conn.addItems('DBW422'); // E柜相关报警
-          conn.addItems('DBW424'); // 上货1数量
-          conn.addItems('DBW426'); // 上货2数量
-          conn.addItems('DBW428'); // 缓存区1数量
-          conn.addItems('DBW430'); // 缓存区2数量
-          conn.addItems('DBW432'); // 预热、灭菌、解析柜状态
+
+          // --- 添加读取监控点位 (基于读取PLC点位.csv) ---
+          // 基础信号
+          conn.addItems('DBW0'); // 输送线看门狗心跳
+          conn.addItems('DBW2'); // 输送线当前运行状态
+          conn.addItems('DBW4'); // 区域报警
+          conn.addItems('DBW6'); // 缓存线电机运行信号-1
+          conn.addItems('DBW8'); // 缓存线电机运行信号-2
+          // 灭菌线电机运行信号
+          conn.addItems('DBW10'); // 1\2#灭菌线线电机运行信号--1
+          conn.addItems('DBW12'); // 1\2#灭菌线线电机运行信号--2
+          conn.addItems('DBW14'); // 1\2#灭菌线线电机运行信号--3
+          conn.addItems('DBW16'); // 3\4#灭菌线线电机运行信号--1
+          conn.addItems('DBW18'); // 3\4#灭菌线线电机运行信号--2
+          conn.addItems('DBW20'); // 3\4#灭菌线线电机运行信号--3
+          conn.addItems('DBW22'); // 5\6#灭菌线线电机运行信号--1
+          conn.addItems('DBW24'); // 5\6#灭菌线线电机运行信号--2
+          conn.addItems('DBW26'); // 5\6#灭菌线线电机运行信号--3
+          conn.addItems('DBW28'); // 7\8#灭菌线线电机运行信号--1
+          conn.addItems('DBW30'); // 7\8#灭菌线线电机运行信号--2
+          conn.addItems('DBW32'); // 7\8#灭菌线线电机运行信号--3
+          conn.addItems('DBW34'); // 9\10#灭菌线线电机运行信号--1
+          conn.addItems('DBW36'); // 9\10#灭菌线线电机运行信号--2
+          conn.addItems('DBW38'); // 9\10#灭菌线线电机运行信号--3
+          conn.addItems('DBW40'); // 11\12#灭菌线线电机运行信号--1
+          conn.addItems('DBW42'); // 11\12#灭菌线线电机运行信号--2
+          conn.addItems('DBW44'); // 11\12#灭菌线线电机运行信号--3
+          conn.addItems('DBW46'); // 13\14#灭菌线线电机运行信号--1
+          conn.addItems('DBW48'); // 13\14#灭菌线线电机运行信号--2
+          conn.addItems('DBW50'); // 13\14#灭菌线线电机运行信号--3
+          conn.addItems('DBW52'); // 15#灭菌线和出口线电机运行信号--1
+          conn.addItems('DBW54'); // 15#灭菌线和出口线电机运行信号--2
+          conn.addItems('DBW56'); // 15#灭菌线和出口线电机运行信号--3
+          // RGV
+          conn.addItems('DBW58'); // RGV小车位置值
+          conn.addItems('DBW60'); // RGV电机运行信号
+          // 缓存线占位虚拟ID
+          for (let i = 62; i <= 118; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1800; i <= 1898; i += 2) conn.addItems('DBW' + i);
+          // 灭菌线占位虚拟ID
+          for (let i = 120; i <= 178; i += 2) conn.addItems('DBW' + i); // 1\2#
+          for (let i = 200; i <= 278; i += 2) conn.addItems('DBW' + i); // 3\4#
+          for (let i = 280; i <= 358; i += 2) conn.addItems('DBW' + i); // 5\6#
+          for (let i = 360; i <= 438; i += 2) conn.addItems('DBW' + i); // 7\8#
+          for (let i = 440; i <= 518; i += 2) conn.addItems('DBW' + i); // 9\10#
+          for (let i = 520; i <= 598; i += 2) conn.addItems('DBW' + i); // 11\12#
+          for (let i = 600; i <= 678; i += 2) conn.addItems('DBW' + i); // 13\14#
+          for (let i = 680; i <= 758; i += 2) conn.addItems('DBW' + i); // 15#
+          // 缓存线电机货物目的地
+          for (let i = 800; i <= 858; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1900; i <= 1960; i += 2) conn.addItems('DBW' + i);
+          // 灭菌线电机货物目的地
+          for (let i = 860; i <= 938; i += 2) conn.addItems('DBW' + i);
+          for (let i = 940; i <= 1008; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1020; i <= 1090; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1100; i <= 1170; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1180; i <= 1250; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1260; i <= 1330; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1340; i <= 1410; i += 2) conn.addItems('DBW' + i);
+          for (let i = 1420; i <= 1496; i += 2) conn.addItems('DBW' + i);
+          // 柜内实际数量
+          for (let i = 1500; i <= 1528; i += 2) conn.addItems('DBW' + i); // 预热柜
+          for (let i = 1530; i <= 1558; i += 2) conn.addItems('DBW' + i); // 灭菌柜
+          // 传感器信号
+          conn.addItems('DBW1606');
+          conn.addItems('DBW1608');
+          for (let i = 1610; i <= 1656; i += 2) conn.addItems('DBW' + i);
+          // 请求信号
+          conn.addItems('DBW1658'); // 上货请求
+          conn.addItems('DBW1670'); // 灭菌出货请求1
+          conn.addItems('DBW1672'); // 灭菌出货请求2
+
           setInterval(() => {
             conn.readAllItems(valuesReady);
           }, 200);
@@ -583,7 +510,7 @@ function conPLC() {
       );
     })
     .catch((err) => {
-      logger.info('config error!');
+      logger.info('config error!' + err);
     });
 }
 let times = 1;
@@ -595,188 +522,168 @@ function sendHeartToPLC() {
       nowValue = 1 - nowValue;
     }
     times++;
-    writeValuesToPLC('DBW500', nowValue);
+    // 使用新的心跳地址 W_DBW0 (DB1001.DBW0)
+    writeValuesToPLC('W_DBW0', nowValue);
   }, 200); // 每200毫秒执行一次交替
 }
 
 var variables = {
-  DBW0: 'DB101,INT0', // 心跳
-  DBW2: 'DB101,INT2', // 输送线当前运行状态
-  DBW4: 'DB101,INT4', // 允许进料反馈
-  DBW6: 'DB101,INT6', // A线电机运行信号
-  DBW8: 'DB101,INT8', // A线光电检测信号
-  DBW10: 'DB101,INT10', // B线电机运行信号
-  DBW12: 'DB101,INT12', // B线光电检测信号
-  DBW14: 'DB101,INT14', // C线电机运行信号
-  DBW16: 'DB101,INT16', // C线光电检测信号
-  DBW18: 'DB101,INT18', // D线电机运行信号
-  DBW20: 'DB101,INT20', // D线光电检测信号
-  DBW22: 'DB101,INT22', // E线电机运行信号
-  DBW24: 'DB101,INT24', // E线光电检测信号
-  DBW26: 'DB101,INT26', // 输送线故障反馈
-  DBW28: 'DB101,INT28', // 缓存区数量
-  DBW30: 'DB101,INT30', // 请求上位机下发任务(判断去灭菌还是非灭菌）
-  DBW32: 'DB101,INT32', // 非灭菌缓存区数量
-  DBW34: 'DB101,INT34', // A1数量
-  DBW36: 'DB101,INT36', // A2数量
-  DBW38: 'DB101,INT38', // A3数量
-  DBW40: 'DB101,INT40', // B1数量
-  DBW42: 'DB101,INT42', // B2数量
-  DBW44: 'DB101,INT44', // B3数量
-  DBW46: 'DB101,INT46', // C1数量
-  DBW48: 'DB101,INT48', // C2数量
-  DBW50: 'DB101,INT50', // C3数量
-  DBW52: 'DB101,INT52', // D进货数量
-  DBW54: 'DB101,INT54', // D出货数量
-  DBW56: 'DB101,INT56', // D请求出货信号
-  DBW58: 'DB101,INT58', // E进货数量
-  DBW60: 'DB101,INT60', // E出货数量
-  DBW62: 'DB101,INT62', // E请求出货信号
-  DBW64: 'DB101,INT64', // 上货区电机运行信号（扫码后入队）
-  DBW66: 'DB101,INT66', // 上货区输送线光电信号
-  DBW68: 'DB101,INT68', // 预热前小车电机运行信号1#车
-  DBW70: 'DB101,INT70', // 预热前小车检测信号1#车
-  DBW72: 'DB101,INT72', // 灭菌前小车电机运行信号2#车
-  DBW74: 'DB101,INT74', // 灭菌前小车检测信号2#车
-  DBW76: 'DB101,INT76', // 解析前小车电机运行信号3#车
-  DBW78: 'DB101,INT78', // 解析前小车检测信号3#车
-  DBW80: 'DB101,INT80', // 解析后小车电机运行信号4#车
-  DBW82: 'DB101,INT82', // 解析后小车检测信号4#车
-  DBW84: 'DB101,INT84', // 扫码枪处光电信号
-  DBW86: 'DB101,INT86', // 请求上位机下发任务(预热小车前）
-  DBW88: 'DB101,INT88', // 预热前1#小车位置值
-  DBW90: 'DB101,INT90', // 灭菌前2#小车位置值
-  DBW92: 'DB101,INT92', // 解析出4#小车位置值
-  DBW94: 'DB101,INT94', // 灭菌前2#小车位置值
-  DBB160: 'DB101,C160.30', // 提升机一楼接货站台扫码数据（托盘号）
-  DBB190: 'DB101,C190.30', // 一楼顶升移栽区扫码数据（扫码后判断方向）（托盘号）
-  DBB220: 'DB101,C220.30', // 提升机二楼接货站台扫码数据（托盘号）
-  DBB250: 'DB101,C250.30', // 提升机三楼接货站台扫码数据（托盘号）
-  DBB280: 'DB101,C280.30', // 提升机四楼接货站台扫码数据（托盘号）
-  DBB310: 'DB101,C310.30', // D扫码
-  DBB340: 'DB101,C340.30', // E扫码
-  DBW500: 'DB101,INT500', // WCS看门狗心跳
-  DBW502: 'DB101,INT502', // WCS-全线启动
-  DBW504: 'DB101,INT504', // WCS-全线停止
-  DBW506: 'DB101,INT506', // WCS看门狗心跳
-  DBW508: 'DB101,INT508', // WCS-故障复位
-  DBW510: 'DB101,INT510', // 接货口全部禁用→写1禁用；写0不禁用
-  DBW512: 'DB101,INT512', // 一楼接货口启用→写1启用；写0不启用
-  DBW514: 'DB101,INT514', // 二楼接货口启用→写1启用；写0不启用
-  DBW516: 'DB101,INT516', // 三楼接货口启用→写1启用；写0不启用
-  DBW518: 'DB101,INT518', // 四楼接货口启用→写1启用；写0不启用
-  DBW520: 'DB101,INT520', // 一楼D灭菌接货口启用→写1启用；写0不启用
-  DBW522: 'DB101,INT522', // 一楼E灭菌接货口启用→写1启用；写0不启用
-  DBW524: 'DB101,INT524', // WCS执行进货预热房编号预热房
-  DBW526: 'DB101,INT526', // WCS执行出货预热房编号
-  DBW528: 'DB101,INT528', // WCS执行进货灭菌柜编号
-  DBW530: 'DB101,INT530', // WCS执行出货灭菌柜编号
-  DBW532: 'DB101,INT532', // WCS执行进货解析柜编号
-  DBW534: 'DB101,INT534', // WCS执行出货解析柜编号
-  DBW536: 'DB101,INT536', // WCS执行出货DE灭菌柜编号
-  DBW540: 'DB101,INT540', // WCS下发任务完成
-  DBW542: 'DB101,INT542', // WCS下发顶升移栽目的地
-  // DBW544: 'DB101,INT544', // WCS-接货口进货错误 - 改为位级别控制
-  DBW544_BIT0: 'DB101,X544.0', // WCS-接货口进货错误 - 位0 (第544字节，位0)
-  DBW544_BIT1: 'DB101,X544.1', // WCS-接货口进货错误 - 位1 (第544字节，位1)
-  DBW544_BIT2: 'DB101,X544.2', // WCS-接货口进货错误 - 位2 (第544字节，位2)
-  DBW544_BIT3: 'DB101,X544.3', // WCS-接货口进货错误 - 位3 (第544字节，位3)
-  DBW544_BIT4: 'DB101,X544.4', // WCS-接货口进货错误 - 位4 (第544字节，位4)
-  DBW544_BIT5: 'DB101,X544.5', // WCS-接货口进货错误 - 位5 (第544字节，位5)
-  DBW544_BIT6: 'DB101,X544.6', // WCS-接货口进货错误 - 位6 (第544字节，位6)
-  DBW544_BIT7: 'DB101,X544.7', // WCS-接货口进货错误 - 位7 (第544字节，位7)
-  DBW544_BIT8: 'DB101,X545.0', // WCS-接货口进货错误 - 位8 (第545字节，位0)
-  DBW544_BIT9: 'DB101,X545.1', // WCS-接货口进货错误 - 位9 (第545字节，位1)
-  DBW544_BIT10: 'DB101,X545.2', // WCS-接货口进货错误 - 位10 (第545字节，位2)
-  DBW544_BIT11: 'DB101,X545.3', // WCS-接货口进货错误 - 位11 (第545字节，位3)
-  DBW544_BIT12: 'DB101,X545.4', // WCS-接货口进货错误 - 位12 (第545字节，位4)
-  DBW544_BIT13: 'DB101,X545.5', // WCS-接货口进货错误 - 位13 (第545字节，位5)
-  DBW544_BIT14: 'DB101,X545.6', // WCS-接货口进货错误 - 位14 (第545字节，位6)
-  DBW546: 'DB101,INT546', // WCS-预热柜当前需要进货数量
-  DBW548: 'DB101,INT548', // WCS-灭菌柜当前需要进货数量
-  DBW550: 'DB101,INT550', // WCS-解析柜当前需要进货数量
-  DBW552: 'DB101,INT552', // WCS-D灭菌柜当前需要进货数量
-  DBW554: 'DB101,INT554', // WCS-E灭菌柜当前需要进货数量
-  DBW556: 'DB101,INT556', // 备用地址
-  DBW558: 'DB101,INT558', // WCS-预热前小车信号请求尾托盘标识
-  DBW560: 'DB101,INT560', // 出库当前需进货数量
-  DBW562: 'DB101,INT562', // 无码上货模式
-  DBW564: 'DB101,INT564', // 入库1线
-  DBW566: 'DB101,INT566', // 入库2线
-  DBW568: 'DB101,INT568', // 缓存1#线
-  DBW570: 'DB101,INT570', // 缓存2#线
-  DBW572_BIT0: 'DB101,X572.0', // 控制按钮
-  DBW572_BIT1: 'DB101,X572.1', // 控制按钮
-  DBW572_BIT2: 'DB101,X572.2', // 控制按钮
-  DBW572_BIT3: 'DB101,X572.3', // 控制按钮
-  DBW572_BIT4: 'DB101,X572.4', // 控制按钮
-  DBW572_BIT5: 'DB101,X572.5', // 控制按钮
-  // 报警点位映射
-  DBW370: 'DB101,INT370', // 提升机相关报警
-  DBW372: 'DB101,INT372', // 提升机相关报警
-  DBW374: 'DB101,INT374', // 门安全故障相关报警
-  DBW376: 'DB101,INT376', // 备用报警点位
-  DBW378: 'DB101,INT378', // 链条电机相关报警
-  DBW380: 'DB101,INT380', // 链条电机相关报警
-  DBW382: 'DB101,INT382', // 链条电机相关报警
-  DBW384: 'DB101,INT384', // 预热进口小车相关报警
-  DBW386: 'DB101,INT386', // 预热进口小车相关报警
-  DBW388: 'DB101,INT388', // A1-1预热相关报警
-  DBW390: 'DB101,INT390', // B1-1预热相关报警
-  DBW392: 'DB101,INT392', // C1-1预热相关报警
-  DBW394: 'DB101,INT394', // 预热出小车相关报警
-  DBW396: 'DB101,INT396', // 预热出小车相关报警
-  DBW398: 'DB101,INT398', // A2-1灭菌相关报警
-  DBW400: 'DB101,INT400', // B2-1灭菌相关报警
-  DBW402: 'DB101,INT402', // C2-1灭菌相关报警
-  DBW404: 'DB101,INT404', // 解析进小车相关报警
-  DBW406: 'DB101,INT406', // 解析进小车相关报警
-  DBW408: 'DB101,INT408', // A3-1解析相关报警
-  DBW410: 'DB101,INT410', // B3-1解析相关报警
-  DBW412: 'DB101,INT412', // C3-1解析相关报警
-  DBW414: 'DB101,INT414', // 解析出小车相关报警
-  DBW416: 'DB101,INT416', // 解析出小车相关报警
-  DBW418: 'DB101,INT418', // 立库对接相关报警
-  DBW420: 'DB101,INT420', // D柜相关报警
-  DBW422: 'DB101,INT422', // E柜相关报警
-  DBW424: 'DB101,INT424', // 上货1数量
-  DBW426: 'DB101,INT426', // 上货2数量
-  DBW428: 'DB101,INT428', // 缓存区1数量
-  DBW430: 'DB101,INT430', // 缓存区2数量
-  DBW432: 'DB101,INT432' // 预热、灭菌、解析柜状态
+  DBW0: 'DB1000,INT0', // 输送线看门狗心跳 [cite: 1]
+  DBW2: 'DB1000,INT2', // 输送线当前运行状态 [cite: 1]
+  DBW4: 'DB1000,INT4', // 区域报警 [cite: 1]
+  DBW6: 'DB1000,INT6', // 缓存线电机运行信号-1 [cite: 2]
+  DBW8: 'DB1000,INT8', // 缓存线电机运行信号-2 [cite: 4]
+  DBW10: 'DB1000,INT10', // 1\2#灭菌线线电机运行信号--1 [cite: 6]
+  DBW12: 'DB1000,INT12', // 1\2#灭菌线线电机运行信号--2 [cite: 7]
+  DBW14: 'DB1000,INT14', // 1\2#灭菌线线电机运行信号--3 [cite: 8]
+  DBW16: 'DB1000,INT16', // 3\4#灭菌线线电机运行信号--1 [cite: 9]
+  DBW18: 'DB1000,INT18', // 3\4#灭菌线线电机运行信号--2 [cite: 10]
+  DBW20: 'DB1000,INT20', // 3\4#灭菌线线电机运行信号--3 [cite: 11]
+  DBW22: 'DB1000,INT22', // 5\6#灭菌线线电机运行信号--1 [cite: 12]
+  DBW24: 'DB1000,INT24', // 5\6#灭菌线线电机运行信号--2 [cite: 13]
+  DBW26: 'DB1000,INT26', // 5\6#灭菌线线电机运行信号--3 [cite: 14]
+  DBW28: 'DB1000,INT28', // 7\8#灭菌线线电机运行信号--1 [cite: 15]
+  DBW30: 'DB1000,INT30', // 7\8#灭菌线线电机运行信号--2 [cite: 16]
+  DBW32: 'DB1000,INT32', // 7\8#灭菌线线电机运行信号--3 [cite: 17]
+  DBW34: 'DB1000,INT34', // 9\10#灭菌线线电机运行信号--1 [cite: 18]
+  DBW36: 'DB1000,INT36', // 9\10#灭菌线线电机运行信号--2 [cite: 19]
+  DBW38: 'DB1000,INT38', // 9\10#灭菌线线电机运行信号--3 [cite: 20]
+  DBW40: 'DB1000,INT40', // 11\12#灭菌线线电机运行信号--1 [cite: 21]
+  DBW42: 'DB1000,INT42', // 11\12#灭菌线线电机运行信号--2 [cite: 22]
+  DBW44: 'DB1000,INT44', // 11\12#灭菌线线电机运行信号--3 [cite: 24]
+  DBW46: 'DB1000,INT46', // 13\14#灭菌线线电机运行信号--1 [cite: 25]
+  DBW48: 'DB1000,INT48', // 13\14#灭菌线线电机运行信号--2 [cite: 26]
+  DBW50: 'DB1000,INT50', // 13\14#灭菌线线电机运行信号--3 [cite: 27]
+  DBW52: 'DB1000,INT52', // 15#灭菌线和出口线电机运行信号--1 [cite: 28]
+  DBW54: 'DB1000,INT54', // 15#灭菌线和出口线电机运行信号--2 [cite: 29]
+  DBW56: 'DB1000,INT56', // 15#灭菌线和出口线电机运行信号--3 [cite: 30]
+  DBW58: 'DB1000,INT58', // RGV小车位置值 [cite: 30]
+  DBW60: 'DB1000,INT60', // RGV电机运行信号 [cite: 30]
+  // 缓存线占位虚拟ID
+  ...generateVariables(62, 118, 'DB1000,INT'),
+  ...generateVariables(1800, 1898, 'DB1000,INT'),
+  // 灭菌线占位虚拟ID
+  ...generateVariables(120, 178, 'DB1000,INT'),
+  ...generateVariables(200, 278, 'DB1000,INT'),
+  ...generateVariables(280, 358, 'DB1000,INT'),
+  ...generateVariables(360, 438, 'DB1000,INT'),
+  ...generateVariables(440, 518, 'DB1000,INT'),
+  ...generateVariables(520, 598, 'DB1000,INT'),
+  ...generateVariables(600, 678, 'DB1000,INT'),
+  ...generateVariables(680, 758, 'DB1000,INT'),
+  // 缓存线电机货物目的地
+  ...generateVariables(800, 858, 'DB1000,INT'),
+  ...generateVariables(1900, 1960, 'DB1000,INT'),
+  // 灭菌线电机货物目的地
+  ...generateVariables(860, 938, 'DB1000,INT'),
+  ...generateVariables(940, 1008, 'DB1000,INT'),
+  ...generateVariables(1020, 1090, 'DB1000,INT'),
+  ...generateVariables(1100, 1170, 'DB1000,INT'),
+  ...generateVariables(1180, 1250, 'DB1000,INT'),
+  ...generateVariables(1260, 1330, 'DB1000,INT'),
+  ...generateVariables(1340, 1410, 'DB1000,INT'),
+  ...generateVariables(1420, 1496, 'DB1000,INT'),
+  // 柜内实际数量
+  ...generateVariables(1500, 1528, 'DB1000,INT'),
+  ...generateVariables(1530, 1558, 'DB1000,INT'),
+  // 传感器信号
+  DBW1606: 'DB1000,INT1606', // [cite: 123]
+  DBW1608: 'DB1000,INT1608', // [cite: 124]
+  ...generateVariables(1610, 1656, 'DB1000,INT'),
+  // 请求信号
+  DBW1658: 'DB1000,INT1658', // 上货请求读码 [cite: 147]
+  DBW1670: 'DB1000,INT1670', // 灭菌出货请求1 [cite: 148]
+  DBW1672: 'DB1000,INT1672', // 灭菌出货请求2 [cite: 149]
+
+  // --- 写入 (DB1001) ---
+  W_DBW0: 'DB1001,INT0', // WCS看门狗心跳 [cite: 150]
+  W_DBW2: 'DB1001,INT2', // WCS-全线启动（系统在线） [cite: 150]
+  W_DBW4: 'DB1001,INT4', // WCS-全线停止 [cite: 150]
+  W_DBW6: 'DB1001,INT6', // WCS-允许进料 [cite: 150]
+  W_DBW8: 'DB1001,INT8', // WCS-故障复位 [cite: 150]
+  W_DBW10: 'DB1001,INT10', // WCS上货位写虚拟ID [cite: 150]
+  W_DBW12: 'DB1001,INT12', // WCS上货位写目的地 [cite: 150]
+  W_DBW14: 'DB1001,INT14', // WCS执行出货预热房编号 [cite: 150]
+  W_DBW16: 'DB1001,INT16', // WCS执行进货灭菌柜编号 [cite: 150]
+  // DBW18的位定义 - 按物理地址线性顺序展开
+  W_DBW18_BIT0: 'DB1001,X18.0',
+  W_DBW18_BIT1: 'DB1001,X18.1',
+  W_DBW18_BIT2: 'DB1001,X18.2',
+  W_DBW18_BIT3: 'DB1001,X18.3',
+  W_DBW18_BIT4: 'DB1001,X18.4',
+  W_DBW18_BIT5: 'DB1001,X18.5',
+  W_DBW18_BIT6: 'DB1001,X18.6',
+  W_DBW18_BIT7: 'DB1001,X18.7',
+  W_DBW18_BIT8: 'DB1001,X19.0', // 进位到下一个字节
+  W_DBW18_BIT9: 'DB1001,X19.1',
+  W_DBW18_BIT10: 'DB1001,X19.2',
+  W_DBW18_BIT11: 'DB1001,X19.3',
+  W_DBW18_BIT12: 'DB1001,X19.4',
+  W_DBW18_BIT13: 'DB1001,X19.5',
+  W_DBW18_BIT14: 'DB1001,X19.6',
+  W_DBW18_BIT15: 'DB1001,X19.7',
+  // DBW20的位定义 - 按物理地址线性顺序展开
+  W_DBW20_BIT0: 'DB1001,X20.0',
+  W_DBW20_BIT1: 'DB1001,X20.1',
+  W_DBW20_BIT2: 'DB1001,X20.2',
+  W_DBW20_BIT3: 'DB1001,X20.3',
+  W_DBW20_BIT4: 'DB1001,X20.4',
+  W_DBW20_BIT5: 'DB1001,X20.5',
+  W_DBW20_BIT6: 'DB1001,X20.6',
+  W_DBW20_BIT7: 'DB1001,X20.7',
+  W_DBW20_BIT8: 'DB1001,X21.0', // 进位到下一个字节
+  W_DBW20_BIT9: 'DB1001,X21.1',
+  W_DBW20_BIT10: 'DB1001,X21.2',
+  W_DBW20_BIT11: 'DB1001,X21.3',
+  W_DBW20_BIT12: 'DB1001,X21.4',
+  W_DBW20_BIT13: 'DB1001,X21.5',
+  W_DBW20_BIT14: 'DB1001,X21.6',
+  W_DBW20_BIT15: 'DB1001,X21.7',
+
+  W_DBW22: 'DB1001,INT22', // WCS执行小车移栽命令 [cite: 151]
+  W_DBW24: 'DB1001,INT24', // WCS修改电机编号 [cite: 151]
+  W_DBW26: 'DB1001,INT26', // WCS修改目的地 [cite: 151]
+  W_DBW28: 'DB1001,INT28', // WCS下修改模拟ID [cite: 151]
+  W_DBW30: 'DB1001,INT30', // WCS下发修改命令 [cite: 151]
+  W_DBW32: 'DB1001,INT32', // 系统无码模式切换 [cite: 152]
+  W_DBW34: 'DB1001,INT34', // 手自动动切换 [cite: 152]
+  W_DBW36: 'DB1001,INT36', // 选定电机编号1 [cite: 152]
+  W_DBW38: 'DB1001,INT38', // 选定电机编号2 [cite: 152]
+  W_DBW40: 'DB1001,INT40', // 选定电机编号3 [cite: 152]
+  W_DBW42: 'DB1001,INT42', // 选定电机编号4 [cite: 152]
+  W_DBW44: 'DB1001,INT44', // 电机前进 (PDA1/PDA2) [cite: 152]
+  W_DBW46: 'DB1001,INT46', // 电机后退 (PDA1/PDA2) [cite: 152]
+  W_DBW48: 'DB1001,INT48', // 顶升上升 (PDA1/PDA2) [cite: 152]
+  W_DBW50: 'DB1001,INT50', // 顶升下降 (PDA1/PDA2) [cite: 152]
+  W_DBW52: 'DB1001,INT52', // 小车左移 (PDA1/PDA2) [cite: 152]
+  W_DBW54: 'DB1001,INT54', // 小车右移 (PDA1/PDA2) [cite: 152]
+  W_DBW56: 'DB1001,INT56', // WCS修改目标数量 [cite: 152]
+  W_DBW58: 'DB1001,INT58', // 双线单线缓存模式 [cite: 152]
+  // 出灭菌柜线链条电机货物目的地
+  ...generateVariables(60, 118, 'DB1001,INT', 'W_'),
+  // 出灭菌线占位虚拟ID码
+  ...generateVariables(120, 178, 'DB1001,INT', 'W_'),
+  W_DBW180: 'DB1001,INT180', // 进货错误停止信号 [cite: 253]
+  // PDA2 选定电机
+  W_DBW182: 'DB1001,INT182', // 选定电机编号5 [cite: 253]
+  W_DBW184: 'DB1001,INT184', // 选定电机编号6 [cite: 253]
+  W_DBW186: 'DB1001,INT186', // 选定电机编号7 [cite: 253]
+  W_DBW188: 'DB1001,INT188' // 选定电机编号8 [cite: 253]
 };
 
-var writeStrArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
-var writeAddArr = [
-  'DBW500',
-  'DBW502',
-  'DBW504',
-  'DBW506',
-  'DBW508',
-  'DBW510',
-  'DBW512',
-  'DBW514',
-  'DBW516',
-  'DBW518',
-  'DBW520',
-  'DBW522',
-  // 'DBW524',
-  // 'DBW526',
-  // 'DBW528',
-  // 'DBW530',
-  // 'DBW532',
-  // 'DBW534',
-  // 'DBW536',
-  'DBW540',
-  // 'DBW542',
-  // 'DBW544', // 已改为位级别控制，不再批量写入
-  'DBW546',
-  'DBW548',
-  'DBW550',
-  'DBW552',
-  'DBW554',
-  'DBW562'
-];
+// 辅助函数：生成连续变量对象
+function generateVariables(start, end, prefix, keyPrefix = '') {
+  const vars = {};
+  for (let i = start; i <= end; i += 2) {
+    vars[keyPrefix + 'DBW' + i] = prefix + i;
+  }
+  return vars;
+}
+
+// 批量写入数组初始化
+// 包含了所有主要的控制点位，默认置0
+var writeStrArr = [0, 0, 0, 0, 0];
+var writeAddArr = ['W_DBW0', 'W_DBW2', 'W_DBW4', 'W_DBW6', 'W_DBW8'];
 
 // 给PLC写值
 function writeValuesToPLC(add, values) {
