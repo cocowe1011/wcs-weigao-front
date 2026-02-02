@@ -426,40 +426,40 @@ function conPLC() {
           }); // This sets the "translation" to allow us to work with object names
           logger.info('连接PLC成功');
 
-          // --- 添加读取点位 (DB1000) ---
-          conn.addItems('DBW0');
-          conn.addItems('DBW2');
-          conn.addItems('DBW4');
-          conn.addItems('DBW6');
-          conn.addItems('DBW8');
-          conn.addItems('DBW10');
-          conn.addItems('DBW12');
-          conn.addItems('DBW14');
-          conn.addItems('DBW16');
-          conn.addItems('DBW18');
-          conn.addItems('DBW20');
-          conn.addItems('DBW22');
-          conn.addItems('DBW24');
-          conn.addItems('DBW26');
-          conn.addItems('DBW28');
-          conn.addItems('DBW30');
-          conn.addItems('DBW32');
-          conn.addItems('DBW34');
-          conn.addItems('DBW36');
-          conn.addItems('DBW38');
-          conn.addItems('DBW40');
-          conn.addItems('DBW42');
-          conn.addItems('DBW44');
-          conn.addItems('DBW46');
-          conn.addItems('DBW48');
-          conn.addItems('DBW50');
-          conn.addItems('DBW52');
-          conn.addItems('DBW54');
-          conn.addItems('DBW56');
-          conn.addItems('DBW58');
-          conn.addItems('DBW60');
+          // --- 1. 基础信号 ---
+          conn.addItems('DBW0'); // 输送线看门狗心跳
+          conn.addItems('DBW2'); // 输送线当前运行状态
+          conn.addItems('DBW4'); // 区域报警
+          conn.addItems('DBW6'); // 缓存线电机运行信号-1
+          conn.addItems('DBW8'); // 缓存线电机运行信号-2
+          conn.addItems('DBW10'); // 1\2#灭菌线线电机运行信号--1
+          conn.addItems('DBW12'); // 1\2#灭菌线线电机运行信号--2
+          conn.addItems('DBW14'); // 1\2#灭菌线线电机运行信号--3
+          conn.addItems('DBW16'); // 3\4#灭菌线线电机运行信号--1
+          conn.addItems('DBW18'); // 3\4#灭菌线线电机运行信号--2
+          conn.addItems('DBW20'); // 3\4#灭菌线线电机运行信号--3
+          conn.addItems('DBW22'); // 5\6#灭菌线线电机运行信号--1
+          conn.addItems('DBW24'); // 5\6#灭菌线线电机运行信号--2
+          conn.addItems('DBW26'); // 5\6#灭菌线线电机运行信号--3
+          conn.addItems('DBW28'); // 7\8#灭菌线线电机运行信号--1
+          conn.addItems('DBW30'); // 7\8#灭菌线线电机运行信号--2
+          conn.addItems('DBW32'); // 7\8#灭菌线线电机运行信号--3
+          conn.addItems('DBW34'); // 9\10#灭菌线线电机运行信号--1
+          conn.addItems('DBW36'); // 9\10#灭菌线线电机运行信号--2
+          conn.addItems('DBW38'); // 9\10#灭菌线线电机运行信号--3
+          conn.addItems('DBW40'); // 11\12#灭菌线线电机运行信号--1
+          conn.addItems('DBW42'); // 11\12#灭菌线线电机运行信号--2
+          conn.addItems('DBW44'); // 11\12#灭菌线线电机运行信号--3
+          conn.addItems('DBW46'); // 13\14#灭菌线线电机运行信号--1
+          conn.addItems('DBW48'); // 13\14#灭菌线线电机运行信号--2
+          conn.addItems('DBW50'); // 13\14#灭菌线线电机运行信号--3
+          conn.addItems('DBW52'); // 15#灭菌线和出口线电机运行信号--1
+          conn.addItems('DBW54'); // 15#灭菌线和出口线电机运行信号--2
+          conn.addItems('DBW56'); // 15#灭菌线和出口线电机运行信号--3
+          conn.addItems('DBW58'); // RGV小车位置值
+          conn.addItems('DBW60'); // RGV电机运行信号
 
-          // 缓存线各个电机占位虚拟ID码 (DBW62-DBW118)
+          // --- 2. 缓存线各个电机占位虚拟ID码 (DBW62-DBW118) ---
           conn.addItems('DBW62');
           conn.addItems('DBW64');
           conn.addItems('DBW66');
@@ -490,7 +490,7 @@ function conPLC() {
           conn.addItems('DBW116');
           conn.addItems('DBW118');
 
-          // 缓存线各个电机占位虚拟ID码 - 续 (DBW1800-DBW1898)
+          // --- 3. 缓存线各个电机占位虚拟ID码 - 续 (DBW1800-DBW1898) ---
           conn.addItems('DBW1800');
           conn.addItems('DBW1802');
           conn.addItems('DBW1804');
@@ -542,7 +542,7 @@ function conPLC() {
           conn.addItems('DBW1896');
           conn.addItems('DBW1898');
 
-          // 1\2#预热灭菌线占位虚拟ID码 (DBW120-DBW198)
+          // --- 4. 1\2#预热灭菌线占位虚拟ID码 (DBW120-DBW198) ---
           conn.addItems('DBW120');
           conn.addItems('DBW122');
           conn.addItems('DBW124');
@@ -584,7 +584,7 @@ function conPLC() {
           conn.addItems('DBW196');
           conn.addItems('DBW198');
 
-          // 3\4#灭菌线线占位虚拟ID码 (DBW200-DBW278)
+          // --- 5. 3\4#灭菌线线占位虚拟ID码 (DBW200-DBW278) ---
           conn.addItems('DBW200');
           conn.addItems('DBW202');
           conn.addItems('DBW204');
@@ -626,7 +626,7 @@ function conPLC() {
           conn.addItems('DBW276');
           conn.addItems('DBW278');
 
-          // 5\6#灭菌线线占位虚拟ID码 (DBW280-DBW358)
+          // --- 6. 5\6#灭菌线线占位虚拟ID码 (DBW280-DBW358) ---
           conn.addItems('DBW280');
           conn.addItems('DBW282');
           conn.addItems('DBW284');
@@ -668,7 +668,7 @@ function conPLC() {
           conn.addItems('DBW356');
           conn.addItems('DBW358');
 
-          // 7\8#灭菌线线占位虚拟ID码 (DBW360-DBW438)
+          // --- 7. 7\8#灭菌线线占位虚拟ID码 (DBW360-DBW438) ---
           conn.addItems('DBW360');
           conn.addItems('DBW362');
           conn.addItems('DBW364');
@@ -710,7 +710,7 @@ function conPLC() {
           conn.addItems('DBW436');
           conn.addItems('DBW438');
 
-          // 9\10#灭菌线线占位虚拟ID码 (DBW440-DBW518)
+          // --- 8. 9\10#灭菌线线占位虚拟ID码 (DBW440-DBW518) ---
           conn.addItems('DBW440');
           conn.addItems('DBW442');
           conn.addItems('DBW444');
@@ -752,7 +752,7 @@ function conPLC() {
           conn.addItems('DBW516');
           conn.addItems('DBW518');
 
-          // 11\12#灭菌线线占位虚拟ID码 (DBW520-DBW598)
+          // --- 9. 11\12#灭菌线线占位虚拟ID码 (DBW520-DBW598) ---
           conn.addItems('DBW520');
           conn.addItems('DBW522');
           conn.addItems('DBW524');
@@ -794,7 +794,7 @@ function conPLC() {
           conn.addItems('DBW596');
           conn.addItems('DBW598');
 
-          // 13\14#灭菌线线占位虚拟ID码 (DBW600-DBW678)
+          // --- 10. 13\14#灭菌线线占位虚拟ID码 (DBW600-DBW678) ---
           conn.addItems('DBW600');
           conn.addItems('DBW602');
           conn.addItems('DBW604');
@@ -836,7 +836,7 @@ function conPLC() {
           conn.addItems('DBW676');
           conn.addItems('DBW678');
 
-          // 15#灭菌线和出口线占位虚拟ID码 (DBW680-DBW758)
+          // --- 11. 15#灭菌线和出口线占位虚拟ID码 (DBW680-DBW758) ---
           conn.addItems('DBW680');
           conn.addItems('DBW682');
           conn.addItems('DBW684');
@@ -878,7 +878,7 @@ function conPLC() {
           conn.addItems('DBW756');
           conn.addItems('DBW758');
 
-          // 缓存线各个电机货物目的地 (DBW800-DBW858)
+          // --- 12. 缓存线各个电机货物目的地 (DBW800-DBW858) ---
           conn.addItems('DBW800');
           conn.addItems('DBW802');
           conn.addItems('DBW804');
@@ -910,7 +910,7 @@ function conPLC() {
           conn.addItems('DBW856');
           conn.addItems('DBW858');
 
-          // 缓存线各个电机货物目的地 - 续 (DBW1900-DBW1960)
+          // --- 13. 缓存线各个电机货物目的地 - 续 (DBW1900-DBW1960) ---
           conn.addItems('DBW1900');
           conn.addItems('DBW1902');
           conn.addItems('DBW1904');
@@ -943,7 +943,7 @@ function conPLC() {
           conn.addItems('DBW1958');
           conn.addItems('DBW1960');
 
-          // 1\2#灭菌线线电机货物目的地 (DBW860-DBW938)
+          // --- 14. 1\2#灭菌线线电机货物目的地 (DBW860-DBW938) ---
           conn.addItems('DBW860');
           conn.addItems('DBW862');
           conn.addItems('DBW864');
@@ -985,7 +985,7 @@ function conPLC() {
           conn.addItems('DBW936');
           conn.addItems('DBW938');
 
-          // 3\4#灭菌线线电机货物目的地 (DBW940-DBW1008)
+          // --- 15. 3\4#灭菌线线电机货物目的地 (DBW940-DBW1008) ---
           conn.addItems('DBW940');
           conn.addItems('DBW942');
           conn.addItems('DBW944');
@@ -1022,7 +1022,7 @@ function conPLC() {
           conn.addItems('DBW1006');
           conn.addItems('DBW1008');
 
-          // 5\6#灭菌线线电机货物目的地 (DBW1020-DBW1098)
+          // --- 16. 5\6#灭菌线线电机货物目的地 (DBW1020-DBW1098) ---
           conn.addItems('DBW1020');
           conn.addItems('DBW1022');
           conn.addItems('DBW1024');
@@ -1064,7 +1064,7 @@ function conPLC() {
           conn.addItems('DBW1096');
           conn.addItems('DBW1098');
 
-          // 7\8#灭菌线线电机货物目的地 (DBW1100-DBW1178)
+          // --- 17. 7\8#灭菌线线电机货物目的地 (DBW1100-DBW1178) ---
           conn.addItems('DBW1100');
           conn.addItems('DBW1102');
           conn.addItems('DBW1104');
@@ -1107,7 +1107,7 @@ function conPLC() {
           conn.addItems('DBW1176');
           conn.addItems('DBW1178');
 
-          // 9\10#灭菌线线电机货物目的地 (DBW1180-DBW1258)
+          // --- 18. 9\10#灭菌线线电机货物目的地 (DBW1180-DBW1258) ---
           conn.addItems('DBW1180');
           conn.addItems('DBW1182');
           conn.addItems('DBW1184');
@@ -1149,7 +1149,7 @@ function conPLC() {
           conn.addItems('DBW1256');
           conn.addItems('DBW1258');
 
-          // 11\12#灭菌线线电机货物目的地 (DBW1260-DBW1338)
+          // --- 19. 11\12#灭菌线线电机货物目的地 (DBW1260-DBW1338) ---
           conn.addItems('DBW1260');
           conn.addItems('DBW1262');
           conn.addItems('DBW1264');
@@ -1191,7 +1191,7 @@ function conPLC() {
           conn.addItems('DBW1336');
           conn.addItems('DBW1338');
 
-          // 13\14#灭菌线线电机货物目的地 (DBW1340-DBW1418)
+          // --- 20. 13\14#灭菌线线电机货物目的地 (DBW1340-DBW1418) ---
           conn.addItems('DBW1340');
           conn.addItems('DBW1342');
           conn.addItems('DBW1344');
@@ -1233,7 +1233,7 @@ function conPLC() {
           conn.addItems('DBW1416');
           conn.addItems('DBW1418');
 
-          // 15#灭菌线和出口线电机货物目的地 (DBW1420-DBW1498)
+          // --- 21. 15#灭菌线和出口线电机货物目的地 (DBW1420-DBW1498) ---
           conn.addItems('DBW1420');
           conn.addItems('DBW1422');
           conn.addItems('DBW1424');
@@ -1275,7 +1275,7 @@ function conPLC() {
           conn.addItems('DBW1496');
           conn.addItems('DBW1498');
 
-          // 1-15预热柜内实际数量 (DBW1500-DBW1528)
+          // --- 22. 1-15预热柜内实际数量 (DBW1500-DBW1528) ---
           conn.addItems('DBW1500');
           conn.addItems('DBW1502');
           conn.addItems('DBW1504');
@@ -1292,7 +1292,7 @@ function conPLC() {
           conn.addItems('DBW1526');
           conn.addItems('DBW1528');
 
-          // 1-15灭菌柜内实际数量 (DBW1530-DBW1558)
+          // --- 23. 1-15灭菌柜内实际数量 (DBW1530-DBW1558) ---
           conn.addItems('DBW1530');
           conn.addItems('DBW1532');
           conn.addItems('DBW1534');
@@ -1309,7 +1309,7 @@ function conPLC() {
           conn.addItems('DBW1556');
           conn.addItems('DBW1558');
 
-          // 传感器信号区间 (DBW1606 - DBW1656)
+          // --- 24. 传感器信号区间 (DBW1606 - DBW1656) ---
           conn.addItems('DBW1606');
           conn.addItems('DBW1608');
           conn.addItems('DBW1610');
@@ -1337,9 +1337,9 @@ function conPLC() {
           conn.addItems('DBW1654');
           conn.addItems('DBW1656');
 
-          conn.addItems('DBW1658');
-          conn.addItems('DBW1670');
-          conn.addItems('DBW1672');
+          conn.addItems('DBW1658'); // 上货请求读码
+          conn.addItems('DBW1670'); // 灭菌出货请求1
+          conn.addItems('DBW1672'); // 灭菌出货请求2
 
           setInterval(() => {
             conn.readAllItems(valuesReady);
@@ -1412,881 +1412,881 @@ var variables = {
   DBW1672: 'DB1000,INT1672', // 灭菌出货请求指定托盘ID和目的地2
 
   // 展开定义：缓存线各个电机占位虚拟ID码 (DBW62-DBW118)
-  DBW62: 'DB1000,INT62',
-  DBW64: 'DB1000,INT64',
-  DBW66: 'DB1000,INT66',
-  DBW68: 'DB1000,INT68',
-  DBW70: 'DB1000,INT70',
-  DBW72: 'DB1000,INT72',
-  DBW74: 'DB1000,INT74',
-  DBW76: 'DB1000,INT76',
-  DBW78: 'DB1000,INT78',
-  DBW80: 'DB1000,INT80',
-  DBW82: 'DB1000,INT82',
-  DBW84: 'DB1000,INT84',
-  DBW86: 'DB1000,INT86',
-  DBW88: 'DB1000,INT88',
-  DBW90: 'DB1000,INT90',
-  DBW92: 'DB1000,INT92',
-  DBW94: 'DB1000,INT94',
-  DBW96: 'DB1000,INT96',
-  DBW98: 'DB1000,INT98',
-  DBW100: 'DB1000,INT100',
-  DBW102: 'DB1000,INT102',
-  DBW104: 'DB1000,INT104',
-  DBW106: 'DB1000,INT106',
-  DBW108: 'DB1000,INT108',
-  DBW110: 'DB1000,INT110',
-  DBW112: 'DB1000,INT112',
-  DBW114: 'DB1000,INT114',
-  DBW116: 'DB1000,INT116',
-  DBW118: 'DB1000,INT118',
+  DBW62: 'DB1000,INT62', // 01001电机
+  DBW64: 'DB1000,INT64', // 01002电机
+  DBW66: 'DB1000,INT66', // 01004电机
+  DBW68: 'DB1000,INT68', // 01005电机
+  DBW70: 'DB1000,INT70', // 01006电机
+  DBW72: 'DB1000,INT72', // 01008电机
+  DBW74: 'DB1000,INT74', // 01009电机
+  DBW76: 'DB1000,INT76', // 01011电机
+  DBW78: 'DB1000,INT78', // 01012电机
+  DBW80: 'DB1000,INT80', // 01013A电机
+  DBW82: 'DB1000,INT82', // 01013B电机
+  DBW84: 'DB1000,INT84', // 01014A电机
+  DBW86: 'DB1000,INT86', // 01014B电机
+  DBW88: 'DB1000,INT88', // 01015A电机
+  DBW90: 'DB1000,INT90', // 01015B电机
+  DBW92: 'DB1000,INT92', // 01016A电机
+  DBW94: 'DB1000,INT94', // 01016B电机
+  DBW96: 'DB1000,INT96', // 01017A电机
+  DBW98: 'DB1000,INT98', // 01017B电机
+  DBW100: 'DB1000,INT100', // 01018A电机
+  DBW102: 'DB1000,INT102', // 01018B电机
+  DBW104: 'DB1000,INT104', // 01019A电机
+  DBW106: 'DB1000,INT106', // 01019B电机
+  DBW108: 'DB1000,INT108', // 01020A电机
+  DBW110: 'DB1000,INT110', // 01020B电机
+  DBW112: 'DB1000,INT112', // 01021A电机
+  DBW114: 'DB1000,INT114', // 01021B电机
+  DBW116: 'DB1000,INT116', // 01022A电机
+  DBW118: 'DB1000,INT118', // 01022B电机
 
   // 展开定义：缓存线各个电机占位虚拟ID码 - 续 (DBW1800-DBW1898)
-  DBW1800: 'DB1000,INT1800',
-  DBW1802: 'DB1000,INT1802',
-  DBW1804: 'DB1000,INT1804',
-  DBW1806: 'DB1000,INT1806',
-  DBW1808: 'DB1000,INT1808',
-  DBW1810: 'DB1000,INT1810',
-  DBW1812: 'DB1000,INT1812',
-  DBW1814: 'DB1000,INT1814',
-  DBW1816: 'DB1000,INT1816',
-  DBW1818: 'DB1000,INT1818',
-  DBW1820: 'DB1000,INT1820',
-  DBW1822: 'DB1000,INT1822',
-  DBW1824: 'DB1000,INT1824',
-  DBW1826: 'DB1000,INT1826',
-  DBW1828: 'DB1000,INT1828',
-  DBW1830: 'DB1000,INT1830',
-  DBW1832: 'DB1000,INT1832',
-  DBW1834: 'DB1000,INT1834',
-  DBW1836: 'DB1000,INT1836',
-  DBW1838: 'DB1000,INT1838',
-  DBW1840: 'DB1000,INT1840',
-  DBW1842: 'DB1000,INT1842',
-  DBW1844: 'DB1000,INT1844',
-  DBW1846: 'DB1000,INT1846',
-  DBW1848: 'DB1000,INT1848',
-  DBW1850: 'DB1000,INT1850',
-  DBW1852: 'DB1000,INT1852',
-  DBW1854: 'DB1000,INT1854',
-  DBW1856: 'DB1000,INT1856',
-  DBW1858: 'DB1000,INT1858',
-  DBW1860: 'DB1000,INT1860',
-  DBW1862: 'DB1000,INT1862',
-  DBW1864: 'DB1000,INT1864',
-  DBW1866: 'DB1000,INT1866',
-  DBW1868: 'DB1000,INT1868',
-  DBW1870: 'DB1000,INT1870',
-  DBW1872: 'DB1000,INT1872',
-  DBW1874: 'DB1000,INT1874',
-  DBW1876: 'DB1000,INT1876',
-  DBW1878: 'DB1000,INT1878',
-  DBW1880: 'DB1000,INT1880',
-  DBW1882: 'DB1000,INT1882',
-  DBW1884: 'DB1000,INT1884',
-  DBW1886: 'DB1000,INT1886',
-  DBW1888: 'DB1000,INT1888',
-  DBW1890: 'DB1000,INT1890',
-  DBW1892: 'DB1000,INT1892',
-  DBW1894: 'DB1000,INT1894',
-  DBW1896: 'DB1000,INT1896',
-  DBW1898: 'DB1000,INT1898',
+  DBW1800: 'DB1000,INT1800', // 01023A电机
+  DBW1802: 'DB1000,INT1802', // 01023B电机
+  DBW1804: 'DB1000,INT1804', // 01024A电机
+  DBW1806: 'DB1000,INT1806', // 01024B电机
+  DBW1808: 'DB1000,INT1808', // 01026电机
+  DBW1810: 'DB1000,INT1810', // 01027电机
+  DBW1812: 'DB1000,INT1812', // 01029电机
+  DBW1814: 'DB1000,INT1814', // 01030电机
+  DBW1816: 'DB1000,INT1816', // 备用
+  DBW1818: 'DB1000,INT1818', // 备用
+  DBW1820: 'DB1000,INT1820', // 备用
+  DBW1822: 'DB1000,INT1822', // 备用
+  DBW1824: 'DB1000,INT1824', // 备用
+  DBW1826: 'DB1000,INT1826', // 备用
+  DBW1828: 'DB1000,INT1828', // 备用
+  DBW1830: 'DB1000,INT1830', // 备用
+  DBW1832: 'DB1000,INT1832', // 备用
+  DBW1834: 'DB1000,INT1834', // 备用
+  DBW1836: 'DB1000,INT1836', // 备用
+  DBW1838: 'DB1000,INT1838', // 备用
+  DBW1840: 'DB1000,INT1840', // 备用
+  DBW1842: 'DB1000,INT1842', // 备用
+  DBW1844: 'DB1000,INT1844', // 备用
+  DBW1846: 'DB1000,INT1846', // 备用
+  DBW1848: 'DB1000,INT1848', // 备用
+  DBW1850: 'DB1000,INT1850', // 备用
+  DBW1852: 'DB1000,INT1852', // 备用
+  DBW1854: 'DB1000,INT1854', // 备用
+  DBW1856: 'DB1000,INT1856', // 备用
+  DBW1858: 'DB1000,INT1858', // 备用
+  DBW1860: 'DB1000,INT1860', // 备用
+  DBW1862: 'DB1000,INT1862', // 备用
+  DBW1864: 'DB1000,INT1864', // 备用
+  DBW1866: 'DB1000,INT1866', // 备用
+  DBW1868: 'DB1000,INT1868', // 备用
+  DBW1870: 'DB1000,INT1870', // 备用
+  DBW1872: 'DB1000,INT1872', // 备用
+  DBW1874: 'DB1000,INT1874', // 备用
+  DBW1876: 'DB1000,INT1876', // 备用
+  DBW1878: 'DB1000,INT1878', // 备用
+  DBW1880: 'DB1000,INT1880', // 备用
+  DBW1882: 'DB1000,INT1882', // 备用
+  DBW1884: 'DB1000,INT1884', // 备用
+  DBW1886: 'DB1000,INT1886', // 备用
+  DBW1888: 'DB1000,INT1888', // 备用
+  DBW1890: 'DB1000,INT1890', // 备用
+  DBW1892: 'DB1000,INT1892', // 备用
+  DBW1894: 'DB1000,INT1894', // 备用
+  DBW1896: 'DB1000,INT1896', // 备用
+  DBW1898: 'DB1000,INT1898', // 备用
 
   // 展开定义：1\2#预热灭菌线占位虚拟ID码 (DBW120-DBW198)
-  DBW120: 'DB1000,INT120',
-  DBW122: 'DB1000,INT122',
-  DBW124: 'DB1000,INT124',
-  DBW126: 'DB1000,INT126',
-  DBW128: 'DB1000,INT128',
-  DBW130: 'DB1000,INT130',
-  DBW132: 'DB1000,INT132',
-  DBW134: 'DB1000,INT134',
-  DBW136: 'DB1000,INT136',
-  DBW138: 'DB1000,INT138',
-  DBW140: 'DB1000,INT140',
-  DBW142: 'DB1000,INT142',
-  DBW144: 'DB1000,INT144',
-  DBW146: 'DB1000,INT146',
-  DBW148: 'DB1000,INT148',
-  DBW150: 'DB1000,INT150',
-  DBW152: 'DB1000,INT152',
-  DBW154: 'DB1000,INT154',
-  DBW156: 'DB1000,INT156',
-  DBW158: 'DB1000,INT158',
-  DBW160: 'DB1000,INT160',
-  DBW162: 'DB1000,INT162',
-  DBW164: 'DB1000,INT164',
-  DBW166: 'DB1000,INT166',
-  DBW168: 'DB1000,INT168',
-  DBW170: 'DB1000,INT170',
-  DBW172: 'DB1000,INT172',
-  DBW174: 'DB1000,INT174',
-  DBW176: 'DB1000,INT176',
-  DBW178: 'DB1000,INT178',
-  DBW180: 'DB1000,INT180',
-  DBW182: 'DB1000,INT182',
-  DBW184: 'DB1000,INT184',
-  DBW186: 'DB1000,INT186',
-  DBW188: 'DB1000,INT188',
-  DBW190: 'DB1000,INT190',
-  DBW192: 'DB1000,INT192',
-  DBW194: 'DB1000,INT194',
-  DBW196: 'DB1000,INT196',
-  DBW198: 'DB1000,INT198',
+  DBW120: 'DB1000,INT120', // 02009电机
+  DBW122: 'DB1000,INT122', // 02011电机
+  DBW124: 'DB1000,INT124', // 02012电机
+  DBW126: 'DB1000,INT126', // 02014电机
+  DBW128: 'DB1000,INT128', // 02015电机
+  DBW130: 'DB1000,INT130', // 02016电机
+  DBW132: 'DB1000,INT132', // 02018电机
+  DBW134: 'DB1000,INT134', // 02019电机
+  DBW136: 'DB1000,INT136', // 02021电机
+  DBW138: 'DB1000,INT138', // 02022电机
+  DBW140: 'DB1000,INT140', // 02023电机
+  DBW142: 'DB1000,INT142', // 02025电机
+  DBW144: 'DB1000,INT144', // 02026电机
+  DBW146: 'DB1000,INT146', // 02028电机
+  DBW148: 'DB1000,INT148', // 02029电机
+  DBW150: 'DB1000,INT150', // 02030电机
+  DBW152: 'DB1000,INT152', // 02032电机
+  DBW154: 'DB1000,INT154', // 02033电机
+  DBW156: 'DB1000,INT156', // 02035电机
+  DBW158: 'DB1000,INT158', // 02036电机
+  DBW160: 'DB1000,INT160', // 备用
+  DBW162: 'DB1000,INT162', // 备用
+  DBW164: 'DB1000,INT164', // 备用
+  DBW166: 'DB1000,INT166', // 备用
+  DBW168: 'DB1000,INT168', // 备用
+  DBW170: 'DB1000,INT170', // 备用
+  DBW172: 'DB1000,INT172', // 备用
+  DBW174: 'DB1000,INT174', // 备用
+  DBW176: 'DB1000,INT176', // 备用
+  DBW178: 'DB1000,INT178', // 备用
+  DBW180: 'DB1000,INT180', // 备用
+  DBW182: 'DB1000,INT182', // 备用
+  DBW184: 'DB1000,INT184', // 备用
+  DBW186: 'DB1000,INT186', // 备用
+  DBW188: 'DB1000,INT188', // 备用
+  DBW190: 'DB1000,INT190', // 备用
+  DBW192: 'DB1000,INT192', // 备用
+  DBW194: 'DB1000,INT194', // 备用
+  DBW196: 'DB1000,INT196', // 备用
+  DBW198: 'DB1000,INT198', // 备用
 
   // 展开定义：3\4#灭菌线线占位虚拟ID码 (DBW200-DBW278)
-  DBW200: 'DB1000,INT200',
-  DBW202: 'DB1000,INT202',
-  DBW204: 'DB1000,INT204',
-  DBW206: 'DB1000,INT206',
-  DBW208: 'DB1000,INT208',
-  DBW210: 'DB1000,INT210',
-  DBW212: 'DB1000,INT212',
-  DBW214: 'DB1000,INT214',
-  DBW216: 'DB1000,INT216',
-  DBW218: 'DB1000,INT218',
-  DBW220: 'DB1000,INT220',
-  DBW222: 'DB1000,INT222',
-  DBW224: 'DB1000,INT224',
-  DBW226: 'DB1000,INT226',
-  DBW228: 'DB1000,INT228',
-  DBW230: 'DB1000,INT230',
-  DBW232: 'DB1000,INT232',
-  DBW234: 'DB1000,INT234',
-  DBW236: 'DB1000,INT236',
-  DBW238: 'DB1000,INT238',
-  DBW240: 'DB1000,INT240',
-  DBW242: 'DB1000,INT242',
-  DBW244: 'DB1000,INT244',
-  DBW246: 'DB1000,INT246',
-  DBW248: 'DB1000,INT248',
-  DBW250: 'DB1000,INT250',
-  DBW252: 'DB1000,INT252',
-  DBW254: 'DB1000,INT254',
-  DBW256: 'DB1000,INT256',
-  DBW258: 'DB1000,INT258',
-  DBW260: 'DB1000,INT260',
-  DBW262: 'DB1000,INT262',
-  DBW264: 'DB1000,INT264',
-  DBW266: 'DB1000,INT266',
-  DBW268: 'DB1000,INT268',
-  DBW270: 'DB1000,INT270',
-  DBW272: 'DB1000,INT272',
-  DBW274: 'DB1000,INT274',
-  DBW276: 'DB1000,INT276',
-  DBW278: 'DB1000,INT278',
+  DBW200: 'DB1000,INT200', // 03009电机
+  DBW202: 'DB1000,INT202', // 03011电机
+  DBW204: 'DB1000,INT204', // 03012电机
+  DBW206: 'DB1000,INT206', // 03014电机
+  DBW208: 'DB1000,INT208', // 03015电机
+  DBW210: 'DB1000,INT210', // 03016电机
+  DBW212: 'DB1000,INT212', // 03018电机
+  DBW214: 'DB1000,INT214', // 03019电机
+  DBW216: 'DB1000,INT216', // 03021电机
+  DBW218: 'DB1000,INT218', // 03022电机
+  DBW220: 'DB1000,INT220', // 03023电机
+  DBW222: 'DB1000,INT222', // 03025电机
+  DBW224: 'DB1000,INT224', // 03026电机
+  DBW226: 'DB1000,INT226', // 03028电机
+  DBW228: 'DB1000,INT228', // 03029电机
+  DBW230: 'DB1000,INT230', // 03030电机
+  DBW232: 'DB1000,INT232', // 03032电机
+  DBW234: 'DB1000,INT234', // 03033电机
+  DBW236: 'DB1000,INT236', // 03035电机
+  DBW238: 'DB1000,INT238', // 03036电机
+  DBW240: 'DB1000,INT240', // 备用
+  DBW242: 'DB1000,INT242', // 备用
+  DBW244: 'DB1000,INT244', // 备用
+  DBW246: 'DB1000,INT246', // 备用
+  DBW248: 'DB1000,INT248', // 备用
+  DBW250: 'DB1000,INT250', // 备用
+  DBW252: 'DB1000,INT252', // 备用
+  DBW254: 'DB1000,INT254', // 备用
+  DBW256: 'DB1000,INT256', // 备用
+  DBW258: 'DB1000,INT258', // 备用
+  DBW260: 'DB1000,INT260', // 备用
+  DBW262: 'DB1000,INT262', // 备用
+  DBW264: 'DB1000,INT264', // 备用
+  DBW266: 'DB1000,INT266', // 备用
+  DBW268: 'DB1000,INT268', // 备用
+  DBW270: 'DB1000,INT270', // 备用
+  DBW272: 'DB1000,INT272', // 备用
+  DBW274: 'DB1000,INT274', // 备用
+  DBW276: 'DB1000,INT276', // 备用
+  DBW278: 'DB1000,INT278', // 备用
 
   // 展开定义：5\6#灭菌线线占位虚拟ID码 (DBW280-DBW358)
-  DBW280: 'DB1000,INT280',
-  DBW282: 'DB1000,INT282',
-  DBW284: 'DB1000,INT284',
-  DBW286: 'DB1000,INT286',
-  DBW288: 'DB1000,INT288',
-  DBW290: 'DB1000,INT290',
-  DBW292: 'DB1000,INT292',
-  DBW294: 'DB1000,INT294',
-  DBW296: 'DB1000,INT296',
-  DBW298: 'DB1000,INT298',
-  DBW300: 'DB1000,INT300',
-  DBW302: 'DB1000,INT302',
-  DBW304: 'DB1000,INT304',
-  DBW306: 'DB1000,INT306',
-  DBW308: 'DB1000,INT308',
-  DBW310: 'DB1000,INT310',
-  DBW312: 'DB1000,INT312',
-  DBW314: 'DB1000,INT314',
-  DBW316: 'DB1000,INT316',
-  DBW318: 'DB1000,INT318',
-  DBW320: 'DB1000,INT320',
-  DBW322: 'DB1000,INT322',
-  DBW324: 'DB1000,INT324',
-  DBW326: 'DB1000,INT326',
-  DBW328: 'DB1000,INT328',
-  DBW330: 'DB1000,INT330',
-  DBW332: 'DB1000,INT332',
-  DBW334: 'DB1000,INT334',
-  DBW336: 'DB1000,INT336',
-  DBW338: 'DB1000,INT338',
-  DBW340: 'DB1000,INT340',
-  DBW342: 'DB1000,INT342',
-  DBW344: 'DB1000,INT344',
-  DBW346: 'DB1000,INT346',
-  DBW348: 'DB1000,INT348',
-  DBW350: 'DB1000,INT350',
-  DBW352: 'DB1000,INT352',
-  DBW354: 'DB1000,INT354',
-  DBW356: 'DB1000,INT356',
-  DBW358: 'DB1000,INT358',
+  DBW280: 'DB1000,INT280', // 04009电机
+  DBW282: 'DB1000,INT282', // 04011电机
+  DBW284: 'DB1000,INT284', // 04012电机
+  DBW286: 'DB1000,INT286', // 04014电机
+  DBW288: 'DB1000,INT288', // 04015电机
+  DBW290: 'DB1000,INT290', // 04016电机
+  DBW292: 'DB1000,INT292', // 04018电机
+  DBW294: 'DB1000,INT294', // 04019电机
+  DBW296: 'DB1000,INT296', // 04021电机
+  DBW298: 'DB1000,INT298', // 04022电机
+  DBW300: 'DB1000,INT300', // 04023电机
+  DBW302: 'DB1000,INT302', // 04025电机
+  DBW304: 'DB1000,INT304', // 04026电机
+  DBW306: 'DB1000,INT306', // 04028电机
+  DBW308: 'DB1000,INT308', // 04029电机
+  DBW310: 'DB1000,INT310', // 04030电机
+  DBW312: 'DB1000,INT312', // 04032电机
+  DBW314: 'DB1000,INT314', // 04033电机
+  DBW316: 'DB1000,INT316', // 04035电机
+  DBW318: 'DB1000,INT318', // 04036电机
+  DBW320: 'DB1000,INT320', // 备用
+  DBW322: 'DB1000,INT322', // 备用
+  DBW324: 'DB1000,INT324', // 备用
+  DBW326: 'DB1000,INT326', // 备用
+  DBW328: 'DB1000,INT328', // 备用
+  DBW330: 'DB1000,INT330', // 备用
+  DBW332: 'DB1000,INT332', // 备用
+  DBW334: 'DB1000,INT334', // 备用
+  DBW336: 'DB1000,INT336', // 备用
+  DBW338: 'DB1000,INT338', // 备用
+  DBW340: 'DB1000,INT340', // 备用
+  DBW342: 'DB1000,INT342', // 备用
+  DBW344: 'DB1000,INT344', // 备用
+  DBW346: 'DB1000,INT346', // 备用
+  DBW348: 'DB1000,INT348', // 备用
+  DBW350: 'DB1000,INT350', // 备用
+  DBW352: 'DB1000,INT352', // 备用
+  DBW354: 'DB1000,INT354', // 备用
+  DBW356: 'DB1000,INT356', // 备用
+  DBW358: 'DB1000,INT358', // 备用
 
   // 展开定义：7\8#灭菌线线占位虚拟ID码 (DBW360-DBW438)
-  DBW360: 'DB1000,INT360',
-  DBW362: 'DB1000,INT362',
-  DBW364: 'DB1000,INT364',
-  DBW366: 'DB1000,INT366',
-  DBW368: 'DB1000,INT368',
-  DBW370: 'DB1000,INT370',
-  DBW372: 'DB1000,INT372',
-  DBW374: 'DB1000,INT374',
-  DBW376: 'DB1000,INT376',
-  DBW378: 'DB1000,INT378',
-  DBW380: 'DB1000,INT380',
-  DBW382: 'DB1000,INT382',
-  DBW384: 'DB1000,INT384',
-  DBW386: 'DB1000,INT386',
-  DBW388: 'DB1000,INT388',
-  DBW390: 'DB1000,INT390',
-  DBW392: 'DB1000,INT392',
-  DBW394: 'DB1000,INT394',
-  DBW396: 'DB1000,INT396',
-  DBW398: 'DB1000,INT398',
-  DBW400: 'DB1000,INT400',
-  DBW402: 'DB1000,INT402',
-  DBW404: 'DB1000,INT404',
-  DBW406: 'DB1000,INT406',
-  DBW408: 'DB1000,INT408',
-  DBW410: 'DB1000,INT410',
-  DBW412: 'DB1000,INT412',
-  DBW414: 'DB1000,INT414',
-  DBW416: 'DB1000,INT416',
-  DBW418: 'DB1000,INT418',
-  DBW420: 'DB1000,INT420',
-  DBW422: 'DB1000,INT422',
-  DBW424: 'DB1000,INT424',
-  DBW426: 'DB1000,INT426',
-  DBW428: 'DB1000,INT428',
-  DBW430: 'DB1000,INT430',
-  DBW432: 'DB1000,INT432',
-  DBW434: 'DB1000,INT434',
-  DBW436: 'DB1000,INT436',
-  DBW438: 'DB1000,INT438',
+  DBW360: 'DB1000,INT360', // 05009电机
+  DBW362: 'DB1000,INT362', // 05011电机
+  DBW364: 'DB1000,INT364', // 05012电机
+  DBW366: 'DB1000,INT366', // 05014电机
+  DBW368: 'DB1000,INT368', // 05015电机
+  DBW370: 'DB1000,INT370', // 05016电机
+  DBW372: 'DB1000,INT372', // 05018电机
+  DBW374: 'DB1000,INT374', // 05019电机
+  DBW376: 'DB1000,INT376', // 05021电机
+  DBW378: 'DB1000,INT378', // 05022电机
+  DBW380: 'DB1000,INT380', // 05023电机
+  DBW382: 'DB1000,INT382', // 05025电机
+  DBW384: 'DB1000,INT384', // 05026电机
+  DBW386: 'DB1000,INT386', // 05028电机
+  DBW388: 'DB1000,INT388', // 05029电机
+  DBW390: 'DB1000,INT390', // 05030电机
+  DBW392: 'DB1000,INT392', // 05032电机
+  DBW394: 'DB1000,INT394', // 05033电机
+  DBW396: 'DB1000,INT396', // 05035电机
+  DBW398: 'DB1000,INT398', // 05036电机
+  DBW400: 'DB1000,INT400', // 备用
+  DBW402: 'DB1000,INT402', // 备用
+  DBW404: 'DB1000,INT404', // 备用
+  DBW406: 'DB1000,INT406', // 备用
+  DBW408: 'DB1000,INT408', // 备用
+  DBW410: 'DB1000,INT410', // 备用
+  DBW412: 'DB1000,INT412', // 备用
+  DBW414: 'DB1000,INT414', // 备用
+  DBW416: 'DB1000,INT416', // 备用
+  DBW418: 'DB1000,INT418', // 备用
+  DBW420: 'DB1000,INT420', // 备用
+  DBW422: 'DB1000,INT422', // 备用
+  DBW424: 'DB1000,INT424', // 备用
+  DBW426: 'DB1000,INT426', // 备用
+  DBW428: 'DB1000,INT428', // 备用
+  DBW430: 'DB1000,INT430', // 备用
+  DBW432: 'DB1000,INT432', // 备用
+  DBW434: 'DB1000,INT434', // 备用
+  DBW436: 'DB1000,INT436', // 备用
+  DBW438: 'DB1000,INT438', // 备用
 
   // 展开定义：9\10#灭菌线线占位虚拟ID码 (DBW440-DBW518)
-  DBW440: 'DB1000,INT440',
-  DBW442: 'DB1000,INT442',
-  DBW444: 'DB1000,INT444',
-  DBW446: 'DB1000,INT446',
-  DBW448: 'DB1000,INT448',
-  DBW450: 'DB1000,INT450',
-  DBW452: 'DB1000,INT452',
-  DBW454: 'DB1000,INT454',
-  DBW456: 'DB1000,INT456',
-  DBW458: 'DB1000,INT458',
-  DBW460: 'DB1000,INT460',
-  DBW462: 'DB1000,INT462',
-  DBW464: 'DB1000,INT464',
-  DBW466: 'DB1000,INT466',
-  DBW468: 'DB1000,INT468',
-  DBW470: 'DB1000,INT470',
-  DBW472: 'DB1000,INT472',
-  DBW474: 'DB1000,INT474',
-  DBW476: 'DB1000,INT476',
-  DBW478: 'DB1000,INT478',
-  DBW480: 'DB1000,INT480',
-  DBW482: 'DB1000,INT482',
-  DBW484: 'DB1000,INT484',
-  DBW486: 'DB1000,INT486',
-  DBW488: 'DB1000,INT488',
-  DBW490: 'DB1000,INT490',
-  DBW492: 'DB1000,INT492',
-  DBW494: 'DB1000,INT494',
-  DBW496: 'DB1000,INT496',
-  DBW498: 'DB1000,INT498',
-  DBW500: 'DB1000,INT500',
-  DBW502: 'DB1000,INT502',
-  DBW504: 'DB1000,INT504',
-  DBW506: 'DB1000,INT506',
-  DBW508: 'DB1000,INT508',
-  DBW510: 'DB1000,INT510',
-  DBW512: 'DB1000,INT512',
-  DBW514: 'DB1000,INT514',
-  DBW516: 'DB1000,INT516',
-  DBW518: 'DB1000,INT518',
+  DBW440: 'DB1000,INT440', // 06009电机
+  DBW442: 'DB1000,INT442', // 06011电机
+  DBW444: 'DB1000,INT444', // 06012电机
+  DBW446: 'DB1000,INT446', // 06014电机
+  DBW448: 'DB1000,INT448', // 06015电机
+  DBW450: 'DB1000,INT450', // 06016电机
+  DBW452: 'DB1000,INT452', // 06018电机
+  DBW454: 'DB1000,INT454', // 06019电机
+  DBW456: 'DB1000,INT456', // 06021电机
+  DBW458: 'DB1000,INT458', // 06022电机
+  DBW460: 'DB1000,INT460', // 06023电机
+  DBW462: 'DB1000,INT462', // 06025电机
+  DBW464: 'DB1000,INT464', // 06026电机
+  DBW466: 'DB1000,INT466', // 06028电机
+  DBW468: 'DB1000,INT468', // 06029电机
+  DBW470: 'DB1000,INT470', // 06030电机
+  DBW472: 'DB1000,INT472', // 06032电机
+  DBW474: 'DB1000,INT474', // 06033电机
+  DBW476: 'DB1000,INT476', // 06035电机
+  DBW478: 'DB1000,INT478', // 06036电机
+  DBW480: 'DB1000,INT480', // 备用
+  DBW482: 'DB1000,INT482', // 备用
+  DBW484: 'DB1000,INT484', // 备用
+  DBW486: 'DB1000,INT486', // 备用
+  DBW488: 'DB1000,INT488', // 备用
+  DBW490: 'DB1000,INT490', // 备用
+  DBW492: 'DB1000,INT492', // 备用
+  DBW494: 'DB1000,INT494', // 备用
+  DBW496: 'DB1000,INT496', // 备用
+  DBW498: 'DB1000,INT498', // 备用
+  DBW500: 'DB1000,INT500', // 备用
+  DBW502: 'DB1000,INT502', // 备用
+  DBW504: 'DB1000,INT504', // 备用
+  DBW506: 'DB1000,INT506', // 备用
+  DBW508: 'DB1000,INT508', // 备用
+  DBW510: 'DB1000,INT510', // 备用
+  DBW512: 'DB1000,INT512', // 备用
+  DBW514: 'DB1000,INT514', // 备用
+  DBW516: 'DB1000,INT516', // 备用
+  DBW518: 'DB1000,INT518', // 备用
 
   // 展开定义：11\12#灭菌线线占位虚拟ID码 (DBW520-DBW598)
-  DBW520: 'DB1000,INT520',
-  DBW522: 'DB1000,INT522',
-  DBW524: 'DB1000,INT524',
-  DBW526: 'DB1000,INT526',
-  DBW528: 'DB1000,INT528',
-  DBW530: 'DB1000,INT530',
-  DBW532: 'DB1000,INT532',
-  DBW534: 'DB1000,INT534',
-  DBW536: 'DB1000,INT536',
-  DBW538: 'DB1000,INT538',
-  DBW540: 'DB1000,INT540',
-  DBW542: 'DB1000,INT542',
-  DBW544: 'DB1000,INT544',
-  DBW546: 'DB1000,INT546',
-  DBW548: 'DB1000,INT548',
-  DBW550: 'DB1000,INT550',
-  DBW552: 'DB1000,INT552',
-  DBW554: 'DB1000,INT554',
-  DBW556: 'DB1000,INT556',
-  DBW558: 'DB1000,INT558',
-  DBW560: 'DB1000,INT560',
-  DBW562: 'DB1000,INT562',
-  DBW564: 'DB1000,INT564',
-  DBW566: 'DB1000,INT566',
-  DBW568: 'DB1000,INT568',
-  DBW570: 'DB1000,INT570',
-  DBW572: 'DB1000,INT572',
-  DBW574: 'DB1000,INT574',
-  DBW576: 'DB1000,INT576',
-  DBW578: 'DB1000,INT578',
-  DBW580: 'DB1000,INT580',
-  DBW582: 'DB1000,INT582',
-  DBW584: 'DB1000,INT584',
-  DBW586: 'DB1000,INT586',
-  DBW588: 'DB1000,INT588',
-  DBW590: 'DB1000,INT590',
-  DBW592: 'DB1000,INT592',
-  DBW594: 'DB1000,INT594',
-  DBW596: 'DB1000,INT596',
-  DBW598: 'DB1000,INT598',
+  DBW520: 'DB1000,INT520', // 07009电机
+  DBW522: 'DB1000,INT522', // 07011电机
+  DBW524: 'DB1000,INT524', // 07012电机
+  DBW526: 'DB1000,INT526', // 07014电机
+  DBW528: 'DB1000,INT528', // 07015电机
+  DBW530: 'DB1000,INT530', // 07016电机
+  DBW532: 'DB1000,INT532', // 07018电机
+  DBW534: 'DB1000,INT534', // 07019电机
+  DBW536: 'DB1000,INT536', // 07021电机
+  DBW538: 'DB1000,INT538', // 07022电机
+  DBW540: 'DB1000,INT540', // 07023电机
+  DBW542: 'DB1000,INT542', // 07025电机
+  DBW544: 'DB1000,INT544', // 07026电机
+  DBW546: 'DB1000,INT546', // 07028电机
+  DBW548: 'DB1000,INT548', // 07029电机
+  DBW550: 'DB1000,INT550', // 07030电机
+  DBW552: 'DB1000,INT552', // 07032电机
+  DBW554: 'DB1000,INT554', // 07033电机
+  DBW556: 'DB1000,INT556', // 07035电机
+  DBW558: 'DB1000,INT558', // 07036电机
+  DBW560: 'DB1000,INT560', // 备用
+  DBW562: 'DB1000,INT562', // 备用
+  DBW564: 'DB1000,INT564', // 备用
+  DBW566: 'DB1000,INT566', // 备用
+  DBW568: 'DB1000,INT568', // 备用
+  DBW570: 'DB1000,INT570', // 备用
+  DBW572: 'DB1000,INT572', // 备用
+  DBW574: 'DB1000,INT574', // 备用
+  DBW576: 'DB1000,INT576', // 备用
+  DBW578: 'DB1000,INT578', // 备用
+  DBW580: 'DB1000,INT580', // 备用
+  DBW582: 'DB1000,INT582', // 备用
+  DBW584: 'DB1000,INT584', // 备用
+  DBW586: 'DB1000,INT586', // 备用
+  DBW588: 'DB1000,INT588', // 备用
+  DBW590: 'DB1000,INT590', // 备用
+  DBW592: 'DB1000,INT592', // 备用
+  DBW594: 'DB1000,INT594', // 备用
+  DBW596: 'DB1000,INT596', // 备用
+  DBW598: 'DB1000,INT598', // 备用
 
   // 展开定义：13\14#灭菌线线占位虚拟ID码 (DBW600-DBW678)
-  DBW600: 'DB1000,INT600',
-  DBW602: 'DB1000,INT602',
-  DBW604: 'DB1000,INT604',
-  DBW606: 'DB1000,INT606',
-  DBW608: 'DB1000,INT608',
-  DBW610: 'DB1000,INT610',
-  DBW612: 'DB1000,INT612',
-  DBW614: 'DB1000,INT614',
-  DBW616: 'DB1000,INT616',
-  DBW618: 'DB1000,INT618',
-  DBW620: 'DB1000,INT620',
-  DBW622: 'DB1000,INT622',
-  DBW624: 'DB1000,INT624',
-  DBW626: 'DB1000,INT626',
-  DBW628: 'DB1000,INT628',
-  DBW630: 'DB1000,INT630',
-  DBW632: 'DB1000,INT632',
-  DBW634: 'DB1000,INT634',
-  DBW636: 'DB1000,INT636',
-  DBW638: 'DB1000,INT638',
-  DBW640: 'DB1000,INT640',
-  DBW642: 'DB1000,INT642',
-  DBW644: 'DB1000,INT644',
-  DBW646: 'DB1000,INT646',
-  DBW648: 'DB1000,INT648',
-  DBW650: 'DB1000,INT650',
-  DBW652: 'DB1000,INT652',
-  DBW654: 'DB1000,INT654',
-  DBW656: 'DB1000,INT656',
-  DBW658: 'DB1000,INT658',
-  DBW660: 'DB1000,INT660',
-  DBW662: 'DB1000,INT662',
-  DBW664: 'DB1000,INT664',
-  DBW666: 'DB1000,INT666',
-  DBW668: 'DB1000,INT668',
-  DBW670: 'DB1000,INT670',
-  DBW672: 'DB1000,INT672',
-  DBW674: 'DB1000,INT674',
-  DBW676: 'DB1000,INT676',
-  DBW678: 'DB1000,INT678',
+  DBW600: 'DB1000,INT600', // 08009电机
+  DBW602: 'DB1000,INT602', // 08011电机
+  DBW604: 'DB1000,INT604', // 08012电机
+  DBW606: 'DB1000,INT606', // 08014电机
+  DBW608: 'DB1000,INT608', // 08015电机
+  DBW610: 'DB1000,INT610', // 08016电机
+  DBW612: 'DB1000,INT612', // 08018电机
+  DBW614: 'DB1000,INT614', // 08019电机
+  DBW616: 'DB1000,INT616', // 08021电机
+  DBW618: 'DB1000,INT618', // 08022电机
+  DBW620: 'DB1000,INT620', // 08023电机
+  DBW622: 'DB1000,INT622', // 08025电机
+  DBW624: 'DB1000,INT624', // 08026电机
+  DBW626: 'DB1000,INT626', // 08028电机
+  DBW628: 'DB1000,INT628', // 08029电机
+  DBW630: 'DB1000,INT630', // 08030电机
+  DBW632: 'DB1000,INT632', // 08032电机
+  DBW634: 'DB1000,INT634', // 08033电机
+  DBW636: 'DB1000,INT636', // 08035电机
+  DBW638: 'DB1000,INT638', // 08036电机
+  DBW640: 'DB1000,INT640', // 备用
+  DBW642: 'DB1000,INT642', // 备用
+  DBW644: 'DB1000,INT644', // 备用
+  DBW646: 'DB1000,INT646', // 备用
+  DBW648: 'DB1000,INT648', // 备用
+  DBW650: 'DB1000,INT650', // 备用
+  DBW652: 'DB1000,INT652', // 备用
+  DBW654: 'DB1000,INT654', // 备用
+  DBW656: 'DB1000,INT656', // 备用
+  DBW658: 'DB1000,INT658', // 备用
+  DBW660: 'DB1000,INT660', // 备用
+  DBW662: 'DB1000,INT662', // 备用
+  DBW664: 'DB1000,INT664', // 备用
+  DBW666: 'DB1000,INT666', // 备用
+  DBW668: 'DB1000,INT668', // 备用
+  DBW670: 'DB1000,INT670', // 备用
+  DBW672: 'DB1000,INT672', // 备用
+  DBW674: 'DB1000,INT674', // 备用
+  DBW676: 'DB1000,INT676', // 备用
+  DBW678: 'DB1000,INT678', // 备用
 
   // 展开定义：15#灭菌线和出口线占位虚拟ID码 (DBW680-DBW758)
-  DBW680: 'DB1000,INT680',
-  DBW682: 'DB1000,INT682',
-  DBW684: 'DB1000,INT684',
-  DBW686: 'DB1000,INT686',
-  DBW688: 'DB1000,INT688',
-  DBW690: 'DB1000,INT690',
-  DBW692: 'DB1000,INT692',
-  DBW694: 'DB1000,INT694',
-  DBW696: 'DB1000,INT696',
-  DBW698: 'DB1000,INT698',
-  DBW700: 'DB1000,INT700',
-  DBW702: 'DB1000,INT702',
-  DBW704: 'DB1000,INT704',
-  DBW706: 'DB1000,INT706',
-  DBW708: 'DB1000,INT708',
-  DBW710: 'DB1000,INT710',
-  DBW712: 'DB1000,INT712',
-  DBW714: 'DB1000,INT714',
-  DBW716: 'DB1000,INT716',
-  DBW718: 'DB1000,INT718',
-  DBW720: 'DB1000,INT720',
-  DBW722: 'DB1000,INT722',
-  DBW724: 'DB1000,INT724',
-  DBW726: 'DB1000,INT726',
-  DBW728: 'DB1000,INT728',
-  DBW730: 'DB1000,INT730',
-  DBW732: 'DB1000,INT732',
-  DBW734: 'DB1000,INT734',
-  DBW736: 'DB1000,INT736',
-  DBW738: 'DB1000,INT738',
-  DBW740: 'DB1000,INT740',
-  DBW742: 'DB1000,INT742',
-  DBW744: 'DB1000,INT744',
-  DBW746: 'DB1000,INT746',
-  DBW748: 'DB1000,INT748',
-  DBW750: 'DB1000,INT750',
-  DBW752: 'DB1000,INT752',
-  DBW754: 'DB1000,INT754',
-  DBW756: 'DB1000,INT756',
-  DBW758: 'DB1000,INT758',
+  DBW680: 'DB1000,INT680', // 09005电机
+  DBW682: 'DB1000,INT682', // 09007电机
+  DBW684: 'DB1000,INT684', // 09008电机
+  DBW686: 'DB1000,INT686', // 09010电机
+  DBW688: 'DB1000,INT688', // 09011电机
+  DBW690: 'DB1000,INT690', // 09012电机
+  DBW692: 'DB1000,INT692', // 09014电机
+  DBW694: 'DB1000,INT694', // 09015电机
+  DBW696: 'DB1000,INT696', // 09017电机
+  DBW698: 'DB1000,INT698', // 09018电机
+  DBW700: 'DB1000,INT700', // 09020电机
+  DBW702: 'DB1000,INT702', // 09021电机
+  DBW704: 'DB1000,INT704', // 09023电机
+  DBW706: 'DB1000,INT706', // 09024电机
+  DBW708: 'DB1000,INT708', // 09025电机
+  DBW710: 'DB1000,INT710', // 09026电机
+  DBW712: 'DB1000,INT712', // 09027电机
+  DBW714: 'DB1000,INT714', // 09028电机
+  DBW716: 'DB1000,INT716', // 09029电机
+  DBW718: 'DB1000,INT718', // 09030电机
+  DBW720: 'DB1000,INT720', // 09031电机
+  DBW722: 'DB1000,INT722', // 09032电机
+  DBW724: 'DB1000,INT724', // 09033电机
+  DBW726: 'DB1000,INT726', // 09035电机
+  DBW728: 'DB1000,INT728', // 09036电机
+  DBW730: 'DB1000,INT730', // 09038电机
+  DBW732: 'DB1000,INT732', // 09039电机
+  DBW734: 'DB1000,INT734', // 备用
+  DBW736: 'DB1000,INT736', // 备用
+  DBW738: 'DB1000,INT738', // 备用
+  DBW740: 'DB1000,INT740', // 备用
+  DBW742: 'DB1000,INT742', // 备用
+  DBW744: 'DB1000,INT744', // 备用
+  DBW746: 'DB1000,INT746', // 备用
+  DBW748: 'DB1000,INT748', // 备用
+  DBW750: 'DB1000,INT750', // 备用
+  DBW752: 'DB1000,INT752', // 备用
+  DBW754: 'DB1000,INT754', // 备用
+  DBW756: 'DB1000,INT756', // 备用
+  DBW758: 'DB1000,INT758', // 备用
 
   // 展开定义：缓存线各个电机货物目的地 (DBW800-DBW858)
-  DBW800: 'DB1000,INT800',
-  DBW802: 'DB1000,INT802',
-  DBW804: 'DB1000,INT804',
-  DBW806: 'DB1000,INT806',
-  DBW808: 'DB1000,INT808',
-  DBW810: 'DB1000,INT810',
-  DBW812: 'DB1000,INT812',
-  DBW814: 'DB1000,INT814',
-  DBW816: 'DB1000,INT816',
-  DBW818: 'DB1000,INT818',
-  DBW820: 'DB1000,INT820',
-  DBW822: 'DB1000,INT822',
-  DBW824: 'DB1000,INT824',
-  DBW826: 'DB1000,INT826',
-  DBW828: 'DB1000,INT828',
-  DBW830: 'DB1000,INT830',
-  DBW832: 'DB1000,INT832',
-  DBW834: 'DB1000,INT834',
-  DBW836: 'DB1000,INT836',
-  DBW838: 'DB1000,INT838',
-  DBW840: 'DB1000,INT840',
-  DBW842: 'DB1000,INT842',
-  DBW844: 'DB1000,INT844',
-  DBW846: 'DB1000,INT846',
-  DBW848: 'DB1000,INT848',
-  DBW850: 'DB1000,INT850',
-  DBW852: 'DB1000,INT852',
-  DBW854: 'DB1000,INT854',
-  DBW856: 'DB1000,INT856',
-  DBW858: 'DB1000,INT858',
+  DBW800: 'DB1000,INT800', // 01001电机
+  DBW802: 'DB1000,INT802', // 01002电机
+  DBW804: 'DB1000,INT804', // 01004电机
+  DBW806: 'DB1000,INT806', // 01005电机
+  DBW808: 'DB1000,INT808', // 01006电机
+  DBW810: 'DB1000,INT810', // 01008电机
+  DBW812: 'DB1000,INT812', // 01009电机
+  DBW814: 'DB1000,INT814', // 01011电机
+  DBW816: 'DB1000,INT816', // 01012电机
+  DBW818: 'DB1000,INT818', // 01013A电机
+  DBW820: 'DB1000,INT820', // 01013B电机
+  DBW822: 'DB1000,INT822', // 01014A电机
+  DBW824: 'DB1000,INT824', // 01014B电机
+  DBW826: 'DB1000,INT826', // 01015A电机
+  DBW828: 'DB1000,INT828', // 01015B电机
+  DBW830: 'DB1000,INT830', // 01016A电机
+  DBW832: 'DB1000,INT832', // 01016B电机
+  DBW834: 'DB1000,INT834', // 01017A电机
+  DBW836: 'DB1000,INT836', // 01017B电机
+  DBW838: 'DB1000,INT838', // 01018A电机
+  DBW840: 'DB1000,INT840', // 01018B电机
+  DBW842: 'DB1000,INT842', // 01019A电机
+  DBW844: 'DB1000,INT844', // 01019B电机
+  DBW846: 'DB1000,INT846', // 01020A电机
+  DBW848: 'DB1000,INT848', // 01020B电机
+  DBW850: 'DB1000,INT850', // 备用 (根据规律补充)
+  DBW852: 'DB1000,INT852', // 备用 (根据规律补充)
+  DBW854: 'DB1000,INT854', // 备用 (根据规律补充)
+  DBW856: 'DB1000,INT856', // 备用 (根据规律补充)
+  DBW858: 'DB1000,INT858', // 备用 (根据规律补充)
 
   // 展开定义：缓存线各个电机货物目的地 - 续 (DBW1900-DBW1960)
-  DBW1900: 'DB1000,INT1900',
-  DBW1902: 'DB1000,INT1902',
-  DBW1904: 'DB1000,INT1904',
-  DBW1906: 'DB1000,INT1906',
-  DBW1908: 'DB1000,INT1908',
-  DBW1910: 'DB1000,INT1910',
-  DBW1912: 'DB1000,INT1912',
-  DBW1914: 'DB1000,INT1914',
-  DBW1916: 'DB1000,INT1916',
-  DBW1918: 'DB1000,INT1918',
-  DBW1920: 'DB1000,INT1920',
-  DBW1922: 'DB1000,INT1922',
-  DBW1924: 'DB1000,INT1924',
-  DBW1926: 'DB1000,INT1926',
-  DBW1928: 'DB1000,INT1928',
-  DBW1930: 'DB1000,INT1930',
-  DBW1932: 'DB1000,INT1932',
-  DBW1934: 'DB1000,INT1934',
-  DBW1936: 'DB1000,INT1936',
-  DBW1938: 'DB1000,INT1938',
-  DBW1940: 'DB1000,INT1940',
-  DBW1942: 'DB1000,INT1942',
-  DBW1944: 'DB1000,INT1944',
-  DBW1946: 'DB1000,INT1946',
-  DBW1948: 'DB1000,INT1948',
-  DBW1950: 'DB1000,INT1950',
-  DBW1952: 'DB1000,INT1952',
-  DBW1954: 'DB1000,INT1954',
-  DBW1956: 'DB1000,INT1956',
-  DBW1958: 'DB1000,INT1958',
-  DBW1960: 'DB1000,INT1960',
+  DBW1900: 'DB1000,INT1900', // 01021A电机
+  DBW1902: 'DB1000,INT1902', // 01021B电机
+  DBW1904: 'DB1000,INT1904', // 01022A电机
+  DBW1906: 'DB1000,INT1906', // 01022B电机
+  DBW1908: 'DB1000,INT1908', // 01023A电机
+  DBW1910: 'DB1000,INT1910', // 01023B电机
+  DBW1912: 'DB1000,INT1912', // 01024A电机
+  DBW1914: 'DB1000,INT1914', // 01024B电机
+  DBW1916: 'DB1000,INT1916', // 01026电机
+  DBW1918: 'DB1000,INT1918', // 01027电机
+  DBW1920: 'DB1000,INT1920', // 01029电机
+  DBW1922: 'DB1000,INT1922', // 01030电机
+  DBW1924: 'DB1000,INT1924', // 备用
+  DBW1926: 'DB1000,INT1926', // 备用
+  DBW1928: 'DB1000,INT1928', // 备用
+  DBW1930: 'DB1000,INT1930', // 备用
+  DBW1932: 'DB1000,INT1932', // 备用
+  DBW1934: 'DB1000,INT1934', // 备用
+  DBW1936: 'DB1000,INT1936', // 备用
+  DBW1938: 'DB1000,INT1938', // 备用
+  DBW1940: 'DB1000,INT1940', // 备用
+  DBW1942: 'DB1000,INT1942', // 备用
+  DBW1944: 'DB1000,INT1944', // 备用
+  DBW1946: 'DB1000,INT1946', // 备用
+  DBW1948: 'DB1000,INT1948', // 备用
+  DBW1950: 'DB1000,INT1950', // 备用
+  DBW1952: 'DB1000,INT1952', // 备用
+  DBW1954: 'DB1000,INT1954', // 备用
+  DBW1956: 'DB1000,INT1956', // 备用
+  DBW1958: 'DB1000,INT1958', // 备用
+  DBW1960: 'DB1000,INT1960', // 备用
 
   // 展开定义：1\2#灭菌线线电机货物目的地 (DBW860-DBW938)
-  DBW860: 'DB1000,INT860',
-  DBW862: 'DB1000,INT862',
-  DBW864: 'DB1000,INT864',
-  DBW866: 'DB1000,INT866',
-  DBW868: 'DB1000,INT868',
-  DBW870: 'DB1000,INT870',
-  DBW872: 'DB1000,INT872',
-  DBW874: 'DB1000,INT874',
-  DBW876: 'DB1000,INT876',
-  DBW878: 'DB1000,INT878',
-  DBW880: 'DB1000,INT880',
-  DBW882: 'DB1000,INT882',
-  DBW884: 'DB1000,INT884',
-  DBW886: 'DB1000,INT886',
-  DBW888: 'DB1000,INT888',
-  DBW890: 'DB1000,INT890',
-  DBW892: 'DB1000,INT892',
-  DBW894: 'DB1000,INT894',
-  DBW896: 'DB1000,INT896',
-  DBW898: 'DB1000,INT898',
-  DBW900: 'DB1000,INT900',
-  DBW902: 'DB1000,INT902',
-  DBW904: 'DB1000,INT904',
-  DBW906: 'DB1000,INT906',
-  DBW908: 'DB1000,INT908',
-  DBW910: 'DB1000,INT910',
-  DBW912: 'DB1000,INT912',
-  DBW914: 'DB1000,INT914',
-  DBW916: 'DB1000,INT916',
-  DBW918: 'DB1000,INT918',
-  DBW920: 'DB1000,INT920',
-  DBW922: 'DB1000,INT922',
-  DBW924: 'DB1000,INT924',
-  DBW926: 'DB1000,INT926',
-  DBW928: 'DB1000,INT928',
-  DBW930: 'DB1000,INT930',
-  DBW932: 'DB1000,INT932',
-  DBW934: 'DB1000,INT934',
-  DBW936: 'DB1000,INT936',
-  DBW938: 'DB1000,INT938',
+  DBW860: 'DB1000,INT860', // 02009电机
+  DBW862: 'DB1000,INT862', // 02011电机
+  DBW864: 'DB1000,INT864', // 02012电机
+  DBW866: 'DB1000,INT866', // 02014电机
+  DBW868: 'DB1000,INT868', // 02015电机
+  DBW870: 'DB1000,INT870', // 02016电机
+  DBW872: 'DB1000,INT872', // 02018电机
+  DBW874: 'DB1000,INT874', // 02019电机
+  DBW876: 'DB1000,INT876', // 02021电机
+  DBW878: 'DB1000,INT878', // 02022电机
+  DBW880: 'DB1000,INT880', // 02023电机
+  DBW882: 'DB1000,INT882', // 02025电机
+  DBW884: 'DB1000,INT884', // 02026电机
+  DBW886: 'DB1000,INT886', // 02028电机
+  DBW888: 'DB1000,INT888', // 02029电机
+  DBW890: 'DB1000,INT890', // 02030电机
+  DBW892: 'DB1000,INT892', // 02032电机
+  DBW894: 'DB1000,INT894', // 02033电机
+  DBW896: 'DB1000,INT896', // 02035电机
+  DBW898: 'DB1000,INT898', // 02036电机
+  DBW900: 'DB1000,INT900', // 备用
+  DBW902: 'DB1000,INT902', // 备用
+  DBW904: 'DB1000,INT904', // 备用
+  DBW906: 'DB1000,INT906', // 备用
+  DBW908: 'DB1000,INT908', // 备用
+  DBW910: 'DB1000,INT910', // 备用
+  DBW912: 'DB1000,INT912', // 备用
+  DBW914: 'DB1000,INT914', // 备用
+  DBW916: 'DB1000,INT916', // 备用
+  DBW918: 'DB1000,INT918', // 备用
+  DBW920: 'DB1000,INT920', // 备用
+  DBW922: 'DB1000,INT922', // 备用
+  DBW924: 'DB1000,INT924', // 备用
+  DBW926: 'DB1000,INT926', // 备用
+  DBW928: 'DB1000,INT928', // 备用
+  DBW930: 'DB1000,INT930', // 备用
+  DBW932: 'DB1000,INT932', // 备用 (根据规律补充)
+  DBW934: 'DB1000,INT934', // 备用 (根据规律补充)
+  DBW936: 'DB1000,INT936', // 备用 (根据规律补充)
+  DBW938: 'DB1000,INT938', // 备用 (根据规律补充)
 
   // 展开定义：3\4#灭菌线线电机货物目的地 (DBW940-DBW1008)
-  DBW940: 'DB1000,INT940',
-  DBW942: 'DB1000,INT942',
-  DBW944: 'DB1000,INT944',
-  DBW946: 'DB1000,INT946',
-  DBW948: 'DB1000,INT948',
-  DBW950: 'DB1000,INT950',
-  DBW952: 'DB1000,INT952',
-  DBW954: 'DB1000,INT954',
-  DBW956: 'DB1000,INT956',
-  DBW958: 'DB1000,INT958',
-  DBW960: 'DB1000,INT960',
-  DBW962: 'DB1000,INT962',
-  DBW964: 'DB1000,INT964',
-  DBW966: 'DB1000,INT966',
-  DBW968: 'DB1000,INT968',
-  DBW970: 'DB1000,INT970',
-  DBW972: 'DB1000,INT972',
-  DBW974: 'DB1000,INT974',
-  DBW976: 'DB1000,INT976',
-  DBW978: 'DB1000,INT978',
-  DBW980: 'DB1000,INT980',
-  DBW982: 'DB1000,INT982',
-  DBW984: 'DB1000,INT984',
-  DBW986: 'DB1000,INT986',
-  DBW988: 'DB1000,INT988',
-  DBW990: 'DB1000,INT990',
-  DBW992: 'DB1000,INT992',
-  DBW994: 'DB1000,INT994',
-  DBW996: 'DB1000,INT996',
-  DBW998: 'DB1000,INT998',
-  DBW1000: 'DB1000,INT1000',
-  DBW1002: 'DB1000,INT1002',
-  DBW1004: 'DB1000,INT1004',
-  DBW1006: 'DB1000,INT1006',
-  DBW1008: 'DB1000,INT1008',
+  DBW940: 'DB1000,INT940', // 03009电机
+  DBW942: 'DB1000,INT942', // 03011电机
+  DBW944: 'DB1000,INT944', // 03012电机
+  DBW946: 'DB1000,INT946', // 03014电机
+  DBW948: 'DB1000,INT948', // 03015电机
+  DBW950: 'DB1000,INT950', // 03016电机
+  DBW952: 'DB1000,INT952', // 03018电机
+  DBW954: 'DB1000,INT954', // 03019电机
+  DBW956: 'DB1000,INT956', // 03021电机
+  DBW958: 'DB1000,INT958', // 03022电机
+  DBW960: 'DB1000,INT960', // 03023电机
+  DBW962: 'DB1000,INT962', // 03025电机
+  DBW964: 'DB1000,INT964', // 03026电机
+  DBW966: 'DB1000,INT966', // 03028电机
+  DBW968: 'DB1000,INT968', // 03029电机
+  DBW970: 'DB1000,INT970', // 03030电机
+  DBW972: 'DB1000,INT972', // 03032电机
+  DBW974: 'DB1000,INT974', // 03033电机
+  DBW976: 'DB1000,INT976', // 03035电机
+  DBW978: 'DB1000,INT978', // 03036电机
+  DBW980: 'DB1000,INT980', // 备用
+  DBW982: 'DB1000,INT982', // 备用
+  DBW984: 'DB1000,INT984', // 备用
+  DBW986: 'DB1000,INT986', // 备用
+  DBW988: 'DB1000,INT988', // 备用
+  DBW990: 'DB1000,INT990', // 备用
+  DBW992: 'DB1000,INT992', // 备用
+  DBW994: 'DB1000,INT994', // 备用
+  DBW996: 'DB1000,INT996', // 备用
+  DBW998: 'DB1000,INT998', // 备用
+  DBW1000: 'DB1000,INT1000', // 备用
+  DBW1002: 'DB1000,INT1002', // 备用
+  DBW1004: 'DB1000,INT1004', // 备用
+  DBW1006: 'DB1000,INT1006', // 备用
+  DBW1008: 'DB1000,INT1008', // 备用
 
   // 展开定义：5\6#灭菌线线电机货物目的地 (DBW1020-DBW1098)
-  DBW1020: 'DB1000,INT1020',
-  DBW1022: 'DB1000,INT1022',
-  DBW1024: 'DB1000,INT1024',
-  DBW1026: 'DB1000,INT1026',
-  DBW1028: 'DB1000,INT1028',
-  DBW1030: 'DB1000,INT1030',
-  DBW1032: 'DB1000,INT1032',
-  DBW1034: 'DB1000,INT1034',
-  DBW1036: 'DB1000,INT1036',
-  DBW1038: 'DB1000,INT1038',
-  DBW1040: 'DB1000,INT1040',
-  DBW1042: 'DB1000,INT1042',
-  DBW1044: 'DB1000,INT1044',
-  DBW1046: 'DB1000,INT1046',
-  DBW1048: 'DB1000,INT1048',
-  DBW1050: 'DB1000,INT1050',
-  DBW1052: 'DB1000,INT1052',
-  DBW1054: 'DB1000,INT1054',
-  DBW1056: 'DB1000,INT1056',
-  DBW1058: 'DB1000,INT1058',
-  DBW1060: 'DB1000,INT1060',
-  DBW1062: 'DB1000,INT1062',
-  DBW1064: 'DB1000,INT1064',
-  DBW1066: 'DB1000,INT1066',
-  DBW1068: 'DB1000,INT1068',
-  DBW1070: 'DB1000,INT1070',
-  DBW1072: 'DB1000,INT1072',
-  DBW1074: 'DB1000,INT1074',
-  DBW1076: 'DB1000,INT1076',
-  DBW1078: 'DB1000,INT1078',
-  DBW1080: 'DB1000,INT1080',
-  DBW1082: 'DB1000,INT1082',
-  DBW1084: 'DB1000,INT1084',
-  DBW1086: 'DB1000,INT1086',
-  DBW1088: 'DB1000,INT1088',
-  DBW1090: 'DB1000,INT1090',
-  DBW1092: 'DB1000,INT1092',
-  DBW1094: 'DB1000,INT1094',
-  DBW1096: 'DB1000,INT1096',
-  DBW1098: 'DB1000,INT1098',
+  DBW1020: 'DB1000,INT1020', // 04009电机
+  DBW1022: 'DB1000,INT1022', // 04011电机
+  DBW1024: 'DB1000,INT1024', // 04012电机
+  DBW1026: 'DB1000,INT1026', // 04014电机
+  DBW1028: 'DB1000,INT1028', // 04015电机
+  DBW1030: 'DB1000,INT1030', // 04016电机
+  DBW1032: 'DB1000,INT1032', // 04018电机
+  DBW1034: 'DB1000,INT1034', // 04019电机
+  DBW1036: 'DB1000,INT1036', // 04021电机
+  DBW1038: 'DB1000,INT1038', // 04022电机
+  DBW1040: 'DB1000,INT1040', // 04023电机
+  DBW1042: 'DB1000,INT1042', // 04025电机
+  DBW1044: 'DB1000,INT1044', // 04026电机
+  DBW1046: 'DB1000,INT1046', // 04028电机
+  DBW1048: 'DB1000,INT1048', // 04029电机
+  DBW1050: 'DB1000,INT1050', // 04030电机
+  DBW1052: 'DB1000,INT1052', // 04032电机
+  DBW1054: 'DB1000,INT1054', // 04033电机
+  DBW1056: 'DB1000,INT1056', // 04035电机
+  DBW1058: 'DB1000,INT1058', // 04036电机
+  DBW1060: 'DB1000,INT1060', // 备用
+  DBW1062: 'DB1000,INT1062', // 备用
+  DBW1064: 'DB1000,INT1064', // 备用
+  DBW1066: 'DB1000,INT1066', // 备用
+  DBW1068: 'DB1000,INT1068', // 备用
+  DBW1070: 'DB1000,INT1070', // 备用
+  DBW1072: 'DB1000,INT1072', // 备用
+  DBW1074: 'DB1000,INT1074', // 备用
+  DBW1076: 'DB1000,INT1076', // 备用
+  DBW1078: 'DB1000,INT1078', // 备用
+  DBW1080: 'DB1000,INT1080', // 备用
+  DBW1082: 'DB1000,INT1082', // 备用
+  DBW1084: 'DB1000,INT1084', // 备用
+  DBW1086: 'DB1000,INT1086', // 备用
+  DBW1088: 'DB1000,INT1088', // 备用
+  DBW1090: 'DB1000,INT1090', // 备用
+  DBW1092: 'DB1000,INT1092', // 备用 (根据规律补充)
+  DBW1094: 'DB1000,INT1094', // 备用 (根据规律补充)
+  DBW1096: 'DB1000,INT1096', // 备用 (根据规律补充)
+  DBW1098: 'DB1000,INT1098', // 备用 (根据规律补充)
 
   // 展开定义：7\8#灭菌线线电机货物目的地 (DBW1100-DBW1178)
-  DBW1100: 'DB1000,INT1100',
-  DBW1102: 'DB1000,INT1102',
-  DBW1104: 'DB1000,INT1104',
-  DBW1106: 'DB1000,INT1106',
-  DBW1108: 'DB1000,INT1108',
-  DBW1110: 'DB1000,INT1110',
-  DBW1112: 'DB1000,INT1112',
-  DBW1114: 'DB1000,INT1114',
-  DBW1116: 'DB1000,INT1116',
-  DBW1118: 'DB1000,INT1118',
-  DBW1120: 'DB1000,INT1120',
-  DBW1122: 'DB1000,INT1122',
-  DBW1124: 'DB1000,INT1124',
-  DBW1126: 'DB1000,INT1126',
-  DBW1128: 'DB1000,INT1128',
-  DBW1130: 'DB1000,INT1130',
-  DBW1132: 'DB1000,INT1132',
-  DBW1134: 'DB1000,INT1134',
-  DBW1136: 'DB1000,INT1136',
-  DBW1138: 'DB1000,INT1138',
-  DBW1140: 'DB1000,INT1140',
-  DBW1142: 'DB1000,INT1142',
-  DBW1144: 'DB1000,INT1144',
-  DBW1146: 'DB1000,INT1146',
-  DBW1148: 'DB1000,INT1148',
-  DBW1150: 'DB1000,INT1150',
-  DBW1152: 'DB1000,INT1152',
-  DBW1154: 'DB1000,INT1154',
-  DBW1156: 'DB1000,INT1156',
-  DBW1158: 'DB1000,INT1158',
-  DBW1160: 'DB1000,INT1160',
-  DBW1162: 'DB1000,INT1162',
-  DBW1164: 'DB1000,INT1164',
-  DBW1166: 'DB1000,INT1166',
-  DBW1168: 'DB1000,INT1168',
-  DBW1170: 'DB1000,INT1170',
-  DBW1172: 'DB1000,INT1172',
-  DBW1174: 'DB1000,INT1174',
-  DBW1176: 'DB1000,INT1176',
-  DBW1178: 'DB1000,INT1178',
+  DBW1100: 'DB1000,INT1100', // 05009电机
+  DBW1102: 'DB1000,INT1102', // 05011电机
+  DBW1104: 'DB1000,INT1104', // 05012电机
+  DBW1106: 'DB1000,INT1106', // 05014电机
+  DBW1108: 'DB1000,INT1108', // 05015电机
+  DBW1110: 'DB1000,INT1110', // 05016电机
+  DBW1112: 'DB1000,INT1112', // 05018电机
+  DBW1114: 'DB1000,INT1114', // 05019电机
+  DBW1116: 'DB1000,INT1116', // 05021电机
+  DBW1118: 'DB1000,INT1118', // 05022电机
+  DBW1120: 'DB1000,INT1120', // 05023电机
+  DBW1122: 'DB1000,INT1122', // 05025电机
+  DBW1124: 'DB1000,INT1124', // 05026电机
+  DBW1126: 'DB1000,INT1126', // 05028电机
+  DBW1128: 'DB1000,INT1128', // 05029电机
+  DBW1130: 'DB1000,INT1130', // 05030电机
+  DBW1132: 'DB1000,INT1132', // 05032电机
+  DBW1134: 'DB1000,INT1134', // 05033电机
+  DBW1136: 'DB1000,INT1136', // 05035电机
+  DBW1138: 'DB1000,INT1138', // 05036电机
+  DBW1140: 'DB1000,INT1140', // 备用
+  DBW1142: 'DB1000,INT1142', // 备用
+  DBW1144: 'DB1000,INT1144', // 备用
+  DBW1146: 'DB1000,INT1146', // 备用
+  DBW1148: 'DB1000,INT1148', // 备用
+  DBW1150: 'DB1000,INT1150', // 备用
+  DBW1152: 'DB1000,INT1152', // 备用
+  DBW1154: 'DB1000,INT1154', // 备用
+  DBW1156: 'DB1000,INT1156', // 备用
+  DBW1158: 'DB1000,INT1158', // 备用
+  DBW1160: 'DB1000,INT1160', // 备用
+  DBW1162: 'DB1000,INT1162', // 备用
+  DBW1164: 'DB1000,INT1164', // 备用
+  DBW1166: 'DB1000,INT1166', // 备用
+  DBW1168: 'DB1000,INT1168', // 备用
+  DBW1170: 'DB1000,INT1170', // 备用
+  DBW1172: 'DB1000,INT1172', // 备用 (根据规律补充)
+  DBW1174: 'DB1000,INT1174', // 备用 (根据规律补充)
+  DBW1176: 'DB1000,INT1176', // 备用 (根据规律补充)
+  DBW1178: 'DB1000,INT1178', // 备用 (根据规律补充)
 
   // 展开定义：9\10#灭菌线线电机货物目的地 (DBW1180-DBW1258)
-  DBW1180: 'DB1000,INT1180',
-  DBW1182: 'DB1000,INT1182',
-  DBW1184: 'DB1000,INT1184',
-  DBW1186: 'DB1000,INT1186',
-  DBW1188: 'DB1000,INT1188',
-  DBW1190: 'DB1000,INT1190',
-  DBW1192: 'DB1000,INT1192',
-  DBW1194: 'DB1000,INT1194',
-  DBW1196: 'DB1000,INT1196',
-  DBW1198: 'DB1000,INT1198',
-  DBW1200: 'DB1000,INT1200',
-  DBW1202: 'DB1000,INT1202',
-  DBW1204: 'DB1000,INT1204',
-  DBW1206: 'DB1000,INT1206',
-  DBW1208: 'DB1000,INT1208',
-  DBW1210: 'DB1000,INT1210',
-  DBW1212: 'DB1000,INT1212',
-  DBW1214: 'DB1000,INT1214',
-  DBW1216: 'DB1000,INT1216',
-  DBW1218: 'DB1000,INT1218',
-  DBW1220: 'DB1000,INT1220',
-  DBW1222: 'DB1000,INT1222',
-  DBW1224: 'DB1000,INT1224',
-  DBW1226: 'DB1000,INT1226',
-  DBW1228: 'DB1000,INT1228',
-  DBW1230: 'DB1000,INT1230',
-  DBW1232: 'DB1000,INT1232',
-  DBW1234: 'DB1000,INT1234',
-  DBW1236: 'DB1000,INT1236',
-  DBW1238: 'DB1000,INT1238',
-  DBW1240: 'DB1000,INT1240',
-  DBW1242: 'DB1000,INT1242',
-  DBW1244: 'DB1000,INT1244',
-  DBW1246: 'DB1000,INT1246',
-  DBW1248: 'DB1000,INT1248',
-  DBW1250: 'DB1000,INT1250',
-  DBW1252: 'DB1000,INT1252',
-  DBW1254: 'DB1000,INT1254',
-  DBW1256: 'DB1000,INT1256',
-  DBW1258: 'DB1000,INT1258',
+  DBW1180: 'DB1000,INT1180', // 06009电机
+  DBW1182: 'DB1000,INT1182', // 06011电机
+  DBW1184: 'DB1000,INT1184', // 06012电机
+  DBW1186: 'DB1000,INT1186', // 06014电机
+  DBW1188: 'DB1000,INT1188', // 06015电机
+  DBW1190: 'DB1000,INT1190', // 06016电机
+  DBW1192: 'DB1000,INT1192', // 06018电机
+  DBW1194: 'DB1000,INT1194', // 06019电机
+  DBW1196: 'DB1000,INT1196', // 06021电机
+  DBW1198: 'DB1000,INT1198', // 06022电机
+  DBW1200: 'DB1000,INT1200', // 06023电机
+  DBW1202: 'DB1000,INT1202', // 06025电机
+  DBW1204: 'DB1000,INT1204', // 06026电机
+  DBW1206: 'DB1000,INT1206', // 06028电机
+  DBW1208: 'DB1000,INT1208', // 06029电机
+  DBW1210: 'DB1000,INT1210', // 06030电机
+  DBW1212: 'DB1000,INT1212', // 06032电机
+  DBW1214: 'DB1000,INT1214', // 06033电机
+  DBW1216: 'DB1000,INT1216', // 06035电机
+  DBW1218: 'DB1000,INT1218', // 06036电机
+  DBW1220: 'DB1000,INT1220', // 备用
+  DBW1222: 'DB1000,INT1222', // 备用
+  DBW1224: 'DB1000,INT1224', // 备用
+  DBW1226: 'DB1000,INT1226', // 备用
+  DBW1228: 'DB1000,INT1228', // 备用
+  DBW1230: 'DB1000,INT1230', // 备用
+  DBW1232: 'DB1000,INT1232', // 备用
+  DBW1234: 'DB1000,INT1234', // 备用
+  DBW1236: 'DB1000,INT1236', // 备用
+  DBW1238: 'DB1000,INT1238', // 备用
+  DBW1240: 'DB1000,INT1240', // 备用
+  DBW1242: 'DB1000,INT1242', // 备用
+  DBW1244: 'DB1000,INT1244', // 备用
+  DBW1246: 'DB1000,INT1246', // 备用
+  DBW1248: 'DB1000,INT1248', // 备用
+  DBW1250: 'DB1000,INT1250', // 备用
+  DBW1252: 'DB1000,INT1252', // 备用 (根据规律补充)
+  DBW1254: 'DB1000,INT1254', // 备用 (根据规律补充)
+  DBW1256: 'DB1000,INT1256', // 备用 (根据规律补充)
+  DBW1258: 'DB1000,INT1258', // 备用 (根据规律补充)
 
   // 展开定义：11\12#灭菌线线电机货物目的地 (DBW1260-DBW1338)
-  DBW1260: 'DB1000,INT1260',
-  DBW1262: 'DB1000,INT1262',
-  DBW1264: 'DB1000,INT1264',
-  DBW1266: 'DB1000,INT1266',
-  DBW1268: 'DB1000,INT1268',
-  DBW1270: 'DB1000,INT1270',
-  DBW1272: 'DB1000,INT1272',
-  DBW1274: 'DB1000,INT1274',
-  DBW1276: 'DB1000,INT1276',
-  DBW1278: 'DB1000,INT1278',
-  DBW1280: 'DB1000,INT1280',
-  DBW1282: 'DB1000,INT1282',
-  DBW1284: 'DB1000,INT1284',
-  DBW1286: 'DB1000,INT1286',
-  DBW1288: 'DB1000,INT1288',
-  DBW1290: 'DB1000,INT1290',
-  DBW1292: 'DB1000,INT1292',
-  DBW1294: 'DB1000,INT1294',
-  DBW1296: 'DB1000,INT1296',
-  DBW1298: 'DB1000,INT1298',
-  DBW1300: 'DB1000,INT1300',
-  DBW1302: 'DB1000,INT1302',
-  DBW1304: 'DB1000,INT1304',
-  DBW1306: 'DB1000,INT1306',
-  DBW1308: 'DB1000,INT1308',
-  DBW1310: 'DB1000,INT1310',
-  DBW1312: 'DB1000,INT1312',
-  DBW1314: 'DB1000,INT1314',
-  DBW1316: 'DB1000,INT1316',
-  DBW1318: 'DB1000,INT1318',
-  DBW1320: 'DB1000,INT1320',
-  DBW1322: 'DB1000,INT1322',
-  DBW1324: 'DB1000,INT1324',
-  DBW1326: 'DB1000,INT1326',
-  DBW1328: 'DB1000,INT1328',
-  DBW1330: 'DB1000,INT1330',
-  DBW1332: 'DB1000,INT1332',
-  DBW1334: 'DB1000,INT1334',
-  DBW1336: 'DB1000,INT1336',
-  DBW1338: 'DB1000,INT1338',
+  DBW1260: 'DB1000,INT1260', // 07009电机
+  DBW1262: 'DB1000,INT1262', // 07011电机
+  DBW1264: 'DB1000,INT1264', // 07012电机
+  DBW1266: 'DB1000,INT1266', // 07014电机
+  DBW1268: 'DB1000,INT1268', // 07015电机
+  DBW1270: 'DB1000,INT1270', // 07016电机
+  DBW1272: 'DB1000,INT1272', // 07018电机
+  DBW1274: 'DB1000,INT1274', // 07019电机
+  DBW1276: 'DB1000,INT1276', // 07021电机
+  DBW1278: 'DB1000,INT1278', // 07022电机
+  DBW1280: 'DB1000,INT1280', // 07023电机
+  DBW1282: 'DB1000,INT1282', // 07025电机
+  DBW1284: 'DB1000,INT1284', // 07026电机
+  DBW1286: 'DB1000,INT1286', // 07028电机
+  DBW1288: 'DB1000,INT1288', // 07029电机
+  DBW1290: 'DB1000,INT1290', // 07030电机
+  DBW1292: 'DB1000,INT1292', // 07032电机
+  DBW1294: 'DB1000,INT1294', // 07033电机
+  DBW1296: 'DB1000,INT1296', // 07035电机
+  DBW1298: 'DB1000,INT1298', // 07036电机
+  DBW1300: 'DB1000,INT1300', // 备用
+  DBW1302: 'DB1000,INT1302', // 备用
+  DBW1304: 'DB1000,INT1304', // 备用
+  DBW1306: 'DB1000,INT1306', // 备用
+  DBW1308: 'DB1000,INT1308', // 备用
+  DBW1310: 'DB1000,INT1310', // 备用
+  DBW1312: 'DB1000,INT1312', // 备用
+  DBW1314: 'DB1000,INT1314', // 备用
+  DBW1316: 'DB1000,INT1316', // 备用
+  DBW1318: 'DB1000,INT1318', // 备用
+  DBW1320: 'DB1000,INT1320', // 备用
+  DBW1322: 'DB1000,INT1322', // 备用
+  DBW1324: 'DB1000,INT1324', // 备用
+  DBW1326: 'DB1000,INT1326', // 备用
+  DBW1328: 'DB1000,INT1328', // 备用
+  DBW1330: 'DB1000,INT1330', // 备用
+  DBW1332: 'DB1000,INT1332', // 备用 (根据规律补充)
+  DBW1334: 'DB1000,INT1334', // 备用 (根据规律补充)
+  DBW1336: 'DB1000,INT1336', // 备用 (根据规律补充)
+  DBW1338: 'DB1000,INT1338', // 备用 (根据规律补充)
 
   // 展开定义：13\14#灭菌线线电机货物目的地 (DBW1340-DBW1418)
-  DBW1340: 'DB1000,INT1340',
-  DBW1342: 'DB1000,INT1342',
-  DBW1344: 'DB1000,INT1344',
-  DBW1346: 'DB1000,INT1346',
-  DBW1348: 'DB1000,INT1348',
-  DBW1350: 'DB1000,INT1350',
-  DBW1352: 'DB1000,INT1352',
-  DBW1354: 'DB1000,INT1354',
-  DBW1356: 'DB1000,INT1356',
-  DBW1358: 'DB1000,INT1358',
-  DBW1360: 'DB1000,INT1360',
-  DBW1362: 'DB1000,INT1362',
-  DBW1364: 'DB1000,INT1364',
-  DBW1366: 'DB1000,INT1366',
-  DBW1368: 'DB1000,INT1368',
-  DBW1370: 'DB1000,INT1370',
-  DBW1372: 'DB1000,INT1372',
-  DBW1374: 'DB1000,INT1374',
-  DBW1376: 'DB1000,INT1376',
-  DBW1378: 'DB1000,INT1378',
-  DBW1380: 'DB1000,INT1380',
-  DBW1382: 'DB1000,INT1382',
-  DBW1384: 'DB1000,INT1384',
-  DBW1386: 'DB1000,INT1386',
-  DBW1388: 'DB1000,INT1388',
-  DBW1390: 'DB1000,INT1390',
-  DBW1392: 'DB1000,INT1392',
-  DBW1394: 'DB1000,INT1394',
-  DBW1396: 'DB1000,INT1396',
-  DBW1398: 'DB1000,INT1398',
-  DBW1400: 'DB1000,INT1400',
-  DBW1402: 'DB1000,INT1402',
-  DBW1404: 'DB1000,INT1404',
-  DBW1406: 'DB1000,INT1406',
-  DBW1408: 'DB1000,INT1408',
-  DBW1410: 'DB1000,INT1410',
-  DBW1412: 'DB1000,INT1412',
-  DBW1414: 'DB1000,INT1414',
-  DBW1416: 'DB1000,INT1416',
-  DBW1418: 'DB1000,INT1418',
+  DBW1340: 'DB1000,INT1340', // 08009电机
+  DBW1342: 'DB1000,INT1342', // 08011电机
+  DBW1344: 'DB1000,INT1344', // 08012电机
+  DBW1346: 'DB1000,INT1346', // 08014电机
+  DBW1348: 'DB1000,INT1348', // 08015电机
+  DBW1350: 'DB1000,INT1350', // 08016电机
+  DBW1352: 'DB1000,INT1352', // 08018电机
+  DBW1354: 'DB1000,INT1354', // 08019电机
+  DBW1356: 'DB1000,INT1356', // 08021电机
+  DBW1358: 'DB1000,INT1358', // 08022电机
+  DBW1360: 'DB1000,INT1360', // 08023电机
+  DBW1362: 'DB1000,INT1362', // 08025电机
+  DBW1364: 'DB1000,INT1364', // 08026电机
+  DBW1366: 'DB1000,INT1366', // 08028电机
+  DBW1368: 'DB1000,INT1368', // 08029电机
+  DBW1370: 'DB1000,INT1370', // 08030电机
+  DBW1372: 'DB1000,INT1372', // 08032电机
+  DBW1374: 'DB1000,INT1374', // 08033电机
+  DBW1376: 'DB1000,INT1376', // 08035电机
+  DBW1378: 'DB1000,INT1378', // 08036电机
+  DBW1380: 'DB1000,INT1380', // 备用
+  DBW1382: 'DB1000,INT1382', // 备用
+  DBW1384: 'DB1000,INT1384', // 备用
+  DBW1386: 'DB1000,INT1386', // 备用
+  DBW1388: 'DB1000,INT1388', // 备用
+  DBW1390: 'DB1000,INT1390', // 备用
+  DBW1392: 'DB1000,INT1392', // 备用
+  DBW1394: 'DB1000,INT1394', // 备用
+  DBW1396: 'DB1000,INT1396', // 备用
+  DBW1398: 'DB1000,INT1398', // 备用
+  DBW1400: 'DB1000,INT1400', // 备用
+  DBW1402: 'DB1000,INT1402', // 备用
+  DBW1404: 'DB1000,INT1404', // 备用
+  DBW1406: 'DB1000,INT1406', // 备用
+  DBW1408: 'DB1000,INT1408', // 备用
+  DBW1410: 'DB1000,INT1410', // 备用
+  DBW1412: 'DB1000,INT1412', // 备用 (根据规律补充)
+  DBW1414: 'DB1000,INT1414', // 备用 (根据规律补充)
+  DBW1416: 'DB1000,INT1416', // 备用 (根据规律补充)
+  DBW1418: 'DB1000,INT1418', // 备用 (根据规律补充)
 
   // 展开定义：15#灭菌线和出口线电机货物目的地 (DBW1420-DBW1498)
-  DBW1420: 'DB1000,INT1420',
-  DBW1422: 'DB1000,INT1422',
-  DBW1424: 'DB1000,INT1424',
-  DBW1426: 'DB1000,INT1426',
-  DBW1428: 'DB1000,INT1428',
-  DBW1430: 'DB1000,INT1430',
-  DBW1432: 'DB1000,INT1432',
-  DBW1434: 'DB1000,INT1434',
-  DBW1436: 'DB1000,INT1436',
-  DBW1438: 'DB1000,INT1438',
-  DBW1440: 'DB1000,INT1440',
-  DBW1442: 'DB1000,INT1442',
-  DBW1444: 'DB1000,INT1444',
-  DBW1446: 'DB1000,INT1446',
-  DBW1448: 'DB1000,INT1448',
-  DBW1450: 'DB1000,INT1450',
-  DBW1452: 'DB1000,INT1452',
-  DBW1454: 'DB1000,INT1454',
-  DBW1456: 'DB1000,INT1456',
-  DBW1458: 'DB1000,INT1458',
-  DBW1460: 'DB1000,INT1460',
-  DBW1462: 'DB1000,INT1462',
-  DBW1464: 'DB1000,INT1464',
-  DBW1466: 'DB1000,INT1466',
-  DBW1468: 'DB1000,INT1468',
-  DBW1470: 'DB1000,INT1470',
-  DBW1472: 'DB1000,INT1472',
-  DBW1474: 'DB1000,INT1474',
-  DBW1476: 'DB1000,INT1476',
-  DBW1478: 'DB1000,INT1478',
-  DBW1480: 'DB1000,INT1480',
-  DBW1482: 'DB1000,INT1482',
-  DBW1484: 'DB1000,INT1484',
-  DBW1486: 'DB1000,INT1486',
-  DBW1488: 'DB1000,INT1488',
-  DBW1490: 'DB1000,INT1490',
-  DBW1492: 'DB1000,INT1492',
-  DBW1494: 'DB1000,INT1494',
-  DBW1496: 'DB1000,INT1496',
-  DBW1498: 'DB1000,INT1498',
+  DBW1420: 'DB1000,INT1420', // 09005电机
+  DBW1422: 'DB1000,INT1422', // 09007电机
+  DBW1424: 'DB1000,INT1424', // 09008电机
+  DBW1426: 'DB1000,INT1426', // 09010电机
+  DBW1428: 'DB1000,INT1428', // 09011电机
+  DBW1430: 'DB1000,INT1430', // 09012电机
+  DBW1432: 'DB1000,INT1432', // 09014电机
+  DBW1434: 'DB1000,INT1434', // 09015电机
+  DBW1436: 'DB1000,INT1436', // 09017电机
+  DBW1438: 'DB1000,INT1438', // 09018电机
+  DBW1440: 'DB1000,INT1440', // 09020电机
+  DBW1442: 'DB1000,INT1442', // 09021电机
+  DBW1444: 'DB1000,INT1444', // 09023电机
+  DBW1446: 'DB1000,INT1446', // 09024电机
+  DBW1448: 'DB1000,INT1448', // 09025电机
+  DBW1450: 'DB1000,INT1450', // 09026电机
+  DBW1452: 'DB1000,INT1452', // 09027电机
+  DBW1454: 'DB1000,INT1454', // 09028电机
+  DBW1456: 'DB1000,INT1456', // 09029电机
+  DBW1458: 'DB1000,INT1458', // 09030电机
+  DBW1460: 'DB1000,INT1460', // 09031电机
+  DBW1462: 'DB1000,INT1462', // 09032电机
+  DBW1464: 'DB1000,INT1464', // 09033电机
+  DBW1466: 'DB1000,INT1466', // 09035电机
+  DBW1468: 'DB1000,INT1468', // 09036电机
+  DBW1470: 'DB1000,INT1470', // 09038电机
+  DBW1472: 'DB1000,INT1472', // 09039电机
+  DBW1474: 'DB1000,INT1474', // 备用
+  DBW1476: 'DB1000,INT1476', // 备用
+  DBW1478: 'DB1000,INT1478', // 备用
+  DBW1480: 'DB1000,INT1480', // 备用
+  DBW1482: 'DB1000,INT1482', // 备用
+  DBW1484: 'DB1000,INT1484', // 备用
+  DBW1486: 'DB1000,INT1486', // 备用
+  DBW1488: 'DB1000,INT1488', // 备用
+  DBW1490: 'DB1000,INT1490', // 备用
+  DBW1492: 'DB1000,INT1492', // 备用
+  DBW1494: 'DB1000,INT1494', // 备用
+  DBW1496: 'DB1000,INT1496', // 备用
+  DBW1498: 'DB1000,INT1498', // 备用
 
   // 展开定义：1-15预热柜内实际数量 (DBW1500-DBW1528)
-  DBW1500: 'DB1000,INT1500',
-  DBW1502: 'DB1000,INT1502',
-  DBW1504: 'DB1000,INT1504',
-  DBW1506: 'DB1000,INT1506',
-  DBW1508: 'DB1000,INT1508',
-  DBW1510: 'DB1000,INT1510',
-  DBW1512: 'DB1000,INT1512',
-  DBW1514: 'DB1000,INT1514',
-  DBW1516: 'DB1000,INT1516',
-  DBW1518: 'DB1000,INT1518',
-  DBW1520: 'DB1000,INT1520',
-  DBW1522: 'DB1000,INT1522',
-  DBW1524: 'DB1000,INT1524',
-  DBW1526: 'DB1000,INT1526',
-  DBW1528: 'DB1000,INT1528',
+  DBW1500: 'DB1000,INT1500', // 预热柜1内实际数量
+  DBW1502: 'DB1000,INT1502', // 预热柜2内实际数量
+  DBW1504: 'DB1000,INT1504', // 预热柜3内实际数量
+  DBW1506: 'DB1000,INT1506', // 预热柜4内实际数量
+  DBW1508: 'DB1000,INT1508', // 预热柜5内实际数量
+  DBW1510: 'DB1000,INT1510', // 预热柜6内实际数量
+  DBW1512: 'DB1000,INT1512', // 预热柜7内实际数量
+  DBW1514: 'DB1000,INT1514', // 预热柜8内实际数量
+  DBW1516: 'DB1000,INT1516', // 预热柜9内实际数量
+  DBW1518: 'DB1000,INT1518', // 预热柜10内实际数量
+  DBW1520: 'DB1000,INT1520', // 预热柜11内实际数量
+  DBW1522: 'DB1000,INT1522', // 预热柜12内实际数量
+  DBW1524: 'DB1000,INT1524', // 预热柜13内实际数量
+  DBW1526: 'DB1000,INT1526', // 预热柜14内实际数量
+  DBW1528: 'DB1000,INT1528', // 预热柜15内实际数量
 
   // 展开定义：1-15灭菌柜内实际数量 (DBW1530-DBW1558)
-  DBW1530: 'DB1000,INT1530',
-  DBW1532: 'DB1000,INT1532',
-  DBW1534: 'DB1000,INT1534',
-  DBW1536: 'DB1000,INT1536',
-  DBW1538: 'DB1000,INT1538',
-  DBW1540: 'DB1000,INT1540',
-  DBW1542: 'DB1000,INT1542',
-  DBW1544: 'DB1000,INT1544',
-  DBW1546: 'DB1000,INT1546',
-  DBW1548: 'DB1000,INT1548',
-  DBW1550: 'DB1000,INT1550',
-  DBW1552: 'DB1000,INT1552',
-  DBW1554: 'DB1000,INT1554',
-  DBW1556: 'DB1000,INT1556',
-  DBW1558: 'DB1000,INT1558',
+  DBW1530: 'DB1000,INT1530', // 灭菌柜1内实际数量
+  DBW1532: 'DB1000,INT1532', // 灭菌柜2内实际数量
+  DBW1534: 'DB1000,INT1534', // 灭菌柜3内实际数量
+  DBW1536: 'DB1000,INT1536', // 灭菌柜4内实际数量
+  DBW1538: 'DB1000,INT1538', // 灭菌柜5内实际数量
+  DBW1540: 'DB1000,INT1540', // 灭菌柜6内实际数量
+  DBW1542: 'DB1000,INT1542', // 灭菌柜7内实际数量
+  DBW1544: 'DB1000,INT1544', // 灭菌柜8内实际数量
+  DBW1546: 'DB1000,INT1546', // 灭菌柜9内实际数量
+  DBW1548: 'DB1000,INT1548', // 灭菌柜10内实际数量
+  DBW1550: 'DB1000,INT1550', // 灭菌柜11内实际数量
+  DBW1552: 'DB1000,INT1552', // 灭菌柜12内实际数量
+  DBW1554: 'DB1000,INT1554', // 灭菌柜13内实际数量
+  DBW1556: 'DB1000,INT1556', // 灭菌柜14内实际数量
+  DBW1558: 'DB1000,INT1558', // 灭菌柜15内实际数量
 
   // 展开定义：传感器信号区间 (DBW1606 - DBW1656)
-  DBW1606: 'DB1000,INT1606',
-  DBW1608: 'DB1000,INT1608',
-  DBW1610: 'DB1000,INT1610',
-  DBW1612: 'DB1000,INT1612',
-  DBW1614: 'DB1000,INT1614',
-  DBW1616: 'DB1000,INT1616',
-  DBW1618: 'DB1000,INT1618',
-  DBW1620: 'DB1000,INT1620',
-  DBW1622: 'DB1000,INT1622',
-  DBW1624: 'DB1000,INT1624',
-  DBW1626: 'DB1000,INT1626',
-  DBW1628: 'DB1000,INT1628',
-  DBW1630: 'DB1000,INT1630',
-  DBW1632: 'DB1000,INT1632',
-  DBW1634: 'DB1000,INT1634',
-  DBW1636: 'DB1000,INT1636',
-  DBW1638: 'DB1000,INT1638',
-  DBW1640: 'DB1000,INT1640',
-  DBW1642: 'DB1000,INT1642',
-  DBW1644: 'DB1000,INT1644',
-  DBW1646: 'DB1000,INT1646',
-  DBW1648: 'DB1000,INT1648',
-  DBW1650: 'DB1000,INT1650',
-  DBW1652: 'DB1000,INT1652',
-  DBW1654: 'DB1000,INT1654',
-  DBW1656: 'DB1000,INT1656',
+  DBW1606: 'DB1000,INT1606', // 缓存线传感器信号-1
+  DBW1608: 'DB1000,INT1608', // 缓存线传感器信号-2
+  DBW1610: 'DB1000,INT1610', // 1\2#灭菌线线传感器信号--1
+  DBW1612: 'DB1000,INT1612', // 1\2#灭菌线线传感器信号--2
+  DBW1614: 'DB1000,INT1614', // 1\2#灭菌线线传感器信号--3
+  DBW1616: 'DB1000,INT1616', // 3\4#灭菌线线传感器信号--1
+  DBW1618: 'DB1000,INT1618', // 3\4#灭菌线线传感器信号--2
+  DBW1620: 'DB1000,INT1620', // 3\4#灭菌线线传感器信号--3
+  DBW1622: 'DB1000,INT1622', // 5\6#灭菌线线传感器信号--1
+  DBW1624: 'DB1000,INT1624', // 5\6#灭菌线线传感器信号--2
+  DBW1626: 'DB1000,INT1626', // 5\6#灭菌线线传感器信号--3
+  DBW1628: 'DB1000,INT1628', // 7\8#灭菌线线传感器信号--1
+  DBW1630: 'DB1000,INT1630', // 7\8#灭菌线线传感器信号--2
+  DBW1632: 'DB1000,INT1632', // 7\8#灭菌线线传感器信号--3
+  DBW1634: 'DB1000,INT1634', // 9\10#灭菌线线传感器信号--1
+  DBW1636: 'DB1000,INT1636', // 9\10#灭菌线线传感器信号--2
+  DBW1638: 'DB1000,INT1638', // 9\10#灭菌线线传感器信号--3
+  DBW1640: 'DB1000,INT1640', // 11\12#灭菌线线传感器信号--1
+  DBW1642: 'DB1000,INT1642', // 11\12#灭菌线线传感器信号--2
+  DBW1644: 'DB1000,INT1644', // 11\12#灭菌线线传感器信号--3
+  DBW1646: 'DB1000,INT1646', // 13\14#灭菌线线传感器信号--1
+  DBW1648: 'DB1000,INT1648', // 13\14#灭菌线线传感器信号--2
+  DBW1650: 'DB1000,INT1650', // 13\14#灭菌线线传感器信号--3
+  DBW1652: 'DB1000,INT1652', // 15#灭菌线和出口线传感器信号--1
+  DBW1654: 'DB1000,INT1654', // 15#灭菌线和出口线传感器信号--2
+  DBW1656: 'DB1000,INT1656', // 15#灭菌线和出口线传感器信号--3
 
   // --- 写入点位 (DB1001) 使用前缀 W_ 防止冲突 ---
   W_DBW0: 'DB1001,INT0', // WCS看门狗心跳 (一直写)
@@ -2302,41 +2302,41 @@ var variables = {
   // W_DBW18 WCS执行预热房出货命令 (Bit位定义)
   // 注意：W_DBW18为INT类型，西门子为大端字节序。
   // BIT0通常指最低位(LSB, Value=1)，对应低位字节(Byte 19)的第0位。
-  W_DBW18_BIT0: 'DB1001,X18.0',
-  W_DBW18_BIT1: 'DB1001,X18.1',
-  W_DBW18_BIT2: 'DB1001,X18.2',
-  W_DBW18_BIT3: 'DB1001,X18.3',
-  W_DBW18_BIT4: 'DB1001,X18.4',
-  W_DBW18_BIT5: 'DB1001,X18.5',
-  W_DBW18_BIT6: 'DB1001,X18.6',
-  W_DBW18_BIT7: 'DB1001,X18.7',
-  W_DBW18_BIT8: 'DB1001,X19.0',
-  W_DBW18_BIT9: 'DB1001,X19.1',
-  W_DBW18_BIT10: 'DB1001,X19.2',
-  W_DBW18_BIT11: 'DB1001,X19.3',
-  W_DBW18_BIT12: 'DB1001,X19.4',
-  W_DBW18_BIT13: 'DB1001,X19.5',
-  W_DBW18_BIT14: 'DB1001,X19.6',
-  W_DBW18_BIT15: 'DB1001,X19.7',
+  W_DBW18_BIT0: 'DB1001,X18.0', // 3201预热进货
+  W_DBW18_BIT1: 'DB1001,X18.1', // 3202预热进货
+  W_DBW18_BIT2: 'DB1001,X18.2', // 3203预热进货
+  W_DBW18_BIT3: 'DB1001,X18.3', // 3204预热进货
+  W_DBW18_BIT4: 'DB1001,X18.4', // 3205预热进货
+  W_DBW18_BIT5: 'DB1001,X18.5', // 3206预热进货
+  W_DBW18_BIT6: 'DB1001,X18.6', // 3207预热进货
+  W_DBW18_BIT7: 'DB1001,X18.7', // 3208预热进货
+  W_DBW18_BIT8: 'DB1001,X19.0', // 3209预热进货
+  W_DBW18_BIT9: 'DB1001,X19.1', // 3210预热进货
+  W_DBW18_BIT10: 'DB1001,X19.2', // 3211预热进货
+  W_DBW18_BIT11: 'DB1001,X19.3', // 3212预热进货
+  W_DBW18_BIT12: 'DB1001,X19.4', // 3213预热进货
+  W_DBW18_BIT13: 'DB1001,X19.5', // 3214预热进货
+  W_DBW18_BIT14: 'DB1001,X19.6', // 3215预热进货
+  W_DBW18_BIT15: 'DB1001,X19.7', // 备用
 
   // W_DBW20 WCS执行进货灭菌柜出货命令 (Bit位定义)
   // 同样采用LSB顺序：BIT0 -> Byte 21.0
-  W_DBW20_BIT0: 'DB1001,X20.0',
-  W_DBW20_BIT1: 'DB1001,X20.1',
-  W_DBW20_BIT2: 'DB1001,X20.2',
-  W_DBW20_BIT3: 'DB1001,X20.3',
-  W_DBW20_BIT4: 'DB1001,X20.4',
-  W_DBW20_BIT5: 'DB1001,X20.5',
-  W_DBW20_BIT6: 'DB1001,X20.6',
-  W_DBW20_BIT7: 'DB1001,X20.7',
-  W_DBW20_BIT8: 'DB1001,X21.0',
-  W_DBW20_BIT9: 'DB1001,X21.1',
-  W_DBW20_BIT10: 'DB1001,X21.2',
-  W_DBW20_BIT11: 'DB1001,X21.3',
-  W_DBW20_BIT12: 'DB1001,X21.4',
-  W_DBW20_BIT13: 'DB1001,X21.5',
-  W_DBW20_BIT14: 'DB1001,X21.6',
-  W_DBW20_BIT15: 'DB1001,X21.7',
+  W_DBW20_BIT0: 'DB1001,X20.0', // 3201灭菌进货
+  W_DBW20_BIT1: 'DB1001,X20.1', // 3202灭菌进货
+  W_DBW20_BIT2: 'DB1001,X20.2', // 3203灭菌进货
+  W_DBW20_BIT3: 'DB1001,X20.3', // 3204灭菌进货
+  W_DBW20_BIT4: 'DB1001,X20.4', // 3205灭菌进货
+  W_DBW20_BIT5: 'DB1001,X20.5', // 3206灭菌进货
+  W_DBW20_BIT6: 'DB1001,X20.6', // 3207灭菌进货
+  W_DBW20_BIT7: 'DB1001,X20.7', // 3208灭菌进货
+  W_DBW20_BIT8: 'DB1001,X21.0', // 3209灭菌进货
+  W_DBW20_BIT9: 'DB1001,X21.1', // 3210灭菌进货
+  W_DBW20_BIT10: 'DB1001,X21.2', // 3211灭菌进货
+  W_DBW20_BIT11: 'DB1001,X21.3', // 3212灭菌进货
+  W_DBW20_BIT12: 'DB1001,X21.4', // 3213灭菌进货
+  W_DBW20_BIT13: 'DB1001,X21.5', // 3214灭菌进货
+  W_DBW20_BIT14: 'DB1001,X21.6', // 3215灭菌进货
+  W_DBW20_BIT15: 'DB1001,X21.7', // 备用
 
   W_DBW22: 'DB1001,INT22', // WCS执行小车移栽命令
   W_DBW24: 'DB1001,INT24', // WCS修改电机编号
@@ -2359,68 +2359,68 @@ var variables = {
   W_DBW58: 'DB1001,INT58', // 双线单线缓存模式
 
   // 展开定义：出灭菌柜线链条电机货物目的地 (DB1001.DBW60-DBW118)
-  W_DBW60: 'DB1001,INT60',
-  W_DBW62: 'DB1001,INT62',
-  W_DBW64: 'DB1001,INT64',
-  W_DBW66: 'DB1001,INT66',
-  W_DBW68: 'DB1001,INT68',
-  W_DBW70: 'DB1001,INT70',
-  W_DBW72: 'DB1001,INT72',
-  W_DBW74: 'DB1001,INT74',
-  W_DBW76: 'DB1001,INT76',
-  W_DBW78: 'DB1001,INT78',
-  W_DBW80: 'DB1001,INT80',
-  W_DBW82: 'DB1001,INT82',
-  W_DBW84: 'DB1001,INT84',
-  W_DBW86: 'DB1001,INT86',
-  W_DBW88: 'DB1001,INT88',
-  W_DBW90: 'DB1001,INT90',
-  W_DBW92: 'DB1001,INT92',
-  W_DBW94: 'DB1001,INT94',
-  W_DBW96: 'DB1001,INT96',
-  W_DBW98: 'DB1001,INT98',
-  W_DBW100: 'DB1001,INT100',
-  W_DBW102: 'DB1001,INT102',
-  W_DBW104: 'DB1001,INT104',
-  W_DBW106: 'DB1001,INT106',
-  W_DBW108: 'DB1001,INT108',
-  W_DBW110: 'DB1001,INT110',
-  W_DBW112: 'DB1001,INT112',
-  W_DBW114: 'DB1001,INT114',
-  W_DBW116: 'DB1001,INT116',
-  W_DBW118: 'DB1001,INT118',
+  W_DBW60: 'DB1001,INT60', // 02026电机（出口链条机）
+  W_DBW62: 'DB1001,INT62', // 02029电机（出口链条机）
+  W_DBW64: 'DB1001,INT64', // 02033电机（出口链条机）
+  W_DBW66: 'DB1001,INT66', // 02036电机（出口链条机）
+  W_DBW68: 'DB1001,INT68', // 03026电机（出口链条机）
+  W_DBW70: 'DB1001,INT70', // 03029电机（出口链条机）
+  W_DBW72: 'DB1001,INT72', // 03033电机（出口链条机）
+  W_DBW74: 'DB1001,INT74', // 03036电机（出口链条机）
+  W_DBW76: 'DB1001,INT76', // 04026电机（出口链条机）
+  W_DBW78: 'DB1001,INT78', // 04029电机（出口链条机）
+  W_DBW80: 'DB1001,INT80', // 04033电机（出口链条机）
+  W_DBW82: 'DB1001,INT82', // 04036电机（出口链条机）
+  W_DBW84: 'DB1001,INT84', // 05026电机（出口链条机）
+  W_DBW86: 'DB1001,INT86', // 05029电机（出口链条机）
+  W_DBW88: 'DB1001,INT88', // 05033电机（出口链条机）
+  W_DBW90: 'DB1001,INT90', // 05036电机（出口链条机）
+  W_DBW92: 'DB1001,INT92', // 06026电机（出口链条机）
+  W_DBW94: 'DB1001,INT94', // 06029电机（出口链条机）
+  W_DBW96: 'DB1001,INT96', // 06033电机（出口链条机）
+  W_DBW98: 'DB1001,INT98', // 06036电机（出口链条机）
+  W_DBW100: 'DB1001,INT100', // 07026电机（出口链条机）
+  W_DBW102: 'DB1001,INT102', // 07029电机（出口链条机）
+  W_DBW104: 'DB1001,INT104', // 07033电机（出口链条机）
+  W_DBW106: 'DB1001,INT106', // 07036电机（出口链条机）
+  W_DBW108: 'DB1001,INT108', // 08026电机（出口链条机）
+  W_DBW110: 'DB1001,INT110', // 08029电机（出口链条机）
+  W_DBW112: 'DB1001,INT112', // 08033电机（出口链条机）
+  W_DBW114: 'DB1001,INT114', // 08036电机（出口链条机）
+  W_DBW116: 'DB1001,INT116', // 09015电机（出口链条机）
+  W_DBW118: 'DB1001,INT118', // 09018电机（出口链条机）
 
   // 展开定义：出灭菌线占位虚拟ID码 (DB1001.DBW120-DBW178)
-  W_DBW120: 'DB1001,INT120',
-  W_DBW122: 'DB1001,INT122',
-  W_DBW124: 'DB1001,INT124',
-  W_DBW126: 'DB1001,INT126',
-  W_DBW128: 'DB1001,INT128',
-  W_DBW130: 'DB1001,INT130',
-  W_DBW132: 'DB1001,INT132',
-  W_DBW134: 'DB1001,INT134',
-  W_DBW136: 'DB1001,INT136',
-  W_DBW138: 'DB1001,INT138',
-  W_DBW140: 'DB1001,INT140',
-  W_DBW142: 'DB1001,INT142',
-  W_DBW144: 'DB1001,INT144',
-  W_DBW146: 'DB1001,INT146',
-  W_DBW148: 'DB1001,INT148',
-  W_DBW150: 'DB1001,INT150',
-  W_DBW152: 'DB1001,INT152',
-  W_DBW154: 'DB1001,INT154',
-  W_DBW156: 'DB1001,INT156',
-  W_DBW158: 'DB1001,INT158',
-  W_DBW160: 'DB1001,INT160',
-  W_DBW162: 'DB1001,INT162',
-  W_DBW164: 'DB1001,INT164',
-  W_DBW166: 'DB1001,INT166',
-  W_DBW168: 'DB1001,INT168',
-  W_DBW170: 'DB1001,INT170',
-  W_DBW172: 'DB1001,INT172',
-  W_DBW174: 'DB1001,INT174',
-  W_DBW176: 'DB1001,INT176',
-  W_DBW178: 'DB1001,INT178',
+  W_DBW120: 'DB1001,INT120', // 02026电机（出口链条机）
+  W_DBW122: 'DB1001,INT122', // 02029电机（出口链条机）
+  W_DBW124: 'DB1001,INT124', // 02033电机（出口链条机）
+  W_DBW126: 'DB1001,INT126', // 02036电机（出口链条机）
+  W_DBW128: 'DB1001,INT128', // 03026电机（出口链条机）
+  W_DBW130: 'DB1001,INT130', // 03029电机（出口链条机）
+  W_DBW132: 'DB1001,INT132', // 03033电机（出口链条机）
+  W_DBW134: 'DB1001,INT134', // 03036电机（出口链条机）
+  W_DBW136: 'DB1001,INT136', // 04026电机（出口链条机）
+  W_DBW138: 'DB1001,INT138', // 04029电机（出口链条机）
+  W_DBW140: 'DB1001,INT140', // 04033电机（出口链条机）
+  W_DBW142: 'DB1001,INT142', // 04036电机（出口链条机）
+  W_DBW144: 'DB1001,INT144', // 05026电机（出口链条机）
+  W_DBW146: 'DB1001,INT146', // 05029电机（出口链条机）
+  W_DBW148: 'DB1001,INT148', // 05033电机（出口链条机）
+  W_DBW150: 'DB1001,INT150', // 05036电机（出口链条机）
+  W_DBW152: 'DB1001,INT152', // 06026电机（出口链条机）
+  W_DBW154: 'DB1001,INT154', // 06029电机（出口链条机）
+  W_DBW156: 'DB1001,INT156', // 06033电机（出口链条机）
+  W_DBW158: 'DB1001,INT158', // 06036电机（出口链条机）
+  W_DBW160: 'DB1001,INT160', // 07026电机（出口链条机）
+  W_DBW162: 'DB1001,INT162', // 07029电机（出口链条机）
+  W_DBW164: 'DB1001,INT164', // 07033电机（出口链条机）
+  W_DBW166: 'DB1001,INT166', // 07036电机（出口链条机）
+  W_DBW168: 'DB1001,INT168', // 08026电机（出口链条机）
+  W_DBW170: 'DB1001,INT170', // 08029电机（出口链条机）
+  W_DBW172: 'DB1001,INT172', // 08033电机（出口链条机）
+  W_DBW174: 'DB1001,INT174', // 08036电机（出口链条机）
+  W_DBW176: 'DB1001,INT176', // 09015电机（出口链条机）
+  W_DBW178: 'DB1001,INT178', // 09018电机（出口链条机）
 
   W_DBW180: 'DB1001,INT180', // 进货错误停止信号
   W_DBW182: 'DB1001,INT182', // 选定电机编号5
