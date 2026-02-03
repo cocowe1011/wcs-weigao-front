@@ -219,6 +219,19 @@ app.on('ready', () => {
   ipcMain.on('cancelWriteToPLC', (event, arg1) => {
     cancelWriteToPLC(arg1);
   });
+  // 获取PLC变量定义（只在组件挂载时调用一次，因为启动后不会变）
+  ipcMain.handle('getPlcVariables', () => {
+    return {
+      variables
+    };
+  });
+  // 获取写入数据（轮询调用，因为经常变化）
+  ipcMain.handle('getWriteData', () => {
+    return {
+      writeAddArr,
+      writeStrArr
+    };
+  });
   // 定义自定义事件
   ipcMain.on('max-window', (event, arg) => {
     if (arg === 'max-window') {
@@ -276,21 +289,13 @@ app.on('ready', () => {
     setInterval(() => {
       if (mainWindow) {
         if (revert) {
-          mainWindow.webContents.send(
-            'receivedMsg',
-            {
-              DBW0: 0
-            },
-            writeStrArr.toString()
-          );
+          mainWindow.webContents.send('receivedMsg', {
+            DBW0: 0
+          });
         } else {
-          mainWindow.webContents.send(
-            'receivedMsg',
-            {
-              DBW0: 1
-            },
-            writeStrArr.toString()
-          );
+          mainWindow.webContents.send('receivedMsg', {
+            DBW0: 1
+          });
         }
         revert = !revert;
       }
@@ -2526,7 +2531,8 @@ function valuesReady(anythingBad, values) {
     console.log('SOMETHING WENT WRONG READING VALUES!!!!');
   }
   // console.log(values)
-  mainWindow.webContents.send('receivedMsg', values, writeStrArr.toString());
+  // 只发送PLC读取的实时数据，减少数据传输量
+  mainWindow.webContents.send('receivedMsg', values);
 }
 
 const setAppTray = () => {

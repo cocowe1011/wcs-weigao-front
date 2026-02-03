@@ -1,22 +1,115 @@
 <template>
-  <div :class="['sm-main', plcStatus ? 'online' : 'offline']" v-drag>
-    <el-tooltip
-      class="item"
-      effect="dark"
-      :content="sendStr || '暂无数据'"
-      placement="bottom"
-      :open-delay="500"
+  <div
+    :class="['sm-main', plcStatus ? 'online' : 'offline']"
+    v-drag
+    @dblclick="openPlcPanel"
+  >
+    <div class="inner">
+      <i
+        :class="plcStatus ? 'el-icon-circle-check' : 'el-icon-circle-close'"
+        class="status-icon"
+      ></i>
+      <span class="status-text">
+        {{ plcStatus ? 'PLC 已连接' : 'PLC 断开' }}
+      </span>
+    </div>
+    <el-dialog
+      title="PLC变量"
+      :visible.sync="plcPanelVisible"
+      width="760px"
+      class="plc-panel"
+      append-to-body
+      @open="handlePlcPanelOpen"
+      @close="handlePlcPanelClose"
     >
-      <div class="inner">
-        <i
-          :class="plcStatus ? 'el-icon-circle-check' : 'el-icon-circle-close'"
-          class="status-icon"
-        ></i>
-        <span class="status-text">
-          {{ plcStatus ? 'PLC 已连接' : 'PLC 断开' }}
-        </span>
+      <div class="plc-panel__actions">
+        <el-select
+          v-model="customWriteAddress"
+          size="small"
+          class="plc-panel__input"
+          filterable
+          clearable
+          placeholder="变量地址，如 W_DBW0"
+        >
+          <el-option
+            v-for="item in writeAddressOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          ></el-option>
+        </el-select>
+        <el-select
+          v-model="customWriteType"
+          size="small"
+          class="plc-panel__select"
+          placeholder="值类型"
+        >
+          <el-option label="布尔" value="bool"></el-option>
+          <el-option label="字符串" value="string"></el-option>
+        </el-select>
+        <el-select
+          v-if="customWriteType === 'bool'"
+          v-model="customWriteBool"
+          size="small"
+          class="plc-panel__input"
+          placeholder="布尔值"
+        >
+          <el-option label="true" :value="true"></el-option>
+          <el-option label="false" :value="false"></el-option>
+        </el-select>
+        <el-input
+          v-else
+          v-model="customWriteValue"
+          size="small"
+          placeholder="值"
+          class="plc-panel__input"
+        ></el-input>
+        <el-button
+          type="primary"
+          size="small"
+          class="plc-panel__btn"
+          :loading="isWriting"
+          @click="confirmCustomWrite"
+        >
+          确认写入
+        </el-button>
       </div>
-    </el-tooltip>
+      <div class="plc-panel__content">
+        <div class="plc-panel__section">
+          <div class="plc-panel__title">读取数据</div>
+          <el-input
+            v-model="readFilter"
+            size="small"
+            clearable
+            placeholder="模糊检索读取变量"
+            class="plc-panel__filter"
+          ></el-input>
+          <div class="plc-panel__list">
+            <div
+              class="plc-panel__row"
+              v-for="item in filteredReadRows"
+              :key="item.key"
+            >
+              <span class="plc-panel__key">{{ item.key }}</span>
+              <span class="plc-panel__value">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="plc-panel__section">
+          <div class="plc-panel__title">写入数据</div>
+          <div class="plc-panel__list">
+            <div
+              class="plc-panel__row"
+              v-for="item in writeRows"
+              :key="item.key"
+            >
+              <span class="plc-panel__key">{{ item.key }}</span>
+              <span class="plc-panel__value">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -116,8 +209,49 @@ export default {
       watchDog: '0',
       warningTimeOut: null,
       plcStatus: false,
-      sendStr: ''
+      plcPanelVisible: false,
+      plcValues: {},
+      plcVariables: {},
+      writeAddArr: [],
+      writeStrArr: [],
+      customWriteAddress: '',
+      customWriteType: 'string',
+      customWriteValue: '',
+      customWriteBool: true,
+      readFilter: '',
+      isWriting: false,
+      writeDataPollingTimer: null // 轮询定时器
     };
+  },
+  computed: {
+    writeAddressOptions() {
+      return Object.keys(this.plcVariables).filter((key) =>
+        key.startsWith('W_')
+      );
+    },
+    readRows() {
+      const keys = Object.keys(this.plcVariables).filter(
+        (key) => !key.startsWith('W_')
+      );
+      return keys.map((key) => ({
+        key,
+        value: this.plcValues[key] === undefined ? '--' : this.plcValues[key]
+      }));
+    },
+    filteredReadRows() {
+      const keyword = this.readFilter.trim().toLowerCase();
+      if (!keyword) return this.readRows;
+      return this.readRows.filter((item) =>
+        String(item.key).toLowerCase().includes(keyword)
+      );
+    },
+    writeRows() {
+      return this.writeAddArr.map((key, index) => ({
+        key,
+        value:
+          this.writeStrArr[index] === undefined ? '--' : this.writeStrArr[index]
+      }));
+    }
   },
   watch: {
     watchDog: {
@@ -136,20 +270,123 @@ export default {
     }
   },
   mounted() {
-    // 将 listener 保存引用，方便销毁
-    this.ipcHandler = (event, values, values2) => {
+    // receivedMsg 只接收PLC实时读取的数据
+    this.ipcHandler = (event, values) => {
       this.watchDog = values.DBW0;
-      this.sendStr = values2;
+      this.plcValues = values || {};
     };
     ipcRenderer.on('receivedMsg', this.ipcHandler);
+    // 不在挂载时获取数据，只有打开面板时才交互
   },
   // 3. 组件销毁清理
   beforeDestroy() {
+    // 清理 IPC 监听器
     if (this.ipcHandler) {
       ipcRenderer.removeListener('receivedMsg', this.ipcHandler);
+      this.ipcHandler = null;
     }
+    // 清理所有定时器
     if (this.warningTimeOut) {
       clearTimeout(this.warningTimeOut);
+      this.warningTimeOut = null;
+    }
+    // 清除轮询定时器
+    this.stopWriteDataPolling();
+  },
+  methods: {
+    openPlcPanel() {
+      this.plcPanelVisible = true;
+    },
+    async handlePlcPanelOpen() {
+      // 打开面板时才开始数据交互
+      // 1. 如果还没加载过 plcVariables，先加载一次（因为启动后不会变）
+      if (Object.keys(this.plcVariables).length === 0) {
+        await this.loadPlcVariables();
+      }
+      // 2. 立即获取一次写入数据
+      await this.refreshWriteData();
+      // 3. 开始轮询写入数据
+      this.startWriteDataPolling();
+    },
+    handlePlcPanelClose() {
+      // 关闭面板时停止轮询，避免不必要的请求
+      this.stopWriteDataPolling();
+    },
+    // 加载PLC变量定义：只在组件挂载时调用一次（因为启动后不会变）
+    async loadPlcVariables() {
+      try {
+        const payload = await ipcRenderer.invoke('getPlcVariables');
+        if (payload) {
+          this.plcVariables = payload.variables || {};
+        }
+      } catch (error) {
+        console.error('加载PLC变量定义失败:', error);
+      }
+    },
+    // 刷新写入数据：writeStrArr 和 writeAddArr 经常变化，需要轮询更新
+    async refreshWriteData() {
+      try {
+        const payload = await ipcRenderer.invoke('getWriteData');
+        if (payload) {
+          this.writeAddArr = payload.writeAddArr || [];
+          this.writeStrArr = payload.writeStrArr || [];
+        }
+      } catch (error) {
+        // 轮询时的错误不需要弹窗提示，只在控制台记录
+        console.error('刷新写入数据失败:', error);
+      }
+    },
+    // 开始轮询写入数据
+    startWriteDataPolling() {
+      // 防止重复创建定时器
+      this.stopWriteDataPolling();
+      // 每2秒轮询一次写入数据
+      this.writeDataPollingTimer = setInterval(() => {
+        this.refreshWriteData();
+      }, 2000);
+    },
+    // 停止轮询写入数据
+    stopWriteDataPolling() {
+      if (this.writeDataPollingTimer) {
+        clearInterval(this.writeDataPollingTimer);
+        this.writeDataPollingTimer = null;
+      }
+    },
+    getCustomWriteValue() {
+      if (this.customWriteType === 'bool') {
+        return this.customWriteBool;
+      }
+      return String(this.customWriteValue);
+    },
+    async confirmCustomWrite() {
+      const address = this.customWriteAddress.trim();
+      if (!address) {
+        this.$message.warning('请输入变量地址');
+        return;
+      }
+      this.isWriting = true;
+      const value = this.getCustomWriteValue();
+      try {
+        if (this.writeAddArr.includes(address)) {
+          ipcRenderer.send('writeValuesToPLC', address, value);
+          await this.refreshWriteData();
+          this.$message.success('写入指令已发送');
+          this.isWriting = false;
+        } else {
+          ipcRenderer.send('writeSingleValueToPLC', address, value);
+          await this.refreshWriteData();
+          this.$message.success('写入指令已发送');
+          // 2秒后取消写入并关闭loading
+          setTimeout(() => {
+            ipcRenderer.send('cancelWriteToPLC', address);
+            this.isWriting = false;
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('写入失败:', error);
+        this.$message.error('写入失败');
+        this.isWriting = false;
+      }
     }
   }
 };
@@ -212,5 +449,97 @@ export default {
 
 .sm-main:active {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.plc-panel {
+  .plc-panel__content {
+    padding: 2px;
+  }
+
+  .plc-panel__actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    background: #f5f7fa;
+    border: 1px solid #ebeef5;
+  }
+
+  .plc-panel__input {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .plc-panel__select {
+    width: 100px;
+  }
+
+  .plc-panel__btn {
+    box-shadow: 0 2px 6px rgba(64, 158, 255, 0.2);
+  }
+
+  .plc-panel__content {
+    display: flex;
+    gap: 16px;
+    height: 440px;
+  }
+
+  .plc-panel__section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    padding: 10px 12px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  }
+
+  .plc-panel__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #303133;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 3px solid #409eff;
+  }
+
+  .plc-panel__filter {
+    margin-bottom: 8px;
+  }
+
+  .plc-panel__list {
+    flex: 1;
+    overflow: auto;
+    padding-right: 4px;
+  }
+
+  .plc-panel__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dashed #ebeef5;
+    font-size: 12px;
+    color: #606266;
+  }
+  .plc-panel__row:nth-child(odd) {
+    background: #fafcff;
+  }
+  .plc-panel__row:hover {
+    background: #f2f6fc;
+  }
+
+  .plc-panel__key {
+    font-weight: 600;
+    color: #303133;
+    font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  }
+
+  .plc-panel__value {
+    color: #909399;
+    font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  }
 }
 </style>
