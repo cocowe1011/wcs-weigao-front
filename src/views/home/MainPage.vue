@@ -986,25 +986,13 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         {
-          id: '01007',
+          id: '01008',
           name: '立体库接口',
           x: 1273,
           y: 375,
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        {
-          id: '01008',
-          name: '立体库接口',
-          x: 1300,
-          y: 375,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
           trayId: 'T-202502',
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
@@ -1012,20 +1000,8 @@ export default {
         {
           id: '01009',
           name: '立体库接口',
-          x: 1273,
-          y: 438,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        {
-          id: '01010',
-          name: '立体库接口',
           x: 1300,
-          y: 438,
+          y: 375,
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1037,6 +1013,30 @@ export default {
           id: '01011',
           name: '立体库接口',
           x: 1273,
+          y: 438,
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        {
+          id: '01012',
+          name: '立体库接口',
+          x: 1300,
+          y: 438,
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        {
+          id: '01013',
+          name: '立体库接口',
+          x: 1273,
           y: 490,
           showTray: true,
           motorStatus: true,
@@ -1046,7 +1046,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         {
-          id: '01012',
+          id: '01014',
           name: '立体库接口',
           x: 1300,
           y: 490,
@@ -1058,7 +1058,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         {
-          id: '01013',
+          id: '01015',
           name: '立体库接口',
           x: 1273,
           y: 540,
