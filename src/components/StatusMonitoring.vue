@@ -343,7 +343,7 @@ export default {
       // 每2秒轮询一次写入数据
       this.writeDataPollingTimer = setInterval(() => {
         this.refreshWriteData();
-      }, 2000);
+      }, 1000);
     },
     // 停止轮询写入数据
     stopWriteDataPolling() {
