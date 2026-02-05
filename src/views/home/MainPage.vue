@@ -169,7 +169,7 @@
                 />
 
                 <div
-                  v-for="node in deviceNodes"
+                  v-for="node in deviceList"
                   :key="node.id"
                   class="device-signal-node"
                   :class="{
@@ -929,9 +929,8 @@ export default {
       //  无需额外的 init 方法，直接写死即可
       //  以后后端数据来了，直接更新 this.deviceNodes 对应的字段
       // ==========================================================
-      deviceNodes: [
-        {
-          id: '01001',
+      deviceNodes: {
+        '01001': {
           name: '立体库接口',
           x: 1350,
           y: 280,
@@ -941,8 +940,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01002',
+        '01002': {
           name: '立体库接口',
           x: 1310,
           y: 280,
@@ -952,8 +950,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01004',
+        '01004': {
           name: '立体库接口',
           x: 1273,
           y: 280,
@@ -963,8 +960,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01005',
+        '01005': {
           name: '立体库接口',
           x: 1273,
           y: 310,
@@ -974,8 +970,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01006',
+        '01006': {
           name: '立体库接口',
           x: 1273,
           y: 340,
@@ -985,8 +980,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01008',
+        '01008': {
           name: '立体库接口',
           x: 1273,
           y: 375,
@@ -997,8 +991,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01009',
+        '01009': {
           name: '立体库接口',
           x: 1300,
           y: 375,
@@ -1009,8 +1002,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01011',
+        '01011': {
           name: '立体库接口',
           x: 1273,
           y: 438,
@@ -1021,8 +1013,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01012',
+        '01012': {
           name: '立体库接口',
           x: 1300,
           y: 438,
@@ -1033,8 +1024,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01013',
+        '01013': {
           name: '立体库接口',
           x: 1273,
           y: 490,
@@ -1045,8 +1035,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01014',
+        '01014': {
           name: '立体库接口',
           x: 1300,
           y: 490,
@@ -1057,8 +1046,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01015',
+        '01015': {
           name: '立体库接口',
           x: 1273,
           y: 540,
@@ -1069,8 +1057,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01014',
+        '010141': {
           name: '立体库接口',
           x: 1300,
           y: 540,
@@ -1081,8 +1068,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01015',
+        '010112': {
           name: '立体库接口',
           x: 1273,
           y: 590,
@@ -1093,8 +1079,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01016',
+        '01016': {
           name: '立体库接口',
           x: 1300,
           y: 590,
@@ -1105,8 +1090,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01017',
+        '01017': {
           name: '立体库接口',
           x: 1273,
           y: 640,
@@ -1117,8 +1101,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01018',
+        '01018': {
           name: '立体库接口',
           x: 1300,
           y: 640,
@@ -1129,8 +1112,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01019',
+        '01019': {
           name: '立体库接口',
           x: 1273,
           y: 690,
@@ -1141,8 +1123,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01020',
+        '01020': {
           name: '立体库接口',
           x: 1300,
           y: 690,
@@ -1153,8 +1134,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01021',
+        '01021': {
           name: '立体库接口',
           x: 1273,
           y: 735,
@@ -1165,8 +1145,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01022',
+        '01022': {
           name: '立体库接口',
           x: 1300,
           y: 735,
@@ -1177,8 +1156,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01023',
+        '01023': {
           name: '立体库接口',
           x: 1273,
           y: 778,
@@ -1189,8 +1167,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01024',
+        '01024': {
           name: '立体库接口',
           x: 1300,
           y: 778,
@@ -1201,8 +1178,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01023',
+        '010231': {
           name: '立体库接口',
           x: 1195,
           y: 778,
@@ -1213,8 +1189,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01024',
+        '010241': {
           name: '立体库接口',
           x: 1220,
           y: 778,
@@ -1225,8 +1200,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01025',
+        '01025': {
           name: '立体库接口',
           x: 1120,
           y: 778,
@@ -1237,8 +1211,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01026',
+        '01026': {
           name: '立体库接口',
           x: 1145,
           y: 778,
@@ -1249,8 +1222,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01027',
+        '01027': {
           name: '立体库接口',
           x: 1048,
           y: 778,
@@ -1261,8 +1233,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01028',
+        '01028': {
           name: '立体库接口',
           x: 1073,
           y: 778,
@@ -1273,8 +1244,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01029',
+        '01029': {
           name: '立体库接口',
           x: 973,
           y: 778,
@@ -1285,8 +1255,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01030',
+        '01030': {
           name: '立体库接口',
           x: 998,
           y: 778,
@@ -1297,8 +1266,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01031',
+        '01031': {
           name: '立体库接口',
           x: 900,
           y: 778,
@@ -1309,8 +1277,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01032',
+        '01032': {
           name: '立体库接口',
           x: 925,
           y: 778,
@@ -1321,8 +1288,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01033',
+        '01033': {
           name: '立体库接口',
           x: 828,
           y: 778,
@@ -1333,8 +1299,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01034',
+        '01034': {
           name: '立体库接口',
           x: 853,
           y: 778,
@@ -1345,8 +1310,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01035',
+        '01035': {
           name: '立体库接口',
           x: 753,
           y: 778,
@@ -1357,8 +1321,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01036',
+        '01036': {
           name: '立体库接口',
           x: 778,
           y: 778,
@@ -1369,8 +1332,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01037',
+        '01037': {
           name: '立体库接口',
           x: 680,
           y: 778,
@@ -1381,8 +1343,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01038',
+        '01038': {
           name: '立体库接口',
           x: 705,
           y: 778,
@@ -1393,8 +1354,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01039',
+        '01039': {
           name: '立体库接口',
           x: 606,
           y: 778,
@@ -1405,8 +1365,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01040',
+        '01040': {
           name: '立体库接口',
           x: 631,
           y: 778,
@@ -1417,8 +1376,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01041',
+        '01041': {
           name: '立体库接口',
           x: 530,
           y: 778,
@@ -1429,8 +1387,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01042',
+        '01042': {
           name: '立体库接口',
           x: 556,
           y: 778,
@@ -1441,8 +1398,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01043',
+        '01043': {
           name: '立体库接口',
           x: 460,
           y: 778,
@@ -1453,8 +1409,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01044',
+        '01044': {
           name: '立体库接口',
           x: 486,
           y: 778,
@@ -1465,8 +1420,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01045',
+        '01045': {
           name: '立体库接口',
           x: 386,
           y: 778,
@@ -1477,8 +1431,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01046',
+        '01046': {
           name: '立体库接口',
           x: 411,
           y: 778,
@@ -1489,8 +1442,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01047',
+        '01047': {
           name: '立体库接口',
           x: 315,
           y: 778,
@@ -1501,8 +1453,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01048',
+        '01048': {
           name: '立体库接口',
           x: 341,
           y: 778,
@@ -1513,8 +1464,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01049',
+        '01049': {
           name: '立体库接口',
           x: 240,
           y: 778,
@@ -1525,8 +1475,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01050',
+        '01050': {
           name: '立体库接口',
           x: 266,
           y: 778,
@@ -1537,8 +1486,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01051',
+        '01051': {
           name: '立体库接口',
           x: 165,
           y: 778,
@@ -1549,8 +1497,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01052',
+        '01052': {
           name: '立体库接口',
           x: 191,
           y: 778,
@@ -1561,8 +1508,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01053',
+        '01053': {
           name: '立体库接口',
           x: 1195,
           y: 735,
@@ -1572,8 +1518,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01054',
+        '01054': {
           name: '立体库接口',
           x: 1220,
           y: 735,
@@ -1583,8 +1528,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01055',
+        '01055': {
           name: '立体库接口',
           x: 1120,
           y: 735,
@@ -1594,8 +1538,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01056',
+        '01056': {
           name: '立体库接口',
           x: 1145,
           y: 735,
@@ -1605,8 +1548,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01057',
+        '01057': {
           name: '立体库接口',
           x: 1048,
           y: 735,
@@ -1616,8 +1558,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01058',
+        '01058': {
           name: '立体库接口',
           x: 1073,
           y: 735,
@@ -1627,8 +1568,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01059',
+        '01059': {
           name: '立体库接口',
           x: 973,
           y: 735,
@@ -1638,8 +1578,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01060',
+        '01060': {
           name: '立体库接口',
           x: 998,
           y: 735,
@@ -1649,8 +1588,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01061',
+        '01061': {
           name: '立体库接口',
           x: 900,
           y: 735,
@@ -1660,8 +1598,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01062',
+        '01062': {
           name: '立体库接口',
           x: 925,
           y: 735,
@@ -1671,8 +1608,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01063',
+        '01063': {
           name: '立体库接口',
           x: 828,
           y: 735,
@@ -1682,8 +1618,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01064',
+        '01064': {
           name: '立体库接口',
           x: 853,
           y: 735,
@@ -1693,8 +1628,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01065',
+        '01065': {
           name: '立体库接口',
           x: 753,
           y: 735,
@@ -1704,8 +1638,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01066',
+        '01066': {
           name: '立体库接口',
           x: 778,
           y: 735,
@@ -1715,8 +1648,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01067',
+        '01067': {
           name: '立体库接口',
           x: 680,
           y: 735,
@@ -1726,8 +1658,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01068',
+        '01068': {
           name: '立体库接口',
           x: 705,
           y: 735,
@@ -1737,8 +1668,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01069',
+        '01069': {
           name: '立体库接口',
           x: 606,
           y: 735,
@@ -1748,8 +1678,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01070',
+        '01070': {
           name: '立体库接口',
           x: 631,
           y: 735,
@@ -1759,8 +1688,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01071',
+        '01071': {
           name: '立体库接口',
           x: 530,
           y: 735,
@@ -1770,8 +1698,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01072',
+        '01072': {
           name: '立体库接口',
           x: 556,
           y: 735,
@@ -1781,8 +1708,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01073',
+        '01073': {
           name: '立体库接口',
           x: 460,
           y: 735,
@@ -1792,8 +1718,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01074',
+        '01074': {
           name: '立体库接口',
           x: 486,
           y: 735,
@@ -1803,8 +1728,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01075',
+        '01075': {
           name: '立体库接口',
           x: 386,
           y: 735,
@@ -1814,8 +1738,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01076',
+        '01076': {
           name: '立体库接口',
           x: 411,
           y: 735,
@@ -1825,8 +1748,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01077',
+        '01077': {
           name: '立体库接口',
           x: 315,
           y: 735,
@@ -1836,8 +1758,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01078',
+        '01078': {
           name: '立体库接口',
           x: 341,
           y: 735,
@@ -1847,8 +1768,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01079',
+        '01079': {
           name: '立体库接口',
           x: 240,
           y: 735,
@@ -1858,8 +1778,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01080',
+        '01080': {
           name: '立体库接口',
           x: 266,
           y: 735,
@@ -1869,8 +1788,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01081',
+        '01081': {
           name: '立体库接口',
           x: 165,
           y: 735,
@@ -1880,8 +1798,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01082',
+        '01082': {
           name: '立体库接口',
           x: 191,
           y: 735,
@@ -1891,8 +1808,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01083',
+        '01083': {
           name: '立体库接口',
           x: 1195,
           y: 490,
@@ -1902,8 +1818,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01084',
+        '01084': {
           name: '立体库接口',
           x: 1220,
           y: 490,
@@ -1913,8 +1828,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01085',
+        '01085': {
           name: '立体库接口',
           x: 1120,
           y: 490,
@@ -1924,8 +1838,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01086',
+        '01086': {
           name: '立体库接口',
           x: 1145,
           y: 490,
@@ -1935,8 +1848,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01087',
+        '01087': {
           name: '立体库接口',
           x: 1048,
           y: 490,
@@ -1946,8 +1858,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01088',
+        '01088': {
           name: '立体库接口',
           x: 1073,
           y: 490,
@@ -1957,8 +1868,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01089',
+        '01089': {
           name: '立体库接口',
           x: 973,
           y: 490,
@@ -1968,8 +1878,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01090',
+        '01090': {
           name: '立体库接口',
           x: 998,
           y: 490,
@@ -1979,8 +1888,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01091',
+        '01091': {
           name: '立体库接口',
           x: 900,
           y: 490,
@@ -1990,8 +1898,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01092',
+        '01092': {
           name: '立体库接口',
           x: 925,
           y: 490,
@@ -2001,8 +1908,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01093',
+        '01093': {
           name: '立体库接口',
           x: 828,
           y: 490,
@@ -2012,8 +1918,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01094',
+        '01094': {
           name: '立体库接口',
           x: 853,
           y: 490,
@@ -2023,8 +1928,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01095',
+        '01095': {
           name: '立体库接口',
           x: 753,
           y: 490,
@@ -2034,8 +1938,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01096',
+        '01096': {
           name: '立体库接口',
           x: 778,
           y: 490,
@@ -2045,8 +1948,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01097',
+        '01097': {
           name: '立体库接口',
           x: 680,
           y: 490,
@@ -2056,8 +1958,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01098',
+        '01098': {
           name: '立体库接口',
           x: 705,
           y: 490,
@@ -2067,8 +1968,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01099',
+        '01099': {
           name: '立体库接口',
           x: 606,
           y: 490,
@@ -2078,8 +1978,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01100',
+        '01100': {
           name: '立体库接口',
           x: 631,
           y: 490,
@@ -2089,8 +1988,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01101',
+        '01101': {
           name: '立体库接口',
           x: 530,
           y: 490,
@@ -2100,8 +1998,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01102',
+        '01102': {
           name: '立体库接口',
           x: 556,
           y: 490,
@@ -2111,8 +2008,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01103',
+        '01103': {
           name: '立体库接口',
           x: 460,
           y: 490,
@@ -2122,8 +2018,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01104',
+        '01104': {
           name: '立体库接口',
           x: 486,
           y: 490,
@@ -2133,8 +2028,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01105',
+        '01105': {
           name: '立体库接口',
           x: 386,
           y: 490,
@@ -2144,8 +2038,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01106',
+        '01106': {
           name: '立体库接口',
           x: 411,
           y: 490,
@@ -2155,8 +2048,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01107',
+        '01107': {
           name: '立体库接口',
           x: 315,
           y: 490,
@@ -2166,8 +2058,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01108',
+        '01108': {
           name: '立体库接口',
           x: 341,
           y: 490,
@@ -2177,8 +2068,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01109',
+        '01109': {
           name: '立体库接口',
           x: 240,
           y: 490,
@@ -2188,8 +2078,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01110',
+        '01110': {
           name: '立体库接口',
           x: 266,
           y: 490,
@@ -2199,8 +2088,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01111',
+        '01111': {
           name: '立体库接口',
           x: 165,
           y: 490,
@@ -2210,8 +2098,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01112',
+        '01112': {
           name: '立体库接口',
           x: 191,
           y: 490,
@@ -2221,8 +2108,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01113',
+        '01113': {
           name: '立体库接口',
           x: 1195,
           y: 180,
@@ -2232,8 +2118,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01114',
+        '01114': {
           name: '立体库接口',
           x: 1220,
           y: 180,
@@ -2243,8 +2128,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01115',
+        '01115': {
           name: '立体库接口',
           x: 1120,
           y: 180,
@@ -2254,8 +2138,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01116',
+        '01116': {
           name: '立体库接口',
           x: 1145,
           y: 180,
@@ -2265,8 +2148,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01117',
+        '01117': {
           name: '立体库接口',
           x: 1048,
           y: 180,
@@ -2276,8 +2158,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01118',
+        '01118': {
           name: '立体库接口',
           x: 1073,
           y: 180,
@@ -2287,8 +2168,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01119',
+        '01119': {
           name: '立体库接口',
           x: 973,
           y: 180,
@@ -2298,8 +2178,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01120',
+        '01120': {
           name: '立体库接口',
           x: 998,
           y: 180,
@@ -2309,8 +2188,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01121',
+        '01121': {
           name: '立体库接口',
           x: 900,
           y: 180,
@@ -2320,8 +2198,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01122',
+        '01122': {
           name: '立体库接口',
           x: 925,
           y: 180,
@@ -2331,8 +2208,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01123',
+        '01123': {
           name: '立体库接口',
           x: 828,
           y: 180,
@@ -2342,8 +2218,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01124',
+        '01124': {
           name: '立体库接口',
           x: 853,
           y: 180,
@@ -2353,8 +2228,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01125',
+        '01125': {
           name: '立体库接口',
           x: 753,
           y: 180,
@@ -2364,8 +2238,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01126',
+        '01126': {
           name: '立体库接口',
           x: 778,
           y: 180,
@@ -2375,8 +2248,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01127',
+        '01127': {
           name: '立体库接口',
           x: 680,
           y: 180,
@@ -2386,8 +2258,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01128',
+        '01128': {
           name: '立体库接口',
           x: 705,
           y: 180,
@@ -2397,8 +2268,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01129',
+        '01129': {
           name: '立体库接口',
           x: 606,
           y: 180,
@@ -2408,8 +2278,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01130',
+        '01130': {
           name: '立体库接口',
           x: 631,
           y: 180,
@@ -2419,8 +2288,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01131',
+        '01131': {
           name: '立体库接口',
           x: 530,
           y: 180,
@@ -2430,8 +2298,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01132',
+        '01132': {
           name: '立体库接口',
           x: 556,
           y: 180,
@@ -2441,8 +2308,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01133',
+        '01133': {
           name: '立体库接口',
           x: 460,
           y: 180,
@@ -2452,8 +2318,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01134',
+        '01134': {
           name: '立体库接口',
           x: 486,
           y: 180,
@@ -2463,8 +2328,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01135',
+        '01135': {
           name: '立体库接口',
           x: 386,
           y: 180,
@@ -2474,8 +2338,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01136',
+        '01136': {
           name: '立体库接口',
           x: 411,
           y: 180,
@@ -2485,8 +2348,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01137',
+        '01137': {
           name: '立体库接口',
           x: 315,
           y: 180,
@@ -2496,8 +2358,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01138',
+        '01138': {
           name: '立体库接口',
           x: 341,
           y: 180,
@@ -2507,8 +2368,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01139',
+        '01139': {
           name: '立体库接口',
           x: 240,
           y: 180,
@@ -2518,8 +2378,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01140',
+        '01140': {
           name: '立体库接口',
           x: 266,
           y: 180,
@@ -2529,8 +2388,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01141',
+        '01141': {
           name: '立体库接口',
           x: 165,
           y: 180,
@@ -2540,8 +2398,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01142',
+        '01142': {
           name: '立体库接口',
           x: 191,
           y: 180,
@@ -2551,8 +2408,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01143',
+        '01143': {
           name: '立体库接口',
           x: 1195,
           y: 132,
@@ -2562,8 +2418,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01144',
+        '01144': {
           name: '立体库接口',
           x: 1220,
           y: 132,
@@ -2573,8 +2428,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01145',
+        '01145': {
           name: '立体库接口',
           x: 1120,
           y: 132,
@@ -2584,8 +2438,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01146',
+        '01146': {
           name: '立体库接口',
           x: 1145,
           y: 132,
@@ -2595,8 +2448,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01147',
+        '01147': {
           name: '立体库接口',
           x: 1048,
           y: 132,
@@ -2606,8 +2458,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01148',
+        '01148': {
           name: '立体库接口',
           x: 1073,
           y: 132,
@@ -2617,8 +2468,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01149',
+        '01149': {
           name: '立体库接口',
           x: 973,
           y: 132,
@@ -2628,8 +2478,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01150',
+        '01150': {
           name: '立体库接口',
           x: 998,
           y: 132,
@@ -2639,8 +2488,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01151',
+        '01151': {
           name: '立体库接口',
           x: 900,
           y: 132,
@@ -2650,8 +2498,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01152',
+        '01152': {
           name: '立体库接口',
           x: 925,
           y: 132,
@@ -2661,8 +2508,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01153',
+        '01153': {
           name: '立体库接口',
           x: 828,
           y: 132,
@@ -2672,8 +2518,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01154',
+        '01154': {
           name: '立体库接口',
           x: 853,
           y: 132,
@@ -2683,8 +2528,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01155',
+        '01155': {
           name: '立体库接口',
           x: 753,
           y: 132,
@@ -2694,8 +2538,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01156',
+        '01156': {
           name: '立体库接口',
           x: 778,
           y: 132,
@@ -2705,8 +2548,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01157',
+        '01157': {
           name: '立体库接口',
           x: 680,
           y: 132,
@@ -2716,8 +2558,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01158',
+        '01158': {
           name: '立体库接口',
           x: 705,
           y: 132,
@@ -2727,8 +2568,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01159',
+        '01159': {
           name: '立体库接口',
           x: 606,
           y: 132,
@@ -2738,8 +2578,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01160',
+        '01160': {
           name: '立体库接口',
           x: 631,
           y: 132,
@@ -2749,8 +2588,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01161',
+        '01161': {
           name: '立体库接口',
           x: 530,
           y: 132,
@@ -2760,8 +2598,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01162',
+        '01162': {
           name: '立体库接口',
           x: 556,
           y: 132,
@@ -2771,8 +2608,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01163',
+        '01163': {
           name: '立体库接口',
           x: 460,
           y: 132,
@@ -2782,8 +2618,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01164',
+        '01164': {
           name: '立体库接口',
           x: 486,
           y: 132,
@@ -2793,8 +2628,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01165',
+        '01165': {
           name: '立体库接口',
           x: 386,
           y: 132,
@@ -2804,8 +2638,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01166',
+        '01166': {
           name: '立体库接口',
           x: 411,
           y: 132,
@@ -2815,8 +2648,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01167',
+        '01167': {
           name: '立体库接口',
           x: 315,
           y: 132,
@@ -2826,8 +2658,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01168',
+        '01168': {
           name: '立体库接口',
           x: 341,
           y: 132,
@@ -2837,8 +2668,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01169',
+        '01169': {
           name: '立体库接口',
           x: 240,
           y: 132,
@@ -2848,8 +2678,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01170',
+        '01170': {
           name: '立体库接口',
           x: 266,
           y: 132,
@@ -2859,8 +2688,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01171',
+        '01171': {
           name: '立体库接口',
           x: 165,
           y: 132,
@@ -2870,8 +2698,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01172',
+        '01172': {
           name: '立体库接口',
           x: 191,
           y: 132,
@@ -2881,8 +2708,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01173',
+        '01173': {
           name: '立体库接口',
           x: 460,
           y: 97,
@@ -2892,8 +2718,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01174',
+        '01174': {
           name: '立体库接口',
           x: 486,
           y: 97,
@@ -2903,8 +2728,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01175',
+        '01175': {
           name: '立体库接口',
           x: 386,
           y: 97,
@@ -2914,8 +2738,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01176',
+        '01176': {
           name: '立体库接口',
           x: 411,
           y: 97,
@@ -2925,8 +2748,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01177',
+        '01177': {
           name: '立体库接口',
           x: 315,
           y: 97,
@@ -2936,8 +2758,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01178',
+        '01178': {
           name: '立体库接口',
           x: 341,
           y: 97,
@@ -2947,8 +2768,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01179',
+        '01179': {
           name: '立体库接口',
           x: 240,
           y: 97,
@@ -2958,8 +2778,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01180',
+        '01180': {
           name: '立体库接口',
           x: 266,
           y: 97,
@@ -2969,8 +2788,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01181',
+        '01181': {
           name: '立体库接口',
           x: 165,
           y: 97,
@@ -2980,8 +2798,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        {
-          id: '01182',
+        '01182': {
           name: '立体库接口',
           x: 191,
           y: 97,
@@ -2991,7 +2808,7 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         }
-      ],
+      },
 
       // 弹窗相关状态
       popoverVisible: false,
@@ -3021,6 +2838,12 @@ export default {
         top: `${this.popoverPosition.top}px`,
         left: `${this.popoverPosition.left}px`
       };
+    },
+    deviceList() {
+      return Object.keys(this.deviceNodes).map((key) => ({
+        id: key,
+        ...this.deviceNodes[key]
+      }));
     }
   },
   mounted() {
