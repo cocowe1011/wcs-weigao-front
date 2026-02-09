@@ -931,7 +931,7 @@ export default {
       // ==========================================================
       deviceNodes: {
         '01001': {
-          name: '立体库接口',
+          name: '01001',
           x: 1350,
           y: 280,
           motorStatus: false,
@@ -941,7 +941,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01002': {
-          name: '立体库接口',
+          name: '01002',
           x: 1310,
           y: 280,
           motorStatus: false,
@@ -951,7 +951,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01004': {
-          name: '立体库接口',
+          name: '01004',
           x: 1273,
           y: 280,
           motorStatus: false,
@@ -961,7 +961,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01005': {
-          name: '立体库接口',
+          name: '01005',
           x: 1273,
           y: 310,
           motorStatus: false,
@@ -971,7 +971,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01006': {
-          name: '立体库接口',
+          name: '01006',
           x: 1273,
           y: 340,
           motorStatus: false,
@@ -981,9 +981,10 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01008': {
-          name: '立体库接口',
+          name: '01008',
           x: 1273,
           y: 375,
+          groupCode: '01008-01009',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -992,9 +993,10 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01009': {
-          name: '立体库接口',
+          name: '01009',
           x: 1300,
           y: 375,
+          groupCode: '01008-01009',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1003,7 +1005,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01011': {
-          name: '立体库接口',
+          name: '01011',
           x: 1273,
           y: 438,
           showTray: true,
@@ -1014,7 +1016,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01012': {
-          name: '立体库接口',
+          name: '01012',
           x: 1300,
           y: 438,
           showTray: true,
@@ -1025,7 +1027,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01013': {
-          name: '立体库接口',
+          name: '01013',
           x: 1273,
           y: 490,
           showTray: true,
@@ -1036,7 +1038,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01014': {
-          name: '立体库接口',
+          name: '01014',
           x: 1300,
           y: 490,
           showTray: true,
@@ -1047,31 +1049,9 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01015': {
-          name: '立体库接口',
+          name: '01015',
           x: 1273,
           y: 540,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '010141': {
-          name: '立体库接口',
-          x: 1300,
-          y: 540,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '010112': {
-          name: '立体库接口',
-          x: 1273,
-          y: 590,
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1080,7 +1060,29 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01016': {
-          name: '立体库接口',
+          name: '01016',
+          x: 1300,
+          y: 540,
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '01017': {
+          name: '01017',
+          x: 1273,
+          y: 590,
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '01018': {
+          name: '01018',
           x: 1300,
           y: 590,
           showTray: true,
@@ -1090,8 +1092,8 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01017': {
-          name: '立体库接口',
+        '01019': {
+          name: '01019',
           x: 1273,
           y: 640,
           showTray: true,
@@ -1101,32 +1103,10 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01018': {
-          name: '立体库接口',
+        '01020': {
+          name: '01020',
           x: 1300,
           y: 640,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01019': {
-          name: '立体库接口',
-          x: 1273,
-          y: 690,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01020': {
-          name: '立体库接口',
-          x: 1300,
-          y: 690,
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1135,7 +1115,29 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01021': {
-          name: '立体库接口',
+          name: '01021',
+          x: 1273,
+          y: 690,
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '01022': {
+          name: '01022',
+          x: 1300,
+          y: 690,
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '01023': {
+          name: '01023',
           x: 1273,
           y: 735,
           showTray: true,
@@ -1145,8 +1147,8 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01022': {
-          name: '立体库接口',
+        '01024': {
+          name: '01024',
           x: 1300,
           y: 735,
           showTray: true,
@@ -1156,8 +1158,8 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01023': {
-          name: '立体库接口',
+        '01026': {
+          name: '01026',
           x: 1273,
           y: 778,
           showTray: true,
@@ -1167,75 +1169,9 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01024': {
-          name: '立体库接口',
-          x: 1300,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '010231': {
-          name: '立体库接口',
-          x: 1195,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '010241': {
-          name: '立体库接口',
-          x: 1220,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01025': {
-          name: '立体库接口',
-          x: 1120,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01026': {
-          name: '立体库接口',
-          x: 1145,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
         '01027': {
-          name: '立体库接口',
-          x: 1048,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01028': {
-          name: '立体库接口',
-          x: 1073,
+          name: '01027',
+          x: 1300,
           y: 778,
           showTray: true,
           motorStatus: true,
@@ -1245,1569 +1181,1635 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01029': {
-          name: '立体库接口',
-          x: 973,
+          name: '01029',
+          x: 1195,
           y: 778,
           showTray: true,
-          motorStatus: false,
+          motorStatus: true,
           sensorStatus: true,
           trayId: 'T-202502',
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
         '01030': {
-          name: '立体库接口',
-          x: 998,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01031': {
-          name: '立体库接口',
-          x: 900,
-          y: 778,
-          showTray: true,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01032': {
-          name: '立体库接口',
-          x: 925,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01033': {
-          name: '立体库接口',
-          x: 828,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01034': {
-          name: '立体库接口',
-          x: 853,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01035': {
-          name: '立体库接口',
-          x: 753,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01036': {
-          name: '立体库接口',
-          x: 778,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01037': {
-          name: '立体库接口',
-          x: 680,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01038': {
-          name: '立体库接口',
-          x: 705,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01039': {
-          name: '立体库接口',
-          x: 606,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01040': {
-          name: '立体库接口',
-          x: 631,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01041': {
-          name: '立体库接口',
-          x: 530,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01042': {
-          name: '立体库接口',
-          x: 556,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01043': {
-          name: '立体库接口',
-          x: 460,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01044': {
-          name: '立体库接口',
-          x: 486,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01045': {
-          name: '立体库接口',
-          x: 386,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01046': {
-          name: '立体库接口',
-          x: 411,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01047': {
-          name: '立体库接口',
-          x: 315,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01048': {
-          name: '立体库接口',
-          x: 341,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01049': {
-          name: '立体库接口',
-          x: 240,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01050': {
-          name: '立体库接口',
-          x: 266,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01051': {
-          name: '立体库接口',
-          x: 165,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01052': {
-          name: '立体库接口',
-          x: 191,
-          y: 778,
-          showTray: true,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01053': {
-          name: '立体库接口',
-          x: 1195,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01054': {
-          name: '立体库接口',
+          name: '01030',
           x: 1220,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01055': {
-          name: '立体库接口',
-          x: 1120,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01056': {
-          name: '立体库接口',
-          x: 1145,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01057': {
-          name: '立体库接口',
-          x: 1048,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01058': {
-          name: '立体库接口',
-          x: 1073,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01059': {
-          name: '立体库接口',
-          x: 973,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01060': {
-          name: '立体库接口',
-          x: 998,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01061': {
-          name: '立体库接口',
-          x: 900,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01062': {
-          name: '立体库接口',
-          x: 925,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01063': {
-          name: '立体库接口',
-          x: 828,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01064': {
-          name: '立体库接口',
-          x: 853,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01065': {
-          name: '立体库接口',
-          x: 753,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01066': {
-          name: '立体库接口',
-          x: 778,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01067': {
-          name: '立体库接口',
-          x: 680,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01068': {
-          name: '立体库接口',
-          x: 705,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01069': {
-          name: '立体库接口',
-          x: 606,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01070': {
-          name: '立体库接口',
-          x: 631,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01071': {
-          name: '立体库接口',
-          x: 530,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01072': {
-          name: '立体库接口',
-          x: 556,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01073': {
-          name: '立体库接口',
-          x: 460,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01074': {
-          name: '立体库接口',
-          x: 486,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01075': {
-          name: '立体库接口',
-          x: 386,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01076': {
-          name: '立体库接口',
-          x: 411,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01077': {
-          name: '立体库接口',
-          x: 315,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01078': {
-          name: '立体库接口',
-          x: 341,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01079': {
-          name: '立体库接口',
-          x: 240,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01080': {
-          name: '立体库接口',
-          x: 266,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01081': {
-          name: '立体库接口',
-          x: 165,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01082': {
-          name: '立体库接口',
-          x: 191,
-          y: 735,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01083': {
-          name: '立体库接口',
-          x: 1195,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01084': {
-          name: '立体库接口',
-          x: 1220,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01085': {
-          name: '立体库接口',
-          x: 1120,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01086': {
-          name: '立体库接口',
-          x: 1145,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01087': {
-          name: '立体库接口',
-          x: 1048,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01088': {
-          name: '立体库接口',
-          x: 1073,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01089': {
-          name: '立体库接口',
-          x: 973,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01090': {
-          name: '立体库接口',
-          x: 998,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01091': {
-          name: '立体库接口',
-          x: 900,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01092': {
-          name: '立体库接口',
-          x: 925,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01093': {
-          name: '立体库接口',
-          x: 828,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01094': {
-          name: '立体库接口',
-          x: 853,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01095': {
-          name: '立体库接口',
-          x: 753,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01096': {
-          name: '立体库接口',
-          x: 778,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01097': {
-          name: '立体库接口',
-          x: 680,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01098': {
-          name: '立体库接口',
-          x: 705,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01099': {
-          name: '立体库接口',
-          x: 606,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01100': {
-          name: '立体库接口',
-          x: 631,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01101': {
-          name: '立体库接口',
-          x: 530,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01102': {
-          name: '立体库接口',
-          x: 556,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01103': {
-          name: '立体库接口',
-          x: 460,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01104': {
-          name: '立体库接口',
-          x: 486,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01105': {
-          name: '立体库接口',
-          x: 386,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01106': {
-          name: '立体库接口',
-          x: 411,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01107': {
-          name: '立体库接口',
-          x: 315,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01108': {
-          name: '立体库接口',
-          x: 341,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01109': {
-          name: '立体库接口',
-          x: 240,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01110': {
-          name: '立体库接口',
-          x: 266,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01111': {
-          name: '立体库接口',
-          x: 165,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01112': {
-          name: '立体库接口',
-          x: 191,
-          y: 490,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01113': {
-          name: '立体库接口',
-          x: 1195,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01114': {
-          name: '立体库接口',
-          x: 1220,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01115': {
-          name: '立体库接口',
-          x: 1120,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01116': {
-          name: '立体库接口',
-          x: 1145,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01117': {
-          name: '立体库接口',
-          x: 1048,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01118': {
-          name: '立体库接口',
-          x: 1073,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01119': {
-          name: '立体库接口',
-          x: 973,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01120': {
-          name: '立体库接口',
-          x: 998,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01121': {
-          name: '立体库接口',
-          x: 900,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01122': {
-          name: '立体库接口',
-          x: 925,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01123': {
-          name: '立体库接口',
-          x: 828,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01124': {
-          name: '立体库接口',
-          x: 853,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01125': {
-          name: '立体库接口',
-          x: 753,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01126': {
-          name: '立体库接口',
-          x: 778,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01127': {
-          name: '立体库接口',
-          x: 680,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01128': {
-          name: '立体库接口',
-          x: 705,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01129': {
-          name: '立体库接口',
-          x: 606,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01130': {
-          name: '立体库接口',
-          x: 631,
-          y: 180,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01131': {
-          name: '立体库接口',
-          x: 530,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01132': {
-          name: '立体库接口',
-          x: 556,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01133': {
-          name: '立体库接口',
-          x: 460,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01134': {
-          name: '立体库接口',
-          x: 486,
-          y: 180,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01135': {
-          name: '立体库接口',
-          x: 386,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01136': {
-          name: '立体库接口',
-          x: 411,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01137': {
-          name: '立体库接口',
-          x: 315,
-          y: 180,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01138': {
-          name: '立体库接口',
-          x: 341,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01139': {
-          name: '立体库接口',
-          x: 240,
-          y: 180,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01140': {
-          name: '立体库接口',
-          x: 266,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01141': {
-          name: '立体库接口',
-          x: 165,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01142': {
-          name: '立体库接口',
-          x: 191,
-          y: 180,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01143': {
-          name: '立体库接口',
-          x: 1195,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01144': {
-          name: '立体库接口',
-          x: 1220,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01145': {
-          name: '立体库接口',
-          x: 1120,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01146': {
-          name: '立体库接口',
-          x: 1145,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01147': {
-          name: '立体库接口',
-          x: 1048,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01148': {
-          name: '立体库接口',
-          x: 1073,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01149': {
-          name: '立体库接口',
-          x: 973,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01150': {
-          name: '立体库接口',
-          x: 998,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01151': {
-          name: '立体库接口',
-          x: 900,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01152': {
-          name: '立体库接口',
-          x: 925,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01153': {
-          name: '立体库接口',
-          x: 828,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01154': {
-          name: '立体库接口',
-          x: 853,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01155': {
-          name: '立体库接口',
-          x: 753,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01156': {
-          name: '立体库接口',
-          x: 778,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01157': {
-          name: '立体库接口',
-          x: 680,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01158': {
-          name: '立体库接口',
-          x: 705,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01159': {
-          name: '立体库接口',
-          x: 606,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01160': {
-          name: '立体库接口',
-          x: 631,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01161': {
-          name: '立体库接口',
-          x: 530,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01162': {
-          name: '立体库接口',
-          x: 556,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01163': {
-          name: '立体库接口',
-          x: 460,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01164': {
-          name: '立体库接口',
-          x: 486,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01165': {
-          name: '立体库接口',
-          x: 386,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01166': {
-          name: '立体库接口',
-          x: 411,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01167': {
-          name: '立体库接口',
-          x: 315,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01168': {
-          name: '立体库接口',
-          x: 341,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01169': {
-          name: '立体库接口',
-          x: 240,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01170': {
-          name: '立体库接口',
-          x: 266,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01171': {
-          name: '立体库接口',
-          x: 165,
-          y: 132,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01172': {
-          name: '立体库接口',
-          x: 191,
-          y: 132,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01173': {
-          name: '立体库接口',
-          x: 460,
-          y: 97,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01174': {
-          name: '立体库接口',
-          x: 486,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01175': {
-          name: '立体库接口',
-          x: 386,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01176': {
-          name: '立体库接口',
-          x: 411,
-          y: 97,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01177': {
-          name: '立体库接口',
-          x: 315,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01178': {
-          name: '立体库接口',
-          x: 341,
-          y: 97,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01179': {
-          name: '立体库接口',
-          x: 240,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01180': {
-          name: '立体库接口',
-          x: 266,
-          y: 97,
-          motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01181': {
-          name: '立体库接口',
-          x: 165,
-          y: 97,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库',
-          plcAddress: 'DB1.DBX0.3'
-        },
-        '01182': {
-          name: '立体库接口',
-          x: 191,
-          y: 97,
+          y: 778,
+          showTray: true,
           motorStatus: true,
           sensorStatus: false,
           trayId: 'T-202502',
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         }
+        // '02009': {
+        //   name: '02009',
+        //   x: 1120,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02011': {
+        //   name: '02011',
+        //   x: 1145,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02012': {
+        //   name: '02012',
+        //   x: 1048,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02014': {
+        //   name: '02014',
+        //   x: 1073,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02015': {
+        //   name: '02015',
+        //   x: 973,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02016': {
+        //   name: '02016',
+        //   x: 998,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02018': {
+        //   name: '02018',
+        //   x: 900,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02019': {
+        //   name: '02019',
+        //   x: 925,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02021': {
+        //   name: '02021',
+        //   x: 828,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '02022': {
+        //   name: '02022',
+        //   x: 853,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '03009': {
+        //   name: '立体库接口',
+        //   x: 753,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '03011': {
+        //   name: '立体库接口',
+        //   x: 778,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '03012': {
+        //   name: '立体库接口',
+        //   x: 680,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '03014': {
+        //   name: '立体库接口',
+        //   x: 705,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '03015': {
+        //   name: '立体库接口',
+        //   x: 606,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '03016': {
+        //   name: '立体库接口',
+        //   x: 631,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01041': {
+        //   name: '立体库接口',
+        //   x: 530,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01042': {
+        //   name: '立体库接口',
+        //   x: 556,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01043': {
+        //   name: '立体库接口',
+        //   x: 460,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01044': {
+        //   name: '立体库接口',
+        //   x: 486,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01045': {
+        //   name: '立体库接口',
+        //   x: 386,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01046': {
+        //   name: '立体库接口',
+        //   x: 411,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01047': {
+        //   name: '立体库接口',
+        //   x: 315,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01048': {
+        //   name: '立体库接口',
+        //   x: 341,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01049': {
+        //   name: '立体库接口',
+        //   x: 240,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01050': {
+        //   name: '立体库接口',
+        //   x: 266,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01051': {
+        //   name: '立体库接口',
+        //   x: 165,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01052': {
+        //   name: '立体库接口',
+        //   x: 191,
+        //   y: 778,
+        //   showTray: true,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01053': {
+        //   name: '立体库接口',
+        //   x: 1195,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01054': {
+        //   name: '立体库接口',
+        //   x: 1220,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01055': {
+        //   name: '立体库接口',
+        //   x: 1120,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01056': {
+        //   name: '立体库接口',
+        //   x: 1145,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01057': {
+        //   name: '立体库接口',
+        //   x: 1048,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01058': {
+        //   name: '立体库接口',
+        //   x: 1073,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01059': {
+        //   name: '立体库接口',
+        //   x: 973,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01060': {
+        //   name: '立体库接口',
+        //   x: 998,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01061': {
+        //   name: '立体库接口',
+        //   x: 900,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01062': {
+        //   name: '立体库接口',
+        //   x: 925,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01063': {
+        //   name: '立体库接口',
+        //   x: 828,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01064': {
+        //   name: '立体库接口',
+        //   x: 853,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01065': {
+        //   name: '立体库接口',
+        //   x: 753,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01066': {
+        //   name: '立体库接口',
+        //   x: 778,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01067': {
+        //   name: '立体库接口',
+        //   x: 680,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01068': {
+        //   name: '立体库接口',
+        //   x: 705,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01069': {
+        //   name: '立体库接口',
+        //   x: 606,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01070': {
+        //   name: '立体库接口',
+        //   x: 631,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01071': {
+        //   name: '立体库接口',
+        //   x: 530,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01072': {
+        //   name: '立体库接口',
+        //   x: 556,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01073': {
+        //   name: '立体库接口',
+        //   x: 460,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01074': {
+        //   name: '立体库接口',
+        //   x: 486,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01075': {
+        //   name: '立体库接口',
+        //   x: 386,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01076': {
+        //   name: '立体库接口',
+        //   x: 411,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01077': {
+        //   name: '立体库接口',
+        //   x: 315,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01078': {
+        //   name: '立体库接口',
+        //   x: 341,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01079': {
+        //   name: '立体库接口',
+        //   x: 240,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01080': {
+        //   name: '立体库接口',
+        //   x: 266,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01081': {
+        //   name: '立体库接口',
+        //   x: 165,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01082': {
+        //   name: '立体库接口',
+        //   x: 191,
+        //   y: 735,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01083': {
+        //   name: '立体库接口',
+        //   x: 1195,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01084': {
+        //   name: '立体库接口',
+        //   x: 1220,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01085': {
+        //   name: '立体库接口',
+        //   x: 1120,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01086': {
+        //   name: '立体库接口',
+        //   x: 1145,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01087': {
+        //   name: '立体库接口',
+        //   x: 1048,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01088': {
+        //   name: '立体库接口',
+        //   x: 1073,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01089': {
+        //   name: '立体库接口',
+        //   x: 973,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01090': {
+        //   name: '立体库接口',
+        //   x: 998,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01091': {
+        //   name: '立体库接口',
+        //   x: 900,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01092': {
+        //   name: '立体库接口',
+        //   x: 925,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01093': {
+        //   name: '立体库接口',
+        //   x: 828,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01094': {
+        //   name: '立体库接口',
+        //   x: 853,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01095': {
+        //   name: '立体库接口',
+        //   x: 753,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01096': {
+        //   name: '立体库接口',
+        //   x: 778,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01097': {
+        //   name: '立体库接口',
+        //   x: 680,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01098': {
+        //   name: '立体库接口',
+        //   x: 705,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01099': {
+        //   name: '立体库接口',
+        //   x: 606,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01100': {
+        //   name: '立体库接口',
+        //   x: 631,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01101': {
+        //   name: '立体库接口',
+        //   x: 530,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01102': {
+        //   name: '立体库接口',
+        //   x: 556,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01103': {
+        //   name: '立体库接口',
+        //   x: 460,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01104': {
+        //   name: '立体库接口',
+        //   x: 486,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01105': {
+        //   name: '立体库接口',
+        //   x: 386,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01106': {
+        //   name: '立体库接口',
+        //   x: 411,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01107': {
+        //   name: '立体库接口',
+        //   x: 315,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01108': {
+        //   name: '立体库接口',
+        //   x: 341,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01109': {
+        //   name: '立体库接口',
+        //   x: 240,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01110': {
+        //   name: '立体库接口',
+        //   x: 266,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01111': {
+        //   name: '立体库接口',
+        //   x: 165,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01112': {
+        //   name: '立体库接口',
+        //   x: 191,
+        //   y: 490,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01113': {
+        //   name: '立体库接口',
+        //   x: 1195,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01114': {
+        //   name: '立体库接口',
+        //   x: 1220,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01115': {
+        //   name: '立体库接口',
+        //   x: 1120,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01116': {
+        //   name: '立体库接口',
+        //   x: 1145,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01117': {
+        //   name: '立体库接口',
+        //   x: 1048,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01118': {
+        //   name: '立体库接口',
+        //   x: 1073,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01119': {
+        //   name: '立体库接口',
+        //   x: 973,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01120': {
+        //   name: '立体库接口',
+        //   x: 998,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01121': {
+        //   name: '立体库接口',
+        //   x: 900,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01122': {
+        //   name: '立体库接口',
+        //   x: 925,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01123': {
+        //   name: '立体库接口',
+        //   x: 828,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01124': {
+        //   name: '立体库接口',
+        //   x: 853,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01125': {
+        //   name: '立体库接口',
+        //   x: 753,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01126': {
+        //   name: '立体库接口',
+        //   x: 778,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01127': {
+        //   name: '立体库接口',
+        //   x: 680,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01128': {
+        //   name: '立体库接口',
+        //   x: 705,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01129': {
+        //   name: '立体库接口',
+        //   x: 606,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01130': {
+        //   name: '立体库接口',
+        //   x: 631,
+        //   y: 180,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01131': {
+        //   name: '立体库接口',
+        //   x: 530,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01132': {
+        //   name: '立体库接口',
+        //   x: 556,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01133': {
+        //   name: '立体库接口',
+        //   x: 460,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01134': {
+        //   name: '立体库接口',
+        //   x: 486,
+        //   y: 180,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01135': {
+        //   name: '立体库接口',
+        //   x: 386,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01136': {
+        //   name: '立体库接口',
+        //   x: 411,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01137': {
+        //   name: '立体库接口',
+        //   x: 315,
+        //   y: 180,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01138': {
+        //   name: '立体库接口',
+        //   x: 341,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01139': {
+        //   name: '立体库接口',
+        //   x: 240,
+        //   y: 180,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01140': {
+        //   name: '立体库接口',
+        //   x: 266,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01141': {
+        //   name: '立体库接口',
+        //   x: 165,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01142': {
+        //   name: '立体库接口',
+        //   x: 191,
+        //   y: 180,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01143': {
+        //   name: '立体库接口',
+        //   x: 1195,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01144': {
+        //   name: '立体库接口',
+        //   x: 1220,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01145': {
+        //   name: '立体库接口',
+        //   x: 1120,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01146': {
+        //   name: '立体库接口',
+        //   x: 1145,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01147': {
+        //   name: '立体库接口',
+        //   x: 1048,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01148': {
+        //   name: '立体库接口',
+        //   x: 1073,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01149': {
+        //   name: '立体库接口',
+        //   x: 973,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01150': {
+        //   name: '立体库接口',
+        //   x: 998,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01151': {
+        //   name: '立体库接口',
+        //   x: 900,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01152': {
+        //   name: '立体库接口',
+        //   x: 925,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01153': {
+        //   name: '立体库接口',
+        //   x: 828,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01154': {
+        //   name: '立体库接口',
+        //   x: 853,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01155': {
+        //   name: '立体库接口',
+        //   x: 753,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01156': {
+        //   name: '立体库接口',
+        //   x: 778,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01157': {
+        //   name: '立体库接口',
+        //   x: 680,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01158': {
+        //   name: '立体库接口',
+        //   x: 705,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01159': {
+        //   name: '立体库接口',
+        //   x: 606,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01160': {
+        //   name: '立体库接口',
+        //   x: 631,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01161': {
+        //   name: '立体库接口',
+        //   x: 530,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01162': {
+        //   name: '立体库接口',
+        //   x: 556,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01163': {
+        //   name: '立体库接口',
+        //   x: 460,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01164': {
+        //   name: '立体库接口',
+        //   x: 486,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01165': {
+        //   name: '立体库接口',
+        //   x: 386,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01166': {
+        //   name: '立体库接口',
+        //   x: 411,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01167': {
+        //   name: '立体库接口',
+        //   x: 315,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01168': {
+        //   name: '立体库接口',
+        //   x: 341,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01169': {
+        //   name: '立体库接口',
+        //   x: 240,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01170': {
+        //   name: '立体库接口',
+        //   x: 266,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01171': {
+        //   name: '立体库接口',
+        //   x: 165,
+        //   y: 132,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01172': {
+        //   name: '立体库接口',
+        //   x: 191,
+        //   y: 132,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01173': {
+        //   name: '立体库接口',
+        //   x: 460,
+        //   y: 97,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01174': {
+        //   name: '立体库接口',
+        //   x: 486,
+        //   y: 97,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01175': {
+        //   name: '立体库接口',
+        //   x: 386,
+        //   y: 97,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01176': {
+        //   name: '立体库接口',
+        //   x: 411,
+        //   y: 97,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01177': {
+        //   name: '立体库接口',
+        //   x: 315,
+        //   y: 97,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01178': {
+        //   name: '立体库接口',
+        //   x: 341,
+        //   y: 97,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01179': {
+        //   name: '立体库接口',
+        //   x: 240,
+        //   y: 97,
+        //   motorStatus: true,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01180': {
+        //   name: '立体库接口',
+        //   x: 266,
+        //   y: 97,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01181': {
+        //   name: '立体库接口',
+        //   x: 165,
+        //   y: 97,
+        //   motorStatus: false,
+        //   sensorStatus: true,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // },
+        // '01182': {
+        //   name: '立体库接口',
+        //   x: 191,
+        //   y: 97,
+        //   motorStatus: true,
+        //   sensorStatus: false,
+        //   trayId: 'T-202502',
+        //   destination: '成品库',
+        //   plcAddress: 'DB1.DBX0.3'
+        // }
       },
 
       // 弹窗相关状态
