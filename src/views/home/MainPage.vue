@@ -173,8 +173,8 @@
                   :key="node.id"
                   class="device-signal-node"
                   :class="{
-                    'status-active': node.motorStatus || node.sensorStatus,
-                    'status-idle': !node.motorStatus && !node.sensorStatus,
+                    'status-active': getDisplayStatus(node),
+                    'status-idle': !getDisplayStatus(node),
                     'is-selected': currentSelectedNodeId === node.id
                   }"
                   :data-x="node.x"
@@ -183,9 +183,7 @@
                 >
                   <!-- 托盘图片：仅在指定节点且处于激活状态(发绿)时显示 -->
                   <img
-                    v-if="
-                      node.showTray && (node.motorStatus || node.sensorStatus)
-                    "
+                    v-if="node.showTray && getDisplayStatus(node)"
                     src="@/assets/weigao-img/tray.png"
                     class="tray-icon"
                   />
@@ -284,64 +282,142 @@
                 <div
                   v-if="popoverVisible"
                   class="singleton-popover"
+                  :class="[
+                    popoverList.length > 1 ? 'popover-multi-device' : '',
+                    popoverDirection === 'down' ? 'popover-down' : ''
+                  ]"
                   :style="popoverStyle"
                   @click.stop
                 >
-                  <div class="popover-arrow"></div>
-
                   <div class="popover-header">
-                    <span class="device-title">{{ popoverData.name }}</span>
+                    <span class="device-title">{{
+                      popoverList.length > 1
+                        ? `设备组 (${popoverList.length}台)`
+                        : popoverData.name
+                    }}</span>
                     <i
                       class="el-icon-close close-btn"
                       @click="closePopover"
                     ></i>
                   </div>
 
-                  <div class="status-tiles">
-                    <div
-                      class="status-tile"
-                      :class="
-                        popoverData.motorStatus ? 'is-running' : 'is-stopped'
-                      "
-                    >
-                      <div class="icon-box"><i class="el-icon-cpu"></i></div>
-                      <div class="text-box">
-                        <div class="label">电机状态</div>
-                        <div class="value">
-                          {{ popoverData.motorStatus ? '运行中' : '已停止' }}
+                  <!-- 独立设备：保持原样式 -->
+                  <template v-if="popoverList.length === 1">
+                    <div class="status-tiles">
+                      <div
+                        class="status-tile"
+                        :class="
+                          popoverData.motorStatus ? 'is-running' : 'is-stopped'
+                        "
+                      >
+                        <div class="icon-box">
+                          <i class="el-icon-cpu"></i>
+                        </div>
+                        <div class="text-box">
+                          <div class="label">电机状态</div>
+                          <div class="value">
+                            {{ popoverData.motorStatus ? '运行中' : '已停止' }}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="status-tile"
+                        :class="
+                          popoverData.sensorStatus ? 'is-active' : 'is-empty'
+                        "
+                      >
+                        <div class="icon-box">
+                          <i class="el-icon-view"></i>
+                        </div>
+                        <div class="text-box">
+                          <div class="label">光电检测</div>
+                          <div class="value">
+                            {{ popoverData.sensorStatus ? '有货物' : '无货物' }}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div
-                      class="status-tile"
-                      :class="
-                        popoverData.sensorStatus ? 'is-active' : 'is-empty'
-                      "
-                    >
-                      <div class="icon-box"><i class="el-icon-view"></i></div>
-                      <div class="text-box">
-                        <div class="label">光电检测</div>
-                        <div class="value">
-                          {{ popoverData.sensorStatus ? '有货物' : '无货物' }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div class="data-capsules">
-                    <div class="capsule-item">
-                      <span class="capsule-label">托盘虚拟ID</span>
-                      <span class="capsule-value highlight">
-                        {{ popoverData.trayId || '--' }}
-                      </span>
+                    <div class="data-capsules">
+                      <div class="capsule-item">
+                        <span class="capsule-label">托盘虚拟ID</span>
+                        <span class="capsule-value highlight">
+                          {{ popoverData.trayId || '--' }}
+                        </span>
+                      </div>
+                      <div class="capsule-item">
+                        <span class="capsule-label">任务目的地</span>
+                        <span class="capsule-value">
+                          {{ popoverData.destination || '无任务' }}
+                        </span>
+                      </div>
                     </div>
-                    <div class="capsule-item">
-                      <span class="capsule-label">任务目的地</span>
-                      <span class="capsule-value">
-                        {{ popoverData.destination || '无任务' }}
-                      </span>
+                  </template>
+
+                  <!-- 成组设备：横向排列 -->
+                  <template v-else>
+                    <div class="devices-container">
+                      <div
+                        v-for="(device, index) in popoverList"
+                        :key="device.id"
+                        class="device-column"
+                        :class="{
+                          'has-divider': index < popoverList.length - 1
+                        }"
+                      >
+                        <div class="device-name-header">{{ device.name }}</div>
+                        <div class="status-tiles">
+                          <div
+                            class="status-tile"
+                            :class="
+                              device.motorStatus ? 'is-running' : 'is-stopped'
+                            "
+                          >
+                            <div class="icon-box">
+                              <i class="el-icon-cpu"></i>
+                            </div>
+                            <div class="text-box">
+                              <div class="label">电机状态</div>
+                              <div class="value">
+                                {{ device.motorStatus ? '运行中' : '已停止' }}
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="status-tile"
+                            :class="
+                              device.sensorStatus ? 'is-active' : 'is-empty'
+                            "
+                          >
+                            <div class="icon-box">
+                              <i class="el-icon-view"></i>
+                            </div>
+                            <div class="text-box">
+                              <div class="label">光电检测</div>
+                              <div class="value">
+                                {{ device.sensorStatus ? '有货物' : '无货物' }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="data-capsules">
+                          <div class="capsule-item">
+                            <span class="capsule-label">托盘虚拟ID</span>
+                            <span class="capsule-value highlight">
+                              {{ device.trayId || '--' }}
+                            </span>
+                          </div>
+                          <div class="capsule-item">
+                            <span class="capsule-label">任务目的地</span>
+                            <span class="capsule-value">
+                              {{ device.destination || '无任务' }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </template>
                 </div>
               </transition>
             </div>
@@ -984,7 +1060,7 @@ export default {
           name: '01008',
           x: 1273,
           y: 375,
-          groupCode: '01008-01009',
+          groupId: 'G_01008_01009',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -996,7 +1072,7 @@ export default {
           name: '01009',
           x: 1300,
           y: 375,
-          groupCode: '01008-01009',
+          groupId: 'G_01008_01009',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1008,6 +1084,7 @@ export default {
           name: '01011',
           x: 1273,
           y: 438,
+          groupId: 'G_01011_01012',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1019,6 +1096,7 @@ export default {
           name: '01012',
           x: 1300,
           y: 438,
+          groupId: 'G_01011_01012',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1030,6 +1108,7 @@ export default {
           name: '01013',
           x: 1273,
           y: 490,
+          groupId: 'G_01013_01014',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1041,6 +1120,7 @@ export default {
           name: '01014',
           x: 1300,
           y: 490,
+          groupId: 'G_01013_01014',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1052,6 +1132,7 @@ export default {
           name: '01015',
           x: 1273,
           y: 540,
+          groupId: 'G_01015_01016',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1063,6 +1144,7 @@ export default {
           name: '01016',
           x: 1300,
           y: 540,
+          groupId: 'G_01015_01016',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1074,6 +1156,7 @@ export default {
           name: '01017',
           x: 1273,
           y: 590,
+          groupId: 'G_01017_01018',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1085,6 +1168,7 @@ export default {
           name: '01018',
           x: 1300,
           y: 590,
+          groupId: 'G_01017_01018',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1096,6 +1180,7 @@ export default {
           name: '01019',
           x: 1273,
           y: 640,
+          groupId: 'G_01019_01020',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1107,6 +1192,7 @@ export default {
           name: '01020',
           x: 1300,
           y: 640,
+          groupId: 'G_01019_01020',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1118,6 +1204,7 @@ export default {
           name: '01021',
           x: 1273,
           y: 690,
+          groupId: 'G_01021_01022',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1129,6 +1216,7 @@ export default {
           name: '01022',
           x: 1300,
           y: 690,
+          groupId: 'G_01021_01022',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1140,6 +1228,7 @@ export default {
           name: '01023',
           x: 1273,
           y: 735,
+          groupId: 'G_01023_01024',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1151,6 +1240,7 @@ export default {
           name: '01024',
           x: 1300,
           y: 735,
+          groupId: 'G_01023_01024',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1162,6 +1252,7 @@ export default {
           name: '01026',
           x: 1273,
           y: 778,
+          groupId: 'G_01026_01027',
           showTray: true,
           motorStatus: false,
           sensorStatus: true,
@@ -1173,6 +1264,7 @@ export default {
           name: '01027',
           x: 1300,
           y: 778,
+          groupId: 'G_01026_01027',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1184,6 +1276,7 @@ export default {
           name: '01029',
           x: 1195,
           y: 778,
+          groupId: 'G_01029_01030',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1195,6 +1288,7 @@ export default {
           name: '01030',
           x: 1220,
           y: 778,
+          groupId: 'G_01029_01030',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -2814,9 +2908,15 @@ export default {
 
       // 弹窗相关状态
       popoverVisible: false,
-      popoverData: {}, // 当前弹窗显示的数据
+      popoverData: {}, // 当前弹窗显示的数据（单个设备或组长设备）
+      popoverList: [], // 弹窗展示的设备列表（支持多设备横向排列）
       currentSelectedNodeId: null, // 当前选中的节点ID
-      popoverPosition: { top: 0, left: 0 } // 弹窗相对容器的位置
+      popoverPosition: { top: 0, left: 0 }, // 弹窗相对容器的位置
+      popoverDirection: 'up', // 弹窗弹出方向：'up' 向上，'down' 向下
+
+      // 分组索引：{ groupId: [deviceId1, deviceId2, ...] }
+      // 在 mounted 中通过 Object.freeze 冻结以提升性能
+      groupIndex: null
     };
   },
   computed: {
@@ -2842,14 +2942,31 @@ export default {
       };
     },
     deviceList() {
-      return Object.keys(this.deviceNodes).map((key) => ({
+      const allDevices = Object.keys(this.deviceNodes).map((key) => ({
         id: key,
         ...this.deviceNodes[key]
       }));
+
+      // 分组过滤：对于有 groupId 的设备，只保留组长（该组第一个出现的设备）
+      const seenGroups = new Set();
+      return allDevices.filter((device) => {
+        // 独立设备（无 groupId）直接保留
+        if (!device.groupId) {
+          return true;
+        }
+        // 成组设备：仅保留该组第一个出现的设备作为组长
+        if (seenGroups.has(device.groupId)) {
+          return false;
+        }
+        seenGroups.add(device.groupId);
+        return true;
+      });
     }
   },
   mounted() {
     this.initializeMarkers();
+    // 生成分组索引并冻结以提升性能
+    this.buildGroupIndex();
   },
   watch: {
     // 监听上货区 (ID: 1)
@@ -2865,6 +2982,47 @@ export default {
     }
   },
   methods: {
+    // ================= 分组索引构建 =================
+    /**
+     * 构建分组索引，并使用 Object.freeze 冻结以提升性能
+     * 索引结构：{ 'G_01008_01009': ['01008', '01009'], ... }
+     */
+    buildGroupIndex() {
+      const index = {};
+      Object.keys(this.deviceNodes).forEach((id) => {
+        const device = this.deviceNodes[id];
+        if (device.groupId) {
+          if (!index[device.groupId]) {
+            index[device.groupId] = [];
+          }
+          index[device.groupId].push(id);
+        }
+      });
+      // 冻结索引对象，防止意外修改，同时提升 Vue 响应式性能
+      this.groupIndex = Object.freeze(index);
+    },
+
+    /**
+     * 获取设备节点的显示状态（支持分组状态合并）
+     * @param {Object} node - 设备节点对象
+     * @returns {boolean} - 是否处于激活状态（一亮全亮）
+     */
+    getDisplayStatus(node) {
+      // 独立设备：返回自身状态
+      if (!node.groupId) {
+        return node.motorStatus || node.sensorStatus;
+      }
+      // 成组设备：遍历组内所有设备，任一激活则全亮
+      const groupIds = this.groupIndex?.[node.groupId] || [];
+      for (const id of groupIds) {
+        const device = this.deviceNodes[id];
+        if (device && (device.motorStatus || device.sensorStatus)) {
+          return true;
+        }
+      }
+      return false;
+    },
+
     // ================= 队列容量进度条 =================
     /**
      * 计算队列容量百分比
@@ -2885,6 +3043,19 @@ export default {
     // ================= 设备层交互逻辑 =================
     // 1. 点击节点显示弹窗
     handleNodeClick(node, event) {
+      // 根据是否分组，决定弹窗展示的设备列表
+      if (!node.groupId) {
+        // 独立设备：单个设备数组
+        this.popoverList = [node];
+      } else {
+        // 成组设备：获取组内所有设备
+        const groupIds = this.groupIndex?.[node.groupId] || [];
+        this.popoverList = groupIds.map((id) => ({
+          id,
+          ...this.deviceNodes[id]
+        }));
+      }
+      // 保留 popoverData 用于兼容性（指向组长设备）
       this.popoverData = node;
       this.currentSelectedNodeId = node.id;
 
@@ -2895,12 +3066,45 @@ export default {
       const container = this.$refs.floorImageContainer;
       const containerRect = container.getBoundingClientRect();
 
-      // 3. 计算相对坐标
-      // 弹窗宽度约为320px，我们希望它居中显示在节点上方
-      // 左偏移 = (目标左边 - 容器左边) + 目标宽度的一半
-      // 上偏移 = (目标上边 - 容器上边) - 间距
-      const left = targetRect.left - containerRect.left + targetRect.width / 2;
-      const top = targetRect.top - containerRect.top - 12; // 留出一点空隙
+      // 3. 计算弹窗尺寸
+      // 独立设备：320px，成组设备：每个设备约 180px
+      const popoverWidth =
+        this.popoverList.length === 1
+          ? 320
+          : this.popoverList.length * 180 + 32;
+      const popoverHeight = 200; // 预估弹窗高度
+
+      // 4. 计算初始位置（弹窗中心对齐点击点）
+      let left = targetRect.left - containerRect.left + targetRect.width / 2;
+      let top = targetRect.top - containerRect.top - 12;
+
+      // 5. 边界检测与修正
+      // 由于弹窗使用 transform: translate(-50%, -100%)，需要考虑变换后的实际位置
+
+      // 左边界检测：弹窗左边缘 = left - popoverWidth/2
+      const popoverLeftEdge = left - popoverWidth / 2;
+      if (popoverLeftEdge < 0) {
+        // 超出左边界，将弹窗左移
+        left = popoverWidth / 2 + 10;
+      }
+
+      // 右边界检测：弹窗右边缘 = left + popoverWidth/2
+      const containerWidth = containerRect.width;
+      const popoverRightEdge = left + popoverWidth / 2;
+      if (popoverRightEdge > containerWidth) {
+        // 超出右边界，将弹窗右移
+        left = containerWidth - popoverWidth / 2 - 10;
+      }
+
+      // 上边界检测：弹窗顶部 = top - popoverHeight（因为 -100% transform）
+      const popoverTopEdge = top - popoverHeight;
+      if (popoverTopEdge < 0) {
+        // 超出上边界，改为向下弹出（在点击点下方显示）
+        top = targetRect.top - containerRect.top + targetRect.height + 12;
+        this.popoverDirection = 'down';
+      } else {
+        this.popoverDirection = 'up';
+      }
 
       this.popoverPosition = { left, top };
       this.popoverVisible = true;
