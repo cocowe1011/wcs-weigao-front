@@ -1034,6 +1034,56 @@
                 border-color: rgba(0, 200, 240, 0.9) !important;
               }
 
+              /* 上货区紧凑标记 - 覆盖高进度条样式，与常州项目普通队列一致 */
+              .queue-marker[data-compact] {
+                width: auto;
+                background: rgba(10, 30, 50, 0.85);
+                border: 1px solid rgba(64, 158, 255, 0.5);
+                border-radius: 4px;
+                padding: 4px 8px;
+                min-width: 40px;
+                text-align: center;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+                color: #ffffff;
+                justify-content: center;
+
+                .capacity-fill {
+                  display: none;
+                }
+
+                .queue-marker-content {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  color: #fff;
+                  font-size: 12px;
+                  position: static;
+                  height: auto;
+                  padding: 0;
+
+                  .queue-marker-name {
+                    color: #fff;
+                    font-size: 12px;
+                    font-weight: normal;
+                    text-shadow: none;
+                  }
+
+                  .queue-marker-count {
+                    font-size: 14px;
+                    font-weight: bold;
+                    color: #409eff;
+                    text-shadow: none;
+                    margin-top: 0;
+                  }
+                }
+              }
+
+              .queue-marker[data-compact]:hover {
+                background: rgba(24, 61, 97, 0.9);
+                border-color: rgba(64, 158, 255, 0.6);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+              }
+
               /* 添加小车样式 */
               .cart-container {
                 position: absolute;
@@ -1707,5 +1757,26 @@
       color: #fff;
       transform: scale(1.1);
     }
+  }
+}
+
+/* PDA 连接状态弹窗 */
+:deep(.mobile-connection-dialog) {
+  .connection-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .server-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .server-info {
+    font-size: 13px;
+    color: #606266;
   }
 }

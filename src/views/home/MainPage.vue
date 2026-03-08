@@ -6,7 +6,18 @@
       <div class="side-info-panel">
         <!-- PLC状态与订单信息区域 -->
         <div class="plc-info-section">
-          <div class="section-header">当前扫码托盘信息</div>
+          <div class="section-header">
+            当前扫码托盘信息
+            <el-button
+              type="success"
+              size="mini"
+              @click="showMobileConnectionStatus"
+              icon="el-icon-connection"
+              :disabled="!wsServerStatus.isRunning"
+            >
+              PDA互联
+            </el-button>
+          </div>
           <div class="scrollable-content" style="margin-top: 5px">
             <div class="status-overview">
               <div class="data-card">
@@ -191,29 +202,49 @@
                     <div class="signal-core"></div>
                   </div>
                 </div>
-                <div
-                  v-for="marker in queueMarkers"
-                  :key="marker.id"
-                  class="queue-marker"
-                  :data-x="marker.x"
-                  :data-y="marker.y"
-                  @click="handleQueueMarkerClick(marker.queueId)"
-                >
-                  <!-- 进度条填充层 - 从底部向上生长 -->
+                <template v-for="marker in queueMarkers">
+                  <!-- 普通高进度条样式 -->
                   <div
-                    class="capacity-fill"
-                    :style="{
-                      height: getQueueCapacityPercent(marker.queueId) + '%'
-                    }"
-                  ></div>
-                  <div class="queue-marker-content">
-                    <span class="queue-marker-name">{{ marker.name }}</span>
-                    <span class="queue-marker-count">{{
-                      queues.find((q) => q.id === marker.queueId)?.trayInfo
-                        ?.length || 0
-                    }}</span>
+                    v-if="!marker.compact"
+                    :key="marker.id"
+                    class="queue-marker"
+                    :data-x="marker.x"
+                    :data-y="marker.y"
+                    @click="handleQueueMarkerClick(marker.queueId)"
+                  >
+                    <div
+                      class="capacity-fill"
+                      :style="{
+                        height: getQueueCapacityPercent(marker.queueId) + '%'
+                      }"
+                    ></div>
+                    <div class="queue-marker-content">
+                      <span class="queue-marker-name">{{ marker.name }}</span>
+                      <span class="queue-marker-count">{{
+                        queues.find((q) => q.id === marker.queueId)?.trayInfo
+                          ?.length || 0
+                      }}</span>
+                    </div>
                   </div>
-                </div>
+                  <!-- 紧凑样式（上货区，与常州项目普通队列结构一致） -->
+                  <div
+                    v-else
+                    :key="'compact-' + marker.id"
+                    class="queue-marker"
+                    data-compact="true"
+                    :data-x="marker.x"
+                    :data-y="marker.y"
+                    @click="handleQueueMarkerClick(marker.queueId)"
+                  >
+                    <div class="queue-marker-content">
+                      <span class="queue-marker-count">{{
+                        queues.find((q) => q.id === marker.queueId)?.trayInfo
+                          ?.length || 0
+                      }}</span>
+                      <span class="queue-marker-name">{{ marker.name }}</span>
+                    </div>
+                  </div>
+                </template>
                 <!-- 修改小车元素 -->
                 <div
                   v-for="cart in carts"
@@ -465,8 +496,8 @@
             <!-- 左侧队列列表 -->
             <div class="queue-container-left">
               <div
-                v-for="(queue, filteredIndex) in filteredQueues"
-                :key="'queue-' + queue.id + '-' + filteredIndex"
+                v-for="(queue, index) in queues"
+                :key="'queue-' + queue.id + '-' + index"
                 class="queue"
                 :class="{ active: selectedQueueIndex === queue.id - 1 }"
                 @click="showTrays(queue.id - 1)"
@@ -527,33 +558,10 @@
                           </span>
                           <span
                             class="tray-batch"
-                            v-if="
-                              tray.sendTo &&
-                              ['A1', 'B1', 'C1', '缓存区'].includes(
-                                selectedQueue.queueName
-                              )
-                            "
-                            >{{
-                              ['A1', 'B1', 'C1'].includes(
-                                selectedQueue.queueName
-                              )
-                                ? '预热房位置：'
-                                : '预热房发送中：'
-                            }}{{ tray.sendTo }}</span
-                          >
-                          <span
-                            class="tray-batch"
                             v-if="tray.sequenceNumber > 0"
                             ><span class="sequence-number"
                               >(序号：{{ tray.sequenceNumber }})</span
                             ></span
-                          >
-                          <span
-                            class="tray-batch"
-                            v-if="selectedQueue.queueName == '分发区'"
-                            >PLC命令：{{
-                              tray.state === '0' ? '未执行' : '已执行'
-                            }}</span
                           >
                         </div>
                       </div>
@@ -852,6 +860,68 @@
         >
       </div>
     </el-dialog>
+
+    <!-- PDA连接状态弹窗 -->
+    <el-dialog
+      title="PDA连接状态"
+      :visible.sync="mobileConnectionDialogVisible"
+      width="80%"
+      append-to-body
+      :close-on-click-modal="false"
+      custom-class="mobile-connection-dialog"
+    >
+      <div class="connection-status-header">
+        <div class="server-status">
+          <el-tag :type="wsServerStatus.isRunning ? 'success' : 'danger'">
+            WebSocket服务器:
+            {{ wsServerStatus.isRunning ? '运行中' : '已停止' }}
+          </el-tag>
+          <span class="server-info">端口: {{ wsServerStatus.port }}</span>
+          <span class="server-info"
+            >在线客户端: {{ mobileConnections.length }}</span
+          >
+        </div>
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-refresh"
+          @click="refreshMobileConnections"
+          :loading="refreshingConnections"
+        >
+          刷新
+        </el-button>
+      </div>
+      <el-table
+        :data="mobileConnections"
+        style="width: 100%; margin-top: 16px"
+        :height="400"
+        empty-text="暂无移动端连接"
+      >
+        <el-table-column prop="id" label="客户端ID" width="200" />
+        <el-table-column prop="ip" label="IP地址" width="150" />
+        <el-table-column prop="userAgent" label="设备信息" />
+        <el-table-column prop="connectedAt" label="连接时间" width="180">
+          <template slot-scope="scope">
+            {{ formatConnectionTime(scope.row.connectedAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="lastPing" label="最后心跳" width="180">
+          <template slot-scope="scope">
+            {{ formatConnectionTime(scope.row.lastPing) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" width="80">
+          <template slot-scope="scope">
+            <el-tag
+              :type="scope.row.status === '在线' ? 'success' : 'danger'"
+              size="small"
+            >
+              {{ scope.row.status }}
+            </el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -871,6 +941,11 @@ export default {
       isDataReady: false, // 添加数据准备就绪标志位
       showTestPanel: false,
       orderQueryDialogVisible: false,
+      // PDA 互联
+      wsServerStatus: { isRunning: false, port: 8081, clientCount: 0 },
+      mobileConnections: [],
+      mobileConnectionDialogVisible: false,
+      refreshingConnections: false,
       buttonStates: {
         start: false,
         stop: false,
@@ -934,69 +1009,71 @@ export default {
         ]
       },
       queues: [
-        { id: 1, queueName: 'Y3215', trayInfo: [] },
-        { id: 2, queueName: '3215', trayInfo: [] },
-        { id: 3, queueName: 'Y3214', trayInfo: [] },
-        { id: 4, queueName: '3214', trayInfo: [] },
-        { id: 5, queueName: 'Y3213', trayInfo: [] },
-        { id: 6, queueName: '3213', trayInfo: [] },
-        { id: 7, queueName: 'Y3212', trayInfo: [] },
-        { id: 8, queueName: '3212', trayInfo: [] },
-        { id: 9, queueName: 'Y3211', trayInfo: [] },
-        { id: 10, queueName: '3211', trayInfo: [] },
-        { id: 11, queueName: 'Y3210', trayInfo: [] },
-        { id: 12, queueName: '3210', trayInfo: [] },
-        { id: 13, queueName: 'Y3209', trayInfo: [] },
-        { id: 14, queueName: '3209', trayInfo: [] },
-        { id: 15, queueName: 'Y3208', trayInfo: [] },
-        { id: 16, queueName: '3208', trayInfo: [] },
-        { id: 17, queueName: 'Y3207', trayInfo: [] },
-        { id: 18, queueName: '3207', trayInfo: [] },
-        { id: 19, queueName: 'Y3206', trayInfo: [] },
-        { id: 20, queueName: '3206', trayInfo: [] },
-        { id: 21, queueName: 'Y3205', trayInfo: [] },
-        { id: 22, queueName: '3205', trayInfo: [] },
-        { id: 23, queueName: 'Y3204', trayInfo: [] },
-        { id: 24, queueName: '3204', trayInfo: [] },
-        { id: 25, queueName: 'Y3203', trayInfo: [] },
-        { id: 26, queueName: '3203', trayInfo: [] },
-        { id: 27, queueName: 'Y3202', trayInfo: [] },
-        { id: 28, queueName: '3202', trayInfo: [] },
-        { id: 29, queueName: 'Y3201', trayInfo: [] },
-        { id: 30, queueName: '3201', trayInfo: [] }
+        { id: 1, queueName: '上货区', trayInfo: [] },
+        { id: 2, queueName: 'Y3215', trayInfo: [] },
+        { id: 3, queueName: '3215', trayInfo: [] },
+        { id: 4, queueName: 'Y3214', trayInfo: [] },
+        { id: 5, queueName: '3214', trayInfo: [] },
+        { id: 6, queueName: 'Y3213', trayInfo: [] },
+        { id: 7, queueName: '3213', trayInfo: [] },
+        { id: 8, queueName: 'Y3212', trayInfo: [] },
+        { id: 9, queueName: '3212', trayInfo: [] },
+        { id: 10, queueName: 'Y3211', trayInfo: [] },
+        { id: 11, queueName: '3211', trayInfo: [] },
+        { id: 12, queueName: 'Y3210', trayInfo: [] },
+        { id: 13, queueName: '3210', trayInfo: [] },
+        { id: 14, queueName: 'Y3209', trayInfo: [] },
+        { id: 15, queueName: '3209', trayInfo: [] },
+        { id: 16, queueName: 'Y3208', trayInfo: [] },
+        { id: 17, queueName: '3208', trayInfo: [] },
+        { id: 18, queueName: 'Y3207', trayInfo: [] },
+        { id: 19, queueName: '3207', trayInfo: [] },
+        { id: 20, queueName: 'Y3206', trayInfo: [] },
+        { id: 21, queueName: '3206', trayInfo: [] },
+        { id: 22, queueName: 'Y3205', trayInfo: [] },
+        { id: 23, queueName: '3205', trayInfo: [] },
+        { id: 24, queueName: 'Y3204', trayInfo: [] },
+        { id: 25, queueName: '3204', trayInfo: [] },
+        { id: 26, queueName: 'Y3203', trayInfo: [] },
+        { id: 27, queueName: '3203', trayInfo: [] },
+        { id: 28, queueName: 'Y3202', trayInfo: [] },
+        { id: 29, queueName: '3202', trayInfo: [] },
+        { id: 30, queueName: 'Y3201', trayInfo: [] },
+        { id: 31, queueName: '3201', trayInfo: [] }
       ],
       // 队列位置标识数据
       queueMarkers: [
-        { id: 1, name: 'Y3215', queueId: 1, x: 1210, y: 615 },
-        { id: 2, name: '3215', queueId: 2, x: 1210, y: 300 },
-        { id: 3, name: 'Y3214', queueId: 3, x: 1135, y: 615 },
-        { id: 4, name: '3214', queueId: 4, x: 1135, y: 300 },
-        { id: 5, name: 'Y3213', queueId: 5, x: 1065, y: 615 },
-        { id: 6, name: '3213', queueId: 6, x: 1065, y: 300 },
-        { id: 7, name: 'Y3212', queueId: 7, x: 990, y: 615 },
-        { id: 8, name: '3212', queueId: 8, x: 990, y: 300 },
-        { id: 9, name: 'Y3211', queueId: 9, x: 915, y: 615 },
-        { id: 10, name: '3211', queueId: 10, x: 915, y: 300 },
-        { id: 11, name: 'Y3210', queueId: 11, x: 842, y: 615 },
-        { id: 12, name: '3210', queueId: 12, x: 842, y: 300 },
-        { id: 13, name: 'Y3209', queueId: 13, x: 767, y: 615 },
-        { id: 14, name: '3209', queueId: 14, x: 767, y: 300 },
-        { id: 15, name: 'Y3208', queueId: 15, x: 692, y: 615 },
-        { id: 16, name: '3208', queueId: 16, x: 692, y: 300 },
-        { id: 17, name: 'Y3207', queueId: 17, x: 620, y: 615 },
-        { id: 18, name: '3207', queueId: 18, x: 620, y: 300 },
-        { id: 19, name: 'Y3206', queueId: 19, x: 545, y: 615 },
-        { id: 20, name: '3206', queueId: 20, x: 545, y: 300 },
-        { id: 21, name: 'Y3205', queueId: 21, x: 472, y: 615 },
-        { id: 22, name: '3205', queueId: 22, x: 472, y: 300 },
-        { id: 23, name: 'Y3204', queueId: 23, x: 397, y: 615 },
-        { id: 24, name: '3204', queueId: 24, x: 397, y: 300 },
-        { id: 25, name: 'Y3203', queueId: 25, x: 328, y: 615 },
-        { id: 26, name: '3203', queueId: 26, x: 328, y: 300 },
-        { id: 27, name: 'Y3202', queueId: 27, x: 253, y: 615 },
-        { id: 28, name: '3202', queueId: 28, x: 253, y: 300 },
-        { id: 29, name: 'Y3201', queueId: 29, x: 178, y: 615 },
-        { id: 30, name: '3201', queueId: 30, x: 178, y: 300 }
+        { id: 1, name: '上货区', queueId: 1, x: 1345, y: 325, compact: true },
+        { id: 2, name: 'Y3215', queueId: 2, x: 1210, y: 615 },
+        { id: 3, name: '3215', queueId: 3, x: 1210, y: 300 },
+        { id: 4, name: 'Y3214', queueId: 4, x: 1135, y: 615 },
+        { id: 5, name: '3214', queueId: 5, x: 1135, y: 300 },
+        { id: 6, name: 'Y3213', queueId: 6, x: 1065, y: 615 },
+        { id: 7, name: '3213', queueId: 7, x: 1065, y: 300 },
+        { id: 8, name: 'Y3212', queueId: 8, x: 990, y: 615 },
+        { id: 9, name: '3212', queueId: 9, x: 990, y: 300 },
+        { id: 10, name: 'Y3211', queueId: 10, x: 915, y: 615 },
+        { id: 11, name: '3211', queueId: 11, x: 915, y: 300 },
+        { id: 12, name: 'Y3210', queueId: 12, x: 842, y: 615 },
+        { id: 13, name: '3210', queueId: 13, x: 842, y: 300 },
+        { id: 14, name: 'Y3209', queueId: 14, x: 767, y: 615 },
+        { id: 15, name: '3209', queueId: 15, x: 767, y: 300 },
+        { id: 16, name: 'Y3208', queueId: 16, x: 692, y: 615 },
+        { id: 17, name: '3208', queueId: 17, x: 692, y: 300 },
+        { id: 18, name: 'Y3207', queueId: 18, x: 620, y: 615 },
+        { id: 19, name: '3207', queueId: 19, x: 620, y: 300 },
+        { id: 20, name: 'Y3206', queueId: 20, x: 545, y: 615 },
+        { id: 21, name: '3206', queueId: 21, x: 545, y: 300 },
+        { id: 22, name: 'Y3205', queueId: 22, x: 472, y: 615 },
+        { id: 23, name: '3205', queueId: 23, x: 472, y: 300 },
+        { id: 24, name: 'Y3204', queueId: 24, x: 397, y: 615 },
+        { id: 25, name: '3204', queueId: 25, x: 397, y: 300 },
+        { id: 26, name: 'Y3203', queueId: 26, x: 328, y: 615 },
+        { id: 27, name: '3203', queueId: 27, x: 328, y: 300 },
+        { id: 28, name: 'Y3202', queueId: 28, x: 253, y: 615 },
+        { id: 29, name: '3202', queueId: 29, x: 253, y: 300 },
+        { id: 30, name: 'Y3201', queueId: 30, x: 178, y: 615 },
+        { id: 31, name: '3201', queueId: 31, x: 178, y: 300 }
       ],
       logId: 1000,
 
@@ -1107,7 +1184,7 @@ export default {
         '01013A': {
           name: '01013A',
           x: 1273,
-          y: 438,
+          y: 450,
           groupId: 'G_01013A_01013B',
           showTray: true,
           motorStatus: true,
@@ -1119,7 +1196,7 @@ export default {
         '01013B': {
           name: '01013B',
           x: 1273,
-          y: 438,
+          y: 450,
           groupId: 'G_01013A_01013B',
           showTray: true,
           motorStatus: true,
@@ -1131,7 +1208,7 @@ export default {
         '01019A': {
           name: '01019A',
           x: 1300,
-          y: 438,
+          y: 450,
           groupId: 'G_01019A_01019B',
           showTray: true,
           motorStatus: true,
@@ -1143,7 +1220,7 @@ export default {
         '01019B': {
           name: '01019B',
           x: 1300,
-          y: 438,
+          y: 450,
           groupId: 'G_01019A_01019B',
           showTray: true,
           motorStatus: true,
@@ -1155,7 +1232,7 @@ export default {
         '01014A': {
           name: '01014A',
           x: 1273,
-          y: 490,
+          y: 510,
           groupId: 'G_01014A_01014B',
           showTray: true,
           motorStatus: true,
@@ -1167,7 +1244,7 @@ export default {
         '01014B': {
           name: '01014B',
           x: 1273,
-          y: 490,
+          y: 510,
           groupId: 'G_01014A_01014B',
           showTray: true,
           motorStatus: true,
@@ -1179,7 +1256,7 @@ export default {
         '01020A': {
           name: '01020A',
           x: 1300,
-          y: 490,
+          y: 510,
           groupId: 'G_01020A_01020B',
           showTray: true,
           motorStatus: true,
@@ -1191,7 +1268,7 @@ export default {
         '01020B': {
           name: '01020B',
           x: 1300,
-          y: 490,
+          y: 510,
           groupId: 'G_01020A_01020B',
           showTray: true,
           motorStatus: true,
@@ -1203,7 +1280,7 @@ export default {
         '01015A': {
           name: '01015A',
           x: 1273,
-          y: 540,
+          y: 570,
           groupId: 'G_01015A_01015B',
           showTray: true,
           motorStatus: true,
@@ -1215,7 +1292,7 @@ export default {
         '01015B': {
           name: '01015B',
           x: 1273,
-          y: 540,
+          y: 570,
           groupId: 'G_01015A_01015B',
           showTray: true,
           motorStatus: true,
@@ -1227,7 +1304,7 @@ export default {
         '01021A': {
           name: '01021A',
           x: 1300,
-          y: 540,
+          y: 570,
           groupId: 'G_01021A_01021B',
           showTray: true,
           motorStatus: true,
@@ -1239,7 +1316,7 @@ export default {
         '01021B': {
           name: '01021B',
           x: 1300,
-          y: 540,
+          y: 570,
           groupId: 'G_01021A_01021B',
           showTray: true,
           motorStatus: true,
@@ -1251,7 +1328,7 @@ export default {
         '01016A': {
           name: '01016A',
           x: 1273,
-          y: 590,
+          y: 620,
           groupId: 'G_01016A_01016B',
           showTray: true,
           motorStatus: true,
@@ -1263,7 +1340,7 @@ export default {
         '01016B': {
           name: '01016B',
           x: 1273,
-          y: 590,
+          y: 620,
           groupId: 'G_01016A_01016B',
           showTray: true,
           motorStatus: true,
@@ -1275,7 +1352,7 @@ export default {
         '01022A': {
           name: '01022A',
           x: 1300,
-          y: 590,
+          y: 620,
           groupId: 'G_01022A_01022B',
           showTray: true,
           motorStatus: true,
@@ -1287,7 +1364,7 @@ export default {
         '01022B': {
           name: '01022B',
           x: 1300,
-          y: 590,
+          y: 620,
           groupId: 'G_01022A_01022B',
           showTray: true,
           motorStatus: true,
@@ -1299,7 +1376,7 @@ export default {
         '01017A': {
           name: '01017A',
           x: 1273,
-          y: 640,
+          y: 670,
           groupId: 'G_01017A_01017B',
           showTray: true,
           motorStatus: true,
@@ -1311,7 +1388,7 @@ export default {
         '01017B': {
           name: '01017B',
           x: 1300,
-          y: 640,
+          y: 670,
           groupId: 'G_01017A_01017B',
           showTray: true,
           motorStatus: true,
@@ -1323,7 +1400,7 @@ export default {
         '01023A': {
           name: '01023A',
           x: 1300,
-          y: 640,
+          y: 670,
           groupId: 'G_01023A_01023B',
           showTray: true,
           motorStatus: true,
@@ -1335,7 +1412,7 @@ export default {
         '01023B': {
           name: '01023B',
           x: 1300,
-          y: 640,
+          y: 670,
           groupId: 'G_01023A_01023B',
           showTray: true,
           motorStatus: true,
@@ -1347,7 +1424,7 @@ export default {
         '01018A': {
           name: '01018A',
           x: 1273,
-          y: 690,
+          y: 720,
           groupId: 'G_01018A_01018B',
           showTray: true,
           motorStatus: true,
@@ -1359,7 +1436,7 @@ export default {
         '01018B': {
           name: '01018B',
           x: 1300,
-          y: 690,
+          y: 720,
           groupId: 'G_01018A_01018B',
           showTray: true,
           motorStatus: true,
@@ -1371,7 +1448,7 @@ export default {
         '01024A': {
           name: '01024A',
           x: 1300,
-          y: 690,
+          y: 720,
           groupId: 'G_01024A_01024B',
           showTray: true,
           motorStatus: true,
@@ -1383,7 +1460,7 @@ export default {
         '01024B': {
           name: '01024B',
           x: 1300,
-          y: 690,
+          y: 720,
           groupId: 'G_01024A_01024B',
           showTray: true,
           motorStatus: true,
@@ -1824,10 +1901,11 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '03015T': {
-          name: '立体库接口',
+        '06014': {
+          name: '06014',
           x: 606,
           y: 778,
+          groupId: 'G_06014_06015',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1835,10 +1913,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '03016T': {
-          name: '立体库接口',
+        '06015': {
+          name: '06015',
+          x: 606,
+          y: 778,
+          groupId: 'G_06014_06015',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '06011': {
+          name: '06011',
           x: 631,
           y: 778,
+          groupId: 'G_06011_06012',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1846,10 +1937,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01041T': {
-          name: '立体库接口',
+        '06012': {
+          name: '06012',
+          x: 631,
+          y: 778,
+          groupId: 'G_06011_06012',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '06021': {
+          name: '06021',
           x: 530,
           y: 778,
+          groupId: 'G_06021_06022',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1857,10 +1961,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01042T': {
-          name: '立体库接口',
+        '06022': {
+          name: '06022',
+          x: 530,
+          y: 778,
+          groupId: 'G_06021_06022',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '06018': {
+          name: '06018',
           x: 556,
           y: 778,
+          groupId: 'G_06018_06019',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1868,10 +1985,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01043T': {
-          name: '立体库接口',
+        '06019': {
+          name: '06019',
+          x: 556,
+          y: 778,
+          groupId: 'G_06018_06019',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '07014': {
+          name: '07014',
           x: 460,
           y: 778,
+          groupId: 'G_07014_07015',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1879,10 +2009,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01044T': {
-          name: '立体库接口',
+        '07015': {
+          name: '07015',
+          x: 460,
+          y: 778,
+          groupId: 'G_07014_07015',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '07011': {
+          name: '07011',
           x: 486,
           y: 778,
+          groupId: 'G_07011_07012',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1890,10 +2033,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01045T': {
-          name: '立体库接口',
+        '07012': {
+          name: '07012',
+          x: 486,
+          y: 778,
+          groupId: 'G_07011_07012',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '07021': {
+          name: '07021',
           x: 386,
           y: 778,
+          groupId: 'G_07021_07022',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1901,10 +2057,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01046T': {
-          name: '立体库接口',
+        '07022': {
+          name: '07022',
+          x: 386,
+          y: 778,
+          groupId: 'G_07021_07022',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '07018': {
+          name: '07018',
           x: 411,
           y: 778,
+          groupId: 'G_07018_07019',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1912,10 +2081,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01047T': {
-          name: '立体库接口',
+        '07019': {
+          name: '07019',
+          x: 411,
+          y: 778,
+          groupId: 'G_07018_07019',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '08014': {
+          name: '08014',
           x: 315,
           y: 778,
+          groupId: 'G_08014_08015',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1923,10 +2105,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01048T': {
-          name: '立体库接口',
+        '08015': {
+          name: '08015',
+          x: 315,
+          y: 778,
+          groupId: 'G_08014_08015',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '08011': {
+          name: '08011',
           x: 341,
           y: 778,
+          groupId: 'G_08011_08012',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1934,32 +2129,71 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01049T': {
-          name: '立体库接口',
+        '08012': {
+          name: '08012',
+          x: 341,
+          y: 778,
+          groupId: 'G_08011_08012',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '08021': {
+          name: '08021',
           x: 240,
           y: 778,
           showTray: true,
+          groupId: 'G_08021_08022',
           motorStatus: true,
           sensorStatus: true,
           trayId: 'T-202502',
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01050T': {
-          name: '立体库接口',
+        '08022': {
+          name: '08022',
+          x: 240,
+          y: 778,
+          showTray: true,
+          groupId: 'G_08021_08022',
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '08018': {
+          name: '08018',
           x: 266,
           y: 778,
           showTray: true,
+          groupId: 'G_08018_08019',
           motorStatus: true,
           sensorStatus: false,
           trayId: 'T-202502',
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01051T': {
-          name: '立体库接口',
+        '08019': {
+          name: '08019',
+          x: 266,
+          y: 778,
+          showTray: true,
+          groupId: 'G_08018_08019',
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '09010': {
+          name: '09010',
           x: 165,
           y: 778,
+          groupId: 'G_09010_09011',
           showTray: true,
           motorStatus: true,
           sensorStatus: true,
@@ -1967,10 +2201,23 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
-        '01052T': {
-          name: '立体库接口',
+        '09011': {
+          name: '09011',
+          x: 165,
+          y: 778,
+          groupId: 'G_09010_09011',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        '09007': {
+          name: '09007',
           x: 191,
           y: 778,
+          groupId: 'G_09007_09008',
           showTray: true,
           motorStatus: true,
           sensorStatus: false,
@@ -1978,8 +2225,21 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
+        '09008': {
+          name: '09008',
+          x: 191,
+          y: 778,
+          groupId: 'G_09007_09008',
+          showTray: true,
+          motorStatus: true,
+          sensorStatus: false,
+          trayId: 'T-202502',
+          destination: '成品库',
+          plcAddress: 'DB1.DBX0.3'
+        },
+        // 以下为预热第一排的光电信号
         '01053T': {
-          name: '立体库接口',
+          name: '立体库接口-11',
           x: 1195,
           y: 735,
           motorStatus: false,
@@ -1989,7 +2249,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01054T': {
-          name: '立体库接口',
+          name: '立体库接口-12',
           x: 1220,
           y: 735,
           motorStatus: false,
@@ -1999,7 +2259,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01055T': {
-          name: '立体库接口',
+          name: '立体库接口-21',
           x: 1120,
           y: 735,
           motorStatus: false,
@@ -2009,7 +2269,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01056T': {
-          name: '立体库接口',
+          name: '立体库接口-22',
           x: 1145,
           y: 735,
           motorStatus: false,
@@ -2019,7 +2279,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01057T': {
-          name: '立体库接口',
+          name: '立体库接口-31',
           x: 1048,
           y: 735,
           motorStatus: false,
@@ -2029,7 +2289,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01058T': {
-          name: '立体库接口',
+          name: '立体库接口-32',
           x: 1073,
           y: 735,
           motorStatus: false,
@@ -2039,7 +2299,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01059T': {
-          name: '立体库接口',
+          name: '立体库接口-41',
           x: 973,
           y: 735,
           motorStatus: false,
@@ -2049,7 +2309,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01060T': {
-          name: '立体库接口',
+          name: '立体库接口-42',
           x: 998,
           y: 735,
           motorStatus: false,
@@ -2059,7 +2319,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01061T': {
-          name: '立体库接口',
+          name: '立体库接口-51',
           x: 900,
           y: 735,
           motorStatus: false,
@@ -2069,7 +2329,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01062T': {
-          name: '立体库接口',
+          name: '立体库接口-52',
           x: 925,
           y: 735,
           motorStatus: false,
@@ -2079,7 +2339,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01063T': {
-          name: '立体库接口',
+          name: '立体库接口-61',
           x: 828,
           y: 735,
           motorStatus: false,
@@ -2089,7 +2349,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01064T': {
-          name: '立体库接口',
+          name: '立体库接口-62',
           x: 853,
           y: 735,
           motorStatus: false,
@@ -2099,7 +2359,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01065T': {
-          name: '立体库接口',
+          name: '立体库接口-71',
           x: 753,
           y: 735,
           motorStatus: false,
@@ -2109,7 +2369,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01066T': {
-          name: '立体库接口',
+          name: '立体库接口-72',
           x: 778,
           y: 735,
           motorStatus: false,
@@ -2119,7 +2379,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01067T': {
-          name: '立体库接口',
+          name: '立体库接口-81',
           x: 680,
           y: 735,
           motorStatus: false,
@@ -2129,7 +2389,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01068T': {
-          name: '立体库接口',
+          name: '立体库接口-82',
           x: 705,
           y: 735,
           motorStatus: false,
@@ -2139,7 +2399,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01069T': {
-          name: '立体库接口',
+          name: '立体库接口-91',
           x: 606,
           y: 735,
           motorStatus: false,
@@ -2149,7 +2409,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01070T': {
-          name: '立体库接口',
+          name: '立体库接口-92',
           x: 631,
           y: 735,
           motorStatus: false,
@@ -2159,7 +2419,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01071T': {
-          name: '立体库接口',
+          name: '立体库接口-101',
           x: 530,
           y: 735,
           motorStatus: false,
@@ -2169,7 +2429,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01072T': {
-          name: '立体库接口',
+          name: '立体库接口-102',
           x: 556,
           y: 735,
           motorStatus: false,
@@ -2179,7 +2439,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01073T': {
-          name: '立体库接口',
+          name: '立体库接口-111',
           x: 460,
           y: 735,
           motorStatus: false,
@@ -2189,7 +2449,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01074T': {
-          name: '立体库接口',
+          name: '立体库接口-112',
           x: 486,
           y: 735,
           motorStatus: false,
@@ -2199,7 +2459,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01075T': {
-          name: '立体库接口',
+          name: '立体库接口-121',
           x: 386,
           y: 735,
           motorStatus: false,
@@ -2209,7 +2469,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01076T': {
-          name: '立体库接口',
+          name: '立体库接口-122',
           x: 411,
           y: 735,
           motorStatus: false,
@@ -2219,7 +2479,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01077T': {
-          name: '立体库接口',
+          name: '立体库接口-131',
           x: 315,
           y: 735,
           motorStatus: false,
@@ -2229,7 +2489,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01078T': {
-          name: '立体库接口',
+          name: '立体库接口-132',
           x: 341,
           y: 735,
           motorStatus: false,
@@ -2239,7 +2499,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01079T': {
-          name: '立体库接口',
+          name: '立体库接口-141',
           x: 240,
           y: 735,
           motorStatus: false,
@@ -2249,7 +2509,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01080T': {
-          name: '立体库接口',
+          name: '立体库接口-142',
           x: 266,
           y: 735,
           motorStatus: false,
@@ -2259,7 +2519,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01081T': {
-          name: '立体库接口',
+          name: '立体库接口-151',
           x: 165,
           y: 735,
           motorStatus: false,
@@ -2269,7 +2529,7 @@ export default {
           plcAddress: 'DB1.DBX0.3'
         },
         '01082T': {
-          name: '立体库接口',
+          name: '立体库接口-152',
           x: 191,
           y: 735,
           motorStatus: false,
@@ -2278,6 +2538,8 @@ export default {
           destination: '成品库',
           plcAddress: 'DB1.DBX0.3'
         },
+        // 以上为预热第一排的光电信号
+        // 以下为预热第二排的光电信号
         '01083T': {
           name: '立体库接口',
           x: 1195,
@@ -3302,9 +3564,6 @@ export default {
     unreadAlarms() {
       return this.alarmLogs.filter((log) => log.unread).length;
     },
-    filteredQueues() {
-      return this.queues.filter((q) => q.id !== 15);
-    },
     selectedQueue() {
       return this.queues[this.selectedQueueIndex];
     },
@@ -3339,8 +3598,8 @@ export default {
   },
   mounted() {
     this.initializeMarkers();
-    // 生成分组索引并冻结以提升性能
     this.buildGroupIndex();
+    this.initWebSocketServer();
   },
   watch: {
     // 监听上货区 (ID: 1)
@@ -3678,8 +3937,9 @@ export default {
           if (!isNaN(x) && !isNaN(y)) {
             marker.style.left = `${imageOffsetX + x * scaleX}px`;
             marker.style.top = `${imageOffsetY + y * scaleY}px`;
-            // 高度跟随图片缩放比例
-            marker.style.height = `${baseMarkerHeight * scaleY}px`;
+            if (!marker.dataset.compact) {
+              marker.style.height = `${baseMarkerHeight * scaleY}px`;
+            }
           }
         });
 
@@ -3712,6 +3972,7 @@ export default {
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.updateMarkerPositions);
+      this._removeWebSocketIpcListeners();
     },
     // 根据PLC数值更新小车位置
     updateCartPositionByValue(cartId, value) {
@@ -4316,6 +4577,139 @@ export default {
       this.alarmLogs.forEach((log) => {
         log.unread = false;
       });
+    },
+    // ============ PDA WebSocket 相关 ============
+    initWebSocketServer() {
+      try {
+        // 先移除旧监听，避免重复注册导致一次扫码触发多次提示
+        this._removeWebSocketIpcListeners();
+        this._wsStatusHandler = (event, status) => {
+          this.wsServerStatus = status;
+        };
+        this._mobileScanCodeHandler = (event, data) => {
+          this.handleMobileScanCode(data);
+        };
+        this._mobileTrayDataChangedHandler = (event, data) => {
+          this.handleMobileTrayDataChanged(data);
+        };
+        ipcRenderer.on('websocket-status-update', this._wsStatusHandler);
+        ipcRenderer.on('mobile-scan-code', this._mobileScanCodeHandler);
+        ipcRenderer.on(
+          'mobile-tray-data-changed',
+          this._mobileTrayDataChangedHandler
+        );
+        ipcRenderer.send('get-websocket-status');
+        if (this._wsStatusInterval) clearInterval(this._wsStatusInterval);
+        this._wsStatusInterval = setInterval(() => {
+          ipcRenderer.send('get-websocket-status');
+        }, 5000);
+      } catch (error) {
+        console.error('PDA WebSocket 初始化失败:', error);
+      }
+    },
+    _removeWebSocketIpcListeners() {
+      if (this._wsStatusHandler) {
+        ipcRenderer.removeListener(
+          'websocket-status-update',
+          this._wsStatusHandler
+        );
+        this._wsStatusHandler = null;
+      }
+      if (this._mobileScanCodeHandler) {
+        ipcRenderer.removeListener(
+          'mobile-scan-code',
+          this._mobileScanCodeHandler
+        );
+        this._mobileScanCodeHandler = null;
+      }
+      if (this._mobileTrayDataChangedHandler) {
+        ipcRenderer.removeListener(
+          'mobile-tray-data-changed',
+          this._mobileTrayDataChangedHandler
+        );
+        this._mobileTrayDataChangedHandler = null;
+      }
+      if (this._wsStatusInterval) {
+        clearInterval(this._wsStatusInterval);
+        this._wsStatusInterval = null;
+      }
+    },
+    handleMobileScanCode(data) {
+      const { method, trayCode, source, clientId } = data;
+      try {
+        if (this[method] && typeof this[method] === 'function') {
+          this[method](trayCode, source);
+          this.addLog(`PDA扫码处理: ${method}(${trayCode})`, 'running');
+          ipcRenderer.send('send-scan-result-to-mobile', {
+            clientId: clientId,
+            result: {
+              success: true,
+              message: '扫码处理成功',
+              data: { trayCode, location: method }
+            }
+          });
+        } else {
+          throw new Error(`方法 ${method} 不存在`);
+        }
+      } catch (error) {
+        console.error('处理PDA扫码失败:', error);
+        this.addLog(`PDA扫码处理失败: ${error.message}`, 'alarm');
+        ipcRenderer.send('send-scan-result-to-mobile', {
+          clientId: clientId,
+          result: {
+            success: false,
+            message: `处理失败: ${error.message}`,
+            data: null
+          }
+        });
+      }
+    },
+    /** PDA 扫码添加托盘到上货区（由 handleMobileScanCode 调用） */
+    addTrayFromPda(trayCode, source) {
+      const shanghuoQueue = this.queues.find((q) => q.queueName === '上货区');
+      if (!shanghuoQueue) {
+        throw new Error('未找到上货区队列');
+      }
+      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      const newTray = {
+        trayCode: trayCode,
+        trayTime: currentTime,
+        batchId: 'PDA',
+        isTerile: 1,
+        state: '0',
+        sendTo: '',
+        sequenceNumber: null
+      };
+      if (!Array.isArray(shanghuoQueue.trayInfo)) {
+        shanghuoQueue.trayInfo = [];
+      }
+      shanghuoQueue.trayInfo.push(newTray);
+      this.updateQueueTrays(shanghuoQueue.id, shanghuoQueue.trayInfo);
+      this.addLog(
+        `PDA扫码托盘 ${trayCode} 已加入上货区（来源: ${source}）`,
+        'running'
+      );
+      this.$message.success(`托盘 ${trayCode} 已加入上货区`);
+    },
+    handleMobileTrayDataChanged(data) {
+      console.log('收到移动端托盘数据变更通知:', data);
+      // 可按需重新加载队列数据
+    },
+    showMobileConnectionStatus() {
+      this.mobileConnectionDialogVisible = true;
+      this.refreshMobileConnections();
+    },
+    refreshMobileConnections() {
+      this.refreshingConnections = true;
+      ipcRenderer.send('get-websocket-clients');
+      ipcRenderer.once('websocket-clients-list', (event, clients) => {
+        this.mobileConnections = clients || [];
+        this.refreshingConnections = false;
+      });
+    },
+    formatConnectionTime(timeValue) {
+      if (!timeValue) return '--';
+      return moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
     }
   }
 };

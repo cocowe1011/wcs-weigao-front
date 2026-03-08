@@ -27,6 +27,8 @@ logger.transports.file.file = app.getPath('userData') + '/app.log';
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+// PDA/移动端 WebSocket 服务端
+const AlarmWebSocketServer = require('@/utils/WebSocketServer');
 var appTray = null;
 let closeStatus = false;
 var conn = new nodes7();
@@ -154,6 +156,8 @@ if (!gotTheLock) {
 global.sharedObject = {
   userInfo: {}
 };
+
+let alarmWebSocketServer = null;
 let mainWindow = null;
 app.on('ready', () => {
   // Create the browser window.
@@ -180,6 +184,16 @@ app.on('ready', () => {
     mainWindow.loadURL('app://./index.html');
     // mainWindow.webContents.openDevTools();
   }
+
+  // PDA WebSocket 服务器：移动端连接电脑端
+  try {
+    alarmWebSocketServer = new AlarmWebSocketServer(8081);
+    alarmWebSocketServer.setMainWindow(mainWindow);
+    logger.info('PDA WebSocket 服务器已启动，端口: 8081');
+  } catch (error) {
+    logger.error('PDA WebSocket 服务器启动失败:', error);
+  }
+
   ipcMain.on('logStatus', (event, arg) => {
     console.log(arg);
     if (arg === 'login') {
@@ -232,6 +246,34 @@ app.on('ready', () => {
       writeStrArr
     };
   });
+
+  // ============ PDA WebSocket IPC ============
+  ipcMain.on('get-websocket-status', (event) => {
+    if (alarmWebSocketServer) {
+      event.reply('websocket-status-update', alarmWebSocketServer.getStatus());
+    }
+  });
+  ipcMain.on('get-websocket-clients', (event) => {
+    if (alarmWebSocketServer) {
+      event.reply(
+        'websocket-clients-list',
+        alarmWebSocketServer.getConnectedClients()
+      );
+    } else {
+      event.reply('websocket-clients-list', []);
+    }
+  });
+  ipcMain.on('send-scan-result-to-mobile', (event, data) => {
+    if (alarmWebSocketServer) {
+      alarmWebSocketServer.sendScanResult(data.clientId, data.result);
+    }
+  });
+  ipcMain.on('push-alarm-to-mobile', (event, alarmData) => {
+    if (alarmWebSocketServer) {
+      alarmWebSocketServer.pushAlarmToMobile(alarmData);
+    }
+  });
+
   // 定义自定义事件
   ipcMain.on('max-window', (event, arg) => {
     if (arg === 'max-window') {
