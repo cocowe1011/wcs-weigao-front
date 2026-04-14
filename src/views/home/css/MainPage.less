@@ -17,7 +17,7 @@
     min-height: 0;
     overflow: hidden;
     .side-info-panel {
-      width: 420px;
+      width: 380px;
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -339,16 +339,8 @@
         .floor-left {
           .floor-image-container {
             flex: 1;
-            /* 1. 背景：深空蓝 + 极淡的科技网格 */
-            /* 这种背景最适合衬托透明底的工业设备图 */
-            background-color: #0b1a26;
-            background-image: 
-                linear-gradient(rgba(10, 197, 168, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(10, 197, 168, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            
-            /* 布局与边框 */
-            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
             padding: 5px;
             display: flex;
             align-items: center;
@@ -357,10 +349,6 @@
             min-height: 0;
             height: calc(100% - 50px);
             position: relative;
-            
-            /* 容器内阴影，增加深邃感 */
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
-
             .image-wrapper {
               position: relative;
               width: 100%;
@@ -368,22 +356,14 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              
-              /* 2. 移除所有额外的背景色，只展示网格 */
-              background: transparent;
-              box-shadow: none;
-
+              background-color: #e4e4e4;
               .floor-image {
+                display: block;
                 max-width: 100%;
                 max-height: 100%;
+                width: auto;
+                height: auto;
                 object-fit: contain;
-                
-                /* 3. 【关键】移除所有特效，原样展示透明图片 */
-                filter: none;
-                mix-blend-mode: normal;
-                
-                /* 稍微加一点投影，让设备更有立体感浮在网格上 */
-                filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
               }
               
               /* ================== 新增：设备状态监控节点样式 ================== */
@@ -700,30 +680,33 @@
               z-index: 2;
               .data-panel {
                 position: absolute;
-                background: linear-gradient(135deg, #0e1a27, #3c4c63);
+                background: linear-gradient(135deg, #023842 0%, #0D2026 100%);
                 border: 1px solid rgba(64, 158, 255, 0.3);
-                border-radius: 8px;
+                border-radius: 5px;
                 padding: 12px;
                 width: 170px;
-                // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
                 opacity: 0;
                 transition: all 0.3s ease;
                 pointer-events: none;
                 .data-panel-header {
-                  font-size: 14px;
-                  color: #409eff;
-                  margin-bottom: 6px;
-                  padding-bottom: 6px;
-                  border-bottom: 1px solid rgba(64, 158, 255, 0.2);
+                  margin: -12px -12px 6px -12px;
+                  text-align: center;
+                  padding: 4px 0;
+                  font-size: 11px;
+                  color: white;
+                  background-color: rgba(0, 0, 0, 0.2);
+                  font-weight: bold;
                 }
                 .data-panel-content {
                   font-size: 12px;
                   .data-panel-row {
                     display: flex;
                     justify-content: space-between;
-                    color: rgba(255, 255, 255, 0.9);
+                    color: greenyellow;
                     .data-panel-label {
-                      color: rgba(255, 255, 255, 0.6);
+                      color: #fff;
                       font-size: 12px;
                     }
                   }
@@ -832,6 +815,11 @@
             /* 悬停时显示面板 */
             .marker-with-panel:hover .data-panel:not(.always-show) {
               opacity: 1;
+            }
+            .marker-with-panel :deep(.el-input__inner) {
+              background-color: rgba(255, 255, 255, 0.15);
+              border-color: rgba(255, 255, 255, 0.2);
+              color: #fff;
             }
 
             /* 预热房选择样式 */

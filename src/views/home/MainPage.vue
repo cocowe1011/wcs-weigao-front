@@ -172,6 +172,184 @@
             </div>
             <div class="floor-image-container" ref="floorImageContainer">
               <div class="image-wrapper">
+                <!-- 面板A：批次订单 + 当前处理托盘信息 -->
+                <div class="marker-with-panel" data-x="1490" data-y="100">
+                  <div
+                    class="data-panel position-left always-show"
+                    style="width: 170px; padding: 10px; z-index: 100"
+                  >
+                    <div class="data-panel-header">批次订单信息</div>
+                    <div class="data-panel-content">
+                      <!-- 第一部分：当前执行批次概览 -->
+                      <template v-if="currentExecutingBatch">
+                        <div class="data-panel-row">
+                          <span class="data-panel-label">批次号：</span>
+                          <span
+                            style="font-size: 11px; word-break: break-all"
+                            >{{ currentExecutingBatch.batch.batchNo }}</span
+                          >
+                        </div>
+                        <div class="data-panel-row">
+                          <span class="data-panel-label">状态：</span>
+                          <span
+                            :style="{
+                              color:
+                                currentExecutingBatch.batch.status === '2'
+                                  ? '#67c23a'
+                                  : '#409eff'
+                            }"
+                          >
+                            {{
+                              currentExecutingBatch.batch.status === '1'
+                                ? '已确认'
+                                : '生产中'
+                            }}
+                          </span>
+                        </div>
+                        <div class="data-panel-row">
+                          <span class="data-panel-label">托盘数：</span>
+                          <span>{{
+                            (currentExecutingBatch.pallets || []).length
+                          }}</span>
+                        </div>
+                      </template>
+                      <div
+                        v-else
+                        class="data-panel-row"
+                        style="color: #909399; font-size: 11px"
+                      >
+                        暂无运行批次
+                      </div>
+                      <!-- 分割线 -->
+                      <div
+                        style="border-top: 1px dashed #dcdfe6; margin: 6px 0"
+                      ></div>
+                      <!-- 第二部分：最近处理托盘快照 -->
+                      <div class="data-panel-row">
+                        <span class="data-panel-label">虚拟ID：</span>
+                        <span style="font-size: 11px; word-break: break-all">{{
+                          lastProcessedPallet.virtualId || '--'
+                        }}</span>
+                      </div>
+                      <div class="data-panel-row">
+                        <span class="data-panel-label">货物名称：</span>
+                        <span style="font-size: 11px">{{
+                          lastProcessedPallet.cargoName || '--'
+                        }}</span>
+                      </div>
+                      <div
+                        class="data-panel-row"
+                        style="
+                          flex-direction: column;
+                          align-items: flex-start;
+                          padding-bottom: 0;
+                        "
+                      >
+                        <span
+                          class="data-panel-label"
+                          style="margin-bottom: 4px"
+                        >
+                          条码({{ lastProcessedPallet.barcodes.length }}):
+                        </span>
+                        <div
+                          style="
+                            max-height: 56px;
+                            overflow-y: auto;
+                            width: 100%;
+                            background: #f5f7fa;
+                            padding: 4px;
+                            border-radius: 4px;
+                            font-size: 11px;
+                            line-height: 1.6;
+                            color: #606266;
+                            box-sizing: border-box;
+                          "
+                        >
+                          <div
+                            v-for="(code, idx) in lastProcessedPallet.barcodes"
+                            :key="idx"
+                          >
+                            {{ code }}
+                          </div>
+                          <div
+                            v-if="lastProcessedPallet.barcodes.length === 0"
+                            style="color: #909399; text-align: center"
+                          >
+                            暂无条码
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 面板B：已发送进度 + 目的地展示 -->
+                <div class="marker-with-panel" data-x="1480" data-y="450">
+                  <div
+                    class="data-panel position-left always-show"
+                    style="width: 90px; padding: 10px; z-index: 100"
+                  >
+                    <div class="data-panel-header">上货进度 / 目的地</div>
+                    <div class="data-panel-content">
+                      <div class="data-panel-row">
+                        <span class="data-panel-label">已发送：</span>
+                        <span>
+                          {{
+                            currentExecutingBatch
+                              ? (currentExecutingBatch.pallets || []).filter(
+                                  (p) => p.virtualId
+                                ).length
+                              : 0
+                          }}
+                          / 28
+                        </span>
+                      </div>
+                      <div
+                        class="data-panel-row"
+                        style="
+                          flex-direction: column;
+                          align-items: flex-start;
+                          margin-top: 6px;
+                        "
+                      >
+                        <span
+                          class="data-panel-label"
+                          style="margin-bottom: 4px"
+                          >目的地：</span
+                        >
+                        <el-select
+                          :value="
+                            currentDestination
+                              ? currentDestination.destinationCode
+                              : ''
+                          "
+                          size="mini"
+                          style="width: 100%"
+                          disabled
+                          placeholder="PDA未设置"
+                        >
+                          <el-option
+                            v-for="n in 15"
+                            :key="n"
+                            :label="String(3200 + n)"
+                            :value="String(3200 + n)"
+                          ></el-option>
+                        </el-select>
+                        <span
+                          v-if="!currentDestination"
+                          style="
+                            font-size: 11px;
+                            color: #e6a23c;
+                            margin-top: 3px;
+                          "
+                        >
+                          目的地未设置（请通过PDA设置）
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <img
                   src="@/assets/weigao-img/image.png"
                   alt="一楼平面图"
@@ -641,6 +819,136 @@
         </div>
         <div class="test-panel-content">
           <div class="test-section">
+            <span class="test-label">上货测试:</span>
+            <div style="margin-top: 10px">
+              <el-button
+                type="primary"
+                size="small"
+                @click="triggerVirtualIdRequest"
+              >
+                触发写虚拟ID请求
+              </el-button>
+            </div>
+          </div>
+          <!-- 扫码模拟（01002 / 01006） -->
+          <div class="test-section">
+            <span class="test-label">扫码模拟:</span>
+            <div style="margin-top: 8px">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  margin-bottom: 8px;
+                "
+              >
+                <span
+                  style="font-size: 12px; color: #606266; white-space: nowrap"
+                  >01002:</span
+                >
+                <el-input
+                  v-model="scanInput01002"
+                  size="mini"
+                  placeholder="输入货物 uid"
+                  style="flex: 1"
+                  @keyup.enter.native="handleScanConfirm('01002')"
+                  clearable
+                ></el-input>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="handleScanConfirm('01002')"
+                  >确认</el-button
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px">
+                <span
+                  style="font-size: 12px; color: #606266; white-space: nowrap"
+                  >01006:</span
+                >
+                <el-input
+                  v-model="scanInput01006"
+                  size="mini"
+                  placeholder="输入货物 uid"
+                  style="flex: 1"
+                  @keyup.enter.native="handleScanConfirm('01006')"
+                  clearable
+                ></el-input>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="handleScanConfirm('01006')"
+                  >确认</el-button
+                >
+              </div>
+            </div>
+          </div>
+          <!-- 发送目的地 -->
+          <div class="test-section">
+            <span class="test-label">发送目的地:</span>
+            <div style="margin-top: 8px">
+              <el-button
+                type="warning"
+                size="small"
+                @click="handleSendDestination"
+              >
+                请求发送目的地
+              </el-button>
+            </div>
+          </div>
+          <!-- 上货前电机信号 -->
+          <div class="test-section">
+            <span class="test-label">上货前电机信号:</span>
+            <div
+              style="
+                margin-top: 8px;
+                font-size: 11px;
+                color: #909399;
+                margin-bottom: 6px;
+              "
+            >
+              触发后将上货区第一个托盘移入对应预热队列
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px">
+              <el-button
+                v-for="q in preHeatQueues"
+                :key="q.id"
+                size="mini"
+                type="success"
+                plain
+                @click="triggerPreHeatMotorSignal(q)"
+              >
+                {{ q.queueName }}
+              </el-button>
+            </div>
+          </div>
+          <!-- 灭菌后预热信号 -->
+          <div class="test-section">
+            <span class="test-label">灭菌后预热信号:</span>
+            <div
+              style="
+                margin-top: 8px;
+                font-size: 11px;
+                color: #909399;
+                margin-bottom: 6px;
+              "
+            >
+              触发后删除对应灭菌队列的第一个托盘
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px">
+              <el-button
+                v-for="q in sterilizationQueues"
+                :key="q.id"
+                size="mini"
+                type="danger"
+                plain
+                @click="triggerSterilizationMotorSignal(q)"
+              >
+                {{ q.queueName }}
+              </el-button>
+            </div>
+          </div>
+          <div class="test-section">
             <span class="test-label">小车位置测试:</span>
             <div class="cart-position-test-container">
               <div class="cart-position-group">
@@ -937,6 +1245,18 @@ export default {
   },
   data() {
     return {
+      // ---- 轮询数据（批次 + 目的地） ----
+      currentExecutingBatch: null, // BatchDetailDTO: { batch, pallets }
+      currentDestination: null, // ProduceBatchDestination: { destinationCode, ... }
+      // ---- 测试面板扫码输入 ----
+      scanInput01002: '',
+      scanInput01006: '',
+      // ---- 面板A-第二部分：最近一次触发虚拟ID后更新，不被轮询覆盖 ----
+      lastProcessedPallet: {
+        virtualId: '',
+        cargoName: '',
+        barcodes: []
+      },
       nowScanTrayInfo: {},
       isDataReady: false, // 添加数据准备就绪标志位
       showTestPanel: false,
@@ -1258,8 +1578,8 @@ export default {
           x: 1300,
           y: 510,
           groupId: 'G_01020A_01020B',
-          showTray: true,
-          motorStatus: true,
+          showTray: false,
+          motorStatus: false,
           sensorStatus: false,
           trayId: 'T-202502',
           destination: '成品库',
@@ -1270,8 +1590,8 @@ export default {
           x: 1300,
           y: 510,
           groupId: 'G_01020A_01020B',
-          showTray: true,
-          motorStatus: true,
+          showTray: false,
+          motorStatus: false,
           sensorStatus: false,
           trayId: 'T-202502',
           destination: '成品库',
@@ -3594,12 +3914,26 @@ export default {
         seenGroups.add(device.groupId);
         return true;
       });
+    },
+    // 预热(Yxxx)队列列表，用于上货前电机信号按钮
+    preHeatQueues() {
+      return this.queues.filter((q) => q.queueName.startsWith('Y'));
+    },
+    // 灭菌(xxxx)队列列表，用于灭菌后预热信号按钮
+    sterilizationQueues() {
+      return this.queues.filter(
+        (q) => !q.queueName.startsWith('Y') && q.queueName !== '上货区'
+      );
     }
   },
   mounted() {
     this.initializeMarkers();
+    this.loadQueueInfoFromDatabase();
     this.buildGroupIndex();
     this.initWebSocketServer();
+    // 启动批次+目的地轮询
+    this.pollBatchAndDestination();
+    this._pollBatchTimer = setInterval(this.pollBatchAndDestination, 5000);
   },
   watch: {
     // 监听上货区 (ID: 1)
@@ -3615,6 +3949,250 @@ export default {
     }
   },
   methods: {
+    // ================= 批次+目的地轮询 =================
+    async pollBatchAndDestination() {
+      try {
+        const batchRes = await HttpUtil.get(
+          '/produce_batch/getCurrentExecuting'
+        );
+        if (batchRes && batchRes.data) {
+          this.currentExecutingBatch = batchRes.data;
+          const batchId = batchRes.data.batch.id;
+          const destRes = await HttpUtil.get(
+            `/produce_batch_destination/current?batchId=${batchId}`
+          );
+          this.currentDestination = (destRes && destRes.data) || null;
+        } else {
+          this.currentExecutingBatch = null;
+          this.currentDestination = null;
+        }
+      } catch (e) {
+        console.error('轮询批次/目的地失败:', e);
+      }
+    },
+
+    // ================= 扫码模拟 =================
+    async handleScanConfirm(location) {
+      const uid =
+        location === '01002'
+          ? this.scanInput01002.trim()
+          : this.scanInput01006.trim();
+      if (!uid) {
+        this.$message.warning('请输入货物 uid');
+        return;
+      }
+      try {
+        const res = await HttpUtil.post('/produce_goods/markScanned', {
+          uid,
+          scanLocation: location
+        });
+        if (res && res.code === '200') {
+          this.$message.success(`[${location}] uid ${uid} 已标记为已扫码`);
+          this.addLog(`扫码模拟[${location}]: uid=${uid} 已扫码`, 'running');
+          if (location === '01002') {
+            this.scanInput01002 = '';
+          } else {
+            this.scanInput01006 = '';
+          }
+        } else {
+          this.$message.error(res?.message || '扫码失败，请重试');
+        }
+      } catch (e) {
+        console.error('扫码模拟失败:', e);
+        this.$message.error('网络异常，请重试');
+      }
+    },
+
+    // ================= 发送目的地 =================
+    async handleSendDestination() {
+      if (!this.currentExecutingBatch) {
+        this.$message.warning('暂无运行中的批次，请先通过 PDA 确认批次');
+        return;
+      }
+      if (
+        !this.currentDestination ||
+        !this.currentDestination.destinationCode
+      ) {
+        this.$message.warning('当前批次未设置目的地，请先通过 PDA 设置目的地');
+        return;
+      }
+      const batchId = this.currentExecutingBatch.batch.id;
+      try {
+        // 1. 单独查询当前批次最新托盘列表
+        const listRes = await HttpUtil.get(
+          `/produce_pallet/listByBatchId?batchId=${batchId}`
+        );
+        if (!listRes || !listRes.data) {
+          this.$message.error('查询托盘列表失败，请重试');
+          return;
+        }
+        const pallets = listRes.data;
+        // 2. 遍历找第一个没有发送过目的地的托盘（send_status=0）
+        const target = pallets.find(
+          (p) => !p.sendStatus || p.sendStatus === '0'
+        );
+        if (!target) {
+          this.$message.warning('当前批次所有托盘均已发送过目的地');
+          return;
+        }
+        // 3. 调后端发送目的地接口
+        const res = await HttpUtil.post('/produce_pallet/sendDestination', {
+          palletId: String(target.id),
+          virtualId: target.virtualId,
+          destinationCode: this.currentDestination.destinationCode
+        });
+        if (res && res.code === '200') {
+          const updated = res.data;
+          const trayStatusText =
+            {
+              0: '未扫描',
+              1: '部分扫描完成',
+              2: '全部扫描完成'
+            }[updated.trayStatus] || '未知状态';
+          this.addLog(
+            `发送目的地: 托盘 ${updated.palletNo || updated.id}(virtualId=${
+              updated.virtualId
+            }) → 目的地=${updated.sendDestinationCode}，扫码状态=${
+              updated.trayStatus
+            }(${trayStatusText})`,
+            'running'
+          );
+          this.$message.success(`目的地已发送: ${updated.sendDestinationCode}`);
+        } else {
+          this.$message.error(res?.message || '发送目的地失败，请重试');
+        }
+      } catch (e) {
+        console.error('发送目的地失败:', e);
+        this.$message.error('操作失败，请重试');
+      }
+    },
+
+    // ================= 上货信息面板 =================
+    async triggerVirtualIdRequest() {
+      // 1. 校验：必须有运行中的批次
+      if (!this.currentExecutingBatch) {
+        this.$message.warning('暂无运行中的批次，请先通过 PDA 确认批次');
+        return;
+      }
+
+      const pallets = this.currentExecutingBatch.pallets || [];
+
+      // 2. 校验：已发送数量未超限
+      const sentCount = pallets.filter((p) => p.virtualId).length;
+      if (sentCount >= 28) {
+        this.$message.warning(
+          '本批次已完成 28 个托盘上货，请等待 PDA 重新设置目的地'
+        );
+        return;
+      }
+
+      // 3. 找到当前批次中第一个没有虚拟ID的托盘
+      const targetPallet = pallets.find((p) => !p.virtualId);
+      if (!targetPallet) {
+        this.$message.warning('当前批次所有托盘已分配虚拟ID，无可处理托盘');
+        return;
+      }
+
+      // 4. 生成唯一虚拟ID（时间戳，天然不重复）
+      const virtualId = 'VID' + Date.now();
+
+      // 5. 调接口持久化到数据库
+      try {
+        const res = await HttpUtil.post('/produce_pallet/assignVirtualId', {
+          palletId: String(targetPallet.id),
+          virtualId: virtualId
+        });
+        if (!res || !res.data) {
+          this.$message.error('分配虚拟ID失败，请重试');
+          return;
+        }
+        const updatedPallet = res.data; // PalletDetailDTO
+
+        // 6. 更新面板A-第二部分（最近处理托盘快照）
+        const goods = updatedPallet.goods || [];
+        this.lastProcessedPallet = {
+          virtualId: updatedPallet.virtualId,
+          cargoName: goods.length > 0 ? goods[0].productName : '--',
+          barcodes: goods.map((g) => g.uid)
+        };
+
+        // 7. 将托盘追加到上货区队列（前端展示）
+        const trayEntry = {
+          palletId: String(updatedPallet.id),
+          trayCode: updatedPallet.palletNo || 'P' + updatedPallet.id,
+          virtualId: updatedPallet.virtualId,
+          trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+          batchId: String(updatedPallet.batchId),
+          destination: this.currentDestination
+            ? this.currentDestination.destinationCode
+            : '',
+          sendStatus: '0',
+          state: '1',
+          barcodes: this.lastProcessedPallet.barcodes
+        };
+        this.queues[0].trayInfo.push(trayEntry);
+
+        // 8. 更新本地批次缓存中该托盘的 virtualId（避免轮询刷新前重复分配）
+        const localPallet = pallets.find((p) => p.id === targetPallet.id);
+        if (localPallet) {
+          this.$set(localPallet, 'virtualId', virtualId);
+        }
+
+        this.$message.success(
+          `托盘 ${
+            updatedPallet.palletNo || updatedPallet.id
+          } 已分配虚拟ID: ${virtualId}`
+        );
+      } catch (e) {
+        console.error('触发写虚拟ID请求失败:', e);
+        this.$message.error('操作失败，请重试');
+      }
+    },
+
+    // ================= 测试面板：电机信号模拟 =================
+    /**
+     * 上货前电机信号：将上货区第一个托盘移入指定预热(Yxxx)队列
+     * @param {Object} targetQueue - 目标预热队列对象
+     */
+    triggerPreHeatMotorSignal(targetQueue) {
+      const loadingArea = this.queues[0];
+      if (!loadingArea.trayInfo || loadingArea.trayInfo.length === 0) {
+        this.$message.warning(
+          `上货区暂无托盘，无法移入 ${targetQueue.queueName}`
+        );
+        return;
+      }
+      if (!Array.isArray(targetQueue.trayInfo)) {
+        this.$set(targetQueue, 'trayInfo', []);
+      }
+      const tray = loadingArea.trayInfo.splice(0, 1)[0];
+      targetQueue.trayInfo.push(tray);
+      this.addLog(
+        `[电机信号] 上货前电机触发(${targetQueue.queueName})：托盘 ${tray.trayCode} 从上货区移入 ${targetQueue.queueName}`
+      );
+      this.$message.success(
+        `托盘 ${tray.trayCode} 已从上货区移入 ${targetQueue.queueName}`
+      );
+    },
+
+    /**
+     * 灭菌后预热信号：删除指定灭菌(xxxx)队列的第一个托盘
+     * @param {Object} targetQueue - 目标灭菌队列对象
+     */
+    triggerSterilizationMotorSignal(targetQueue) {
+      if (!targetQueue.trayInfo || targetQueue.trayInfo.length === 0) {
+        this.$message.warning(`${targetQueue.queueName} 队列暂无托盘`);
+        return;
+      }
+      const tray = targetQueue.trayInfo.splice(0, 1)[0];
+      this.addLog(
+        `[电机信号] 灭菌后预热信号触发(${targetQueue.queueName})：托盘 ${tray.trayCode} 已从队列首位删除`
+      );
+      this.$message.success(
+        `${targetQueue.queueName} 队列托盘 ${tray.trayCode} 已删除`
+      );
+    },
+
     // ================= 分组索引构建 =================
     /**
      * 构建分组索引，并使用 Object.freeze 冻结以提升性能
@@ -3912,7 +4490,7 @@ export default {
         const carts = imageWrapper.querySelectorAll('.cart-container');
         // ============= 新增：获取设备节点 =============
         const nodes = imageWrapper.querySelectorAll(
-          '.device-signal-node, .preheating-room-marker'
+          '.device-signal-node, .preheating-room-marker, .marker-with-panel'
         );
         // ===========================================
 
@@ -3969,10 +4547,6 @@ export default {
         });
         // ================================================
       });
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.updateMarkerPositions);
-      this._removeWebSocketIpcListeners();
     },
     // 根据PLC数值更新小车位置
     updateCartPositionByValue(cartId, value) {
@@ -4710,6 +5284,14 @@ export default {
     formatConnectionTime(timeValue) {
       if (!timeValue) return '--';
       return moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateMarkerPositions);
+    this._removeWebSocketIpcListeners();
+    if (this._pollBatchTimer) {
+      clearInterval(this._pollBatchTimer);
+      this._pollBatchTimer = null;
     }
   }
 };
