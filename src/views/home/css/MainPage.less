@@ -117,7 +117,7 @@
               letter-spacing: 0px;
               color: rgba(255, 255, 255, 1);
               text-align: left;
-              font-size: 24px;
+              font-size: 20px;
               line-height: 28px;
               /* 添加省略号效果 */
               white-space: nowrap;
@@ -474,10 +474,11 @@
               position: absolute;
               /* 初始不可见，通过 v-if 控制，transform 用于定位微调 (向上偏移100% + 箭头高度) */
               transform: translate(-50%, -100%);
-              width: 320px;
+              width: 292px;
               background: #ffffff;
-              border-radius: 12px;
-              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+              border-radius: 10px;
+              border: 1px solid #e4e7ed;
+              box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
               padding: 0;
               z-index: 9999;
               display: flex;
@@ -490,11 +491,11 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 12px 16px;
-                border-bottom: 1px solid #eee;
+                padding: 10px 12px;
+                border-bottom: 1px solid #f0f2f5;
                 
                 .device-title {
-                  font-size: 16px;
+                  font-size: 14px;
                   font-weight: 700;
                   color: #2c3e50;
                 }
@@ -502,81 +503,85 @@
                 .close-btn {
                   cursor: pointer;
                   color: #999;
-                  font-size: 18px;
+                  font-size: 16px;
                   &:hover { color: #f56c6c; }
                 }
               }
 
-              .status-tiles {
-                display: flex;
-                padding: 16px;
-                gap: 12px;
-                
-                .status-tile {
-                  flex: 1;
-                  background: #f5f7fa;
-                  border-radius: 8px;
-                  padding: 12px;
+              .status-lines {
+                padding: 10px 12px 0 12px;
+
+                .status-line {
                   display: flex;
                   align-items: center;
-                  gap: 10px;
-                  border: 1px solid transparent;
-                  transition: all 0.3s;
+                  justify-content: space-between;
+                  border-radius: 6px;
+                  border: 1px solid #ebeef5;
+                  background: #f8fafc;
+                  padding: 6px 10px;
+                  line-height: 1.2;
 
-                  .icon-box {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 50%;
-                    background: #e4e7ed;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 18px;
+                  & + .status-line {
+                    margin-top: 6px;
+                  }
+
+                  .line-label {
+                    font-size: 12px;
+                    color: #606266;
+                  }
+
+                  .line-value {
+                    min-width: 44px;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    padding: 2px 8px;
+                    border-radius: 10px;
+                    background: #f0f2f5;
                     color: #909399;
-                    flex-shrink: 0;
                   }
+                }
 
-                  .text-box {
-                    .label { font-size: 10px; color: #909399; white-space: nowrap; }
-                    .value { font-size: 13px; font-weight: bold; color: #606266; white-space: nowrap; }
-                  }
+                & > .status-line.is-running,
+                & > .status-line.is-active {
+                  border-color: #d5f0df;
+                  background: #f3fbf6;
 
-                  /* 状态：运行/活跃 */
-                  &.is-running, &.is-active {
-                    background: #f0f9eb;
-                    border-color: #e1f3d8;
-                    .icon-box { background: #67c23a; color: #fff; }
-                    .text-box .value { color: #67c23a; }
+                  .line-value {
+                    color: #1f9d49;
+                    background: #e6f7ec;
                   }
+                }
 
-                  /* 状态：停止 */
-                  &.is-stopped {
-                    background: #fef0f0;
-                    border-color: #fde2e2;
-                    .icon-box { background: #f56c6c; color: #fff; }
-                    .text-box .value { color: #f56c6c; }
-                  }
-                  
-                   /* 状态：空 */
-                  &.is-empty {
-                     .text-box .value { color: #e6a23c; } /* 橙色提示无货 */
+                & > .status-line.is-stopped,
+                & > .status-line.is-empty {
+                  border-color: #f7d2d2;
+                  background: #fff4f4;
+
+                  .line-value {
+                    color: #d93030;
+                    background: #fde8e8;
                   }
                 }
               }
 
               .data-capsules {
-                padding: 0 16px 16px 16px;
+                padding: 10px 12px 12px 12px;
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+
+                .capsule-item + .capsule-item {
+                  margin-top: 6px;
+                }
 
                 .capsule-item {
                   display: flex;
                   align-items: center;
-                  background: #f2f6fc;
-                  border-radius: 20px;
-                  padding: 6px 12px;
-                  font-size: 12px;
+                  background: #f7f9fc;
+                  border: 1px solid #edf1f7;
+                  border-radius: 6px;
+                  padding: 5px 8px;
+                  font-size: 11px;
 
                   .capsule-label {
                     color: #909399;
@@ -599,65 +604,56 @@
             /* ============ 多设备横向排列弹窗样式 ============ */
             .popover-multi-device {
               width: auto;
-              min-width: 320px;
-              max-width: 800px;
+              min-width: 300px;
+              max-width: 760px;
 
               .devices-container {
                 display: flex;
                 flex-direction: row;
                 overflow-x: auto;
-                gap: 0;
 
                 .device-column {
                   flex-shrink: 0;
-                  min-width: 180px;
-                  padding: 12px;
+                  min-width: 168px;
+                  padding: 10px;
 
                   &.has-divider {
                     border-right: 1px solid #e4e7ed;
                   }
 
                   .device-name-header {
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
                     color: #2c3e50;
                     text-align: center;
-                    padding-bottom: 8px;
-                    margin-bottom: 8px;
+                    padding-bottom: 6px;
+                    margin-bottom: 6px;
                     border-bottom: 1px dashed #e4e7ed;
                   }
 
-                  .status-tiles {
-                    flex-direction: column;
+                  .status-lines {
                     padding: 0;
-                    gap: 8px;
 
-                    .status-tile {
-                      padding: 8px;
+                    .status-line {
+                      padding: 5px 8px;
 
-                      .icon-box {
-                        width: 28px;
-                        height: 28px;
-                        font-size: 14px;
+                      .line-label {
+                        font-size: 11px;
                       }
 
-                      .text-box {
-                        .label {
-                          font-size: 9px;
-                        }
-                        .value {
-                          font-size: 11px;
-                        }
+                      .line-value {
+                        font-size: 11px;
+                        min-width: 40px;
+                        padding: 1px 6px;
                       }
                     }
                   }
 
                   .data-capsules {
                     padding: 8px 0 0 0;
-                    gap: 6px;
 
                     .capsule-item {
-                      padding: 4px 8px;
+                      padding: 4px 6px;
                       font-size: 11px;
                     }
                   }
@@ -1096,6 +1092,26 @@
                 width: 100%;
                 height: auto;
                 object-fit: contain;
+              }
+
+              /* 完成状态标签样式 */
+              .analysis-status-marker {
+                position: absolute;
+                transform: translate(-50%, -50%);
+                z-index: 15;
+              }
+
+              /* 自定义状态标签样式，与页面主题色融合，简洁无阴影 */
+              .analysis-status-marker :deep(.el-tag) {
+                background-color: rgba(10, 197, 168, 0.85);
+                border: 1px solid rgba(10, 197, 168, 0.95);
+                color: #ffffff;
+                font-size: 11px;
+                height: 18px;
+                line-height: 16px;
+                padding: 0 6px;
+                box-shadow: none;
+                border-radius: 3px;
               }
             }
           }

@@ -283,6 +283,55 @@
                   </div>
                 </div>
 
+                <!-- 面板C：下货信息卡片 -->
+                <div
+                  class="preheating-room-marker"
+                  data-x="65"
+                  data-y="120"
+                  style="width: 110px"
+                >
+                  <div class="preheating-room-content">
+                    <div class="preheating-room-header">下货信息</div>
+                    <div class="preheating-room-body">
+                      <div class="route-select-container">
+                        <div
+                          class="route-row"
+                          style="
+                            flex-direction: column;
+                            align-items: flex-start;
+                          "
+                        >
+                          <span class="route-label" style="margin-bottom: 2px"
+                            >虚拟ID：</span
+                          >
+                          <span
+                            style="
+                              font-size: 11px;
+                              word-break: break-all;
+                              color: greenyellow;
+                            "
+                            >{{ unloadInfo.virtualId || '--' }}</span
+                          >
+                        </div>
+                        <div
+                          class="route-row"
+                          style="
+                            flex-direction: column;
+                            align-items: flex-start;
+                          "
+                        >
+                          <span class="route-label" style="margin-bottom: 2px"
+                            >货物名称：</span
+                          >
+                          <span style="font-size: 11px; color: greenyellow">{{
+                            unloadInfo.cargoName || '--'
+                          }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- 面板B：已发送进度 + 目的地展示 -->
                 <div class="marker-with-panel" data-x="1480" data-y="450">
                   <div
@@ -362,8 +411,10 @@
                   :key="node.id"
                   class="device-signal-node"
                   :class="{
-                    'status-active': getDisplayStatus(node),
-                    'status-idle': !getDisplayStatus(node),
+                    'status-active':
+                      hasAnyStatus(node) && getDisplayStatus(node),
+                    'status-idle':
+                      hasAnyStatus(node) && !getDisplayStatus(node),
                     'is-selected': currentSelectedNodeId === node.id
                   }"
                   :data-x="node.x"
@@ -433,6 +484,30 @@
                   :data-width="cart.width"
                 >
                   <img :src="cart.image" :alt="cart.name" class="cart-image" />
+                </div>
+                <!-- 预热完成信号 -->
+                <div
+                  v-for="(item, index) in preheatCompleted"
+                  :key="'preheat-' + index"
+                  class="analysis-status-marker"
+                  :data-x="item.x"
+                  :data-y="item.y"
+                >
+                  <el-tag v-show="item.completed" type="success" size="small">
+                    预热完成
+                  </el-tag>
+                </div>
+                <!-- 灭菌完成信号 -->
+                <div
+                  v-for="(item, index) in sterilizationCompleted"
+                  :key="'sterilization-' + index"
+                  class="analysis-status-marker"
+                  :data-x="item.x"
+                  :data-y="item.y"
+                >
+                  <el-tag v-show="item.completed" type="success" size="small">
+                    灭菌完成
+                  </el-tag>
                 </div>
                 <div
                   class="preheating-room-marker"
@@ -512,52 +587,47 @@
 
                   <!-- 独立设备：保持原样式 -->
                   <template v-if="popoverList.length === 1">
-                    <div class="status-tiles">
+                    <div class="status-lines">
                       <div
-                        class="status-tile"
+                        v-if="hasMotorStatus(popoverData)"
+                        class="status-line"
                         :class="
                           popoverData.motorStatus ? 'is-running' : 'is-stopped'
                         "
                       >
-                        <div class="icon-box">
-                          <i class="el-icon-cpu"></i>
-                        </div>
-                        <div class="text-box">
-                          <div class="label">电机状态</div>
-                          <div class="value">
-                            {{ popoverData.motorStatus ? '运行中' : '已停止' }}
-                          </div>
-                        </div>
+                        <span class="line-label">电机状态</span>
+                        <span class="line-value">
+                          {{ popoverData.motorStatus ? '启动' : '停止' }}
+                        </span>
                       </div>
                       <div
-                        class="status-tile"
+                        v-if="hasSensorStatus(popoverData)"
+                        class="status-line"
                         :class="
                           popoverData.sensorStatus ? 'is-active' : 'is-empty'
                         "
                       >
-                        <div class="icon-box">
-                          <i class="el-icon-view"></i>
-                        </div>
-                        <div class="text-box">
-                          <div class="label">光电检测</div>
-                          <div class="value">
-                            {{ popoverData.sensorStatus ? '有货物' : '无货物' }}
-                          </div>
-                        </div>
+                        <span class="line-label">光电检测</span>
+                        <span class="line-value">
+                          {{ popoverData.sensorStatus ? '启动' : '停止' }}
+                        </span>
                       </div>
                     </div>
 
                     <div class="data-capsules">
-                      <div class="capsule-item">
+                      <div v-if="hasTrayId(popoverData)" class="capsule-item">
                         <span class="capsule-label">托盘虚拟ID</span>
                         <span class="capsule-value highlight">
-                          {{ popoverData.trayId || '--' }}
+                          {{ popoverData.trayId }}
                         </span>
                       </div>
-                      <div class="capsule-item">
+                      <div
+                        v-if="hasDestination(popoverData)"
+                        class="capsule-item"
+                      >
                         <span class="capsule-label">任务目的地</span>
                         <span class="capsule-value">
-                          {{ popoverData.destination || '无任务' }}
+                          {{ popoverData.destination }}
                         </span>
                       </div>
                     </div>
@@ -575,52 +645,47 @@
                         }"
                       >
                         <div class="device-name-header">{{ device.name }}</div>
-                        <div class="status-tiles">
+                        <div class="status-lines">
                           <div
-                            class="status-tile"
+                            v-if="hasMotorStatus(device)"
+                            class="status-line"
                             :class="
                               device.motorStatus ? 'is-running' : 'is-stopped'
                             "
                           >
-                            <div class="icon-box">
-                              <i class="el-icon-cpu"></i>
-                            </div>
-                            <div class="text-box">
-                              <div class="label">电机状态</div>
-                              <div class="value">
-                                {{ device.motorStatus ? '运行中' : '已停止' }}
-                              </div>
-                            </div>
+                            <span class="line-label">电机状态</span>
+                            <span class="line-value">
+                              {{ device.motorStatus ? '启动' : '停止' }}
+                            </span>
                           </div>
                           <div
-                            class="status-tile"
+                            v-if="hasSensorStatus(device)"
+                            class="status-line"
                             :class="
                               device.sensorStatus ? 'is-active' : 'is-empty'
                             "
                           >
-                            <div class="icon-box">
-                              <i class="el-icon-view"></i>
-                            </div>
-                            <div class="text-box">
-                              <div class="label">光电检测</div>
-                              <div class="value">
-                                {{ device.sensorStatus ? '有货物' : '无货物' }}
-                              </div>
-                            </div>
+                            <span class="line-label">光电检测</span>
+                            <span class="line-value">
+                              {{ device.sensorStatus ? '启动' : '停止' }}
+                            </span>
                           </div>
                         </div>
 
                         <div class="data-capsules">
-                          <div class="capsule-item">
+                          <div v-if="hasTrayId(device)" class="capsule-item">
                             <span class="capsule-label">托盘虚拟ID</span>
                             <span class="capsule-value highlight">
-                              {{ device.trayId || '--' }}
+                              {{ device.trayId }}
                             </span>
                           </div>
-                          <div class="capsule-item">
+                          <div
+                            v-if="hasDestination(device)"
+                            class="capsule-item"
+                          >
                             <span class="capsule-label">任务目的地</span>
                             <span class="capsule-value">
-                              {{ device.destination || '无任务' }}
+                              {{ device.destination }}
                             </span>
                           </div>
                         </div>
@@ -1257,6 +1322,11 @@ export default {
         cargoName: '',
         barcodes: []
       },
+      // ---- 面板C：下货信息 ----
+      unloadInfo: {
+        virtualId: '',
+        cargoName: ''
+      },
       nowScanTrayInfo: {},
       isDataReady: false, // 添加数据准备就绪标志位
       showTestPanel: false,
@@ -1394,6 +1464,42 @@ export default {
         { id: 29, name: '3202', queueId: 29, x: 253, y: 300 },
         { id: 30, name: 'Y3201', queueId: 30, x: 178, y: 615 },
         { id: 31, name: '3201', queueId: 31, x: 178, y: 300 }
+      ],
+      // 预热完成信号（15条线，含位置和状态）
+      preheatCompleted: [
+        { x: 1210, y: 530, completed: true }, // Y3215
+        { x: 1135, y: 530, completed: true }, // Y3214
+        { x: 1065, y: 530, completed: true }, // Y3213
+        { x: 990, y: 530, completed: true }, // Y3212
+        { x: 915, y: 530, completed: true }, // Y3211
+        { x: 842, y: 530, completed: true }, // Y3210
+        { x: 767, y: 530, completed: true }, // Y3209
+        { x: 692, y: 530, completed: true }, // Y3208
+        { x: 620, y: 530, completed: true }, // Y3207
+        { x: 545, y: 530, completed: true }, // Y3206
+        { x: 472, y: 530, completed: true }, // Y3205
+        { x: 397, y: 530, completed: true }, // Y3204
+        { x: 328, y: 530, completed: true }, // Y3203
+        { x: 253, y: 530, completed: true }, // Y3202
+        { x: 178, y: 530, completed: true } // Y3201
+      ],
+      // 灭菌完成信号（15条线，含位置和状态）
+      sterilizationCompleted: [
+        { x: 1210, y: 215, completed: true }, // 3215
+        { x: 1135, y: 215, completed: true }, // 3214
+        { x: 1065, y: 215, completed: true }, // 3213
+        { x: 990, y: 215, completed: true }, // 3212
+        { x: 915, y: 215, completed: true }, // 3211
+        { x: 842, y: 215, completed: true }, // 3210
+        { x: 767, y: 215, completed: true }, // 3209
+        { x: 692, y: 215, completed: true }, // 3208
+        { x: 620, y: 215, completed: true }, // 3207
+        { x: 545, y: 215, completed: true }, // 3206
+        { x: 472, y: 215, completed: true }, // 3205
+        { x: 397, y: 215, completed: true }, // 3204
+        { x: 328, y: 215, completed: true }, // 3203
+        { x: 253, y: 215, completed: true }, // 3202
+        { x: 178, y: 215, completed: true } // 3201
       ],
       logId: 1000,
 
@@ -2461,306 +2567,186 @@ export default {
           destination: '成品库'
         },
         // // 以下为预热第一排的光电信号
-        // '01053T': {
-        //   name: '立体库接口-11',
-        //   x: 1195,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01054T': {
-        //   name: '立体库接口-12',
-        //   x: 1220,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01055T': {
-        //   name: '立体库接口-21',
-        //   x: 1120,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01056T': {
-        //   name: '立体库接口-22',
-        //   x: 1145,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01057T': {
-        //   name: '立体库接口-31',
-        //   x: 1048,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01058T': {
-        //   name: '立体库接口-32',
-        //   x: 1073,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01059T': {
-        //   name: '立体库接口-41',
-        //   x: 973,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01060T': {
-        //   name: '立体库接口-42',
-        //   x: 998,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01061T': {
-        //   name: '立体库接口-51',
-        //   x: 900,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01062T': {
-        //   name: '立体库接口-52',
-        //   x: 925,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01063T': {
-        //   name: '立体库接口-61',
-        //   x: 828,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01064T': {
-        //   name: '立体库接口-62',
-        //   x: 853,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01065T': {
-        //   name: '立体库接口-71',
-        //   x: 753,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01066T': {
-        //   name: '立体库接口-72',
-        //   x: 778,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01067T': {
-        //   name: '立体库接口-81',
-        //   x: 680,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01068T': {
-        //   name: '立体库接口-82',
-        //   x: 705,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01069T': {
-        //   name: '立体库接口-91',
-        //   x: 606,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01070T': {
-        //   name: '立体库接口-92',
-        //   x: 631,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01071T': {
-        //   name: '立体库接口-101',
-        //   x: 530,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01072T': {
-        //   name: '立体库接口-102',
-        //   x: 556,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01073T': {
-        //   name: '立体库接口-111',
-        //   x: 460,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01074T': {
-        //   name: '立体库接口-112',
-        //   x: 486,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01075T': {
-        //   name: '立体库接口-121',
-        //   x: 386,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01076T': {
-        //   name: '立体库接口-122',
-        //   x: 411,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01077T': {
-        //   name: '立体库接口-131',
-        //   x: 315,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01078T': {
-        //   name: '立体库接口-132',
-        //   x: 341,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01079T': {
-        //   name: '立体库接口-141',
-        //   x: 240,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01080T': {
-        //   name: '立体库接口-142',
-        //   x: 266,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01081T': {
-        //   name: '立体库接口-151',
-        //   x: 165,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01082T': {
-        //   name: '立体库接口-152',
-        //   x: 191,
-        //   y: 735,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
+        '02002SP': {
+          name: 'SP02002-1',
+          x: 1195,
+          y: 735,
+          sensorStatus: false
+        },
+        '02001SP': {
+          name: 'SP02001-1',
+          x: 1220,
+          y: 735,
+          sensorStatus: false
+        },
+        '02004SP': {
+          name: 'SP02004-1',
+          x: 1120,
+          y: 735,
+          sensorStatus: true
+        },
+        '02003SP': {
+          name: 'SP02003-1',
+          x: 1145,
+          y: 735,
+          sensorStatus: true
+        },
+        '03002SP': {
+          name: 'SP03002-1',
+          x: 1048,
+          y: 735,
+          sensorStatus: true
+        },
+        '03001SP': {
+          name: 'SP03001-1',
+          x: 1073,
+          y: 735,
+          sensorStatus: false
+        },
+        '03004SP': {
+          name: 'SP03004-1',
+          x: 973,
+          y: 735,
+          sensorStatus: true
+        },
+        '03003SP': {
+          name: 'SP03003-1',
+          x: 998,
+          y: 735,
+          sensorStatus: false
+        },
+        '04002SP': {
+          name: 'SP04002-1',
+          x: 900,
+          y: 735,
+          sensorStatus: true
+        },
+        '04001SP': {
+          name: 'SP04001-1',
+          x: 925,
+          y: 735,
+          sensorStatus: false
+        },
+        '04004SP': {
+          name: 'SP04004-1',
+          x: 828,
+          y: 735,
+          sensorStatus: true
+        },
+        '04003SP': {
+          name: 'SP04003-1',
+          x: 853,
+          y: 735,
+          sensorStatus: false
+        },
+        '05002SP': {
+          name: 'SP05002-1',
+          x: 753,
+          y: 735,
+          sensorStatus: true
+        },
+        '05001SP': {
+          name: 'SP05001-1',
+          x: 778,
+          y: 735,
+          sensorStatus: false
+        },
+        '05004SP': {
+          name: 'SP05004-1',
+          x: 680,
+          y: 735,
+          sensorStatus: true
+        },
+        '05003SP': {
+          name: 'SP05003-1',
+          x: 705,
+          y: 735,
+          sensorStatus: false
+        },
+        '06002SP': {
+          name: 'SP06002-1',
+          x: 606,
+          y: 735,
+          sensorStatus: true
+        },
+        '06001SP': {
+          name: 'SP06001-1',
+          x: 631,
+          y: 735,
+          sensorStatus: false
+        },
+        '06004SP': {
+          name: 'SP06004-1',
+          x: 530,
+          y: 735,
+          sensorStatus: true
+        },
+        '06003SP': {
+          name: 'SP06003-1',
+          x: 556,
+          y: 735,
+          sensorStatus: false
+        },
+        '07002SP': {
+          name: 'SP07002-1',
+          x: 460,
+          y: 735,
+          sensorStatus: true
+        },
+        '07001SP': {
+          name: 'SP07001-1',
+          x: 486,
+          y: 735,
+          sensorStatus: false
+        },
+        '07004SP': {
+          name: 'SP07004-1',
+          x: 386,
+          y: 735,
+          sensorStatus: true
+        },
+        '07003SP': {
+          name: 'SP07003-1',
+          x: 411,
+          y: 735,
+          sensorStatus: false
+        },
+        '08002SP': {
+          name: 'SP08002-1',
+          x: 315,
+          y: 735,
+          sensorStatus: true
+        },
+        '08001SP': {
+          name: 'SP08001-1',
+          x: 341,
+          y: 735,
+          sensorStatus: false
+        },
+        '08004SP': {
+          name: 'SP08004-1',
+          x: 240,
+          y: 735,
+          sensorStatus: true
+        },
+        '08003SP': {
+          name: 'SP08003-1',
+          x: 266,
+          y: 735,
+          sensorStatus: false
+        },
+        '09002SP': {
+          name: 'SP09002-1',
+          x: 165,
+          y: 735,
+          sensorStatus: true
+        },
+        '09001SP': {
+          name: 'SP09001-1',
+          x: 191,
+          y: 735,
+          sensorStatus: false
+        },
         // // 以上为预热第一排的光电信号
         // 以下为预热第二排的光电信号
         '02002': {
@@ -2768,572 +2754,398 @@ export default {
           x: 1195,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '02001': {
           name: '02001',
           x: 1220,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '02004': {
           name: '02004',
           x: 1120,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '02003': {
           name: '02003',
           x: 1145,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '03002': {
           name: '03002',
           x: 1048,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '03001': {
           name: '03001',
           x: 1073,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '03004': {
           name: '03004',
           x: 973,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '03003': {
           name: '03003',
           x: 998,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '04002': {
           name: '04002',
           x: 900,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '04001': {
           name: '04001',
           x: 925,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '04004': {
           name: '04004',
           x: 828,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '04003': {
           name: '04003',
           x: 853,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '05002': {
           name: '05002',
           x: 753,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '05001': {
           name: '05001',
           x: 778,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '05004': {
           name: '05004',
           x: 680,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '05003': {
           name: '05003',
           x: 705,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '06002': {
           name: '06002',
           x: 606,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '06001': {
           name: '06001',
           x: 631,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '06004': {
           name: '06004',
           x: 530,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '06003': {
           name: '06003',
           x: 556,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '07002': {
           name: '07002',
           x: 460,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '07001': {
           name: '07001',
           x: 486,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '07004': {
           name: '07004',
           x: 386,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '07003': {
           name: '07003',
           x: 411,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '08002': {
           name: '08002',
           x: 315,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '08001': {
           name: '08001',
           x: 341,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '08004': {
           name: '08004',
           x: 240,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '08003': {
           name: '08003',
           x: 266,
           y: 490,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false
         },
         '09002': {
           name: '09002',
           x: 165,
           y: 490,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: true
         },
         '09001': {
           name: '09001',
           x: 191,
           y: 490,
           motorStatus: false,
+          sensorStatus: false
+        },
+        // 以下为预热第三排的电机信号
+        '02006': {
+          name: '02006',
+          x: 1195,
+          y: 180,
+          motorStatus: false
+        },
+        '02005': {
+          name: '02005',
+          x: 1220,
+          y: 180,
+          motorStatus: false
+        },
+        '02008': {
+          name: '02008',
+          x: 1120,
+          y: 180,
+          motorStatus: false
+        },
+        '02007': {
+          name: '02007',
+          x: 1145,
+          y: 180,
+          motorStatus: false
+        },
+        '03006': {
+          name: '03006',
+          x: 1048,
+          y: 180,
+          motorStatus: false
+        },
+        '03005': {
+          name: '03005',
+          x: 1073,
+          y: 180,
+          motorStatus: false
+        },
+        '03008': {
+          name: '03008',
+          x: 973,
+          y: 180,
+          motorStatus: false
+        },
+        '03007': {
+          name: '03007',
+          x: 998,
+          y: 180,
+          motorStatus: false
+        },
+        '04006': {
+          name: '04006',
+          x: 900,
+          y: 180,
+          motorStatus: false
+        },
+        '04005': {
+          name: '04005',
+          x: 925,
+          y: 180,
+          motorStatus: false
+        },
+        '04008': {
+          name: '04008',
+          x: 828,
+          y: 180,
+          motorStatus: false
+        },
+        '04007': {
+          name: '04007',
+          x: 853,
+          y: 180,
+          motorStatus: false
+        },
+        '05006': {
+          name: '05006',
+          x: 753,
+          y: 180,
+          motorStatus: false
+        },
+        '05005': {
+          name: '05005',
+          x: 778,
+          y: 180,
+          motorStatus: false
+        },
+        '05008': {
+          name: '05008',
+          x: 680,
+          y: 180,
+          motorStatus: false
+        },
+        '05007': {
+          name: '05007',
+          x: 705,
+          y: 180,
+          motorStatus: false,
           sensorStatus: false,
           trayId: 'T-202502',
           destination: '成品库'
         },
-        // 以下为预热第三排的光电信号
-        // '01113T': {
-        //   name: '立体库接口',
-        //   x: 1195,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01114T': {
-        //   name: '立体库接口',
-        //   x: 1220,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01115T': {
-        //   name: '立体库接口',
-        //   x: 1120,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01116T': {
-        //   name: '立体库接口',
-        //   x: 1145,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01117T': {
-        //   name: '立体库接口',
-        //   x: 1048,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01118T': {
-        //   name: '立体库接口',
-        //   x: 1073,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01119T': {
-        //   name: '立体库接口',
-        //   x: 973,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01120T': {
-        //   name: '立体库接口',
-        //   x: 998,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01121T': {
-        //   name: '立体库接口',
-        //   x: 900,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01122T': {
-        //   name: '立体库接口',
-        //   x: 925,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01123T': {
-        //   name: '立体库接口',
-        //   x: 828,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01124T': {
-        //   name: '立体库接口',
-        //   x: 853,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01125T': {
-        //   name: '立体库接口',
-        //   x: 753,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01126T': {
-        //   name: '立体库接口',
-        //   x: 778,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01127T': {
-        //   name: '立体库接口',
-        //   x: 680,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01128T': {
-        //   name: '立体库接口',
-        //   x: 705,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01129T': {
-        //   name: '立体库接口',
-        //   x: 606,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01130T': {
-        //   name: '立体库接口',
-        //   x: 631,
-        //   y: 180,
-        //   motorStatus: true,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01131T': {
-        //   name: '立体库接口',
-        //   x: 530,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01132T': {
-        //   name: '立体库接口',
-        //   x: 556,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01133T': {
-        //   name: '立体库接口',
-        //   x: 460,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01134T': {
-        //   name: '立体库接口',
-        //   x: 486,
-        //   y: 180,
-        //   motorStatus: true,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01135T': {
-        //   name: '立体库接口',
-        //   x: 386,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01136T': {
-        //   name: '立体库接口',
-        //   x: 411,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01137T': {
-        //   name: '立体库接口',
-        //   x: 315,
-        //   y: 180,
-        //   motorStatus: true,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01138T': {
-        //   name: '立体库接口',
-        //   x: 341,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01139T': {
-        //   name: '立体库接口',
-        //   x: 240,
-        //   y: 180,
-        //   motorStatus: true,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01140T': {
-        //   name: '立体库接口',
-        //   x: 266,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01141T': {
-        //   name: '立体库接口',
-        //   x: 165,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: true,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
-        // '01142T': {
-        //   name: '立体库接口',
-        //   x: 191,
-        //   y: 180,
-        //   motorStatus: false,
-        //   sensorStatus: false,
-        //   trayId: 'T-202502',
-        //   destination: '成品库',
-        //
-        // },
+        '06006': {
+          name: '06006',
+          x: 606,
+          y: 180,
+          motorStatus: false,
+          sensorStatus: true,
+          trayId: 'T-202502',
+          destination: '成品库'
+        },
+        '06005': {
+          name: '06005',
+          x: 631,
+          y: 180,
+          motorStatus: true
+        },
+        '06008': {
+          name: '06008',
+          x: 530,
+          y: 180,
+          motorStatus: false
+        },
+        '06007': {
+          name: '06007',
+          x: 556,
+          y: 180,
+          motorStatus: false
+        },
+        '07006': {
+          name: '07006',
+          x: 460,
+          y: 180,
+          motorStatus: false
+        },
+        '07005': {
+          name: '07005',
+          x: 486,
+          y: 180,
+          motorStatus: true
+        },
+        '07008': {
+          name: '07008',
+          x: 386,
+          y: 180,
+          motorStatus: false
+        },
+        '07007': {
+          name: '07007',
+          x: 411,
+          y: 180,
+          motorStatus: false
+        },
+        '08006': {
+          name: '08006',
+          x: 315,
+          y: 180,
+          motorStatus: true
+        },
+        '08005': {
+          name: '08005',
+          x: 341,
+          y: 180,
+          motorStatus: false
+        },
+        '08008': {
+          name: '08008',
+          x: 240,
+          y: 180,
+          motorStatus: true
+        },
+        '08007': {
+          name: '08007',
+          x: 266,
+          y: 180,
+          motorStatus: false
+        },
+        '09004': {
+          name: '09004',
+          x: 165,
+          y: 180,
+          motorStatus: false
+        },
+        '09003': {
+          name: '09003',
+          x: 191,
+          y: 180,
+          motorStatus: false
+        },
         // 以上为第三排光电信号
         '01143T': {
           name: '立体库接口',
@@ -3770,14 +3582,16 @@ export default {
     this.pollBatchAndDestination();
     this._pollBatchTimer = setInterval(this.pollBatchAndDestination, 5000);
     // 数据加载完成后创建监听（跳过 id 为 1-5 的队列）
+    this._queueWatchers = []; // 保存 watcher 取消函数
     this.$nextTick(() => {
       this.queues.forEach((queue, index) => {
-        this.$watch(`queues.${index}.trayInfo`, {
+        const unwatch = this.$watch(`queues.${index}.trayInfo`, {
           handler(newVal, oldVal) {
             this.updateQueueInfo(queue.id);
           },
           deep: true
         });
+        this._queueWatchers.push(unwatch);
       });
     });
     // ipcRenderer.on('receivedMsg', (event, values, values2) => {
@@ -4428,16 +4242,42 @@ export default {
      * @param {Object} node - 设备节点对象
      * @returns {boolean} - 是否处于激活状态（一亮全亮）
      */
+    hasOwnField(target, key) {
+      return !!target && Object.prototype.hasOwnProperty.call(target, key);
+    },
+    hasMotorStatus(target) {
+      return this.hasOwnField(target, 'motorStatus');
+    },
+    hasSensorStatus(target) {
+      return this.hasOwnField(target, 'sensorStatus');
+    },
+    hasTrayId(target) {
+      return this.hasOwnField(target, 'trayId');
+    },
+    hasDestination(target) {
+      return this.hasOwnField(target, 'destination');
+    },
+    hasAnyStatus(target) {
+      return this.hasMotorStatus(target) || this.hasSensorStatus(target);
+    },
     getDisplayStatus(node) {
+      const hasMotor = this.hasMotorStatus(node);
+      const hasSensor = this.hasSensorStatus(node);
+      const nodeMotorOn = hasMotor && !!node.motorStatus;
+      const nodeSensorOn = hasSensor && !!node.sensorStatus;
+
       // 独立设备：返回自身状态
       if (!node.groupId) {
-        return node.motorStatus || node.sensorStatus;
+        return nodeMotorOn || nodeSensorOn;
       }
       // 成组设备：遍历组内所有设备，任一激活则全亮
       const groupIds = this.groupIndex?.[node.groupId] || [];
       for (const id of groupIds) {
         const device = this.deviceNodes[id];
-        if (device && (device.motorStatus || device.sensorStatus)) {
+        if (!device) continue;
+        const motorOn = this.hasMotorStatus(device) && !!device.motorStatus;
+        const sensorOn = this.hasSensorStatus(device) && !!device.sensorStatus;
+        if (motorOn || sensorOn) {
           return true;
         }
       }
@@ -4700,7 +4540,7 @@ export default {
         const carts = imageWrapper.querySelectorAll('.cart-container');
         // ============= 新增：获取设备节点 =============
         const nodes = imageWrapper.querySelectorAll(
-          '.device-signal-node, .preheating-room-marker, .marker-with-panel'
+          '.device-signal-node, .preheating-room-marker, .marker-with-panel, .analysis-status-marker'
         );
         // ===========================================
 
@@ -5502,6 +5342,15 @@ export default {
     if (this._pollBatchTimer) {
       clearInterval(this._pollBatchTimer);
       this._pollBatchTimer = null;
+    }
+    // 取消动态创建的 $watch 监听器
+    if (this._queueWatchers && this._queueWatchers.length > 0) {
+      this._queueWatchers.forEach((unwatch) => {
+        if (typeof unwatch === 'function') {
+          unwatch();
+        }
+      });
+      this._queueWatchers = [];
     }
   }
 };
