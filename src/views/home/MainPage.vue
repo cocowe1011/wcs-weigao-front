@@ -283,7 +283,7 @@
                   </div>
                 </div>
 
-                <!-- 面板C：下货信息卡片 -->
+                <!-- 面板C：下货信息卡片1 -->
                 <div
                   class="preheating-room-marker"
                   data-x="65"
@@ -291,7 +291,7 @@
                   style="width: 110px"
                 >
                   <div class="preheating-room-content">
-                    <div class="preheating-room-header">下货信息</div>
+                    <div class="preheating-room-header">下货信息1</div>
                     <div class="preheating-room-body">
                       <div class="route-select-container">
                         <div
@@ -325,6 +325,55 @@
                           >
                           <span style="font-size: 11px; color: greenyellow">{{
                             unloadInfo.cargoName || '--'
+                          }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 面板D：下货信息卡片2 -->
+                <div
+                  class="preheating-room-marker"
+                  data-x="65"
+                  data-y="250"
+                  style="width: 110px"
+                >
+                  <div class="preheating-room-content">
+                    <div class="preheating-room-header">下货信息2</div>
+                    <div class="preheating-room-body">
+                      <div class="route-select-container">
+                        <div
+                          class="route-row"
+                          style="
+                            flex-direction: column;
+                            align-items: flex-start;
+                          "
+                        >
+                          <span class="route-label" style="margin-bottom: 2px"
+                            >虚拟ID：</span
+                          >
+                          <span
+                            style="
+                              font-size: 11px;
+                              word-break: break-all;
+                              color: greenyellow;
+                            "
+                            >{{ unloadInfo2.virtualId || '--' }}</span
+                          >
+                        </div>
+                        <div
+                          class="route-row"
+                          style="
+                            flex-direction: column;
+                            align-items: flex-start;
+                          "
+                        >
+                          <span class="route-label" style="margin-bottom: 2px"
+                            >货物名称：</span
+                          >
+                          <span style="font-size: 11px; color: greenyellow">{{
+                            unloadInfo2.cargoName || '--'
                           }}</span>
                         </div>
                       </div>
@@ -521,7 +570,12 @@
                       <div class="route-select-container">
                         <div class="route-row">
                           <span class="route-label">灭菌：</span>
-                          <el-select placeholder="灭菌" size="mini">
+                          <el-select
+                            :value="null"
+                            placeholder="灭菌"
+                            size="mini"
+                            disabled
+                          >
                             <el-option label="不执行" :value="null"></el-option>
                             <el-option label="A" value="A"></el-option>
                             <el-option label="B" value="B"></el-option>
@@ -530,7 +584,12 @@
                         </div>
                         <div class="route-row">
                           <span class="route-label">解析：</span>
-                          <el-select placeholder="解析" size="mini">
+                          <el-select
+                            :value="null"
+                            placeholder="解析"
+                            size="mini"
+                            disabled
+                          >
                             <el-option label="不执行" :value="null"></el-option>
                             <el-option label="A" value="A"></el-option>
                             <el-option label="B" value="B"></el-option>
@@ -1324,6 +1383,11 @@ export default {
       },
       // ---- 面板C：下货信息 ----
       unloadInfo: {
+        virtualId: '',
+        cargoName: ''
+      },
+      // ---- 面板D：下货信息2 ----
+      unloadInfo2: {
         virtualId: '',
         cargoName: ''
       },

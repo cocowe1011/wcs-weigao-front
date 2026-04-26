@@ -2524,6 +2524,10 @@ function writeSingleValueToPLC(add, values) {
   }
 }
 
+// 将 writeSingleValueToPLC 和 cancelWriteToPLC 函数挂载到 global 对象，供 WebSocket 服务端调用
+global.writeSingleValueToPLC = writeSingleValueToPLC;
+global.cancelWriteToPLC = cancelWriteToPLC;
+
 // 取消PLC某个变量的写入，从批量写入数组中移除
 function cancelWriteToPLC(add) {
   // 使用 filter 方法重建数组，避免 splice 的并发问题

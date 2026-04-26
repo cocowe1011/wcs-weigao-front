@@ -5,7 +5,7 @@
       <div class="header-content">
         <div class="header-left">
           <div class="logo-icon">
-            <i class="el-icon-data-line"></i>
+            <i class="el-icon-s-operation"></i>
           </div>
           <div>
             <h1 class="main-title">威高灭菌中心</h1>
@@ -328,16 +328,35 @@ export default {
         .logo-icon {
           width: 48px;
           height: 48px;
-          border-radius: 8px;
-          background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+          border-radius: 10px;
+          background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+          box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
+          border: 1px solid rgba(34, 211, 238, 0.3);
+          position: relative;
+          overflow: hidden;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+              135deg,
+              rgba(255, 255, 255, 0.1) 0%,
+              rgba(255, 255, 255, 0) 100%
+            );
+          }
 
           i {
-            font-size: 24px;
-            color: white;
+            font-size: 26px;
+            color: #e0f2fe;
+            position: relative;
+            z-index: 1;
           }
         }
 

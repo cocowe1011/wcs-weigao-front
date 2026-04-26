@@ -40,6 +40,11 @@ const routes = [
         path: 'aboutPage',
         component: () => import('../views/home/AboutPage.vue'),
         name: 'AboutPage'
+      },
+      {
+        path: 'scannerDebug',
+        component: () => import('../views/home/ScannerDebug.vue'),
+        name: 'ScannerDebug'
       }
     ]
   }

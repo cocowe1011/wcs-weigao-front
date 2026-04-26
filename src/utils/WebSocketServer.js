@@ -112,6 +112,12 @@ class AlarmWebSocketServer {
       case 'tray_data_changed':
         this.handleTrayDataChanged(clientId, data);
         break;
+      case 'plc_write':
+        this.handlePlcWrite(clientId, data);
+        break;
+      case 'plc_cancel_write':
+        this.handlePlcCancelWrite(clientId, data);
+        break;
       default:
         console.log(`收到客户端 ${clientId} 未知消息类型:`, data.type);
     }
@@ -173,6 +179,94 @@ class AlarmWebSocketServer {
       clientId: clientId,
       timestamp: data.timestamp
     });
+  }
+
+  /**
+   * 处理 PDA 发来的 PLC 写入请求
+   * data: { address: 'DBW44', value: 1 }
+   */
+  handlePlcWrite(clientId, data) {
+    const { address, value } = data;
+
+    if (!address) {
+      this.sendToClient(clientId, {
+        type: 'plc_write_response',
+        success: false,
+        message: 'PLC 地址不能为空'
+      });
+      return;
+    }
+
+    // 通过 IPC 调用主进程的 writeSingleValueToPLC 函数
+    // 使用 global 对象存储引用，供 WebSocket 服务端调用
+    if (global.writeSingleValueToPLC) {
+      try {
+        global.writeSingleValueToPLC(address, value);
+        console.log(`[PDA PLC写入] 地址: ${address}, 值: ${value}`);
+        this.sendToClient(clientId, {
+          type: 'plc_write_response',
+          success: true,
+          message: `PLC 写入成功: ${address}=${value}`
+        });
+      } catch (error) {
+        console.error(`[PDA PLC写入失败] 地址: ${address}`, error);
+        this.sendToClient(clientId, {
+          type: 'plc_write_response',
+          success: false,
+          message: 'PLC 写入失败: ' + error.message
+        });
+      }
+    } else {
+      console.error('[PDA PLC写入] writeSingleValueToPLC 函数未定义');
+      this.sendToClient(clientId, {
+        type: 'plc_write_response',
+        success: false,
+        message: 'PLC 写入服务未就绪'
+      });
+    }
+  }
+
+  /**
+   * 处理 PDA 发来的 PLC 取消写入请求
+   * data: { address: 'DBW30' }
+   */
+  handlePlcCancelWrite(clientId, data) {
+    const { address } = data;
+
+    if (!address) {
+      this.sendToClient(clientId, {
+        type: 'plc_cancel_write_response',
+        success: false,
+        message: 'PLC 地址不能为空'
+      });
+      return;
+    }
+
+    if (global.cancelWriteToPLC) {
+      try {
+        global.cancelWriteToPLC(address);
+        console.log(`[PDA PLC取消写入] 地址: ${address}`);
+        this.sendToClient(clientId, {
+          type: 'plc_cancel_write_response',
+          success: true,
+          message: `PLC 取消写入成功: ${address}`
+        });
+      } catch (error) {
+        console.error(`[PDA PLC取消写入失败] 地址: ${address}`, error);
+        this.sendToClient(clientId, {
+          type: 'plc_cancel_write_response',
+          success: false,
+          message: 'PLC 取消写入失败: ' + error.message
+        });
+      }
+    } else {
+      console.error('[PDA PLC取消写入] cancelWriteToPLC 函数未定义');
+      this.sendToClient(clientId, {
+        type: 'plc_cancel_write_response',
+        success: false,
+        message: 'PLC 取消写入服务未就绪'
+      });
+    }
   }
 
   pushAlarmToMobile(alarmData) {
