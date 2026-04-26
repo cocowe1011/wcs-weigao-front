@@ -353,11 +353,7 @@ app.on('ready', () => {
         'bin',
         'java'
       );
-      const jarPath = path.join(
-        __static,
-        './jarlib',
-        'ccs-disinfection-changzhou-middle.jar'
-      );
+      const jarPath = path.join(__static, './jarlib', 'wcs-weigao-middle.jar');
 
       // 优化的Java启动参数
       const javaOpts = [
