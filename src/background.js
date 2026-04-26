@@ -37,7 +37,7 @@ var conn = new nodes7();
 function logToFile(message) {
   const timestamp = new Date().toLocaleString();
   const logPath =
-    'D://wcs_temp_data/log/' +
+    'E://wcs_temp_data/log/' +
     new Date().toLocaleDateString().replaceAll('/', '-') +
     'runlog.txt';
   fs.appendFile(logPath, `[${timestamp}] ${message}\n`, (err) => {
@@ -76,11 +76,11 @@ function flushLogBuffer() {
   if (logBuffer.length === 0) return;
 
   const logPath =
-    'D://wcs_temp_data/log/' +
+    'E://wcs_temp_data/log/' +
     (new Date().toLocaleDateString() + '.txt').replaceAll('/', '-');
 
   // 确保日志目录存在
-  const logDir = 'D://wcs_temp_data/log';
+  const logDir = 'E://wcs_temp_data/log';
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
   }
@@ -367,7 +367,7 @@ app.on('ready', () => {
         '-XX:+UseG1GC', // 使用G1垃圾收集器
         '-XX:MaxGCPauseMillis=200', // 最大GC停顿时间
         '-XX:+HeapDumpOnOutOfMemoryError', // 内存溢出时导出堆转储
-        '-XX:HeapDumpPath=D://wcs_temp_data/dump', // 堆转储文件路径
+        '-XX:HeapDumpPath=E://wcs_temp_data/dump', // 堆转储文件路径
 
         // 性能优化
         '-XX:+DisableExplicitGC', // 禁止显式GC调用
@@ -377,13 +377,13 @@ app.on('ready', () => {
         // 监控和调试
         '-XX:+PrintGCDetails', // 打印GC详细信息
         '-XX:+PrintGCDateStamps', // 打印GC时间戳
-        '-Xloggc:D://wcs_temp_data/log/gc.log', // GC日志文件
+        '-Xloggc:E://wcs_temp_data/log/gc.log', // GC日志文件
         '-XX:+HeapDumpBeforeFullGC', // Full GC前生成堆转储
         '-XX:+PrintGCApplicationStoppedTime', // 打印应用暂停时间
 
         // 错误处理
         '-XX:+ExitOnOutOfMemoryError', // 发生OOM时退出
-        '-XX:ErrorFile=D://wcs_temp_data/log/hs_err_%p.log', // JVM错误日志
+        '-XX:ErrorFile=E://wcs_temp_data/log/hs_err_%p.log', // JVM错误日志
         // 编码
         '-Dfile.encoding=UTF-8',
         // 应用参数
@@ -391,8 +391,8 @@ app.on('ready', () => {
         jarPath
       ];
       // 确保日志目录存在
-      const logDir = 'D://wcs_temp_data/log';
-      const dumpDir = 'D://wcs_temp_data/dump';
+      const logDir = 'E://wcs_temp_data/log';
+      const dumpDir = 'E://wcs_temp_data/dump';
       if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
       }
