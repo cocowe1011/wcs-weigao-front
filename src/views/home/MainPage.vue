@@ -1077,14 +1077,14 @@
             <div class="cart-position-test-container">
               <div class="cart-position-group">
                 <div class="cart-position-label">
-                  <span>小车1 (0-1010):</span>
+                  <span>小车1 (19-6210):</span>
                   <span class="cart-value">{{ cartPositionValues.cart1 }}</span>
                 </div>
                 <div class="cart-position-slider-container">
                   <el-slider
                     v-model="cartPositionValues.cart1"
-                    :min="0"
-                    :max="1010"
+                    :min="19"
+                    :max="6210"
                     :step="1"
                     class="cart-position-slider"
                   ></el-slider>
@@ -1426,7 +1426,7 @@ export default {
       ],
       // 小车位置数值-读取PLC
       cartPositionValues: {
-        cart1: 250 // DBW88, 范围0-1010
+        cart1: 19 // 范围19-6210
       },
       nowTrays: [],
       draggedTray: null,
@@ -4551,7 +4551,7 @@ export default {
 
       // 获取PLC数值范围
       const plcRanges = {
-        cart1: { min: 0, max: 1010 }
+        cart1: { min: 19, max: 6210 }
       };
 
       const plcRange = plcRanges[`cart${cartId}`];
