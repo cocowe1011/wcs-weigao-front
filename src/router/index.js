@@ -45,6 +45,11 @@ const routes = [
         path: 'scannerDebug',
         component: () => import('../views/home/ScannerDebug.vue'),
         name: 'ScannerDebug'
+      },
+      {
+        path: 'userManagement',
+        component: () => import('../views/home/UserManagement.vue'),
+        name: 'UserManagement'
       }
     ]
   }
