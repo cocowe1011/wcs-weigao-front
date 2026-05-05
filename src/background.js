@@ -1123,7 +1123,6 @@ function conPLC() {
           conn.addItems('DBW1124');
           conn.addItems('DBW1126');
           conn.addItems('DBW1128');
-          conn.addItems('DBW1129'); // Check parity, assume 1128 then 1130
           conn.addItems('DBW1130');
           conn.addItems('DBW1132');
           conn.addItems('DBW1134');
