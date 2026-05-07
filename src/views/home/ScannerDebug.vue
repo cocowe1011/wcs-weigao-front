@@ -9,9 +9,18 @@
         <div v-for="s in scanners01002" :key="s.ip" class="sd-scanner-row">
           <div class="sd-scanner-header">
             <span class="sd-scanner-ip">{{ s.ip }}</span>
-            <span class="sd-status">
-              <i class="sd-dot" :class="s.connected ? 'on' : 'off'"></i>
-              {{ s.connected ? '已连接' : '未连接' }}
+            <span class="sd-header-right">
+              <span class="sd-status">
+                <i class="sd-dot" :class="s.connected ? 'on' : 'off'"></i>
+                {{ s.connected ? '已连接' : '未连接' }}
+              </span>
+              <button
+                class="sd-trigger-btn"
+                :disabled="!s.connected"
+                @click="triggerScanner(s.ip)"
+              >
+                TRIGGER
+              </button>
             </span>
           </div>
           <div class="sd-barcode-box">
@@ -30,9 +39,18 @@
         <div v-for="s in scanners01006" :key="s.ip" class="sd-scanner-row">
           <div class="sd-scanner-header">
             <span class="sd-scanner-ip">{{ s.ip }}</span>
-            <span class="sd-status">
-              <i class="sd-dot" :class="s.connected ? 'on' : 'off'"></i>
-              {{ s.connected ? '已连接' : '未连接' }}
+            <span class="sd-header-right">
+              <span class="sd-status">
+                <i class="sd-dot" :class="s.connected ? 'on' : 'off'"></i>
+                {{ s.connected ? '已连接' : '未连接' }}
+              </span>
+              <button
+                class="sd-trigger-btn"
+                :disabled="!s.connected"
+                @click="triggerScanner(s.ip)"
+              >
+                TRIGGER
+              </button>
             </span>
           </div>
           <div class="sd-barcode-box">
@@ -143,6 +161,13 @@ export default {
       this._sockets[ip] = socket;
       socket.connect(scanner.port, ip);
     },
+    triggerScanner(ip) {
+      const socket = this._sockets[ip];
+      if (socket && !socket.destroyed) {
+        socket.write('TRIGGER');
+        console.log(`[扫码枪] ${ip} 已发送 TRIGGER`);
+      }
+    },
     disconnectAll() {
       // 清除重连定时器
       Object.keys(this._reconnectTimers).forEach((ip) => {
@@ -220,6 +245,33 @@ export default {
           font-weight: 500;
           color: #374151;
           font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+        }
+
+        .sd-header-right {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .sd-trigger-btn {
+          padding: 2px 10px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #fff;
+          background: #3b82f6;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          line-height: 22px;
+
+          &:hover:not(:disabled) {
+            background: #2563eb;
+          }
+
+          &:disabled {
+            background: #c4c9d4;
+            cursor: not-allowed;
+          }
         }
 
         .sd-status {
