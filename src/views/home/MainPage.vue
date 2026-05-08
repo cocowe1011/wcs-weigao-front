@@ -173,7 +173,7 @@
             <div class="floor-image-container" ref="floorImageContainer">
               <div class="image-wrapper">
                 <!-- 面板A：批次订单 + 当前处理托盘信息 -->
-                <div class="marker-with-panel" data-x="1490" data-y="100">
+                <div class="marker-with-panel" data-x="1495" data-y="100">
                   <div
                     class="data-panel position-left always-show"
                     style="width: 170px; padding: 10px; z-index: 100"
@@ -1580,7 +1580,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 0 },
+          sensorAddr: { db: 'DBW1606', bit: 0 },
+          trayIdAddr: 'DBW62',
+          destinationAddr: 'DBW800'
         },
         '01002': {
           name: '01002',
@@ -1589,7 +1593,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 1 },
+          sensorAddr: { db: 'DBW1606', bit: 1 },
+          trayIdAddr: 'DBW64',
+          destinationAddr: 'DBW802'
         },
         '01004': {
           name: '01004',
@@ -1598,7 +1606,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 3 },
+          sensorAddr: { db: 'DBW1606', bit: 2 },
+          trayIdAddr: 'DBW66',
+          destinationAddr: 'DBW804'
         },
         '01005': {
           name: '01005',
@@ -1607,7 +1619,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 4 },
+          sensorAddr: { db: 'DBW1606', bit: 3 },
+          trayIdAddr: 'DBW68',
+          destinationAddr: 'DBW806'
         },
         '01006': {
           name: '01006',
@@ -1616,7 +1632,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 5 },
+          sensorAddr: { db: 'DBW1606', bit: 4 },
+          trayIdAddr: 'DBW70',
+          destinationAddr: 'DBW808'
         },
         '01008': {
           name: '01008',
@@ -1627,7 +1647,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 7 },
+          sensorAddr: { db: 'DBW1606', bit: 5 },
+          trayIdAddr: 'DBW72',
+          destinationAddr: 'DBW810'
         },
         '01009': {
           name: '01009',
@@ -1638,7 +1662,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 8 },
+          sensorAddr: { db: 'DBW1606', bit: 5 },
+          trayIdAddr: 'DBW74',
+          destinationAddr: 'DBW812'
         },
         '01011': {
           name: '01011',
@@ -1649,7 +1677,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 10 },
+          sensorAddr: { db: 'DBW1606', bit: 6 },
+          trayIdAddr: 'DBW76',
+          destinationAddr: 'DBW814'
         },
         '01012': {
           name: '01012',
@@ -1660,7 +1692,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 11 },
+          sensorAddr: { db: 'DBW1606', bit: 7 },
+          trayIdAddr: 'DBW78',
+          destinationAddr: 'DBW816'
         },
         '01013A': {
           name: '01013A',
@@ -1671,7 +1707,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 12 },
+          sensorAddr: { db: 'DBW1606', bit: 8 },
+          trayIdAddr: 'DBW80',
+          destinationAddr: 'DBW818'
         },
         '01013B': {
           name: '01013B',
@@ -1682,7 +1722,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 12 },
+          sensorAddr: { db: 'DBW1606', bit: 9 },
+          trayIdAddr: 'DBW82',
+          destinationAddr: 'DBW820'
         },
         '01019A': {
           name: '01019A',
@@ -1693,7 +1737,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 2 },
+          sensorAddr: { db: 'DBW1606', bit: 15 },
+          trayIdAddr: 'DBW104',
+          destinationAddr: 'DBW842'
         },
         '01019B': {
           name: '01019B',
@@ -1704,7 +1752,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 2 },
+          sensorAddr: { db: 'DBW1608', bit: 0 },
+          trayIdAddr: 'DBW106',
+          destinationAddr: 'DBW844'
         },
         '01014A': {
           name: '01014A',
@@ -1715,7 +1767,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 13 },
+          sensorAddr: { db: 'DBW1606', bit: 10 },
+          trayIdAddr: 'DBW84',
+          destinationAddr: 'DBW822'
         },
         '01014B': {
           name: '01014B',
@@ -1726,7 +1782,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 13 },
+          sensorAddr: { db: 'DBW1606', bit: 10 },
+          trayIdAddr: 'DBW86',
+          destinationAddr: 'DBW824'
         },
         '01020A': {
           name: '01020A',
@@ -1737,7 +1797,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 3 },
+          sensorAddr: { db: 'DBW1608', bit: 1 },
+          trayIdAddr: 'DBW108',
+          destinationAddr: 'DBW846'
         },
         '01020B': {
           name: '01020B',
@@ -1748,7 +1812,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 3 },
+          sensorAddr: { db: 'DBW1608', bit: 1 },
+          trayIdAddr: 'DBW110',
+          destinationAddr: 'DBW848'
         },
         '01015A': {
           name: '01015A',
@@ -1759,7 +1827,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 14 },
+          sensorAddr: { db: 'DBW1606', bit: 11 },
+          trayIdAddr: 'DBW88',
+          destinationAddr: 'DBW826'
         },
         '01015B': {
           name: '01015B',
@@ -1770,7 +1842,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 14 },
+          sensorAddr: { db: 'DBW1606', bit: 11 },
+          trayIdAddr: 'DBW90',
+          destinationAddr: 'DBW828'
         },
         '01021A': {
           name: '01021A',
@@ -1781,7 +1857,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 4 },
+          sensorAddr: { db: 'DBW1608', bit: 2 },
+          trayIdAddr: 'DBW112',
+          destinationAddr: 'DBW1900'
         },
         '01021B': {
           name: '01021B',
@@ -1792,7 +1872,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 4 },
+          sensorAddr: { db: 'DBW1608', bit: 2 },
+          trayIdAddr: 'DBW114',
+          destinationAddr: 'DBW1902'
         },
         '01016A': {
           name: '01016A',
@@ -1803,7 +1887,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 15 },
+          sensorAddr: { db: 'DBW1606', bit: 12 },
+          trayIdAddr: 'DBW92',
+          destinationAddr: 'DBW830'
         },
         '01016B': {
           name: '01016B',
@@ -1814,7 +1902,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW6', bit: 15 },
+          sensorAddr: { db: 'DBW1606', bit: 12 },
+          trayIdAddr: 'DBW94',
+          destinationAddr: 'DBW832'
         },
         '01022A': {
           name: '01022A',
@@ -1825,7 +1917,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 5 },
+          sensorAddr: { db: 'DBW1608', bit: 3 },
+          trayIdAddr: 'DBW116',
+          destinationAddr: 'DBW1904'
         },
         '01022B': {
           name: '01022B',
@@ -1836,7 +1932,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 5 },
+          sensorAddr: { db: 'DBW1608', bit: 3 },
+          trayIdAddr: 'DBW118',
+          destinationAddr: 'DBW1906'
         },
         '01017A': {
           name: '01017A',
@@ -1847,7 +1947,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 0 },
+          sensorAddr: { db: 'DBW1606', bit: 13 },
+          trayIdAddr: 'DBW96',
+          destinationAddr: 'DBW834'
         },
         '01017B': {
           name: '01017B',
@@ -1858,7 +1962,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 0 },
+          sensorAddr: { db: 'DBW1606', bit: 13 },
+          trayIdAddr: 'DBW98',
+          destinationAddr: 'DBW836'
         },
         '01023A': {
           name: '01023A',
@@ -1869,7 +1977,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 6 },
+          sensorAddr: { db: 'DBW1608', bit: 4 },
+          trayIdAddr: 'DBW1800',
+          destinationAddr: 'DBW1908'
         },
         '01023B': {
           name: '01023B',
@@ -1880,7 +1992,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 6 },
+          sensorAddr: { db: 'DBW1608', bit: 4 },
+          trayIdAddr: 'DBW1802',
+          destinationAddr: 'DBW1910'
         },
         '01018A': {
           name: '01018A',
@@ -1891,7 +2007,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 1 },
+          sensorAddr: { db: 'DBW1606', bit: 14 },
+          trayIdAddr: 'DBW100',
+          destinationAddr: 'DBW838'
         },
         '01018B': {
           name: '01018B',
@@ -1902,7 +2022,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 1 },
+          sensorAddr: { db: 'DBW1606', bit: 14 },
+          trayIdAddr: 'DBW102',
+          destinationAddr: 'DBW840'
         },
         '01024A': {
           name: '01024A',
@@ -1913,7 +2037,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 7 },
+          sensorAddr: { db: 'DBW1608', bit: 5 },
+          trayIdAddr: 'DBW1804',
+          destinationAddr: 'DBW1912'
         },
         '01024B': {
           name: '01024B',
@@ -1924,7 +2052,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 7 },
+          sensorAddr: { db: 'DBW1608', bit: 5 },
+          trayIdAddr: 'DBW1806',
+          destinationAddr: 'DBW1914'
         },
         '01026': {
           name: '01026',
@@ -1935,7 +2067,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 9 },
+          sensorAddr: { db: 'DBW1608', bit: 6 },
+          trayIdAddr: 'DBW1808',
+          destinationAddr: 'DBW1916'
         },
         '01027': {
           name: '01027',
@@ -1946,7 +2082,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 10 },
+          sensorAddr: { db: 'DBW1608', bit: 6 },
+          trayIdAddr: 'DBW1810',
+          destinationAddr: 'DBW1918'
         },
         '01029': {
           name: '01029',
@@ -1957,7 +2097,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 12 },
+          sensorAddr: { db: 'DBW1608', bit: 7 },
+          trayIdAddr: 'DBW1812',
+          destinationAddr: 'DBW1920'
         },
         '01030': {
           name: '01030',
@@ -1968,7 +2112,11 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           trayId: '',
-          destination: 0
+          destination: 0,
+          motorAddr: { db: 'DBW8', bit: 13 },
+          sensorAddr: { db: 'DBW1608', bit: 7 },
+          trayIdAddr: 'DBW1814',
+          destinationAddr: 'DBW1922'
         },
         '02014': {
           name: '02014',
@@ -1976,10 +2124,14 @@ export default {
           y: 778,
           groupId: 'G_02014_02015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW10', bit: 13 },
+          sensorAddr: { db: 'DBW1610', bit: 10 },
+          trayIdAddr: 'DBW126',
+          destinationAddr: 'DBW866'
         },
         '02015': {
           name: '02015',
@@ -1987,10 +2139,14 @@ export default {
           y: 778,
           groupId: 'G_02014_02015',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW10', bit: 14 },
+          sensorAddr: { db: 'DBW1610', bit: 10 },
+          trayIdAddr: 'DBW128',
+          destinationAddr: 'DBW868'
         },
         '02011': {
           name: '02011',
@@ -1998,10 +2154,14 @@ export default {
           y: 778,
           groupId: 'G_02011_02012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW10', bit: 10 },
+          sensorAddr: { db: 'DBW1610', bit: 9 },
+          trayIdAddr: 'DBW122',
+          destinationAddr: 'DBW862'
         },
         '02012': {
           name: '02012',
@@ -2009,10 +2169,14 @@ export default {
           y: 778,
           groupId: 'G_02011_02012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW10', bit: 11 },
+          sensorAddr: { db: 'DBW1610', bit: 9 },
+          trayIdAddr: 'DBW124',
+          destinationAddr: 'DBW864'
         },
         '02021': {
           name: '02021',
@@ -2020,10 +2184,14 @@ export default {
           y: 778,
           groupId: 'G_02021_02022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 4 },
+          sensorAddr: { db: 'DBW1610', bit: 13 },
+          trayIdAddr: 'DBW136',
+          destinationAddr: 'DBW876'
         },
         '02022': {
           name: '02022',
@@ -2031,10 +2199,14 @@ export default {
           y: 778,
           groupId: 'G_02021_02022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 5 },
+          sensorAddr: { db: 'DBW1610', bit: 13 },
+          trayIdAddr: 'DBW138',
+          destinationAddr: 'DBW878'
         },
         '02018': {
           name: '02018',
@@ -2042,10 +2214,14 @@ export default {
           y: 778,
           groupId: 'G_02018_02019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 1 },
+          sensorAddr: { db: 'DBW1610', bit: 12 },
+          trayIdAddr: 'DBW132',
+          destinationAddr: 'DBW872'
         },
         '02019': {
           name: '02019',
@@ -2053,10 +2229,14 @@ export default {
           y: 778,
           groupId: 'G_02018_02019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 2 },
+          sensorAddr: { db: 'DBW1610', bit: 12 },
+          trayIdAddr: 'DBW134',
+          destinationAddr: 'DBW874'
         },
         '03014': {
           name: '03014',
@@ -2064,10 +2244,14 @@ export default {
           y: 778,
           groupId: 'G_03014_03015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW16', bit: 13 },
+          sensorAddr: { db: 'DBW1616', bit: 10 },
+          trayIdAddr: 'DBW206',
+          destinationAddr: 'DBW946'
         },
         '03015': {
           name: '03015',
@@ -2075,10 +2259,14 @@ export default {
           y: 778,
           groupId: 'G_03014_03015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW16', bit: 14 },
+          sensorAddr: { db: 'DBW1616', bit: 10 },
+          trayIdAddr: 'DBW208',
+          destinationAddr: 'DBW948'
         },
         '03011': {
           name: '03011',
@@ -2086,10 +2274,14 @@ export default {
           y: 778,
           groupId: 'G_03011_03012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW16', bit: 10 },
+          sensorAddr: { db: 'DBW1616', bit: 9 },
+          trayIdAddr: 'DBW202',
+          destinationAddr: 'DBW942'
         },
         '03012': {
           name: '03012',
@@ -2097,10 +2289,14 @@ export default {
           y: 778,
           groupId: 'G_03011_03012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW16', bit: 11 },
+          sensorAddr: { db: 'DBW1616', bit: 9 },
+          trayIdAddr: 'DBW204',
+          destinationAddr: 'DBW944'
         },
         '03021': {
           name: '03021',
@@ -2109,9 +2305,13 @@ export default {
           groupId: 'G_03021_03022',
           showTray: true,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 4 },
+          sensorAddr: { db: 'DBW1616', bit: 13 },
+          trayIdAddr: 'DBW216',
+          destinationAddr: 'DBW956'
         },
         '03022': {
           name: '03022',
@@ -2120,9 +2320,13 @@ export default {
           groupId: 'G_03021_03022',
           showTray: true,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 5 },
+          sensorAddr: { db: 'DBW1616', bit: 13 },
+          trayIdAddr: 'DBW218',
+          destinationAddr: 'DBW958'
         },
         '03018': {
           name: '03018',
@@ -2130,10 +2334,14 @@ export default {
           y: 778,
           groupId: 'G_03018_03019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 1 },
+          sensorAddr: { db: 'DBW1616', bit: 12 },
+          trayIdAddr: 'DBW212',
+          destinationAddr: 'DBW952'
         },
         '03019': {
           name: '03019',
@@ -2141,10 +2349,14 @@ export default {
           y: 778,
           groupId: 'G_03018_03019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 2 },
+          sensorAddr: { db: 'DBW1616', bit: 12 },
+          trayIdAddr: 'DBW214',
+          destinationAddr: 'DBW954'
         },
         '04014': {
           name: '04014',
@@ -2153,9 +2365,13 @@ export default {
           groupId: 'G_04014_04015',
           showTray: true,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW22', bit: 13 },
+          sensorAddr: { db: 'DBW1622', bit: 10 },
+          trayIdAddr: 'DBW286',
+          destinationAddr: 'DBW1026'
         },
         '04015': {
           name: '04015',
@@ -2164,9 +2380,13 @@ export default {
           groupId: 'G_04014_04015',
           showTray: true,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW22', bit: 14 },
+          sensorAddr: { db: 'DBW1622', bit: 10 },
+          trayIdAddr: 'DBW288',
+          destinationAddr: 'DBW1028'
         },
         '04011': {
           name: '04011',
@@ -2174,10 +2394,14 @@ export default {
           y: 778,
           groupId: 'G_04011_04012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW22', bit: 10 },
+          sensorAddr: { db: 'DBW1622', bit: 9 },
+          trayIdAddr: 'DBW282',
+          destinationAddr: 'DBW1022'
         },
         '04012': {
           name: '04012',
@@ -2185,10 +2409,14 @@ export default {
           y: 778,
           groupId: 'G_04011_04012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW22', bit: 11 },
+          sensorAddr: { db: 'DBW1622', bit: 9 },
+          trayIdAddr: 'DBW284',
+          destinationAddr: 'DBW1024'
         },
         '04021': {
           name: '04021',
@@ -2196,10 +2424,14 @@ export default {
           y: 778,
           groupId: 'G_04021_04022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 4 },
+          sensorAddr: { db: 'DBW1622', bit: 13 },
+          trayIdAddr: 'DBW296',
+          destinationAddr: 'DBW1036'
         },
         '04022': {
           name: '04022',
@@ -2207,10 +2439,14 @@ export default {
           y: 778,
           groupId: 'G_04021_04022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 5 },
+          sensorAddr: { db: 'DBW1622', bit: 13 },
+          trayIdAddr: 'DBW298',
+          destinationAddr: 'DBW1038'
         },
         '04018': {
           name: '04018',
@@ -2218,10 +2454,14 @@ export default {
           y: 778,
           groupId: 'G_04018_04019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 1 },
+          sensorAddr: { db: 'DBW1622', bit: 12 },
+          trayIdAddr: 'DBW292',
+          destinationAddr: 'DBW1032'
         },
         '04019': {
           name: '04019',
@@ -2229,10 +2469,14 @@ export default {
           y: 778,
           groupId: 'G_04018_04019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 2 },
+          sensorAddr: { db: 'DBW1622', bit: 12 },
+          trayIdAddr: 'DBW294',
+          destinationAddr: 'DBW1034'
         },
         '05014': {
           name: '05014',
@@ -2240,10 +2484,14 @@ export default {
           y: 778,
           groupId: 'G_05014_05015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW28', bit: 13 },
+          sensorAddr: { db: 'DBW1628', bit: 10 },
+          trayIdAddr: 'DBW366',
+          destinationAddr: 'DBW1106'
         },
         '05015': {
           name: '05015',
@@ -2251,10 +2499,14 @@ export default {
           y: 778,
           groupId: 'G_05014_05015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW28', bit: 14 },
+          sensorAddr: { db: 'DBW1628', bit: 10 },
+          trayIdAddr: 'DBW368',
+          destinationAddr: 'DBW1108'
         },
         '05011': {
           name: '05011',
@@ -2262,10 +2514,14 @@ export default {
           y: 778,
           groupId: 'G_05011_05012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW28', bit: 10 },
+          sensorAddr: { db: 'DBW1628', bit: 9 },
+          trayIdAddr: 'DBW362',
+          destinationAddr: 'DBW1102'
         },
         '05012': {
           name: '05012',
@@ -2273,10 +2529,14 @@ export default {
           y: 778,
           groupId: 'G_05011_05012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW28', bit: 11 },
+          sensorAddr: { db: 'DBW1628', bit: 9 },
+          trayIdAddr: 'DBW364',
+          destinationAddr: 'DBW1104'
         },
         '05021': {
           name: '05021',
@@ -2284,10 +2544,14 @@ export default {
           y: 778,
           groupId: 'G_05021_05022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 4 },
+          sensorAddr: { db: 'DBW1628', bit: 13 },
+          trayIdAddr: 'DBW376',
+          destinationAddr: 'DBW1116'
         },
         '05022': {
           name: '05022',
@@ -2295,10 +2559,14 @@ export default {
           y: 778,
           groupId: 'G_05021_05022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 5 },
+          sensorAddr: { db: 'DBW1628', bit: 13 },
+          trayIdAddr: 'DBW378',
+          destinationAddr: 'DBW1118'
         },
         '05018': {
           name: '05018',
@@ -2306,10 +2574,14 @@ export default {
           y: 778,
           groupId: 'G_05018_05019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 1 },
+          sensorAddr: { db: 'DBW1628', bit: 12 },
+          trayIdAddr: 'DBW372',
+          destinationAddr: 'DBW1112'
         },
         '05019': {
           name: '05019',
@@ -2317,10 +2589,14 @@ export default {
           y: 778,
           groupId: 'G_05018_05019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 2 },
+          sensorAddr: { db: 'DBW1628', bit: 12 },
+          trayIdAddr: 'DBW374',
+          destinationAddr: 'DBW1114'
         },
         '06014': {
           name: '06014',
@@ -2328,10 +2604,14 @@ export default {
           y: 778,
           groupId: 'G_06014_06015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW34', bit: 13 },
+          sensorAddr: { db: 'DBW1634', bit: 10 },
+          trayIdAddr: 'DBW446',
+          destinationAddr: 'DBW1186'
         },
         '06015': {
           name: '06015',
@@ -2339,10 +2619,14 @@ export default {
           y: 778,
           groupId: 'G_06014_06015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW34', bit: 14 },
+          sensorAddr: { db: 'DBW1634', bit: 10 },
+          trayIdAddr: 'DBW448',
+          destinationAddr: 'DBW1188'
         },
         '06011': {
           name: '06011',
@@ -2350,10 +2634,14 @@ export default {
           y: 778,
           groupId: 'G_06011_06012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW34', bit: 10 },
+          sensorAddr: { db: 'DBW1634', bit: 9 },
+          trayIdAddr: 'DBW442',
+          destinationAddr: 'DBW1182'
         },
         '06012': {
           name: '06012',
@@ -2361,10 +2649,14 @@ export default {
           y: 778,
           groupId: 'G_06011_06012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW34', bit: 11 },
+          sensorAddr: { db: 'DBW1634', bit: 9 },
+          trayIdAddr: 'DBW444',
+          destinationAddr: 'DBW1184'
         },
         '06021': {
           name: '06021',
@@ -2372,10 +2664,14 @@ export default {
           y: 778,
           groupId: 'G_06021_06022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 4 },
+          sensorAddr: { db: 'DBW1634', bit: 13 },
+          trayIdAddr: 'DBW456',
+          destinationAddr: 'DBW1196'
         },
         '06022': {
           name: '06022',
@@ -2383,10 +2679,14 @@ export default {
           y: 778,
           groupId: 'G_06021_06022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 5 },
+          sensorAddr: { db: 'DBW1634', bit: 13 },
+          trayIdAddr: 'DBW458',
+          destinationAddr: 'DBW1198'
         },
         '06018': {
           name: '06018',
@@ -2394,10 +2694,14 @@ export default {
           y: 778,
           groupId: 'G_06018_06019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 1 },
+          sensorAddr: { db: 'DBW1634', bit: 12 },
+          trayIdAddr: 'DBW452',
+          destinationAddr: 'DBW1192'
         },
         '06019': {
           name: '06019',
@@ -2405,10 +2709,14 @@ export default {
           y: 778,
           groupId: 'G_06018_06019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 2 },
+          sensorAddr: { db: 'DBW1634', bit: 12 },
+          trayIdAddr: 'DBW454',
+          destinationAddr: 'DBW1194'
         },
         '07014': {
           name: '07014',
@@ -2416,10 +2724,14 @@ export default {
           y: 778,
           groupId: 'G_07014_07015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW40', bit: 13 },
+          sensorAddr: { db: 'DBW1640', bit: 10 },
+          trayIdAddr: 'DBW526',
+          destinationAddr: 'DBW1266'
         },
         '07015': {
           name: '07015',
@@ -2427,10 +2739,14 @@ export default {
           y: 778,
           groupId: 'G_07014_07015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW40', bit: 14 },
+          sensorAddr: { db: 'DBW1640', bit: 10 },
+          trayIdAddr: 'DBW528',
+          destinationAddr: 'DBW1268'
         },
         '07011': {
           name: '07011',
@@ -2438,10 +2754,14 @@ export default {
           y: 778,
           groupId: 'G_07011_07012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW40', bit: 10 },
+          sensorAddr: { db: 'DBW1640', bit: 9 },
+          trayIdAddr: 'DBW522',
+          destinationAddr: 'DBW1262'
         },
         '07012': {
           name: '07012',
@@ -2449,10 +2769,14 @@ export default {
           y: 778,
           groupId: 'G_07011_07012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW40', bit: 11 },
+          sensorAddr: { db: 'DBW1640', bit: 9 },
+          trayIdAddr: 'DBW524',
+          destinationAddr: 'DBW1264'
         },
         '07021': {
           name: '07021',
@@ -2460,10 +2784,14 @@ export default {
           y: 778,
           groupId: 'G_07021_07022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 4 },
+          sensorAddr: { db: 'DBW1640', bit: 13 },
+          trayIdAddr: 'DBW536',
+          destinationAddr: 'DBW1276'
         },
         '07022': {
           name: '07022',
@@ -2471,10 +2799,14 @@ export default {
           y: 778,
           groupId: 'G_07021_07022',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 5 },
+          sensorAddr: { db: 'DBW1640', bit: 13 },
+          trayIdAddr: 'DBW538',
+          destinationAddr: 'DBW1278'
         },
         '07018': {
           name: '07018',
@@ -2482,10 +2814,14 @@ export default {
           y: 778,
           groupId: 'G_07018_07019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 1 },
+          sensorAddr: { db: 'DBW1640', bit: 12 },
+          trayIdAddr: 'DBW532',
+          destinationAddr: 'DBW1272'
         },
         '07019': {
           name: '07019',
@@ -2493,10 +2829,14 @@ export default {
           y: 778,
           groupId: 'G_07018_07019',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 2 },
+          sensorAddr: { db: 'DBW1640', bit: 12 },
+          trayIdAddr: 'DBW534',
+          destinationAddr: 'DBW1274'
         },
         '08014': {
           name: '08014',
@@ -2504,10 +2844,14 @@ export default {
           y: 778,
           groupId: 'G_08014_08015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW46', bit: 13 },
+          sensorAddr: { db: 'DBW1646', bit: 10 },
+          trayIdAddr: 'DBW606',
+          destinationAddr: 'DBW1346'
         },
         '08015': {
           name: '08015',
@@ -2515,10 +2859,14 @@ export default {
           y: 778,
           groupId: 'G_08014_08015',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW46', bit: 14 },
+          sensorAddr: { db: 'DBW1646', bit: 10 },
+          trayIdAddr: 'DBW608',
+          destinationAddr: 'DBW1348'
         },
         '08011': {
           name: '08011',
@@ -2526,10 +2874,14 @@ export default {
           y: 778,
           groupId: 'G_08011_08012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW46', bit: 10 },
+          sensorAddr: { db: 'DBW1646', bit: 9 },
+          trayIdAddr: 'DBW602',
+          destinationAddr: 'DBW1342'
         },
         '08012': {
           name: '08012',
@@ -2537,10 +2889,14 @@ export default {
           y: 778,
           groupId: 'G_08011_08012',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW46', bit: 11 },
+          sensorAddr: { db: 'DBW1646', bit: 9 },
+          trayIdAddr: 'DBW604',
+          destinationAddr: 'DBW1344'
         },
         '08021': {
           name: '08021',
@@ -2548,10 +2904,14 @@ export default {
           y: 778,
           showTray: true,
           groupId: 'G_08021_08022',
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 4 },
+          sensorAddr: { db: 'DBW1646', bit: 13 },
+          trayIdAddr: 'DBW616',
+          destinationAddr: 'DBW1356'
         },
         '08022': {
           name: '08022',
@@ -2559,10 +2919,14 @@ export default {
           y: 778,
           showTray: true,
           groupId: 'G_08021_08022',
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 5 },
+          sensorAddr: { db: 'DBW1646', bit: 13 },
+          trayIdAddr: 'DBW618',
+          destinationAddr: 'DBW1358'
         },
         '08018': {
           name: '08018',
@@ -2570,10 +2934,14 @@ export default {
           y: 778,
           showTray: true,
           groupId: 'G_08018_08019',
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 1 },
+          sensorAddr: { db: 'DBW1646', bit: 12 },
+          trayIdAddr: 'DBW612',
+          destinationAddr: 'DBW1352'
         },
         '08019': {
           name: '08019',
@@ -2581,10 +2949,14 @@ export default {
           y: 778,
           showTray: true,
           groupId: 'G_08018_08019',
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 2 },
+          sensorAddr: { db: 'DBW1646', bit: 12 },
+          trayIdAddr: 'DBW614',
+          destinationAddr: 'DBW1354'
         },
         '09010': {
           name: '09010',
@@ -2592,10 +2964,14 @@ export default {
           y: 778,
           groupId: 'G_09010_09011',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW52', bit: 9 },
+          sensorAddr: { db: 'DBW1652', bit: 6 },
+          trayIdAddr: 'DBW686',
+          destinationAddr: 'DBW1426'
         },
         '09011': {
           name: '09011',
@@ -2603,10 +2979,14 @@ export default {
           y: 778,
           groupId: 'G_09010_09011',
           showTray: true,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW52', bit: 10 },
+          sensorAddr: { db: 'DBW1652', bit: 6 },
+          trayIdAddr: 'DBW688',
+          destinationAddr: 'DBW1428'
         },
         '09007': {
           name: '09007',
@@ -2614,10 +2994,14 @@ export default {
           y: 778,
           groupId: 'G_09007_09008',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW52', bit: 6 },
+          sensorAddr: { db: 'DBW1652', bit: 5 },
+          trayIdAddr: 'DBW682',
+          destinationAddr: 'DBW1422'
         },
         '09008': {
           name: '09008',
@@ -2625,191 +3009,225 @@ export default {
           y: 778,
           groupId: 'G_09007_09008',
           showTray: true,
-          motorStatus: true,
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW52', bit: 7 },
+          sensorAddr: { db: 'DBW1652', bit: 5 },
+          trayIdAddr: 'DBW684',
+          destinationAddr: 'DBW1424'
         },
         // // 以下为预热第一排的光电信号
         '02002SP': {
           name: 'SP02002-1',
           x: 1195,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1610', bit: 2 }
         },
         '02001SP': {
           name: 'SP02001-1',
           x: 1220,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1610', bit: 0 }
         },
         '02004SP': {
           name: 'SP02004-1',
           x: 1120,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1610', bit: 6 }
         },
         '02003SP': {
           name: 'SP02003-1',
           x: 1145,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1610', bit: 4 }
         },
         '03002SP': {
           name: 'SP03002-1',
           x: 1048,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1616', bit: 2 }
         },
         '03001SP': {
           name: 'SP03001-1',
           x: 1073,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1616', bit: 0 }
         },
         '03004SP': {
           name: 'SP03004-1',
           x: 973,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1616', bit: 6 }
         },
         '03003SP': {
           name: 'SP03003-1',
           x: 998,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1616', bit: 4 }
         },
         '04002SP': {
           name: 'SP04002-1',
           x: 900,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1622', bit: 2 }
         },
         '04001SP': {
           name: 'SP04001-1',
           x: 925,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1622', bit: 0 }
         },
         '04004SP': {
           name: 'SP04004-1',
           x: 828,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1622', bit: 6 }
         },
         '04003SP': {
           name: 'SP04003-1',
           x: 853,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1622', bit: 4 }
         },
         '05002SP': {
           name: 'SP05002-1',
           x: 753,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1628', bit: 2 }
         },
         '05001SP': {
           name: 'SP05001-1',
           x: 778,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1628', bit: 0 }
         },
         '05004SP': {
           name: 'SP05004-1',
           x: 680,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1628', bit: 6 }
         },
         '05003SP': {
           name: 'SP05003-1',
           x: 705,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1628', bit: 4 }
         },
         '06002SP': {
           name: 'SP06002-1',
           x: 606,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1634', bit: 2 }
         },
         '06001SP': {
           name: 'SP06001-1',
           x: 631,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1634', bit: 0 }
         },
         '06004SP': {
           name: 'SP06004-1',
           x: 530,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1634', bit: 6 }
         },
         '06003SP': {
           name: 'SP06003-1',
           x: 556,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1634', bit: 4 }
         },
         '07002SP': {
           name: 'SP07002-1',
           x: 460,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1640', bit: 2 }
         },
         '07001SP': {
           name: 'SP07001-1',
           x: 486,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1640', bit: 0 }
         },
         '07004SP': {
           name: 'SP07004-1',
           x: 386,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1640', bit: 6 }
         },
         '07003SP': {
           name: 'SP07003-1',
           x: 411,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1640', bit: 4 }
         },
         '08002SP': {
           name: 'SP08002-1',
           x: 315,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1646', bit: 2 }
         },
         '08001SP': {
           name: 'SP08001-1',
           x: 341,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1646', bit: 0 }
         },
         '08004SP': {
           name: 'SP08004-1',
           x: 240,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1646', bit: 6 }
         },
         '08003SP': {
           name: 'SP08003-1',
           x: 266,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1646', bit: 4 }
         },
         '09002SP': {
           name: 'SP09002-1',
           x: 165,
           y: 735,
-          sensorStatus: true
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1652', bit: 2 }
         },
         '09001SP': {
           name: 'SP09001-1',
           x: 191,
           y: 735,
-          sensorStatus: false
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1652', bit: 0 }
         },
         // // 以上为预热第一排的光电信号
         // 以下为预热第二排的光电信号
@@ -2818,758 +3236,1629 @@ export default {
           x: 1195,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 1 },
+          sensorAddr: { db: 'DBW1610', bit: 3 }
         },
         '02001': {
           name: '02001',
           x: 1220,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 0 },
+          sensorAddr: { db: 'DBW1610', bit: 1 }
         },
         '02004': {
           name: '02004',
           x: 1120,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 3 },
+          sensorAddr: { db: 'DBW1610', bit: 7 }
         },
         '02003': {
           name: '02003',
           x: 1145,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 2 },
+          sensorAddr: { db: 'DBW1610', bit: 5 }
         },
         '03002': {
           name: '03002',
           x: 1048,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 1 },
+          sensorAddr: { db: 'DBW1616', bit: 3 }
         },
         '03001': {
           name: '03001',
           x: 1073,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 0 },
+          sensorAddr: { db: 'DBW1616', bit: 1 }
         },
         '03004': {
           name: '03004',
           x: 973,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 3 },
+          sensorAddr: { db: 'DBW1616', bit: 7 }
         },
         '03003': {
           name: '03003',
           x: 998,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 2 },
+          sensorAddr: { db: 'DBW1616', bit: 5 }
         },
         '04002': {
           name: '04002',
           x: 900,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 1 },
+          sensorAddr: { db: 'DBW1622', bit: 3 }
         },
         '04001': {
           name: '04001',
           x: 925,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 0 },
+          sensorAddr: { db: 'DBW1622', bit: 1 }
         },
         '04004': {
           name: '04004',
           x: 828,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 3 },
+          sensorAddr: { db: 'DBW1622', bit: 7 }
         },
         '04003': {
           name: '04003',
           x: 853,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 2 },
+          sensorAddr: { db: 'DBW1622', bit: 5 }
         },
         '05002': {
           name: '05002',
           x: 753,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 1 },
+          sensorAddr: { db: 'DBW1628', bit: 3 }
         },
         '05001': {
           name: '05001',
           x: 778,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 0 },
+          sensorAddr: { db: 'DBW1628', bit: 1 }
         },
         '05004': {
           name: '05004',
           x: 680,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 3 },
+          sensorAddr: { db: 'DBW1628', bit: 7 }
         },
         '05003': {
           name: '05003',
           x: 705,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 2 },
+          sensorAddr: { db: 'DBW1628', bit: 5 }
         },
         '06002': {
           name: '06002',
           x: 606,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 1 },
+          sensorAddr: { db: 'DBW1634', bit: 3 }
         },
         '06001': {
           name: '06001',
           x: 631,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 0 },
+          sensorAddr: { db: 'DBW1634', bit: 1 }
         },
         '06004': {
           name: '06004',
           x: 530,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 3 },
+          sensorAddr: { db: 'DBW1634', bit: 7 }
         },
         '06003': {
           name: '06003',
           x: 556,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 2 },
+          sensorAddr: { db: 'DBW1634', bit: 5 }
         },
         '07002': {
           name: '07002',
           x: 460,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 1 },
+          sensorAddr: { db: 'DBW1640', bit: 3 }
         },
         '07001': {
           name: '07001',
           x: 486,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 0 },
+          sensorAddr: { db: 'DBW1640', bit: 1 }
         },
         '07004': {
           name: '07004',
           x: 386,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 3 },
+          sensorAddr: { db: 'DBW1640', bit: 7 }
         },
         '07003': {
           name: '07003',
           x: 411,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 2 },
+          sensorAddr: { db: 'DBW1640', bit: 5 }
         },
         '08002': {
           name: '08002',
           x: 315,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 1 },
+          sensorAddr: { db: 'DBW1646', bit: 3 }
         },
         '08001': {
           name: '08001',
           x: 341,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 0 },
+          sensorAddr: { db: 'DBW1646', bit: 1 }
         },
         '08004': {
           name: '08004',
           x: 240,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 3 },
+          sensorAddr: { db: 'DBW1646', bit: 7 }
         },
         '08003': {
           name: '08003',
           x: 266,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 2 },
+          sensorAddr: { db: 'DBW1646', bit: 5 }
         },
         '09002': {
           name: '09002',
           x: 165,
           y: 490,
           motorStatus: false,
-          sensorStatus: true
+          sensorStatus: false,
+          motorAddr: { db: 'DBW52', bit: 1 },
+          sensorAddr: { db: 'DBW1652', bit: 3 }
         },
         '09001': {
           name: '09001',
           x: 191,
           y: 490,
           motorStatus: false,
-          sensorStatus: false
+          sensorStatus: false,
+          motorAddr: { db: 'DBW52', bit: 0 },
+          sensorAddr: { db: 'DBW1652', bit: 1 }
         },
         // 以下为预热第三排的电机信号
         '02006': {
           name: '02006',
           x: 1195,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 5 }
         },
         '02005': {
           name: '02005',
           x: 1220,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 4 }
         },
         '02008': {
           name: '02008',
           x: 1120,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 7 }
         },
         '02007': {
           name: '02007',
           x: 1145,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW10', bit: 6 }
         },
         '03006': {
           name: '03006',
           x: 1048,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 5 }
         },
         '03005': {
           name: '03005',
           x: 1073,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 4 }
         },
         '03008': {
           name: '03008',
           x: 973,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 7 }
         },
         '03007': {
           name: '03007',
           x: 998,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW16', bit: 6 }
         },
         '04006': {
           name: '04006',
           x: 900,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 5 }
         },
         '04005': {
           name: '04005',
           x: 925,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 4 }
         },
         '04008': {
           name: '04008',
           x: 828,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 7 }
         },
         '04007': {
           name: '04007',
           x: 853,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW22', bit: 6 }
         },
         '05006': {
           name: '05006',
           x: 753,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 5 }
         },
         '05005': {
           name: '05005',
           x: 778,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 4 }
         },
         '05008': {
           name: '05008',
           x: 680,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW28', bit: 7 }
         },
         '05007': {
           name: '05007',
           x: 705,
           y: 180,
           motorStatus: false,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorAddr: { db: 'DBW28', bit: 6 }
         },
         '06006': {
           name: '06006',
           x: 606,
           y: 180,
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          motorAddr: { db: 'DBW34', bit: 5 }
         },
         '06005': {
           name: '06005',
           x: 631,
           y: 180,
-          motorStatus: true
+          motorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 4 }
         },
         '06008': {
           name: '06008',
           x: 530,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 7 }
         },
         '06007': {
           name: '06007',
           x: 556,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW34', bit: 6 }
         },
         '07006': {
           name: '07006',
           x: 460,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 5 }
         },
         '07005': {
           name: '07005',
           x: 486,
           y: 180,
-          motorStatus: true
+          motorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 4 }
         },
         '07008': {
           name: '07008',
           x: 386,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 7 }
         },
         '07007': {
           name: '07007',
           x: 411,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW40', bit: 6 }
         },
         '08006': {
           name: '08006',
           x: 315,
           y: 180,
-          motorStatus: true
+          motorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 5 }
         },
         '08005': {
           name: '08005',
           x: 341,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 4 }
         },
         '08008': {
           name: '08008',
           x: 240,
           y: 180,
-          motorStatus: true
+          motorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 7 }
         },
         '08007': {
           name: '08007',
           x: 266,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW46', bit: 6 }
         },
         '09004': {
           name: '09004',
           x: 165,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW52', bit: 3 }
         },
         '09003': {
           name: '09003',
           x: 191,
           y: 180,
-          motorStatus: false
+          motorStatus: false,
+          motorAddr: { db: 'DBW52', bit: 2 }
         },
-        // 以上为第三排光电信号
-        '01143T': {
-          name: '立体库接口',
+        // 以上为第三排电机信号
+        // 以下为出货/电机光电信号
+        'SP_02023-2': {
+          name: 'SP_02023-2',
+          x: 1245,
+          y: 132,
+          groupId: 'G_020232_020231',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 6 },
+          sensorAddr: { db: 'DBW1610', bit: 15 },
+          trayIdAddr: 'DBW140',
+          destinationAddr: 'DBW880'
+        },
+        'SP_02023-1': {
+          name: 'SP_02023-1',
+          groupId: 'G_020232_020231',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 6 },
+          sensorAddr: { db: 'DBW1610', bit: 14 },
+          trayIdAddr: 'DBW140',
+          destinationAddr: 'DBW880'
+        },
+        '02028': {
+          name: '02028',
           x: 1195,
           y: 132,
+          groupId: 'G_02028_02029',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 11 },
+          sensorAddr: { db: 'DBW1612', bit: 3 },
+          trayIdAddr: 'DBW146',
+          destinationAddr: 'DBW886'
         },
-        '01144T': {
-          name: '立体库接口',
+        '02029': {
+          name: '02029',
+          groupId: 'G_02028_02029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 12 },
+          sensorAddr: { db: 'DBW1612', bit: 2 },
+          trayIdAddr: 'DBW148',
+          destinationAddr: 'DBW888'
+        },
+        '02025': {
+          name: '02025',
           x: 1220,
           y: 132,
-          motorStatus: true,
+          groupId: 'G_02025_02026',
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 8 },
+          sensorAddr: { db: 'DBW1612', bit: 1 },
+          trayIdAddr: 'DBW142',
+          destinationAddr: 'DBW882'
         },
-        '01145T': {
-          name: '立体库接口',
+        '02026': {
+          name: '02026',
+          groupId: 'G_02025_02026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 9 },
+          sensorAddr: { db: 'DBW1612', bit: 0 },
+          trayIdAddr: 'DBW144',
+          destinationAddr: 'DBW884'
+        },
+        '02035': {
+          name: '02035',
           x: 1120,
           y: 132,
+          groupId: 'G_02035_02036',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW14', bit: 2 },
+          sensorAddr: { db: 'DBW1612', bit: 9 },
+          trayIdAddr: 'DBW156',
+          destinationAddr: 'DBW896'
         },
-        '01146T': {
-          name: '立体库接口',
+        '02036': {
+          name: '02036',
+          groupId: 'G_02035_02036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW14', bit: 3 },
+          sensorAddr: { db: 'DBW1612', bit: 8 },
+          trayIdAddr: 'DBW158',
+          destinationAddr: 'DBW898'
+        },
+        '02032': {
+          name: '02032',
           x: 1145,
           y: 132,
+          groupId: 'G_02032_02033',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW12', bit: 15 },
+          sensorAddr: { db: 'DBW1612', bit: 7 },
+          trayIdAddr: 'DBW152',
+          destinationAddr: 'DBW892'
         },
-        '01147T': {
-          name: '立体库接口',
+        '02033': {
+          name: '02033',
+          groupId: 'G_02032_02033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW14', bit: 0 },
+          sensorAddr: { db: 'DBW1612', bit: 6 },
+          trayIdAddr: 'DBW154',
+          destinationAddr: 'DBW894'
+        },
+        '03028': {
+          name: '03028',
           x: 1048,
           y: 132,
+          groupId: 'G_03028_03029',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 11 },
+          sensorAddr: { db: 'DBW1618', bit: 3 },
+          trayIdAddr: 'DBW226',
+          destinationAddr: 'DBW966'
         },
-        '01148': {
-          name: '立体库接口',
+        '03029': {
+          name: '03029',
+          groupId: 'G_03028_03029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 12 },
+          sensorAddr: { db: 'DBW1618', bit: 2 },
+          trayIdAddr: 'DBW228',
+          destinationAddr: 'DBW968'
+        },
+        '03025': {
+          name: '03025',
           x: 1073,
           y: 132,
+          groupId: 'G_03025_03026',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 8 },
+          sensorAddr: { db: 'DBW1618', bit: 1 },
+          trayIdAddr: 'DBW222',
+          destinationAddr: 'DBW962'
         },
-        '01149': {
-          name: '立体库接口',
+        '03026': {
+          name: '03026',
+          groupId: 'G_03025_03026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 9 },
+          sensorAddr: { db: 'DBW1618', bit: 0 },
+          trayIdAddr: 'DBW224',
+          destinationAddr: 'DBW964'
+        },
+        '03035': {
+          name: '03035',
           x: 973,
           y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          groupId: 'G_03035_03036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW20', bit: 2 },
+          sensorAddr: { db: 'DBW1618', bit: 9 },
+          trayIdAddr: 'DBW236',
+          destinationAddr: 'DBW976'
         },
-        '01150': {
-          name: '立体库接口',
+        '03036': {
+          name: '03036',
+          groupId: 'G_03035_03036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW20', bit: 3 },
+          sensorAddr: { db: 'DBW1618', bit: 8 },
+          trayIdAddr: 'DBW238',
+          destinationAddr: 'DBW978'
+        },
+        '03032': {
+          name: '03032',
           x: 998,
           y: 132,
+          groupId: 'G_03032_03033',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW18', bit: 15 },
+          sensorAddr: { db: 'DBW1618', bit: 7 },
+          trayIdAddr: 'DBW232',
+          destinationAddr: 'DBW972'
         },
-        '01151': {
-          name: '立体库接口',
+        '03033': {
+          name: '03033',
+          groupId: 'G_03032_03033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW20', bit: 0 },
+          sensorAddr: { db: 'DBW1618', bit: 6 },
+          trayIdAddr: 'DBW234',
+          destinationAddr: 'DBW974'
+        },
+        '04028': {
+          name: '04028',
           x: 900,
           y: 132,
+          groupId: 'G_04028_04029',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 11 },
+          sensorAddr: { db: 'DBW1624', bit: 3 },
+          trayIdAddr: 'DBW306',
+          destinationAddr: 'DBW1046'
         },
-        '01152': {
-          name: '立体库接口',
+        '04029': {
+          name: '04029',
+          groupId: 'G_04028_04029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 12 },
+          sensorAddr: { db: 'DBW1624', bit: 2 },
+          trayIdAddr: 'DBW308',
+          destinationAddr: 'DBW1048'
+        },
+        '04025': {
+          name: '04025',
           x: 925,
           y: 132,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
-        },
-        '01153': {
-          name: '立体库接口',
-          x: 828,
-          y: 132,
+          groupId: 'G_04025_04026',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 8 },
+          sensorAddr: { db: 'DBW1624', bit: 1 },
+          trayIdAddr: 'DBW302',
+          destinationAddr: 'DBW1042'
         },
-        '01154': {
-          name: '立体库接口',
+        '04026': {
+          name: '04026',
+          groupId: 'G_04025_04026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 9 },
+          sensorAddr: { db: 'DBW1624', bit: 0 },
+          trayIdAddr: 'DBW304',
+          destinationAddr: 'DBW1044'
+        },
+        '04035': {
+          name: '04035',
+          x: 825,
+          y: 132,
+          groupId: 'G_04035_04036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW26', bit: 2 },
+          sensorAddr: { db: 'DBW1624', bit: 9 },
+          trayIdAddr: 'DBW316',
+          destinationAddr: 'DBW1056'
+        },
+        '04036': {
+          name: '04036',
+          groupId: 'G_04035_04036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW26', bit: 3 },
+          sensorAddr: { db: 'DBW1624', bit: 8 },
+          trayIdAddr: 'DBW318',
+          destinationAddr: 'DBW1058'
+        },
+        '04032': {
+          name: '04032',
           x: 853,
           y: 132,
+          groupId: 'G_04032_04033',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW24', bit: 15 },
+          sensorAddr: { db: 'DBW1624', bit: 7 },
+          trayIdAddr: 'DBW312',
+          destinationAddr: 'DBW1052'
         },
-        '01155': {
-          name: '立体库接口',
+        '04033': {
+          name: '04033',
+          groupId: 'G_04032_04033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW26', bit: 0 },
+          sensorAddr: { db: 'DBW1624', bit: 6 },
+          trayIdAddr: 'DBW314',
+          destinationAddr: 'DBW1054'
+        },
+        '05028': {
+          name: '05028',
           x: 753,
           y: 132,
+          groupId: 'G_05028_05029',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 11 },
+          sensorAddr: { db: 'DBW1630', bit: 3 },
+          trayIdAddr: 'DBW386',
+          destinationAddr: 'DBW1126'
         },
-        '01156': {
-          name: '立体库接口',
+        '05029': {
+          name: '05029',
+          groupId: 'G_05028_05029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 12 },
+          sensorAddr: { db: 'DBW1630', bit: 2 },
+          trayIdAddr: 'DBW388',
+          destinationAddr: 'DBW1128'
+        },
+        '05025': {
+          name: '05025',
           x: 778,
           y: 132,
+          groupId: 'G_05025_05026',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 8 },
+          sensorAddr: { db: 'DBW1630', bit: 1 },
+          trayIdAddr: 'DBW382',
+          destinationAddr: 'DBW1122'
         },
-        '01157': {
-          name: '立体库接口',
+        '05026': {
+          name: '05026',
+          groupId: 'G_05025_05026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 9 },
+          sensorAddr: { db: 'DBW1630', bit: 0 },
+          trayIdAddr: 'DBW384',
+          destinationAddr: 'DBW1124'
+        },
+        '05035': {
+          name: '05035',
           x: 680,
           y: 132,
+          groupId: 'G_05035_05036',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW32', bit: 2 },
+          sensorAddr: { db: 'DBW1630', bit: 9 },
+          trayIdAddr: 'DBW396',
+          destinationAddr: 'DBW1136'
         },
-        '01158': {
-          name: '立体库接口',
+        '05036': {
+          name: '05036',
+          groupId: 'G_05035_05036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW32', bit: 3 },
+          sensorAddr: { db: 'DBW1630', bit: 8 },
+          trayIdAddr: 'DBW398',
+          destinationAddr: 'DBW1138'
+        },
+        '05032': {
+          name: '05032',
           x: 705,
           y: 132,
+          groupId: 'G_05032_05033',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW30', bit: 15 },
+          sensorAddr: { db: 'DBW1630', bit: 7 },
+          trayIdAddr: 'DBW392',
+          destinationAddr: 'DBW1132'
         },
-        '01159': {
-          name: '立体库接口',
+        '05033': {
+          name: '05033',
+          groupId: 'G_05032_05033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW32', bit: 0 },
+          sensorAddr: { db: 'DBW1632', bit: 6 },
+          trayIdAddr: 'DBW394',
+          destinationAddr: 'DBW1134'
+        },
+        '06028': {
+          name: '06028',
           x: 606,
           y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          groupId: 'G_06028_06029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 11 },
+          sensorAddr: { db: 'DBW1636', bit: 3 },
+          trayIdAddr: 'DBW466',
+          destinationAddr: 'DBW1206'
         },
-        '01160': {
-          name: '立体库接口',
+        '06029': {
+          name: '06029',
+          groupId: 'G_06028_06029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 12 },
+          sensorAddr: { db: 'DBW1636', bit: 2 },
+          trayIdAddr: 'DBW468',
+          destinationAddr: 'DBW1208'
+        },
+        '06025': {
+          name: '06025',
           x: 631,
           y: 132,
-          motorStatus: true,
+          groupId: 'G_06025_06026',
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 8 },
+          sensorAddr: { db: 'DBW1636', bit: 1 },
+          trayIdAddr: 'DBW462',
+          destinationAddr: 'DBW1202'
         },
-        '01161': {
-          name: '立体库接口',
+        '06026': {
+          name: '06026',
+          groupId: 'G_06025_06026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 9 },
+          sensorAddr: { db: 'DBW1636', bit: 0 },
+          trayIdAddr: 'DBW464',
+          destinationAddr: 'DBW1204'
+        },
+        '06035': {
+          name: '06035',
           x: 530,
           y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          groupId: 'G_06035_06036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW38', bit: 2 },
+          sensorAddr: { db: 'DBW1636', bit: 9 },
+          trayIdAddr: 'DBW476',
+          destinationAddr: 'DBW1216'
         },
-        '01162': {
-          name: '立体库接口',
+        '06036': {
+          name: '06036',
+          groupId: 'G_06035_06036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW38', bit: 3 },
+          sensorAddr: { db: 'DBW1636', bit: 8 },
+          trayIdAddr: 'DBW478',
+          destinationAddr: 'DBW1218'
+        },
+        '06032': {
+          name: '06032',
           x: 556,
           y: 132,
+          groupId: 'G_06032_06033',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW36', bit: 15 },
+          sensorAddr: { db: 'DBW1636', bit: 7 },
+          trayIdAddr: 'DBW472',
+          destinationAddr: 'DBW1212'
         },
-        '01163': {
-          name: '立体库接口',
+        '06033': {
+          name: '06033',
+          groupId: 'G_06032_06033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW38', bit: 0 },
+          sensorAddr: { db: 'DBW1638', bit: 6 },
+          trayIdAddr: 'DBW474',
+          destinationAddr: 'DBW1214'
+        },
+        '07028': {
+          name: '07028',
           x: 460,
           y: 132,
+          groupId: 'G_07028_07029',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW42', bit: 11 },
+          sensorAddr: { db: 'DBW1642', bit: 3 },
+          trayIdAddr: 'DBW546',
+          destinationAddr: 'DBW1286'
         },
-        '01164': {
-          name: '立体库接口',
+        '07029': {
+          name: '07029',
+          groupId: 'G_07028_07029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW42', bit: 12 },
+          sensorAddr: { db: 'DBW1642', bit: 2 },
+          trayIdAddr: 'DBW548',
+          destinationAddr: 'DBW1288'
+        },
+        '07025': {
+          name: '07025',
           x: 486,
           y: 132,
+          groupId: 'G_07025_07026',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW42', bit: 8 },
+          sensorAddr: { db: 'DBW1642', bit: 1 },
+          trayIdAddr: 'DBW542',
+          destinationAddr: 'DBW1282'
         },
-        '01165': {
-          name: '立体库接口',
+        '07026': {
+          name: '07026',
+          groupId: 'G_07025_07026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW42', bit: 9 },
+          sensorAddr: { db: 'DBW1642', bit: 0 },
+          trayIdAddr: 'DBW544',
+          destinationAddr: 'DBW1284'
+        },
+        '07035': {
+          name: '07035',
           x: 386,
           y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          groupId: 'G_07035_07036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 2 },
+          sensorAddr: { db: 'DBW1642', bit: 9 },
+          trayIdAddr: 'DBW556',
+          destinationAddr: 'DBW1296'
         },
-        '01166': {
-          name: '立体库接口',
+        '07036': {
+          name: '07036',
+          groupId: 'G_07035_07036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 3 },
+          sensorAddr: { db: 'DBW1642', bit: 8 },
+          trayIdAddr: 'DBW558',
+          destinationAddr: 'DBW1298'
+        },
+        '07032': {
+          name: '07032',
           x: 411,
           y: 132,
+          groupId: 'G_07032_07033',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW42', bit: 15 },
+          sensorAddr: { db: 'DBW1642', bit: 7 },
+          trayIdAddr: 'DBW552',
+          destinationAddr: 'DBW1292'
         },
-        '01167': {
-          name: '立体库接口',
+        '07033': {
+          name: '07033',
+          groupId: 'G_07032_07033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW44', bit: 0 },
+          sensorAddr: { db: 'DBW1642', bit: 6 },
+          trayIdAddr: 'DBW554',
+          destinationAddr: 'DBW1294'
+        },
+        '08028': {
+          name: '08028',
           x: 315,
           y: 132,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          groupId: 'G_08028_08029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 11 },
+          sensorAddr: { db: 'DBW1648', bit: 3 },
+          trayIdAddr: 'DBW626',
+          destinationAddr: 'DBW1366'
         },
-        '01168': {
-          name: '立体库接口',
+        '08029': {
+          name: '08029',
+          groupId: 'G_08028_08029',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 12 },
+          sensorAddr: { db: 'DBW1648', bit: 2 },
+          trayIdAddr: 'DBW628',
+          destinationAddr: 'DBW1368'
+        },
+        '08025': {
+          name: '08025',
           x: 341,
           y: 132,
+          groupId: 'G_08025_08026',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 8 },
+          sensorAddr: { db: 'DBW1648', bit: 1 },
+          trayIdAddr: 'DBW622',
+          destinationAddr: 'DBW1362'
         },
-        '01169': {
-          name: '立体库接口',
+        '08026': {
+          name: '08026',
+          groupId: 'G_08025_08026',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 9 },
+          sensorAddr: { db: 'DBW1648', bit: 0 },
+          trayIdAddr: 'DBW624',
+          destinationAddr: 'DBW1364'
+        },
+        '08035': {
+          name: '08035',
           x: 240,
           y: 132,
+          groupId: 'G_08035_08036',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW50', bit: 2 },
+          sensorAddr: { db: 'DBW1648', bit: 9 },
+          trayIdAddr: 'DBW636',
+          destinationAddr: 'DBW1376'
         },
-        '01170': {
-          name: '立体库接口',
+        '08036': {
+          name: '08036',
+          groupId: 'G_08035_08036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW50', bit: 3 },
+          sensorAddr: { db: 'DBW1648', bit: 8 },
+          trayIdAddr: 'DBW638',
+          destinationAddr: 'DBW1378'
+        },
+        '08032': {
+          name: '08032',
           x: 266,
           y: 132,
+          groupId: 'G_08032_08033',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW48', bit: 15 },
+          sensorAddr: { db: 'DBW1648', bit: 7 },
+          trayIdAddr: 'DBW632',
+          destinationAddr: 'DBW1372'
         },
-        '01171': {
-          name: '立体库接口',
+        '08033': {
+          name: '08033',
+          groupId: 'G_08032_08033',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW50', bit: 0 },
+          sensorAddr: { db: 'DBW1650', bit: 6 },
+          trayIdAddr: 'DBW634',
+          destinationAddr: 'DBW1374'
+        },
+        '09017': {
+          name: '09017',
           x: 165,
           y: 132,
+          groupId: 'G_09017_09018',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 1 },
+          sensorAddr: { db: 'DBW1652', bit: 12 },
+          trayIdAddr: 'DBW696',
+          destinationAddr: 'DBW1436'
         },
-        '01172': {
-          name: '立体库接口',
+        '09018': {
+          name: '09018',
+          groupId: 'G_09017_09018',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 2 },
+          sensorAddr: { db: 'DBW1652', bit: 11 },
+          trayIdAddr: 'DBW698',
+          destinationAddr: 'DBW1438'
+        },
+        '09014': {
+          name: '09014',
           x: 191,
           y: 132,
-          motorStatus: true,
+          groupId: 'G_09014_09015',
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW52', bit: 13 },
+          sensorAddr: { db: 'DBW1652', bit: 10 },
+          trayIdAddr: 'DBW692',
+          destinationAddr: 'DBW1432'
         },
-        '01173': {
-          name: '立体库接口',
+        '09015': {
+          name: '09015',
+          groupId: 'G_09014_09015',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW52', bit: 14 },
+          sensorAddr: { db: 'DBW1652', bit: 9 },
+          trayIdAddr: 'DBW694',
+          destinationAddr: 'DBW1434'
+        },
+        // 以上为下货第一排
+        // 以下为下货第二排
+        '09023': {
+          name: '09023',
           x: 460,
           y: 97,
+          groupId: 'G_09023_09024',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 6 },
+          sensorAddr: { db: 'DBW1654', bit: 2 },
+          trayIdAddr: 'DBW704',
+          destinationAddr: 'DBW1444'
         },
-        '01174': {
-          name: '立体库接口',
+        '09024': {
+          name: '09024',
+          groupId: 'G_09023_09024',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 7 },
+          sensorAddr: { db: 'DBW1654', bit: 2 },
+          trayIdAddr: 'DBW706',
+          destinationAddr: 'DBW1446'
+        },
+        '09020': {
+          name: '09020',
           x: 486,
           y: 97,
-          motorStatus: true,
-          sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
-        },
-        '01175': {
-          name: '立体库接口',
-          x: 386,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
-        },
-        '01176': {
-          name: '立体库接口',
-          x: 411,
-          y: 97,
-          motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
-        },
-        '01177': {
-          name: '立体库接口',
-          x: 315,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
-        },
-        '01178': {
-          name: '立体库接口',
-          x: 341,
-          y: 97,
+          groupId: 'G_09020_09021',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 3 },
+          sensorAddr: { db: 'DBW1652', bit: 15 },
+          trayIdAddr: 'DBW700',
+          destinationAddr: 'DBW1440'
         },
-        '01179': {
-          name: '立体库接口',
-          x: 240,
-          y: 97,
-          motorStatus: true,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
-        },
-        '01180': {
-          name: '立体库接口',
-          x: 266,
-          y: 97,
+        '09021': {
+          name: '09021',
+          groupId: 'G_09020_09021',
           motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 4 },
+          sensorAddr: { db: 'DBW1652', bit: 15 },
+          trayIdAddr: 'DBW702',
+          destinationAddr: 'DBW1442'
         },
-        '01181': {
-          name: '立体库接口',
+        'SP_09025-2': {
+          name: 'SP_09025-2',
+          x: 434,
+          y: 97,
+          groupId: 'G_090252_090251',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 8 },
+          sensorAddr: { db: 'DBW1654', bit: 4 },
+          trayIdAddr: 'DBW708',
+          destinationAddr: 'DBW1448'
+        },
+        'SP_09025-1': {
+          name: 'SP_09025-1',
+          groupId: 'G_090252_090251',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 8 },
+          sensorAddr: { db: 'DBW1654', bit: 3 },
+          trayIdAddr: 'DBW708',
+          destinationAddr: 'DBW1448'
+        },
+        'SP_09026-2': {
+          name: 'SP_09026-2',
+          x: 407,
+          y: 97,
+          groupId: 'G_090262_090261',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 9 },
+          sensorAddr: { db: 'DBW1654', bit: 6 },
+          trayIdAddr: 'DBW710',
+          destinationAddr: 'DBW1450'
+        },
+        'SP_09026-1': {
+          name: 'SP_09026-1',
+          groupId: 'G_090262_090261',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 9 },
+          sensorAddr: { db: 'DBW1654', bit: 5 },
+          trayIdAddr: 'DBW710',
+          destinationAddr: 'DBW1450'
+        },
+        'SP_09027-2': {
+          name: 'SP_09027-2',
+          x: 380,
+          y: 97,
+          groupId: 'G_090272_090271',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 10 },
+          sensorAddr: { db: 'DBW1654', bit: 8 },
+          trayIdAddr: 'DBW712',
+          destinationAddr: 'DBW1452'
+        },
+        'SP_09027-1': {
+          name: 'SP_09027-1',
+          groupId: 'G_090272_090271',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 10 },
+          sensorAddr: { db: 'DBW1654', bit: 7 },
+          trayIdAddr: 'DBW712',
+          destinationAddr: 'DBW1452'
+        },
+        'SP_09028-2': {
+          name: 'SP_09028-2',
+          x: 353,
+          y: 97,
+          groupId: 'G_090282_090281',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 11 },
+          sensorAddr: { db: 'DBW1654', bit: 10 },
+          trayIdAddr: 'DBW714',
+          destinationAddr: 'DBW1454'
+        },
+        'SP_09028-1': {
+          name: 'SP_09028-1',
+          groupId: 'G_090282_090281',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 11 },
+          sensorAddr: { db: 'DBW1654', bit: 9 },
+          trayIdAddr: 'DBW714',
+          destinationAddr: 'DBW1454'
+        },
+        'SP_09029-2': {
+          name: 'SP_09029-2',
+          x: 326,
+          y: 97,
+          groupId: 'G_090292_090291',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 12 },
+          sensorAddr: { db: 'DBW1654', bit: 12 },
+          trayIdAddr: 'DBW716',
+          destinationAddr: 'DBW1456'
+        },
+        'SP_09029-1': {
+          name: 'SP_09029-1',
+          groupId: 'G_090292_090291',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 12 },
+          sensorAddr: { db: 'DBW1654', bit: 11 },
+          trayIdAddr: 'DBW716',
+          destinationAddr: 'DBW1456'
+        },
+        'SP_09030-2': {
+          name: 'SP_09030-2',
+          x: 299,
+          y: 97,
+          groupId: 'G_090302_090301',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 13 },
+          sensorAddr: { db: 'DBW1654', bit: 14 },
+          trayIdAddr: 'DBW718',
+          destinationAddr: 'DBW1458'
+        },
+        'SP_09030-1': {
+          name: 'SP_09030-1',
+          groupId: 'G_090302_090301',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 13 },
+          sensorAddr: { db: 'DBW1654', bit: 13 },
+          trayIdAddr: 'DBW718',
+          destinationAddr: 'DBW1458'
+        },
+        'SP_09031-2': {
+          name: 'SP_09031-2',
+          x: 272,
+          y: 97,
+          groupId: 'G_090312_090311',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 14 },
+          sensorAddr: { db: 'DBW1656', bit: 0 },
+          trayIdAddr: 'DBW720',
+          destinationAddr: 'DBW1460'
+        },
+        'SP_09031-1': {
+          name: 'SP_09031-1',
+          groupId: 'G_090312_090311',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 14 },
+          sensorAddr: { db: 'DBW1654', bit: 15 },
+          trayIdAddr: 'DBW720',
+          destinationAddr: 'DBW1460'
+        },
+        'SP_09032-2': {
+          name: 'SP_09032-2',
+          x: 245,
+          y: 97,
+          groupId: 'G_090322_090321',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 15 },
+          sensorAddr: { db: 'DBW1656', bit: 2 },
+          trayIdAddr: 'DBW722',
+          destinationAddr: 'DBW1462'
+        },
+        'SP_09032-1': {
+          name: 'SP_09032-1',
+          groupId: 'G_090322_090321',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW54', bit: 15 },
+          sensorAddr: { db: 'DBW1656', bit: 1 },
+          trayIdAddr: 'DBW722',
+          destinationAddr: 'DBW1462'
+        },
+        'SP_09033-2': {
+          name: 'SP_09033-2',
+          x: 218,
+          y: 97,
+          groupId: 'G_090332_090331',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW56', bit: 0 },
+          sensorAddr: { db: 'DBW1656', bit: 4 },
+          trayIdAddr: 'DBW724',
+          destinationAddr: 'DBW1464'
+        },
+        'SP_09033-1': {
+          name: 'SP_09033-1',
+          groupId: 'G_090332_090331',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW56', bit: 0 },
+          sensorAddr: { db: 'DBW1656', bit: 3 },
+          trayIdAddr: 'DBW724',
+          destinationAddr: 'DBW1464'
+        },
+        '09038': {
+          name: '09038',
           x: 165,
           y: 97,
+          groupId: 'G_09038_09039',
           motorStatus: false,
-          sensorStatus: true,
-          trayId: 'T-202502',
-          destination: '成品库'
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW56', bit: 5 },
+          sensorAddr: { db: 'DBW1656', bit: 10 },
+          trayIdAddr: 'DBW730',
+          destinationAddr: 'DBW1470'
         },
-        '01182': {
-          name: '立体库接口',
+        '09039': {
+          name: '09039',
+          groupId: 'G_09038_09039',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW56', bit: 6 },
+          sensorAddr: { db: 'DBW1656', bit: 10 },
+          trayIdAddr: 'DBW732',
+          destinationAddr: 'DBW1472'
+        },
+        '09035': {
+          name: '09035',
           x: 191,
           y: 97,
-          motorStatus: true,
+          groupId: 'G_09035_09036',
+          motorStatus: false,
           sensorStatus: false,
-          trayId: 'T-202502',
-          destination: '成品库'
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW56', bit: 2 },
+          sensorAddr: { db: 'DBW1656', bit: 7 },
+          trayIdAddr: 'DBW726',
+          destinationAddr: 'DBW1466'
+        },
+        '09036': {
+          name: '09036',
+          groupId: 'G_09035_09036',
+          motorStatus: false,
+          sensorStatus: false,
+          trayId: '',
+          destination: 0,
+          motorAddr: { db: 'DBW56', bit: 3 },
+          sensorAddr: { db: 'DBW1656', bit: 7 },
+          trayIdAddr: 'DBW728',
+          destinationAddr: 'DBW1468'
         }
       },
 
@@ -3663,236 +4952,44 @@ export default {
       // S7大端序: 逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
       const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
 
-      // ================================================================
-      // 缓存线(01xxx) 电机运行信号
-      // DBW6: 缓存线电机运行信号-1 (BIT0~BIT15)
-      // DBW8: 缓存线电机运行信号-2 (BIT0~BIT13, BIT14/15备用)
-      // 升降电机(01003/01007/01010/01025/01028)无对应deviceNode,用空数组跳过
-      // A/B后缀设备共享同一个电机bit
-      // ================================================================
-      const motorWord1 = this.convertToWord(values.DBW6);
-      const motorWord2 = this.convertToWord(values.DBW8);
-
-      const motorMap1 = [
-        ['01001'], // BIT0: 01001电机运行
-        ['01002'], // BIT1: 01002电机运行
-        [], // BIT2: 01003升降电机运行(无deviceNode)
-        ['01004'], // BIT3: 01004滚筒电机运行
-        ['01005'], // BIT4: 01005链条电机运行
-        ['01006'], // BIT5: 01006电机运行
-        [], // BIT6: 01007升降电机运行(无deviceNode)
-        ['01008'], // BIT7: 01008滚筒电机运行
-        ['01009'], // BIT8: 01009链条电机运行
-        [], // BIT9: 01010升降电机运行(无deviceNode)
-        ['01011'], // BIT10: 01011滚筒电机运行
-        ['01012'], // BIT11: 01012链条电机运行
-        ['01013A', '01013B'], // BIT12: 01013电机运行
-        ['01014A', '01014B'], // BIT13: 01014电机运行
-        ['01015A', '01015B'], // BIT14: 01015电机运行
-        ['01016A', '01016B'] // BIT15: 01016电机运行
-      ];
-      const motorMap2 = [
-        ['01017A', '01017B'], // BIT0: 01017电机运行
-        ['01018A', '01018B'], // BIT1: 01018电机运行
-        ['01019A', '01019B'], // BIT2: 01019电机运行
-        ['01020A', '01020B'], // BIT3: 01020电机运行
-        ['01021A', '01021B'], // BIT4: 01021电机运行
-        ['01022A', '01022B'], // BIT5: 01022电机运行
-        ['01023A', '01023B'], // BIT6: 01023电机运行
-        ['01024A', '01024B'], // BIT7: 01024电机运行
-        [], // BIT8: 01025升降电机运行(无deviceNode)
-        ['01026'], // BIT9: 01026滚筒电机运行
-        ['01027'], // BIT10: 01027链条电机运行
-        [], // BIT11: 01028升降电机运行(无deviceNode)
-        ['01029'], // BIT12: 01029滚筒电机运行
-        ['01030'] // BIT13: 01030链条电机运行
-      ];
-
-      motorMap1.forEach((ids, i) => {
-        const bitPos = i < 8 ? i + 8 : i - 8;
-        const val = getBit(motorWord1, bitPos) === '1';
-        ids.forEach((id) => {
-          if (this.deviceNodes[id]) {
-            this.deviceNodes[id].motorStatus = val;
-          }
-        });
-      });
-      motorMap2.forEach((ids, i) => {
-        const bitPos = i < 8 ? i + 8 : i - 8;
-        const val = getBit(motorWord2, bitPos) === '1';
-        ids.forEach((id) => {
-          if (this.deviceNodes[id]) {
-            this.deviceNodes[id].motorStatus = val;
-          }
-        });
-      });
-
-      // ================================================================
-      // 缓存线(01xxx) 传感器信号(与电机bit映射不同!)
-      // DBW1606: 缓存线传感器信号-1 (BIT0~BIT15)
-      // DBW1608: 缓存线传感器信号-2 (BIT0~BIT7, BIT8~BIT15备用)
-      // 01013/01019有两个传感器分别对应A/B,其余A/B设备共享一个传感器
-      // ================================================================
-      const sensorWord1 = this.convertToWord(values.DBW1606);
-      const sensorWord2 = this.convertToWord(values.DBW1608);
-
-      const sensorMap1 = [
-        ['01001'], // BIT0: SP_01001
-        ['01002'], // BIT1: SP_01002
-        ['01004'], // BIT2: SP_01004
-        ['01005'], // BIT3: SP_01005
-        ['01006'], // BIT4: SP_01006
-        ['01009'], // BIT5: SP_01009
-        ['01011'], // BIT6: SP_01011
-        ['01012'], // BIT7: SP_01012
-        ['01013A'], // BIT8: SP_01013-1
-        ['01013B'], // BIT9: SP_01013-2
-        ['01014A', '01014B'], // BIT10: SP_01014
-        ['01015A', '01015B'], // BIT11: SP_01015
-        ['01016A', '01016B'], // BIT12: SP_01016
-        ['01017A', '01017B'], // BIT13: SP_01017
-        ['01018A', '01018B'], // BIT14: SP_01018
-        ['01019A'] // BIT15: SP_01019-1
-      ];
-      const sensorMap2 = [
-        ['01019B'], // BIT0: SP_01019-2
-        ['01020A', '01020B'], // BIT1: SP_01020
-        ['01021A', '01021B'], // BIT2: SP_01021
-        ['01022A', '01022B'], // BIT3: SP_01022
-        ['01023A', '01023B'], // BIT4: SP_01023
-        ['01024A', '01024B'], // BIT5: SP_01024
-        ['01027'], // BIT6: SP_01027
-        ['01030'] // BIT7: SP_01030
-      ];
-
-      sensorMap1.forEach((ids, i) => {
-        const bitPos = i < 8 ? i + 8 : i - 8;
-        const val = getBit(sensorWord1, bitPos) === '1';
-        ids.forEach((id) => {
-          if (this.deviceNodes[id]) {
-            this.deviceNodes[id].sensorStatus = val;
-          }
-        });
-      });
-      sensorMap2.forEach((ids, i) => {
-        const bitPos = i < 8 ? i + 8 : i - 8;
-        const val = getBit(sensorWord2, bitPos) === '1';
-        ids.forEach((id) => {
-          if (this.deviceNodes[id]) {
-            this.deviceNodes[id].sensorStatus = val;
-          }
-        });
-      });
-
-      // ================================================================
-      // 缓存线(01xxx) 各电机占位虚拟ID码
-      // DBW62~DBW118: 01001~01022B
-      // DBW1800~DBW1814: 01023A~01030
-      // ================================================================
-      const trayIdMap = {
-        '01001': 'DBW62',
-        '01002': 'DBW64',
-        '01004': 'DBW66',
-        '01005': 'DBW68',
-        '01006': 'DBW70',
-        '01008': 'DBW72',
-        '01009': 'DBW74',
-        '01011': 'DBW76',
-        '01012': 'DBW78',
-        '01013A': 'DBW80',
-        '01013B': 'DBW82',
-        '01014A': 'DBW84',
-        '01014B': 'DBW86',
-        '01015A': 'DBW88',
-        '01015B': 'DBW90',
-        '01016A': 'DBW92',
-        '01016B': 'DBW94',
-        '01017A': 'DBW96',
-        '01017B': 'DBW98',
-        '01018A': 'DBW100',
-        '01018B': 'DBW102',
-        '01019A': 'DBW104',
-        '01019B': 'DBW106',
-        '01020A': 'DBW108',
-        '01020B': 'DBW110',
-        '01021A': 'DBW112',
-        '01021B': 'DBW114',
-        '01022A': 'DBW116',
-        '01022B': 'DBW118',
-        '01023A': 'DBW1800',
-        '01023B': 'DBW1802',
-        '01024A': 'DBW1804',
-        '01024B': 'DBW1806',
-        '01026': 'DBW1808',
-        '01027': 'DBW1810',
-        '01029': 'DBW1812',
-        '01030': 'DBW1814'
+      // 预先解析高频使用的 Word (按需从 values 里取并转换)
+      const parsedWords = {};
+      const getParsedWord = (db) => {
+        if (parsedWords[db] === undefined) {
+          parsedWords[db] = this.convertToWord(values[db]);
+        }
+        return parsedWords[db];
       };
 
-      Object.entries(trayIdMap).forEach(([id, addr]) => {
-        if (this.deviceNodes[id]) {
-          const v = Number(values[addr] ?? 0);
-          this.deviceNodes[id].trayId = v !== 0 ? String(v) : '';
+      // 核心：遍历设备列表，统一赋值
+      Object.values(this.deviceNodes).forEach((node) => {
+        // 赋值电机状态
+        if (node.motorAddr) {
+          const { db, bit } = node.motorAddr;
+          const actualBit = bit < 8 ? bit + 8 : bit - 8;
+          node.motorStatus = getBit(getParsedWord(db), actualBit) === '1';
         }
-      });
 
-      // ================================================================
-      // 缓存线(01xxx) 各电机货物目的地
-      // DBW800~DBW848: 01001~01020B
-      // DBW1900~DBW1922: 01021A~01030
-      // ================================================================
-      const destMap = {
-        '01001': 'DBW800',
-        '01002': 'DBW802',
-        '01004': 'DBW804',
-        '01005': 'DBW806',
-        '01006': 'DBW808',
-        '01008': 'DBW810',
-        '01009': 'DBW812',
-        '01011': 'DBW814',
-        '01012': 'DBW816',
-        '01013A': 'DBW818',
-        '01013B': 'DBW820',
-        '01014A': 'DBW822',
-        '01014B': 'DBW824',
-        '01015A': 'DBW826',
-        '01015B': 'DBW828',
-        '01016A': 'DBW830',
-        '01016B': 'DBW832',
-        '01017A': 'DBW834',
-        '01017B': 'DBW836',
-        '01018A': 'DBW838',
-        '01018B': 'DBW840',
-        '01019A': 'DBW842',
-        '01019B': 'DBW844',
-        '01020A': 'DBW846',
-        '01020B': 'DBW848',
-        '01021A': 'DBW1900',
-        '01021B': 'DBW1902',
-        '01022A': 'DBW1904',
-        '01022B': 'DBW1906',
-        '01023A': 'DBW1908',
-        '01023B': 'DBW1910',
-        '01024A': 'DBW1912',
-        '01024B': 'DBW1914',
-        '01026': 'DBW1916',
-        '01027': 'DBW1918',
-        '01029': 'DBW1920',
-        '01030': 'DBW1922'
-      };
-
-      Object.entries(destMap).forEach(([id, addr]) => {
-        if (this.deviceNodes[id]) {
-          this.deviceNodes[id].destination = Number(values[addr] ?? 0);
+        // 赋值传感器状态
+        if (node.sensorAddr) {
+          const { db, bit } = node.sensorAddr;
+          const actualBit = bit < 8 ? bit + 8 : bit - 8;
+          node.sensorStatus = getBit(getParsedWord(db), actualBit) === '1';
         }
-      });
 
-      // ================================================================
-      // 根据 trayId 有无，同步更新 showTray
-      // ================================================================
-      Object.keys(this.deviceNodes).forEach((id) => {
-        const node = this.deviceNodes[id];
-        if (node && 'showTray' in node) {
+        // 赋值托盘 ID
+        if (node.trayIdAddr) {
+          const v = Number(values[node.trayIdAddr] ?? 0);
+          node.trayId = v !== 0 ? String(v) : '';
+        }
+
+        // 赋值目的地
+        if (node.destinationAddr) {
+          node.destination = Number(values[node.destinationAddr] ?? 0);
+        }
+
+        // 同步更新显隐控制
+        if ('showTray' in node) {
           node.showTray = !!node.trayId;
         }
       });
