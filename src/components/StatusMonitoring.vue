@@ -109,6 +109,47 @@
           </div>
         </div>
       </div>
+      <!-- Bit 位解析模块：按 S7 大端序解析 DBW 的 bit0~bit15 -->
+      <div class="plc-panel__bit">
+        <div class="plc-panel__bit-header">
+          <span class="plc-panel__bit-title">Bit 解析</span>
+          <el-select
+            v-model="bitParseAddress"
+            size="mini"
+            class="plc-panel__bit-select"
+            filterable
+            clearable
+            placeholder="DBW块"
+          >
+            <el-option
+              v-for="item in readAddressOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
+          <span class="plc-panel__bit-info-item"
+            >值:<b>{{ bitParseRawValue }}</b></span
+          >
+          <span class="plc-panel__bit-info-item"
+            >Word:<b>{{ bitParseWordValue }}</b></span
+          >
+          <span class="plc-panel__bit-info-item plc-panel__bit-bin"
+            >BIN:<b>{{ bitParseBinary }}</b></span
+          >
+        </div>
+        <div class="plc-panel__bit-grid">
+          <div
+            v-for="item in bitParseRows"
+            :key="item.logicBit"
+            :class="['plc-panel__bit-cell', item.value === 1 ? 'on' : 'off']"
+            :title="'逻辑 bit' + item.logicBit + ' / 实际 bit' + item.actualBit"
+          >
+            <span class="plc-panel__bit-label">{{ item.logicBit }}</span>
+            <span class="plc-panel__bit-value">{{ item.value }}</span>
+          </div>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -220,7 +261,8 @@ export default {
       customWriteBool: true,
       readFilter: '',
       isWriting: false,
-      writeDataPollingTimer: null // 轮询定时器
+      writeDataPollingTimer: null, // 轮询定时器
+      bitParseAddress: '' // Bit 解析选中的 DBW 地址
     };
   },
   computed: {
@@ -251,6 +293,44 @@ export default {
         value:
           this.writeStrArr[index] === undefined ? '--' : this.writeStrArr[index]
       }));
+    },
+    // Bit 解析：当前可选的读取地址（非 W_ 开头）
+    readAddressOptions() {
+      return Object.keys(this.plcVariables).filter(
+        (key) => !key.startsWith('W_')
+      );
+    },
+    // Bit 解析：从 plcValues 取到的原始值
+    bitParseRawValue() {
+      if (!this.bitParseAddress) return '--';
+      const v = this.plcValues[this.bitParseAddress];
+      return v === undefined || v === null ? '--' : v;
+    },
+    // Bit 解析：转换为无符号 16 位 word
+    bitParseWordValue() {
+      if (!this.bitParseAddress) return '--';
+      const v = this.plcValues[this.bitParseAddress];
+      if (v === undefined || v === null) return '--';
+      return this.convertToWord(Number(v));
+    },
+    // Bit 解析：16 位二进制字符串（高位在前）
+    bitParseBinary() {
+      if (this.bitParseWordValue === '--') return '--';
+      return Number(this.bitParseWordValue).toString(2).padStart(16, '0');
+    },
+    // Bit 解析：bit0~bit15 映射（按 MainPage.vue 的 S7 大端序逻辑）
+    bitParseRows() {
+      const word =
+        this.bitParseWordValue === '--' ? 0 : Number(this.bitParseWordValue);
+      const hasValue = this.bitParseWordValue !== '--';
+      const rows = [];
+      for (let logicBit = 0; logicBit < 16; logicBit++) {
+        // S7 大端序：逻辑 bit0~7 → 实际 bit8~15，逻辑 bit8~15 → 实际 bit0~7
+        const actualBit = logicBit < 8 ? logicBit + 8 : logicBit - 8;
+        const value = hasValue ? (word >> actualBit) & 1 : '-';
+        rows.push({ logicBit, actualBit, value });
+      }
+      return rows;
     }
   },
   watch: {
@@ -387,6 +467,13 @@ export default {
         this.$message.error('写入失败');
         this.isWriting = false;
       }
+    },
+    // 将有符号 16 位整数转为无符号 word（与 MainPage.vue convertToWord 一致）
+    convertToWord(value) {
+      if (value < 0) {
+        return (value & 0xffff) >>> 0;
+      }
+      return value;
     }
   }
 };
@@ -540,6 +627,95 @@ export default {
   .plc-panel__value {
     color: #909399;
     font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  }
+
+  .plc-panel__bit {
+    margin-top: 10px;
+    padding: 6px 8px;
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  .plc-panel__bit-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #606266;
+    font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+    flex-wrap: wrap;
+  }
+
+  .plc-panel__bit-title {
+    font-weight: 600;
+    color: #303133;
+    padding-left: 6px;
+    border-left: 3px solid #409eff;
+    line-height: 1;
+  }
+
+  .plc-panel__bit-select {
+    width: 110px;
+    flex: 0 0 110px;
+  }
+
+  .plc-panel__bit-info-item {
+    b {
+      color: #303133;
+      margin-left: 2px;
+    }
+  }
+
+  .plc-panel__bit-bin {
+    letter-spacing: 1px;
+  }
+
+  .plc-panel__bit-grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 3px;
+  }
+
+  .plc-panel__bit-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 2px;
+    padding: 2px 0;
+    text-align: center;
+    font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+    background: #f5f7fa;
+    line-height: 1.1;
+
+    &.on {
+      background: #ecf5ec;
+      border-color: #67c23a;
+      .plc-panel__bit-value {
+        color: #67c23a;
+      }
+    }
+
+    &.off {
+      background: #fef0f0;
+      border-color: #f56c6c;
+      .plc-panel__bit-value {
+        color: #f56c6c;
+      }
+    }
+  }
+
+  .plc-panel__bit-label {
+    font-size: 10px;
+    color: #909399;
+  }
+
+  .plc-panel__bit-value {
+    font-size: 14px;
+    font-weight: 700;
   }
 }
 </style>
