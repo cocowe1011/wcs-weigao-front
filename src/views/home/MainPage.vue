@@ -472,7 +472,9 @@
                 >
                   <!-- 托盘图片：仅在指定节点且处于激活状态(发绿)时显示 -->
                   <img
-                    v-if="node.showTray && getDisplayStatus(node)"
+                    v-if="
+                      node.showTray && node.trayId && getDisplayStatus(node)
+                    "
                     src="@/assets/weigao-img/tray.png"
                     class="tray-icon"
                   />
@@ -4987,12 +4989,22 @@ export default {
         if (node.destinationAddr) {
           node.destination = Number(values[node.destinationAddr] ?? 0);
         }
-
-        // 同步更新显隐控制
-        if ('showTray' in node) {
-          node.showTray = !!node.trayId;
-        }
       });
+
+      // 如果弹窗处于打开状态，同步更新弹窗内的数据
+      if (this.popoverVisible && this.popoverData) {
+        if (!this.popoverData.groupId) {
+          this.popoverList = [this.deviceNodes[this.popoverData.id]];
+        } else {
+          const groupIds = this.groupIndex?.[this.popoverData.groupId] || [];
+          this.popoverList = groupIds.map((id) => ({
+            id,
+            ...this.deviceNodes[id]
+          }));
+        }
+        // 更新 popoverData 指向最新的对象引用
+        this.popoverData = this.deviceNodes[this.popoverData.id];
+      }
 
       // 灭菌前1#小车位置值
       this.cartPositionValues.cart1 = Number(values.DBW58 ?? 0);
