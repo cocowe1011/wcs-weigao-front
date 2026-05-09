@@ -625,7 +625,7 @@
 
               <transition name="fade-scale">
                 <div
-                  v-if="popoverVisible"
+                  v-if="popoverVisible && popoverData"
                   class="singleton-popover"
                   :class="[
                     popoverList.length > 1 ? 'popover-multi-device' : '',
@@ -656,7 +656,9 @@
                           popoverData.motorStatus ? 'is-running' : 'is-stopped'
                         "
                       >
-                        <span class="line-label">电机状态</span>
+                        <span class="line-label"
+                          >{{ popoverData.motorName || '' }} 电机状态</span
+                        >
                         <span class="line-value">
                           {{ popoverData.motorStatus ? '启动' : '停止' }}
                         </span>
@@ -668,7 +670,9 @@
                           popoverData.sensorStatus ? 'is-active' : 'is-empty'
                         "
                       >
-                        <span class="line-label">光电检测</span>
+                        <span class="line-label"
+                          >{{ popoverData.sensorName || '' }} 光电检测</span
+                        >
                         <span class="line-value">
                           {{ popoverData.sensorStatus ? '启动' : '停止' }}
                         </span>
@@ -714,7 +718,9 @@
                               device.motorStatus ? 'is-running' : 'is-stopped'
                             "
                           >
-                            <span class="line-label">电机状态</span>
+                            <span class="line-label"
+                              >{{ device.motorName || '' }} 电机状态</span
+                            >
                             <span class="line-value">
                               {{ device.motorStatus ? '启动' : '停止' }}
                             </span>
@@ -726,7 +732,9 @@
                               device.sensorStatus ? 'is-active' : 'is-empty'
                             "
                           >
-                            <span class="line-label">光电检测</span>
+                            <span class="line-label"
+                              >{{ device.sensorName || '' }} 光电检测</span
+                            >
                             <span class="line-value">
                               {{ device.sensorStatus ? '启动' : '停止' }}
                             </span>
@@ -1586,7 +1594,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 0 },
           sensorAddr: { db: 'DBW1606', bit: 0 },
           trayIdAddr: 'DBW62',
-          destinationAddr: 'DBW800'
+          destinationAddr: 'DBW800',
+          motorName: '01001',
+          sensorName: 'SP_01001'
         },
         '01002': {
           name: '01002',
@@ -1599,7 +1609,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 1 },
           sensorAddr: { db: 'DBW1606', bit: 1 },
           trayIdAddr: 'DBW64',
-          destinationAddr: 'DBW802'
+          destinationAddr: 'DBW802',
+          motorName: '01002',
+          sensorName: 'SP_01002'
         },
         '01004': {
           name: '01004',
@@ -1612,7 +1624,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 3 },
           sensorAddr: { db: 'DBW1606', bit: 2 },
           trayIdAddr: 'DBW66',
-          destinationAddr: 'DBW804'
+          destinationAddr: 'DBW804',
+          motorName: '01004',
+          sensorName: 'SP_01004'
         },
         '01005': {
           name: '01005',
@@ -1625,7 +1639,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 4 },
           sensorAddr: { db: 'DBW1606', bit: 3 },
           trayIdAddr: 'DBW68',
-          destinationAddr: 'DBW806'
+          destinationAddr: 'DBW806',
+          motorName: '01005',
+          sensorName: 'SP_01005'
         },
         '01006': {
           name: '01006',
@@ -1638,7 +1654,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 5 },
           sensorAddr: { db: 'DBW1606', bit: 4 },
           trayIdAddr: 'DBW70',
-          destinationAddr: 'DBW808'
+          destinationAddr: 'DBW808',
+          motorName: '01006',
+          sensorName: 'SP_01006'
         },
         '01008': {
           name: '01008',
@@ -1653,7 +1671,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 7 },
           sensorAddr: { db: 'DBW1606', bit: 5 },
           trayIdAddr: 'DBW72',
-          destinationAddr: 'DBW810'
+          destinationAddr: 'DBW810',
+          motorName: '01008',
+          sensorName: 'SP_01009'
         },
         '01009': {
           name: '01009',
@@ -1668,7 +1688,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 8 },
           sensorAddr: { db: 'DBW1606', bit: 5 },
           trayIdAddr: 'DBW74',
-          destinationAddr: 'DBW812'
+          destinationAddr: 'DBW812',
+          motorName: '01009',
+          sensorName: 'SP_01009'
         },
         '01011': {
           name: '01011',
@@ -1683,7 +1705,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 10 },
           sensorAddr: { db: 'DBW1606', bit: 6 },
           trayIdAddr: 'DBW76',
-          destinationAddr: 'DBW814'
+          destinationAddr: 'DBW814',
+          motorName: '01011',
+          sensorName: 'SP_01011'
         },
         '01012': {
           name: '01012',
@@ -1698,7 +1722,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 11 },
           sensorAddr: { db: 'DBW1606', bit: 7 },
           trayIdAddr: 'DBW78',
-          destinationAddr: 'DBW816'
+          destinationAddr: 'DBW816',
+          motorName: '01012',
+          sensorName: 'SP_01012'
         },
         '01013A': {
           name: '01013A',
@@ -1713,7 +1739,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 12 },
           sensorAddr: { db: 'DBW1606', bit: 8 },
           trayIdAddr: 'DBW80',
-          destinationAddr: 'DBW818'
+          destinationAddr: 'DBW818',
+          motorName: '01013A',
+          sensorName: 'SP_01013-1'
         },
         '01013B': {
           name: '01013B',
@@ -1728,7 +1756,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 12 },
           sensorAddr: { db: 'DBW1606', bit: 9 },
           trayIdAddr: 'DBW82',
-          destinationAddr: 'DBW820'
+          destinationAddr: 'DBW820',
+          motorName: '01013B',
+          sensorName: 'SP_01013-2'
         },
         '01019A': {
           name: '01019A',
@@ -1743,7 +1773,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 2 },
           sensorAddr: { db: 'DBW1606', bit: 15 },
           trayIdAddr: 'DBW104',
-          destinationAddr: 'DBW842'
+          destinationAddr: 'DBW842',
+          motorName: '01019A',
+          sensorName: 'SP_01019-1'
         },
         '01019B': {
           name: '01019B',
@@ -1758,7 +1790,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 2 },
           sensorAddr: { db: 'DBW1608', bit: 0 },
           trayIdAddr: 'DBW106',
-          destinationAddr: 'DBW844'
+          destinationAddr: 'DBW844',
+          motorName: '01019B',
+          sensorName: 'SP_01019-2'
         },
         '01014A': {
           name: '01014A',
@@ -1773,7 +1807,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 13 },
           sensorAddr: { db: 'DBW1606', bit: 10 },
           trayIdAddr: 'DBW84',
-          destinationAddr: 'DBW822'
+          destinationAddr: 'DBW822',
+          motorName: '01014A',
+          sensorName: 'SP_01014'
         },
         '01014B': {
           name: '01014B',
@@ -1788,7 +1824,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 13 },
           sensorAddr: { db: 'DBW1606', bit: 10 },
           trayIdAddr: 'DBW86',
-          destinationAddr: 'DBW824'
+          destinationAddr: 'DBW824',
+          motorName: '01014B',
+          sensorName: 'SP_01014'
         },
         '01020A': {
           name: '01020A',
@@ -1803,7 +1841,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 3 },
           sensorAddr: { db: 'DBW1608', bit: 1 },
           trayIdAddr: 'DBW108',
-          destinationAddr: 'DBW846'
+          destinationAddr: 'DBW846',
+          motorName: '01020A',
+          sensorName: 'SP_01020'
         },
         '01020B': {
           name: '01020B',
@@ -1818,7 +1858,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 3 },
           sensorAddr: { db: 'DBW1608', bit: 1 },
           trayIdAddr: 'DBW110',
-          destinationAddr: 'DBW848'
+          destinationAddr: 'DBW848',
+          motorName: '01020B',
+          sensorName: 'SP_01020'
         },
         '01015A': {
           name: '01015A',
@@ -1833,7 +1875,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 14 },
           sensorAddr: { db: 'DBW1606', bit: 11 },
           trayIdAddr: 'DBW88',
-          destinationAddr: 'DBW826'
+          destinationAddr: 'DBW826',
+          motorName: '01015A',
+          sensorName: 'SP_01015'
         },
         '01015B': {
           name: '01015B',
@@ -1848,7 +1892,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 14 },
           sensorAddr: { db: 'DBW1606', bit: 11 },
           trayIdAddr: 'DBW90',
-          destinationAddr: 'DBW828'
+          destinationAddr: 'DBW828',
+          motorName: '01015B',
+          sensorName: 'SP_01015'
         },
         '01021A': {
           name: '01021A',
@@ -1863,7 +1909,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 4 },
           sensorAddr: { db: 'DBW1608', bit: 2 },
           trayIdAddr: 'DBW112',
-          destinationAddr: 'DBW1900'
+          destinationAddr: 'DBW1900',
+          motorName: '01021A',
+          sensorName: 'SP_01021'
         },
         '01021B': {
           name: '01021B',
@@ -1878,7 +1926,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 4 },
           sensorAddr: { db: 'DBW1608', bit: 2 },
           trayIdAddr: 'DBW114',
-          destinationAddr: 'DBW1902'
+          destinationAddr: 'DBW1902',
+          motorName: '01021B',
+          sensorName: 'SP_01021'
         },
         '01016A': {
           name: '01016A',
@@ -1893,7 +1943,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 15 },
           sensorAddr: { db: 'DBW1606', bit: 12 },
           trayIdAddr: 'DBW92',
-          destinationAddr: 'DBW830'
+          destinationAddr: 'DBW830',
+          motorName: '01016A',
+          sensorName: 'SP_01016'
         },
         '01016B': {
           name: '01016B',
@@ -1908,7 +1960,9 @@ export default {
           motorAddr: { db: 'DBW6', bit: 15 },
           sensorAddr: { db: 'DBW1606', bit: 12 },
           trayIdAddr: 'DBW94',
-          destinationAddr: 'DBW832'
+          destinationAddr: 'DBW832',
+          motorName: '01016B',
+          sensorName: 'SP_01016'
         },
         '01022A': {
           name: '01022A',
@@ -1923,7 +1977,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 5 },
           sensorAddr: { db: 'DBW1608', bit: 3 },
           trayIdAddr: 'DBW116',
-          destinationAddr: 'DBW1904'
+          destinationAddr: 'DBW1904',
+          motorName: '01022A',
+          sensorName: 'SP_01022'
         },
         '01022B': {
           name: '01022B',
@@ -1938,7 +1994,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 5 },
           sensorAddr: { db: 'DBW1608', bit: 3 },
           trayIdAddr: 'DBW118',
-          destinationAddr: 'DBW1906'
+          destinationAddr: 'DBW1906',
+          motorName: '01022B',
+          sensorName: 'SP_01022'
         },
         '01017A': {
           name: '01017A',
@@ -1953,7 +2011,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 0 },
           sensorAddr: { db: 'DBW1606', bit: 13 },
           trayIdAddr: 'DBW96',
-          destinationAddr: 'DBW834'
+          destinationAddr: 'DBW834',
+          motorName: '01017A',
+          sensorName: 'SP_01017'
         },
         '01017B': {
           name: '01017B',
@@ -1968,7 +2028,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 0 },
           sensorAddr: { db: 'DBW1606', bit: 13 },
           trayIdAddr: 'DBW98',
-          destinationAddr: 'DBW836'
+          destinationAddr: 'DBW836',
+          motorName: '01017B',
+          sensorName: 'SP_01017'
         },
         '01023A': {
           name: '01023A',
@@ -1983,7 +2045,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 6 },
           sensorAddr: { db: 'DBW1608', bit: 4 },
           trayIdAddr: 'DBW1800',
-          destinationAddr: 'DBW1908'
+          destinationAddr: 'DBW1908',
+          motorName: '01023A',
+          sensorName: 'SP_01023'
         },
         '01023B': {
           name: '01023B',
@@ -1998,7 +2062,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 6 },
           sensorAddr: { db: 'DBW1608', bit: 4 },
           trayIdAddr: 'DBW1802',
-          destinationAddr: 'DBW1910'
+          destinationAddr: 'DBW1910',
+          motorName: '01023B',
+          sensorName: 'SP_01023'
         },
         '01018A': {
           name: '01018A',
@@ -2013,7 +2079,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 1 },
           sensorAddr: { db: 'DBW1606', bit: 14 },
           trayIdAddr: 'DBW100',
-          destinationAddr: 'DBW838'
+          destinationAddr: 'DBW838',
+          motorName: '01018A',
+          sensorName: 'SP_01018'
         },
         '01018B': {
           name: '01018B',
@@ -2028,7 +2096,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 1 },
           sensorAddr: { db: 'DBW1606', bit: 14 },
           trayIdAddr: 'DBW102',
-          destinationAddr: 'DBW840'
+          destinationAddr: 'DBW840',
+          motorName: '01018B',
+          sensorName: 'SP_01018'
         },
         '01024A': {
           name: '01024A',
@@ -2043,7 +2113,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 7 },
           sensorAddr: { db: 'DBW1608', bit: 5 },
           trayIdAddr: 'DBW1804',
-          destinationAddr: 'DBW1912'
+          destinationAddr: 'DBW1912',
+          motorName: '01024A',
+          sensorName: 'SP_01024'
         },
         '01024B': {
           name: '01024B',
@@ -2058,7 +2130,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 7 },
           sensorAddr: { db: 'DBW1608', bit: 5 },
           trayIdAddr: 'DBW1806',
-          destinationAddr: 'DBW1914'
+          destinationAddr: 'DBW1914',
+          motorName: '01024B',
+          sensorName: 'SP_01024'
         },
         '01026': {
           name: '01026',
@@ -2073,7 +2147,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 9 },
           sensorAddr: { db: 'DBW1608', bit: 6 },
           trayIdAddr: 'DBW1808',
-          destinationAddr: 'DBW1916'
+          destinationAddr: 'DBW1916',
+          motorName: '01026',
+          sensorName: 'SP_01027'
         },
         '01027': {
           name: '01027',
@@ -2088,7 +2164,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 10 },
           sensorAddr: { db: 'DBW1608', bit: 6 },
           trayIdAddr: 'DBW1810',
-          destinationAddr: 'DBW1918'
+          destinationAddr: 'DBW1918',
+          motorName: '01027',
+          sensorName: 'SP_01027'
         },
         '01029': {
           name: '01029',
@@ -2103,7 +2181,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 12 },
           sensorAddr: { db: 'DBW1608', bit: 7 },
           trayIdAddr: 'DBW1812',
-          destinationAddr: 'DBW1920'
+          destinationAddr: 'DBW1920',
+          motorName: '01029',
+          sensorName: 'SP_01030'
         },
         '01030': {
           name: '01030',
@@ -2118,7 +2198,9 @@ export default {
           motorAddr: { db: 'DBW8', bit: 13 },
           sensorAddr: { db: 'DBW1608', bit: 7 },
           trayIdAddr: 'DBW1814',
-          destinationAddr: 'DBW1922'
+          destinationAddr: 'DBW1922',
+          motorName: '01030',
+          sensorName: 'SP_01030'
         },
         '02014': {
           name: '02014',
@@ -2133,7 +2215,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 13 },
           sensorAddr: { db: 'DBW1610', bit: 10 },
           trayIdAddr: 'DBW126',
-          destinationAddr: 'DBW866'
+          destinationAddr: 'DBW866',
+          motorName: '02014',
+          sensorName: 'SP_02014'
         },
         '02015': {
           name: '02015',
@@ -2148,7 +2232,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 14 },
           sensorAddr: { db: 'DBW1610', bit: 10 },
           trayIdAddr: 'DBW128',
-          destinationAddr: 'DBW868'
+          destinationAddr: 'DBW868',
+          motorName: '02015',
+          sensorName: 'SP_02014'
         },
         '02011': {
           name: '02011',
@@ -2163,7 +2249,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 10 },
           sensorAddr: { db: 'DBW1610', bit: 9 },
           trayIdAddr: 'DBW122',
-          destinationAddr: 'DBW862'
+          destinationAddr: 'DBW862',
+          motorName: '02011',
+          sensorName: 'SP_02011'
         },
         '02012': {
           name: '02012',
@@ -2178,7 +2266,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 11 },
           sensorAddr: { db: 'DBW1610', bit: 9 },
           trayIdAddr: 'DBW124',
-          destinationAddr: 'DBW864'
+          destinationAddr: 'DBW864',
+          motorName: '02012',
+          sensorName: 'SP_02011'
         },
         '02021': {
           name: '02021',
@@ -2193,7 +2283,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 4 },
           sensorAddr: { db: 'DBW1610', bit: 13 },
           trayIdAddr: 'DBW136',
-          destinationAddr: 'DBW876'
+          destinationAddr: 'DBW876',
+          motorName: '02021',
+          sensorName: 'SP_02021'
         },
         '02022': {
           name: '02022',
@@ -2208,7 +2300,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 5 },
           sensorAddr: { db: 'DBW1610', bit: 13 },
           trayIdAddr: 'DBW138',
-          destinationAddr: 'DBW878'
+          destinationAddr: 'DBW878',
+          motorName: '02022',
+          sensorName: 'SP_02021'
         },
         '02018': {
           name: '02018',
@@ -2223,7 +2317,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 1 },
           sensorAddr: { db: 'DBW1610', bit: 12 },
           trayIdAddr: 'DBW132',
-          destinationAddr: 'DBW872'
+          destinationAddr: 'DBW872',
+          motorName: '02018',
+          sensorName: 'SP_02018'
         },
         '02019': {
           name: '02019',
@@ -2238,7 +2334,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 2 },
           sensorAddr: { db: 'DBW1610', bit: 12 },
           trayIdAddr: 'DBW134',
-          destinationAddr: 'DBW874'
+          destinationAddr: 'DBW874',
+          motorName: '02019',
+          sensorName: 'SP_02018'
         },
         '03014': {
           name: '03014',
@@ -2253,7 +2351,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 13 },
           sensorAddr: { db: 'DBW1616', bit: 10 },
           trayIdAddr: 'DBW206',
-          destinationAddr: 'DBW946'
+          destinationAddr: 'DBW946',
+          motorName: '03014',
+          sensorName: 'SP_03014'
         },
         '03015': {
           name: '03015',
@@ -2268,7 +2368,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 14 },
           sensorAddr: { db: 'DBW1616', bit: 10 },
           trayIdAddr: 'DBW208',
-          destinationAddr: 'DBW948'
+          destinationAddr: 'DBW948',
+          motorName: '03015',
+          sensorName: 'SP_03014'
         },
         '03011': {
           name: '03011',
@@ -2283,7 +2385,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 10 },
           sensorAddr: { db: 'DBW1616', bit: 9 },
           trayIdAddr: 'DBW202',
-          destinationAddr: 'DBW942'
+          destinationAddr: 'DBW942',
+          motorName: '03011',
+          sensorName: 'SP_03011'
         },
         '03012': {
           name: '03012',
@@ -2298,7 +2402,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 11 },
           sensorAddr: { db: 'DBW1616', bit: 9 },
           trayIdAddr: 'DBW204',
-          destinationAddr: 'DBW944'
+          destinationAddr: 'DBW944',
+          motorName: '03012',
+          sensorName: 'SP_03011'
         },
         '03021': {
           name: '03021',
@@ -2313,7 +2419,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 4 },
           sensorAddr: { db: 'DBW1616', bit: 13 },
           trayIdAddr: 'DBW216',
-          destinationAddr: 'DBW956'
+          destinationAddr: 'DBW956',
+          motorName: '03021',
+          sensorName: 'SP_03021'
         },
         '03022': {
           name: '03022',
@@ -2328,7 +2436,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 5 },
           sensorAddr: { db: 'DBW1616', bit: 13 },
           trayIdAddr: 'DBW218',
-          destinationAddr: 'DBW958'
+          destinationAddr: 'DBW958',
+          motorName: '03022',
+          sensorName: 'SP_03021'
         },
         '03018': {
           name: '03018',
@@ -2343,7 +2453,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 1 },
           sensorAddr: { db: 'DBW1616', bit: 12 },
           trayIdAddr: 'DBW212',
-          destinationAddr: 'DBW952'
+          destinationAddr: 'DBW952',
+          motorName: '03018',
+          sensorName: 'SP_03018'
         },
         '03019': {
           name: '03019',
@@ -2358,7 +2470,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 2 },
           sensorAddr: { db: 'DBW1616', bit: 12 },
           trayIdAddr: 'DBW214',
-          destinationAddr: 'DBW954'
+          destinationAddr: 'DBW954',
+          motorName: '03019',
+          sensorName: 'SP_03018'
         },
         '04014': {
           name: '04014',
@@ -2373,7 +2487,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 13 },
           sensorAddr: { db: 'DBW1622', bit: 10 },
           trayIdAddr: 'DBW286',
-          destinationAddr: 'DBW1026'
+          destinationAddr: 'DBW1026',
+          motorName: '04014',
+          sensorName: 'SP_04014'
         },
         '04015': {
           name: '04015',
@@ -2388,7 +2504,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 14 },
           sensorAddr: { db: 'DBW1622', bit: 10 },
           trayIdAddr: 'DBW288',
-          destinationAddr: 'DBW1028'
+          destinationAddr: 'DBW1028',
+          motorName: '04015',
+          sensorName: 'SP_04014'
         },
         '04011': {
           name: '04011',
@@ -2403,7 +2521,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 10 },
           sensorAddr: { db: 'DBW1622', bit: 9 },
           trayIdAddr: 'DBW282',
-          destinationAddr: 'DBW1022'
+          destinationAddr: 'DBW1022',
+          motorName: '04011',
+          sensorName: 'SP_04011'
         },
         '04012': {
           name: '04012',
@@ -2418,7 +2538,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 11 },
           sensorAddr: { db: 'DBW1622', bit: 9 },
           trayIdAddr: 'DBW284',
-          destinationAddr: 'DBW1024'
+          destinationAddr: 'DBW1024',
+          motorName: '04012',
+          sensorName: 'SP_04011'
         },
         '04021': {
           name: '04021',
@@ -2433,7 +2555,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 4 },
           sensorAddr: { db: 'DBW1622', bit: 13 },
           trayIdAddr: 'DBW296',
-          destinationAddr: 'DBW1036'
+          destinationAddr: 'DBW1036',
+          motorName: '04021',
+          sensorName: 'SP_04021'
         },
         '04022': {
           name: '04022',
@@ -2448,7 +2572,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 5 },
           sensorAddr: { db: 'DBW1622', bit: 13 },
           trayIdAddr: 'DBW298',
-          destinationAddr: 'DBW1038'
+          destinationAddr: 'DBW1038',
+          motorName: '04022',
+          sensorName: 'SP_04021'
         },
         '04018': {
           name: '04018',
@@ -2463,7 +2589,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 1 },
           sensorAddr: { db: 'DBW1622', bit: 12 },
           trayIdAddr: 'DBW292',
-          destinationAddr: 'DBW1032'
+          destinationAddr: 'DBW1032',
+          motorName: '04018',
+          sensorName: 'SP_04018'
         },
         '04019': {
           name: '04019',
@@ -2478,7 +2606,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 2 },
           sensorAddr: { db: 'DBW1622', bit: 12 },
           trayIdAddr: 'DBW294',
-          destinationAddr: 'DBW1034'
+          destinationAddr: 'DBW1034',
+          motorName: '04019',
+          sensorName: 'SP_04018'
         },
         '05014': {
           name: '05014',
@@ -2493,7 +2623,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 13 },
           sensorAddr: { db: 'DBW1628', bit: 10 },
           trayIdAddr: 'DBW366',
-          destinationAddr: 'DBW1106'
+          destinationAddr: 'DBW1106',
+          motorName: '05014',
+          sensorName: 'SP_05014'
         },
         '05015': {
           name: '05015',
@@ -2508,7 +2640,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 14 },
           sensorAddr: { db: 'DBW1628', bit: 10 },
           trayIdAddr: 'DBW368',
-          destinationAddr: 'DBW1108'
+          destinationAddr: 'DBW1108',
+          motorName: '05015',
+          sensorName: 'SP_05014'
         },
         '05011': {
           name: '05011',
@@ -2523,7 +2657,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 10 },
           sensorAddr: { db: 'DBW1628', bit: 9 },
           trayIdAddr: 'DBW362',
-          destinationAddr: 'DBW1102'
+          destinationAddr: 'DBW1102',
+          motorName: '05011',
+          sensorName: 'SP_05011'
         },
         '05012': {
           name: '05012',
@@ -2538,7 +2674,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 11 },
           sensorAddr: { db: 'DBW1628', bit: 9 },
           trayIdAddr: 'DBW364',
-          destinationAddr: 'DBW1104'
+          destinationAddr: 'DBW1104',
+          motorName: '05012',
+          sensorName: 'SP_05011'
         },
         '05021': {
           name: '05021',
@@ -2553,7 +2691,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 4 },
           sensorAddr: { db: 'DBW1628', bit: 13 },
           trayIdAddr: 'DBW376',
-          destinationAddr: 'DBW1116'
+          destinationAddr: 'DBW1116',
+          motorName: '05021',
+          sensorName: 'SP_05021'
         },
         '05022': {
           name: '05022',
@@ -2568,7 +2708,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 5 },
           sensorAddr: { db: 'DBW1628', bit: 13 },
           trayIdAddr: 'DBW378',
-          destinationAddr: 'DBW1118'
+          destinationAddr: 'DBW1118',
+          motorName: '05022',
+          sensorName: 'SP_05021'
         },
         '05018': {
           name: '05018',
@@ -2583,7 +2725,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 1 },
           sensorAddr: { db: 'DBW1628', bit: 12 },
           trayIdAddr: 'DBW372',
-          destinationAddr: 'DBW1112'
+          destinationAddr: 'DBW1112',
+          motorName: '05018',
+          sensorName: 'SP_05018'
         },
         '05019': {
           name: '05019',
@@ -2598,7 +2742,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 2 },
           sensorAddr: { db: 'DBW1628', bit: 12 },
           trayIdAddr: 'DBW374',
-          destinationAddr: 'DBW1114'
+          destinationAddr: 'DBW1114',
+          motorName: '05019',
+          sensorName: 'SP_05018'
         },
         '06014': {
           name: '06014',
@@ -2613,7 +2759,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 13 },
           sensorAddr: { db: 'DBW1634', bit: 10 },
           trayIdAddr: 'DBW446',
-          destinationAddr: 'DBW1186'
+          destinationAddr: 'DBW1186',
+          motorName: '06014',
+          sensorName: 'SP_06014'
         },
         '06015': {
           name: '06015',
@@ -2628,7 +2776,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 14 },
           sensorAddr: { db: 'DBW1634', bit: 10 },
           trayIdAddr: 'DBW448',
-          destinationAddr: 'DBW1188'
+          destinationAddr: 'DBW1188',
+          motorName: '06015',
+          sensorName: 'SP_06014'
         },
         '06011': {
           name: '06011',
@@ -2643,7 +2793,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 10 },
           sensorAddr: { db: 'DBW1634', bit: 9 },
           trayIdAddr: 'DBW442',
-          destinationAddr: 'DBW1182'
+          destinationAddr: 'DBW1182',
+          motorName: '06011',
+          sensorName: 'SP_06011'
         },
         '06012': {
           name: '06012',
@@ -2658,7 +2810,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 11 },
           sensorAddr: { db: 'DBW1634', bit: 9 },
           trayIdAddr: 'DBW444',
-          destinationAddr: 'DBW1184'
+          destinationAddr: 'DBW1184',
+          motorName: '06012',
+          sensorName: 'SP_06011'
         },
         '06021': {
           name: '06021',
@@ -2673,7 +2827,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 4 },
           sensorAddr: { db: 'DBW1634', bit: 13 },
           trayIdAddr: 'DBW456',
-          destinationAddr: 'DBW1196'
+          destinationAddr: 'DBW1196',
+          motorName: '06021',
+          sensorName: 'SP_06021'
         },
         '06022': {
           name: '06022',
@@ -2688,7 +2844,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 5 },
           sensorAddr: { db: 'DBW1634', bit: 13 },
           trayIdAddr: 'DBW458',
-          destinationAddr: 'DBW1198'
+          destinationAddr: 'DBW1198',
+          motorName: '06022',
+          sensorName: 'SP_06021'
         },
         '06018': {
           name: '06018',
@@ -2703,7 +2861,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 1 },
           sensorAddr: { db: 'DBW1634', bit: 12 },
           trayIdAddr: 'DBW452',
-          destinationAddr: 'DBW1192'
+          destinationAddr: 'DBW1192',
+          motorName: '06018',
+          sensorName: 'SP_06018'
         },
         '06019': {
           name: '06019',
@@ -2718,7 +2878,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 2 },
           sensorAddr: { db: 'DBW1634', bit: 12 },
           trayIdAddr: 'DBW454',
-          destinationAddr: 'DBW1194'
+          destinationAddr: 'DBW1194',
+          motorName: '06019',
+          sensorName: 'SP_06019'
         },
         '07014': {
           name: '07014',
@@ -2733,7 +2895,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 13 },
           sensorAddr: { db: 'DBW1640', bit: 10 },
           trayIdAddr: 'DBW526',
-          destinationAddr: 'DBW1266'
+          destinationAddr: 'DBW1266',
+          motorName: '07014',
+          sensorName: 'SP_07014'
         },
         '07015': {
           name: '07015',
@@ -2748,7 +2912,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 14 },
           sensorAddr: { db: 'DBW1640', bit: 10 },
           trayIdAddr: 'DBW528',
-          destinationAddr: 'DBW1268'
+          destinationAddr: 'DBW1268',
+          motorName: '07015',
+          sensorName: 'SP_07015'
         },
         '07011': {
           name: '07011',
@@ -2763,7 +2929,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 10 },
           sensorAddr: { db: 'DBW1640', bit: 9 },
           trayIdAddr: 'DBW522',
-          destinationAddr: 'DBW1262'
+          destinationAddr: 'DBW1262',
+          motorName: '07011',
+          sensorName: 'SP_07011'
         },
         '07012': {
           name: '07012',
@@ -2778,7 +2946,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 11 },
           sensorAddr: { db: 'DBW1640', bit: 9 },
           trayIdAddr: 'DBW524',
-          destinationAddr: 'DBW1264'
+          destinationAddr: 'DBW1264',
+          motorName: '07012',
+          sensorName: 'SP_07011'
         },
         '07021': {
           name: '07021',
@@ -2793,7 +2963,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 4 },
           sensorAddr: { db: 'DBW1640', bit: 13 },
           trayIdAddr: 'DBW536',
-          destinationAddr: 'DBW1276'
+          destinationAddr: 'DBW1276',
+          motorName: '07021',
+          sensorName: 'SP_07021'
         },
         '07022': {
           name: '07022',
@@ -2808,7 +2980,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 5 },
           sensorAddr: { db: 'DBW1640', bit: 13 },
           trayIdAddr: 'DBW538',
-          destinationAddr: 'DBW1278'
+          destinationAddr: 'DBW1278',
+          motorName: '07022',
+          sensorName: 'SP_07021'
         },
         '07018': {
           name: '07018',
@@ -2823,7 +2997,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 1 },
           sensorAddr: { db: 'DBW1640', bit: 12 },
           trayIdAddr: 'DBW532',
-          destinationAddr: 'DBW1272'
+          destinationAddr: 'DBW1272',
+          motorName: '07018',
+          sensorName: 'SP_07018'
         },
         '07019': {
           name: '07019',
@@ -2838,7 +3014,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 2 },
           sensorAddr: { db: 'DBW1640', bit: 12 },
           trayIdAddr: 'DBW534',
-          destinationAddr: 'DBW1274'
+          destinationAddr: 'DBW1274',
+          motorName: '07019',
+          sensorName: 'SP_07018'
         },
         '08014': {
           name: '08014',
@@ -2853,7 +3031,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 13 },
           sensorAddr: { db: 'DBW1646', bit: 10 },
           trayIdAddr: 'DBW606',
-          destinationAddr: 'DBW1346'
+          destinationAddr: 'DBW1346',
+          motorName: '08014',
+          sensorName: 'SP_08014'
         },
         '08015': {
           name: '08015',
@@ -2868,7 +3048,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 14 },
           sensorAddr: { db: 'DBW1646', bit: 10 },
           trayIdAddr: 'DBW608',
-          destinationAddr: 'DBW1348'
+          destinationAddr: 'DBW1348',
+          motorName: '08015',
+          sensorName: 'SP_08014'
         },
         '08011': {
           name: '08011',
@@ -2883,7 +3065,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 10 },
           sensorAddr: { db: 'DBW1646', bit: 9 },
           trayIdAddr: 'DBW602',
-          destinationAddr: 'DBW1342'
+          destinationAddr: 'DBW1342',
+          motorName: '08011',
+          sensorName: 'SP_08011'
         },
         '08012': {
           name: '08012',
@@ -2898,7 +3082,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 11 },
           sensorAddr: { db: 'DBW1646', bit: 9 },
           trayIdAddr: 'DBW604',
-          destinationAddr: 'DBW1344'
+          destinationAddr: 'DBW1344',
+          motorName: '08012',
+          sensorName: 'SP_08011'
         },
         '08021': {
           name: '08021',
@@ -2913,7 +3099,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 4 },
           sensorAddr: { db: 'DBW1646', bit: 13 },
           trayIdAddr: 'DBW616',
-          destinationAddr: 'DBW1356'
+          destinationAddr: 'DBW1356',
+          motorName: '08021',
+          sensorName: 'SP_08021'
         },
         '08022': {
           name: '08022',
@@ -2928,7 +3116,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 5 },
           sensorAddr: { db: 'DBW1646', bit: 13 },
           trayIdAddr: 'DBW618',
-          destinationAddr: 'DBW1358'
+          destinationAddr: 'DBW1358',
+          motorName: '08022',
+          sensorName: 'SP_08021'
         },
         '08018': {
           name: '08018',
@@ -2943,7 +3133,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 1 },
           sensorAddr: { db: 'DBW1646', bit: 12 },
           trayIdAddr: 'DBW612',
-          destinationAddr: 'DBW1352'
+          destinationAddr: 'DBW1352',
+          motorName: '08018',
+          sensorName: 'SP_08018'
         },
         '08019': {
           name: '08019',
@@ -2958,7 +3150,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 2 },
           sensorAddr: { db: 'DBW1646', bit: 12 },
           trayIdAddr: 'DBW614',
-          destinationAddr: 'DBW1354'
+          destinationAddr: 'DBW1354',
+          motorName: '08019',
+          sensorName: 'SP_08018'
         },
         '09010': {
           name: '09010',
@@ -2973,7 +3167,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 9 },
           sensorAddr: { db: 'DBW1652', bit: 6 },
           trayIdAddr: 'DBW686',
-          destinationAddr: 'DBW1426'
+          destinationAddr: 'DBW1426',
+          motorName: '09010',
+          sensorName: 'SP_09010'
         },
         '09011': {
           name: '09011',
@@ -2988,7 +3184,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 10 },
           sensorAddr: { db: 'DBW1652', bit: 6 },
           trayIdAddr: 'DBW688',
-          destinationAddr: 'DBW1428'
+          destinationAddr: 'DBW1428',
+          motorName: '09011',
+          sensorName: 'SP_09010'
         },
         '09007': {
           name: '09007',
@@ -3003,7 +3201,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 6 },
           sensorAddr: { db: 'DBW1652', bit: 5 },
           trayIdAddr: 'DBW682',
-          destinationAddr: 'DBW1422'
+          destinationAddr: 'DBW1422',
+          motorName: '09007',
+          sensorName: 'SP_09007'
         },
         '09008': {
           name: '09008',
@@ -3018,7 +3218,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 7 },
           sensorAddr: { db: 'DBW1652', bit: 5 },
           trayIdAddr: 'DBW684',
-          destinationAddr: 'DBW1424'
+          destinationAddr: 'DBW1424',
+          motorName: '09008',
+          sensorName: 'SP_09007'
         },
         // // 以下为预热第一排的光电信号
         '02002SP': {
@@ -3026,210 +3228,240 @@ export default {
           x: 1195,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1610', bit: 2 }
+          sensorAddr: { db: 'DBW1610', bit: 2 },
+          sensorName: 'SP02002-1'
         },
         '02001SP': {
           name: 'SP02001-1',
           x: 1220,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1610', bit: 0 }
+          sensorAddr: { db: 'DBW1610', bit: 0 },
+          sensorName: 'SP02001-1'
         },
         '02004SP': {
           name: 'SP02004-1',
           x: 1120,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1610', bit: 6 }
+          sensorAddr: { db: 'DBW1610', bit: 6 },
+          sensorName: 'SP02004-1'
         },
         '02003SP': {
           name: 'SP02003-1',
           x: 1145,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1610', bit: 4 }
+          sensorAddr: { db: 'DBW1610', bit: 4 },
+          sensorName: 'SP02003-1'
         },
         '03002SP': {
           name: 'SP03002-1',
           x: 1048,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1616', bit: 2 }
+          sensorAddr: { db: 'DBW1616', bit: 2 },
+          sensorName: 'SP03002-1'
         },
         '03001SP': {
           name: 'SP03001-1',
           x: 1073,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1616', bit: 0 }
+          sensorAddr: { db: 'DBW1616', bit: 0 },
+          sensorName: 'SP03001-1'
         },
         '03004SP': {
           name: 'SP03004-1',
           x: 973,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1616', bit: 6 }
+          sensorAddr: { db: 'DBW1616', bit: 6 },
+          sensorName: 'SP03004-1'
         },
         '03003SP': {
           name: 'SP03003-1',
           x: 998,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1616', bit: 4 }
+          sensorAddr: { db: 'DBW1616', bit: 4 },
+          sensorName: 'SP03003-1'
         },
         '04002SP': {
           name: 'SP04002-1',
           x: 900,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1622', bit: 2 }
+          sensorAddr: { db: 'DBW1622', bit: 2 },
+          sensorName: 'SP04002-1'
         },
         '04001SP': {
           name: 'SP04001-1',
           x: 925,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1622', bit: 0 }
+          sensorAddr: { db: 'DBW1622', bit: 0 },
+          sensorName: 'SP04001-1'
         },
         '04004SP': {
           name: 'SP04004-1',
           x: 828,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1622', bit: 6 }
+          sensorAddr: { db: 'DBW1622', bit: 6 },
+          sensorName: 'SP04004-1'
         },
         '04003SP': {
           name: 'SP04003-1',
           x: 853,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1622', bit: 4 }
+          sensorAddr: { db: 'DBW1622', bit: 4 },
+          sensorName: 'SP04003-1'
         },
         '05002SP': {
           name: 'SP05002-1',
           x: 753,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1628', bit: 2 }
+          sensorAddr: { db: 'DBW1628', bit: 2 },
+          sensorName: 'SP05002-1'
         },
         '05001SP': {
           name: 'SP05001-1',
           x: 778,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1628', bit: 0 }
+          sensorAddr: { db: 'DBW1628', bit: 0 },
+          sensorName: 'SP05001-1'
         },
         '05004SP': {
           name: 'SP05004-1',
           x: 680,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1628', bit: 6 }
+          sensorAddr: { db: 'DBW1628', bit: 6 },
+          sensorName: 'SP05004-1'
         },
         '05003SP': {
           name: 'SP05003-1',
           x: 705,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1628', bit: 4 }
+          sensorAddr: { db: 'DBW1628', bit: 4 },
+          sensorName: 'SP05003-1'
         },
         '06002SP': {
           name: 'SP06002-1',
           x: 606,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1634', bit: 2 }
+          sensorAddr: { db: 'DBW1634', bit: 2 },
+          sensorName: 'SP06002-1'
         },
         '06001SP': {
           name: 'SP06001-1',
           x: 631,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1634', bit: 0 }
+          sensorAddr: { db: 'DBW1634', bit: 0 },
+          sensorName: 'SP06001-1'
         },
         '06004SP': {
           name: 'SP06004-1',
           x: 530,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1634', bit: 6 }
+          sensorAddr: { db: 'DBW1634', bit: 6 },
+          sensorName: 'SP06004-1'
         },
         '06003SP': {
           name: 'SP06003-1',
           x: 556,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1634', bit: 4 }
+          sensorAddr: { db: 'DBW1634', bit: 4 },
+          sensorName: 'SP06003-1'
         },
         '07002SP': {
           name: 'SP07002-1',
           x: 460,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1640', bit: 2 }
+          sensorAddr: { db: 'DBW1640', bit: 2 },
+          sensorName: 'SP07002-1'
         },
         '07001SP': {
           name: 'SP07001-1',
           x: 486,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1640', bit: 0 }
+          sensorAddr: { db: 'DBW1640', bit: 0 },
+          sensorName: 'SP07001-1'
         },
         '07004SP': {
           name: 'SP07004-1',
           x: 386,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1640', bit: 6 }
+          sensorAddr: { db: 'DBW1640', bit: 6 },
+          sensorName: 'SP07004-1'
         },
         '07003SP': {
           name: 'SP07003-1',
           x: 411,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1640', bit: 4 }
+          sensorAddr: { db: 'DBW1640', bit: 4 },
+          sensorName: 'SP07003-1'
         },
         '08002SP': {
           name: 'SP08002-1',
           x: 315,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1646', bit: 2 }
+          sensorAddr: { db: 'DBW1646', bit: 2 },
+          sensorName: 'SP08002-1'
         },
         '08001SP': {
           name: 'SP08001-1',
           x: 341,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1646', bit: 0 }
+          sensorAddr: { db: 'DBW1646', bit: 0 },
+          sensorName: 'SP08001-1'
         },
         '08004SP': {
           name: 'SP08004-1',
           x: 240,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1646', bit: 6 }
+          sensorAddr: { db: 'DBW1646', bit: 6 },
+          sensorName: 'SP08004-1'
         },
         '08003SP': {
           name: 'SP08003-1',
           x: 266,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1646', bit: 4 }
+          sensorAddr: { db: 'DBW1646', bit: 4 },
+          sensorName: 'SP08003-1'
         },
         '09002SP': {
           name: 'SP09002-1',
           x: 165,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1652', bit: 2 }
+          sensorAddr: { db: 'DBW1652', bit: 2 },
+          sensorName: 'SP09002-1'
         },
         '09001SP': {
           name: 'SP09001-1',
           x: 191,
           y: 735,
           sensorStatus: false,
-          sensorAddr: { db: 'DBW1652', bit: 0 }
+          sensorAddr: { db: 'DBW1652', bit: 0 },
+          sensorName: 'SP09001-1'
         },
         // // 以上为预热第一排的光电信号
         // 以下为预热第二排的光电信号
@@ -3240,7 +3472,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW10', bit: 1 },
-          sensorAddr: { db: 'DBW1610', bit: 3 }
+          sensorAddr: { db: 'DBW1610', bit: 3 },
+          motorName: '02002',
+          sensorName: 'SP02002-2'
         },
         '02001': {
           name: '02001',
@@ -3249,7 +3483,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW10', bit: 0 },
-          sensorAddr: { db: 'DBW1610', bit: 1 }
+          sensorAddr: { db: 'DBW1610', bit: 1 },
+          motorName: '02001',
+          sensorName: 'SP02001-2'
         },
         '02004': {
           name: '02004',
@@ -3258,7 +3494,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW10', bit: 3 },
-          sensorAddr: { db: 'DBW1610', bit: 7 }
+          sensorAddr: { db: 'DBW1610', bit: 7 },
+          motorName: '02004',
+          sensorName: 'SP02004-2'
         },
         '02003': {
           name: '02003',
@@ -3267,7 +3505,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW10', bit: 2 },
-          sensorAddr: { db: 'DBW1610', bit: 5 }
+          sensorAddr: { db: 'DBW1610', bit: 5 },
+          motorName: '02003',
+          sensorName: 'SP02003-2'
         },
         '03002': {
           name: '03002',
@@ -3276,7 +3516,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW16', bit: 1 },
-          sensorAddr: { db: 'DBW1616', bit: 3 }
+          sensorAddr: { db: 'DBW1616', bit: 3 },
+          motorName: '03002',
+          sensorName: 'SP03002-2'
         },
         '03001': {
           name: '03001',
@@ -3285,7 +3527,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW16', bit: 0 },
-          sensorAddr: { db: 'DBW1616', bit: 1 }
+          sensorAddr: { db: 'DBW1616', bit: 1 },
+          motorName: '03001',
+          sensorName: 'SP03001-2'
         },
         '03004': {
           name: '03004',
@@ -3294,7 +3538,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW16', bit: 3 },
-          sensorAddr: { db: 'DBW1616', bit: 7 }
+          sensorAddr: { db: 'DBW1616', bit: 7 },
+          motorName: '03004',
+          sensorName: 'SP03004-2'
         },
         '03003': {
           name: '03003',
@@ -3303,7 +3549,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW16', bit: 2 },
-          sensorAddr: { db: 'DBW1616', bit: 5 }
+          sensorAddr: { db: 'DBW1616', bit: 5 },
+          motorName: '03003',
+          sensorName: 'SP03003-2'
         },
         '04002': {
           name: '04002',
@@ -3312,7 +3560,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW22', bit: 1 },
-          sensorAddr: { db: 'DBW1622', bit: 3 }
+          sensorAddr: { db: 'DBW1622', bit: 3 },
+          motorName: '04002',
+          sensorName: 'SP04002-2'
         },
         '04001': {
           name: '04001',
@@ -3321,7 +3571,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW22', bit: 0 },
-          sensorAddr: { db: 'DBW1622', bit: 1 }
+          sensorAddr: { db: 'DBW1622', bit: 1 },
+          motorName: '04001',
+          sensorName: 'SP04001-2'
         },
         '04004': {
           name: '04004',
@@ -3330,7 +3582,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW22', bit: 3 },
-          sensorAddr: { db: 'DBW1622', bit: 7 }
+          sensorAddr: { db: 'DBW1622', bit: 7 },
+          motorName: '04004',
+          sensorName: 'SP04004-2'
         },
         '04003': {
           name: '04003',
@@ -3339,7 +3593,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW22', bit: 2 },
-          sensorAddr: { db: 'DBW1622', bit: 5 }
+          sensorAddr: { db: 'DBW1622', bit: 5 },
+          motorName: '04003',
+          sensorName: 'SP04003-2'
         },
         '05002': {
           name: '05002',
@@ -3348,7 +3604,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW28', bit: 1 },
-          sensorAddr: { db: 'DBW1628', bit: 3 }
+          sensorAddr: { db: 'DBW1628', bit: 3 },
+          motorName: '05002',
+          sensorName: 'SP05002-2'
         },
         '05001': {
           name: '05001',
@@ -3357,7 +3615,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW28', bit: 0 },
-          sensorAddr: { db: 'DBW1628', bit: 1 }
+          sensorAddr: { db: 'DBW1628', bit: 1 },
+          motorName: '05001',
+          sensorName: 'SP05001-2'
         },
         '05004': {
           name: '05004',
@@ -3366,7 +3626,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW28', bit: 3 },
-          sensorAddr: { db: 'DBW1628', bit: 7 }
+          sensorAddr: { db: 'DBW1628', bit: 7 },
+          motorName: '05004',
+          sensorName: 'SP05004-2'
         },
         '05003': {
           name: '05003',
@@ -3375,7 +3637,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW28', bit: 2 },
-          sensorAddr: { db: 'DBW1628', bit: 5 }
+          sensorAddr: { db: 'DBW1628', bit: 5 },
+          motorName: '05003',
+          sensorName: 'SP05003-2'
         },
         '06002': {
           name: '06002',
@@ -3384,7 +3648,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW34', bit: 1 },
-          sensorAddr: { db: 'DBW1634', bit: 3 }
+          sensorAddr: { db: 'DBW1634', bit: 3 },
+          motorName: '06002',
+          sensorName: 'SP06002-2'
         },
         '06001': {
           name: '06001',
@@ -3393,7 +3659,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW34', bit: 0 },
-          sensorAddr: { db: 'DBW1634', bit: 1 }
+          sensorAddr: { db: 'DBW1634', bit: 1 },
+          motorName: '06001',
+          sensorName: 'SP06001-2'
         },
         '06004': {
           name: '06004',
@@ -3402,7 +3670,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW34', bit: 3 },
-          sensorAddr: { db: 'DBW1634', bit: 7 }
+          sensorAddr: { db: 'DBW1634', bit: 7 },
+          motorName: '06004',
+          sensorName: 'SP06004-2'
         },
         '06003': {
           name: '06003',
@@ -3411,7 +3681,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW34', bit: 2 },
-          sensorAddr: { db: 'DBW1634', bit: 5 }
+          sensorAddr: { db: 'DBW1634', bit: 5 },
+          motorName: '06003',
+          sensorName: 'SP06003-2'
         },
         '07002': {
           name: '07002',
@@ -3420,7 +3692,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW40', bit: 1 },
-          sensorAddr: { db: 'DBW1640', bit: 3 }
+          sensorAddr: { db: 'DBW1640', bit: 3 },
+          motorName: '07002',
+          sensorName: 'SP07002-2'
         },
         '07001': {
           name: '07001',
@@ -3429,7 +3703,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW40', bit: 0 },
-          sensorAddr: { db: 'DBW1640', bit: 1 }
+          sensorAddr: { db: 'DBW1640', bit: 1 },
+          motorName: '07001',
+          sensorName: 'SP07001-2'
         },
         '07004': {
           name: '07004',
@@ -3438,7 +3714,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW40', bit: 3 },
-          sensorAddr: { db: 'DBW1640', bit: 7 }
+          sensorAddr: { db: 'DBW1640', bit: 7 },
+          motorName: '07004',
+          sensorName: 'SP07004-2'
         },
         '07003': {
           name: '07003',
@@ -3447,7 +3725,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW40', bit: 2 },
-          sensorAddr: { db: 'DBW1640', bit: 5 }
+          sensorAddr: { db: 'DBW1640', bit: 5 },
+          motorName: '07003',
+          sensorName: 'SP07003-2'
         },
         '08002': {
           name: '08002',
@@ -3456,7 +3736,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW46', bit: 1 },
-          sensorAddr: { db: 'DBW1646', bit: 3 }
+          sensorAddr: { db: 'DBW1646', bit: 3 },
+          motorName: '08002',
+          sensorName: 'SP08002-2'
         },
         '08001': {
           name: '08001',
@@ -3465,7 +3747,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW46', bit: 0 },
-          sensorAddr: { db: 'DBW1646', bit: 1 }
+          sensorAddr: { db: 'DBW1646', bit: 1 },
+          motorName: '08001',
+          sensorName: 'SP08001-2'
         },
         '08004': {
           name: '08004',
@@ -3474,7 +3758,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW46', bit: 3 },
-          sensorAddr: { db: 'DBW1646', bit: 7 }
+          sensorAddr: { db: 'DBW1646', bit: 7 },
+          motorName: '08004',
+          sensorName: 'SP08004-2'
         },
         '08003': {
           name: '08003',
@@ -3483,7 +3769,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW46', bit: 2 },
-          sensorAddr: { db: 'DBW1646', bit: 5 }
+          sensorAddr: { db: 'DBW1646', bit: 5 },
+          motorName: '08003',
+          sensorName: 'SP08003-2'
         },
         '09002': {
           name: '09002',
@@ -3492,7 +3780,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW52', bit: 1 },
-          sensorAddr: { db: 'DBW1652', bit: 3 }
+          sensorAddr: { db: 'DBW1652', bit: 3 },
+          motorName: '09002',
+          sensorName: 'SP09004-2'
         },
         '09001': {
           name: '09001',
@@ -3501,7 +3791,9 @@ export default {
           motorStatus: false,
           sensorStatus: false,
           motorAddr: { db: 'DBW52', bit: 0 },
-          sensorAddr: { db: 'DBW1652', bit: 1 }
+          sensorAddr: { db: 'DBW1652', bit: 1 },
+          motorName: '09001',
+          sensorName: 'SP09003-2'
         },
         // 以下为预热第三排的电机信号
         '02006': {
@@ -3509,210 +3801,240 @@ export default {
           x: 1195,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW10', bit: 5 }
+          motorAddr: { db: 'DBW10', bit: 5 },
+          motorName: '02006'
         },
         '02005': {
           name: '02005',
           x: 1220,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW10', bit: 4 }
+          motorAddr: { db: 'DBW10', bit: 4 },
+          motorName: '02005'
         },
         '02008': {
           name: '02008',
           x: 1120,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW10', bit: 7 }
+          motorAddr: { db: 'DBW10', bit: 7 },
+          motorName: '02008'
         },
         '02007': {
           name: '02007',
           x: 1145,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW10', bit: 6 }
+          motorAddr: { db: 'DBW10', bit: 6 },
+          motorName: '02007'
         },
         '03006': {
           name: '03006',
           x: 1048,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW16', bit: 5 }
+          motorAddr: { db: 'DBW16', bit: 5 },
+          motorName: '03006'
         },
         '03005': {
           name: '03005',
           x: 1073,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW16', bit: 4 }
+          motorAddr: { db: 'DBW16', bit: 4 },
+          motorName: '03005'
         },
         '03008': {
           name: '03008',
           x: 973,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW16', bit: 7 }
+          motorAddr: { db: 'DBW16', bit: 7 },
+          motorName: '03008'
         },
         '03007': {
           name: '03007',
           x: 998,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW16', bit: 6 }
+          motorAddr: { db: 'DBW16', bit: 6 },
+          motorName: '03007'
         },
         '04006': {
           name: '04006',
           x: 900,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW22', bit: 5 }
+          motorAddr: { db: 'DBW22', bit: 5 },
+          motorName: '04006'
         },
         '04005': {
           name: '04005',
           x: 925,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW22', bit: 4 }
+          motorAddr: { db: 'DBW22', bit: 4 },
+          motorName: '04005'
         },
         '04008': {
           name: '04008',
           x: 828,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW22', bit: 7 }
+          motorAddr: { db: 'DBW22', bit: 7 },
+          motorName: '04008'
         },
         '04007': {
           name: '04007',
           x: 853,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW22', bit: 6 }
+          motorAddr: { db: 'DBW22', bit: 6 },
+          motorName: '04007'
         },
         '05006': {
           name: '05006',
           x: 753,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW28', bit: 5 }
+          motorAddr: { db: 'DBW28', bit: 5 },
+          motorName: '05006'
         },
         '05005': {
           name: '05005',
           x: 778,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW28', bit: 4 }
+          motorAddr: { db: 'DBW28', bit: 4 },
+          motorName: '05005'
         },
         '05008': {
           name: '05008',
           x: 680,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW28', bit: 7 }
+          motorAddr: { db: 'DBW28', bit: 7 },
+          motorName: '05008'
         },
         '05007': {
           name: '05007',
           x: 705,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW28', bit: 6 }
+          motorAddr: { db: 'DBW28', bit: 6 },
+          motorName: '05007'
         },
         '06006': {
           name: '06006',
           x: 606,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW34', bit: 5 }
+          motorAddr: { db: 'DBW34', bit: 5 },
+          motorName: '06006'
         },
         '06005': {
           name: '06005',
           x: 631,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW34', bit: 4 }
+          motorAddr: { db: 'DBW34', bit: 4 },
+          motorName: '06005'
         },
         '06008': {
           name: '06008',
           x: 530,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW34', bit: 7 }
+          motorAddr: { db: 'DBW34', bit: 7 },
+          motorName: '06008'
         },
         '06007': {
           name: '06007',
           x: 556,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW34', bit: 6 }
+          motorAddr: { db: 'DBW34', bit: 6 },
+          motorName: '06007'
         },
         '07006': {
           name: '07006',
           x: 460,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW40', bit: 5 }
+          motorAddr: { db: 'DBW40', bit: 5 },
+          motorName: '07006'
         },
         '07005': {
           name: '07005',
           x: 486,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW40', bit: 4 }
+          motorAddr: { db: 'DBW40', bit: 4 },
+          motorName: '07005'
         },
         '07008': {
           name: '07008',
           x: 386,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW40', bit: 7 }
+          motorAddr: { db: 'DBW40', bit: 7 },
+          motorName: '07008'
         },
         '07007': {
           name: '07007',
           x: 411,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW40', bit: 6 }
+          motorAddr: { db: 'DBW40', bit: 6 },
+          motorName: '07007'
         },
         '08006': {
           name: '08006',
           x: 315,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW46', bit: 5 }
+          motorAddr: { db: 'DBW46', bit: 5 },
+          motorName: '08006'
         },
         '08005': {
           name: '08005',
           x: 341,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW46', bit: 4 }
+          motorAddr: { db: 'DBW46', bit: 4 },
+          motorName: '08005'
         },
         '08008': {
           name: '08008',
           x: 240,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW46', bit: 7 }
+          motorAddr: { db: 'DBW46', bit: 7 },
+          motorName: '08008'
         },
         '08007': {
           name: '08007',
           x: 266,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW46', bit: 6 }
+          motorAddr: { db: 'DBW46', bit: 6 },
+          motorName: '08007'
         },
         '09004': {
           name: '09004',
           x: 165,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW52', bit: 3 }
+          motorAddr: { db: 'DBW52', bit: 3 },
+          motorName: '09004'
         },
         '09003': {
           name: '09003',
           x: 191,
           y: 180,
           motorStatus: false,
-          motorAddr: { db: 'DBW52', bit: 2 }
+          motorAddr: { db: 'DBW52', bit: 2 },
+          motorName: '09003'
         },
         // 以上为第三排电机信号
         // 以下为出货/电机光电信号
@@ -3728,7 +4050,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 6 },
           sensorAddr: { db: 'DBW1610', bit: 15 },
           trayIdAddr: 'DBW140',
-          destinationAddr: 'DBW880'
+          destinationAddr: 'DBW880',
+          motorName: '02023',
+          sensorName: 'SP_02023-2'
         },
         'SP_02023-1': {
           name: 'SP_02023-1',
@@ -3740,7 +4064,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 6 },
           sensorAddr: { db: 'DBW1610', bit: 14 },
           trayIdAddr: 'DBW140',
-          destinationAddr: 'DBW880'
+          destinationAddr: 'DBW880',
+          motorName: '02023',
+          sensorName: 'SP_02023-1'
         },
         '02028': {
           name: '02028',
@@ -3754,7 +4080,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 11 },
           sensorAddr: { db: 'DBW1612', bit: 3 },
           trayIdAddr: 'DBW146',
-          destinationAddr: 'DBW886'
+          destinationAddr: 'DBW886',
+          motorName: '02028',
+          sensorName: 'SP_02028-2'
         },
         '02029': {
           name: '02029',
@@ -3766,7 +4094,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 12 },
           sensorAddr: { db: 'DBW1612', bit: 2 },
           trayIdAddr: 'DBW148',
-          destinationAddr: 'DBW888'
+          destinationAddr: 'DBW888',
+          motorName: '02029',
+          sensorName: 'SP_02028-1'
         },
         '02025': {
           name: '02025',
@@ -3780,7 +4110,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 8 },
           sensorAddr: { db: 'DBW1612', bit: 1 },
           trayIdAddr: 'DBW142',
-          destinationAddr: 'DBW882'
+          destinationAddr: 'DBW882',
+          motorName: '02025',
+          sensorName: 'SP_02025-2'
         },
         '02026': {
           name: '02026',
@@ -3792,7 +4124,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 9 },
           sensorAddr: { db: 'DBW1612', bit: 0 },
           trayIdAddr: 'DBW144',
-          destinationAddr: 'DBW884'
+          destinationAddr: 'DBW884',
+          motorName: '02026',
+          sensorName: 'SP_02025-1'
         },
         '02035': {
           name: '02035',
@@ -3806,7 +4140,9 @@ export default {
           motorAddr: { db: 'DBW14', bit: 2 },
           sensorAddr: { db: 'DBW1612', bit: 9 },
           trayIdAddr: 'DBW156',
-          destinationAddr: 'DBW896'
+          destinationAddr: 'DBW896',
+          motorName: '02035',
+          sensorName: 'SP_02035-2'
         },
         '02036': {
           name: '02036',
@@ -3818,7 +4154,9 @@ export default {
           motorAddr: { db: 'DBW14', bit: 3 },
           sensorAddr: { db: 'DBW1612', bit: 8 },
           trayIdAddr: 'DBW158',
-          destinationAddr: 'DBW898'
+          destinationAddr: 'DBW898',
+          motorName: '02036',
+          sensorName: 'SP_02035-1'
         },
         '02032': {
           name: '02032',
@@ -3832,7 +4170,9 @@ export default {
           motorAddr: { db: 'DBW12', bit: 15 },
           sensorAddr: { db: 'DBW1612', bit: 7 },
           trayIdAddr: 'DBW152',
-          destinationAddr: 'DBW892'
+          destinationAddr: 'DBW892',
+          motorName: '02032',
+          sensorName: 'SP_02032-2'
         },
         '02033': {
           name: '02033',
@@ -3844,7 +4184,9 @@ export default {
           motorAddr: { db: 'DBW14', bit: 0 },
           sensorAddr: { db: 'DBW1612', bit: 6 },
           trayIdAddr: 'DBW154',
-          destinationAddr: 'DBW894'
+          destinationAddr: 'DBW894',
+          motorName: '02033',
+          sensorName: 'SP_02032-1'
         },
         '03028': {
           name: '03028',
@@ -3858,7 +4200,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 11 },
           sensorAddr: { db: 'DBW1618', bit: 3 },
           trayIdAddr: 'DBW226',
-          destinationAddr: 'DBW966'
+          destinationAddr: 'DBW966',
+          motorName: '03028',
+          sensorName: 'SP_03028-2'
         },
         '03029': {
           name: '03029',
@@ -3870,7 +4214,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 12 },
           sensorAddr: { db: 'DBW1618', bit: 2 },
           trayIdAddr: 'DBW228',
-          destinationAddr: 'DBW968'
+          destinationAddr: 'DBW968',
+          motorName: '03029',
+          sensorName: 'SP_03028-1'
         },
         '03025': {
           name: '03025',
@@ -3884,7 +4230,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 8 },
           sensorAddr: { db: 'DBW1618', bit: 1 },
           trayIdAddr: 'DBW222',
-          destinationAddr: 'DBW962'
+          destinationAddr: 'DBW962',
+          motorName: '03025',
+          sensorName: 'SP_03025-2'
         },
         '03026': {
           name: '03026',
@@ -3896,7 +4244,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 9 },
           sensorAddr: { db: 'DBW1618', bit: 0 },
           trayIdAddr: 'DBW224',
-          destinationAddr: 'DBW964'
+          destinationAddr: 'DBW964',
+          motorName: '03026',
+          sensorName: 'SP_03025-1'
         },
         '03035': {
           name: '03035',
@@ -3910,7 +4260,9 @@ export default {
           motorAddr: { db: 'DBW20', bit: 2 },
           sensorAddr: { db: 'DBW1618', bit: 9 },
           trayIdAddr: 'DBW236',
-          destinationAddr: 'DBW976'
+          destinationAddr: 'DBW976',
+          motorName: '03035',
+          sensorName: 'SP_03035-2'
         },
         '03036': {
           name: '03036',
@@ -3922,7 +4274,9 @@ export default {
           motorAddr: { db: 'DBW20', bit: 3 },
           sensorAddr: { db: 'DBW1618', bit: 8 },
           trayIdAddr: 'DBW238',
-          destinationAddr: 'DBW978'
+          destinationAddr: 'DBW978',
+          motorName: '03036',
+          sensorName: 'SP_03035-1'
         },
         '03032': {
           name: '03032',
@@ -3936,7 +4290,9 @@ export default {
           motorAddr: { db: 'DBW18', bit: 15 },
           sensorAddr: { db: 'DBW1618', bit: 7 },
           trayIdAddr: 'DBW232',
-          destinationAddr: 'DBW972'
+          destinationAddr: 'DBW972',
+          motorName: '03032',
+          sensorName: 'SP_03032-2'
         },
         '03033': {
           name: '03033',
@@ -3948,7 +4304,9 @@ export default {
           motorAddr: { db: 'DBW20', bit: 0 },
           sensorAddr: { db: 'DBW1618', bit: 6 },
           trayIdAddr: 'DBW234',
-          destinationAddr: 'DBW974'
+          destinationAddr: 'DBW974',
+          motorName: '03033',
+          sensorName: 'SP_03032-1'
         },
         '04028': {
           name: '04028',
@@ -3962,7 +4320,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 11 },
           sensorAddr: { db: 'DBW1624', bit: 3 },
           trayIdAddr: 'DBW306',
-          destinationAddr: 'DBW1046'
+          destinationAddr: 'DBW1046',
+          motorName: '04028',
+          sensorName: 'SP_04028-2'
         },
         '04029': {
           name: '04029',
@@ -3974,7 +4334,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 12 },
           sensorAddr: { db: 'DBW1624', bit: 2 },
           trayIdAddr: 'DBW308',
-          destinationAddr: 'DBW1048'
+          destinationAddr: 'DBW1048',
+          motorName: '04029',
+          sensorName: 'SP_04028-1'
         },
         '04025': {
           name: '04025',
@@ -3988,7 +4350,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 8 },
           sensorAddr: { db: 'DBW1624', bit: 1 },
           trayIdAddr: 'DBW302',
-          destinationAddr: 'DBW1042'
+          destinationAddr: 'DBW1042',
+          motorName: '04025',
+          sensorName: 'SP_04025-2'
         },
         '04026': {
           name: '04026',
@@ -4000,7 +4364,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 9 },
           sensorAddr: { db: 'DBW1624', bit: 0 },
           trayIdAddr: 'DBW304',
-          destinationAddr: 'DBW1044'
+          destinationAddr: 'DBW1044',
+          motorName: '04026',
+          sensorName: 'SP_04025-1'
         },
         '04035': {
           name: '04035',
@@ -4014,7 +4380,9 @@ export default {
           motorAddr: { db: 'DBW26', bit: 2 },
           sensorAddr: { db: 'DBW1624', bit: 9 },
           trayIdAddr: 'DBW316',
-          destinationAddr: 'DBW1056'
+          destinationAddr: 'DBW1056',
+          motorName: '04035',
+          sensorName: 'SP_04035-2'
         },
         '04036': {
           name: '04036',
@@ -4026,7 +4394,9 @@ export default {
           motorAddr: { db: 'DBW26', bit: 3 },
           sensorAddr: { db: 'DBW1624', bit: 8 },
           trayIdAddr: 'DBW318',
-          destinationAddr: 'DBW1058'
+          destinationAddr: 'DBW1058',
+          motorName: '04036',
+          sensorName: 'SP_04035-1'
         },
         '04032': {
           name: '04032',
@@ -4040,7 +4410,9 @@ export default {
           motorAddr: { db: 'DBW24', bit: 15 },
           sensorAddr: { db: 'DBW1624', bit: 7 },
           trayIdAddr: 'DBW312',
-          destinationAddr: 'DBW1052'
+          destinationAddr: 'DBW1052',
+          motorName: '04032',
+          sensorName: 'SP_04032-2'
         },
         '04033': {
           name: '04033',
@@ -4052,7 +4424,9 @@ export default {
           motorAddr: { db: 'DBW26', bit: 0 },
           sensorAddr: { db: 'DBW1624', bit: 6 },
           trayIdAddr: 'DBW314',
-          destinationAddr: 'DBW1054'
+          destinationAddr: 'DBW1054',
+          motorName: '04033',
+          sensorName: 'SP_04032-1'
         },
         '05028': {
           name: '05028',
@@ -4066,7 +4440,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 11 },
           sensorAddr: { db: 'DBW1630', bit: 3 },
           trayIdAddr: 'DBW386',
-          destinationAddr: 'DBW1126'
+          destinationAddr: 'DBW1126',
+          motorName: '05028',
+          sensorName: 'SP_05028-2'
         },
         '05029': {
           name: '05029',
@@ -4078,7 +4454,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 12 },
           sensorAddr: { db: 'DBW1630', bit: 2 },
           trayIdAddr: 'DBW388',
-          destinationAddr: 'DBW1128'
+          destinationAddr: 'DBW1128',
+          motorName: '05029',
+          sensorName: 'SP_05028-1'
         },
         '05025': {
           name: '05025',
@@ -4092,7 +4470,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 8 },
           sensorAddr: { db: 'DBW1630', bit: 1 },
           trayIdAddr: 'DBW382',
-          destinationAddr: 'DBW1122'
+          destinationAddr: 'DBW1122',
+          motorName: '05025',
+          sensorName: 'SP_05025-2'
         },
         '05026': {
           name: '05026',
@@ -4104,7 +4484,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 9 },
           sensorAddr: { db: 'DBW1630', bit: 0 },
           trayIdAddr: 'DBW384',
-          destinationAddr: 'DBW1124'
+          destinationAddr: 'DBW1124',
+          motorName: '05026',
+          sensorName: 'SP_05025-1'
         },
         '05035': {
           name: '05035',
@@ -4118,7 +4500,9 @@ export default {
           motorAddr: { db: 'DBW32', bit: 2 },
           sensorAddr: { db: 'DBW1630', bit: 9 },
           trayIdAddr: 'DBW396',
-          destinationAddr: 'DBW1136'
+          destinationAddr: 'DBW1136',
+          motorName: '05035',
+          sensorName: 'SP_05035-2'
         },
         '05036': {
           name: '05036',
@@ -4130,7 +4514,9 @@ export default {
           motorAddr: { db: 'DBW32', bit: 3 },
           sensorAddr: { db: 'DBW1630', bit: 8 },
           trayIdAddr: 'DBW398',
-          destinationAddr: 'DBW1138'
+          destinationAddr: 'DBW1138',
+          motorName: '05036',
+          sensorName: 'SP_05035-1'
         },
         '05032': {
           name: '05032',
@@ -4144,7 +4530,9 @@ export default {
           motorAddr: { db: 'DBW30', bit: 15 },
           sensorAddr: { db: 'DBW1630', bit: 7 },
           trayIdAddr: 'DBW392',
-          destinationAddr: 'DBW1132'
+          destinationAddr: 'DBW1132',
+          motorName: '05032',
+          sensorName: 'SP_05032-2'
         },
         '05033': {
           name: '05033',
@@ -4156,7 +4544,9 @@ export default {
           motorAddr: { db: 'DBW32', bit: 0 },
           sensorAddr: { db: 'DBW1632', bit: 6 },
           trayIdAddr: 'DBW394',
-          destinationAddr: 'DBW1134'
+          destinationAddr: 'DBW1134',
+          motorName: '05033',
+          sensorName: 'SP_05032-1'
         },
         '06028': {
           name: '06028',
@@ -4170,7 +4560,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 11 },
           sensorAddr: { db: 'DBW1636', bit: 3 },
           trayIdAddr: 'DBW466',
-          destinationAddr: 'DBW1206'
+          destinationAddr: 'DBW1206',
+          motorName: '06028',
+          sensorName: 'SP_06028-2'
         },
         '06029': {
           name: '06029',
@@ -4182,7 +4574,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 12 },
           sensorAddr: { db: 'DBW1636', bit: 2 },
           trayIdAddr: 'DBW468',
-          destinationAddr: 'DBW1208'
+          destinationAddr: 'DBW1208',
+          motorName: '06029',
+          sensorName: 'SP_06028-1'
         },
         '06025': {
           name: '06025',
@@ -4196,7 +4590,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 8 },
           sensorAddr: { db: 'DBW1636', bit: 1 },
           trayIdAddr: 'DBW462',
-          destinationAddr: 'DBW1202'
+          destinationAddr: 'DBW1202',
+          motorName: '06025',
+          sensorName: 'SP_06025-2'
         },
         '06026': {
           name: '06026',
@@ -4208,7 +4604,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 9 },
           sensorAddr: { db: 'DBW1636', bit: 0 },
           trayIdAddr: 'DBW464',
-          destinationAddr: 'DBW1204'
+          destinationAddr: 'DBW1204',
+          motorName: '06026',
+          sensorName: 'SP_06025-1'
         },
         '06035': {
           name: '06035',
@@ -4222,7 +4620,9 @@ export default {
           motorAddr: { db: 'DBW38', bit: 2 },
           sensorAddr: { db: 'DBW1636', bit: 9 },
           trayIdAddr: 'DBW476',
-          destinationAddr: 'DBW1216'
+          destinationAddr: 'DBW1216',
+          motorName: '06035',
+          sensorName: 'SP_06035-2'
         },
         '06036': {
           name: '06036',
@@ -4234,7 +4634,9 @@ export default {
           motorAddr: { db: 'DBW38', bit: 3 },
           sensorAddr: { db: 'DBW1636', bit: 8 },
           trayIdAddr: 'DBW478',
-          destinationAddr: 'DBW1218'
+          destinationAddr: 'DBW1218',
+          motorName: '06036',
+          sensorName: 'SP_06035-1'
         },
         '06032': {
           name: '06032',
@@ -4248,7 +4650,9 @@ export default {
           motorAddr: { db: 'DBW36', bit: 15 },
           sensorAddr: { db: 'DBW1636', bit: 7 },
           trayIdAddr: 'DBW472',
-          destinationAddr: 'DBW1212'
+          destinationAddr: 'DBW1212',
+          motorName: '06032',
+          sensorName: 'SP_06032-2'
         },
         '06033': {
           name: '06033',
@@ -4260,7 +4664,9 @@ export default {
           motorAddr: { db: 'DBW38', bit: 0 },
           sensorAddr: { db: 'DBW1638', bit: 6 },
           trayIdAddr: 'DBW474',
-          destinationAddr: 'DBW1214'
+          destinationAddr: 'DBW1214',
+          motorName: '06033',
+          sensorName: 'SP_06032-1'
         },
         '07028': {
           name: '07028',
@@ -4274,7 +4680,9 @@ export default {
           motorAddr: { db: 'DBW42', bit: 11 },
           sensorAddr: { db: 'DBW1642', bit: 3 },
           trayIdAddr: 'DBW546',
-          destinationAddr: 'DBW1286'
+          destinationAddr: 'DBW1286',
+          motorName: '07028',
+          sensorName: 'SP_07028-2'
         },
         '07029': {
           name: '07029',
@@ -4286,7 +4694,9 @@ export default {
           motorAddr: { db: 'DBW42', bit: 12 },
           sensorAddr: { db: 'DBW1642', bit: 2 },
           trayIdAddr: 'DBW548',
-          destinationAddr: 'DBW1288'
+          destinationAddr: 'DBW1288',
+          motorName: '07029',
+          sensorName: 'SP_07028-1'
         },
         '07025': {
           name: '07025',
@@ -4300,7 +4710,9 @@ export default {
           motorAddr: { db: 'DBW42', bit: 8 },
           sensorAddr: { db: 'DBW1642', bit: 1 },
           trayIdAddr: 'DBW542',
-          destinationAddr: 'DBW1282'
+          destinationAddr: 'DBW1282',
+          motorName: '07025',
+          sensorName: 'SP_07025-2'
         },
         '07026': {
           name: '07026',
@@ -4312,7 +4724,9 @@ export default {
           motorAddr: { db: 'DBW42', bit: 9 },
           sensorAddr: { db: 'DBW1642', bit: 0 },
           trayIdAddr: 'DBW544',
-          destinationAddr: 'DBW1284'
+          destinationAddr: 'DBW1284',
+          motorName: '07026',
+          sensorName: 'SP_07025-1'
         },
         '07035': {
           name: '07035',
@@ -4326,7 +4740,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 2 },
           sensorAddr: { db: 'DBW1642', bit: 9 },
           trayIdAddr: 'DBW556',
-          destinationAddr: 'DBW1296'
+          destinationAddr: 'DBW1296',
+          motorName: '07035',
+          sensorName: 'SP_07035-2'
         },
         '07036': {
           name: '07036',
@@ -4338,7 +4754,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 3 },
           sensorAddr: { db: 'DBW1642', bit: 8 },
           trayIdAddr: 'DBW558',
-          destinationAddr: 'DBW1298'
+          destinationAddr: 'DBW1298',
+          motorName: '07036',
+          sensorName: 'SP_07035-1'
         },
         '07032': {
           name: '07032',
@@ -4352,7 +4770,9 @@ export default {
           motorAddr: { db: 'DBW42', bit: 15 },
           sensorAddr: { db: 'DBW1642', bit: 7 },
           trayIdAddr: 'DBW552',
-          destinationAddr: 'DBW1292'
+          destinationAddr: 'DBW1292',
+          motorName: '07032',
+          sensorName: 'SP_07032-2'
         },
         '07033': {
           name: '07033',
@@ -4364,7 +4784,9 @@ export default {
           motorAddr: { db: 'DBW44', bit: 0 },
           sensorAddr: { db: 'DBW1642', bit: 6 },
           trayIdAddr: 'DBW554',
-          destinationAddr: 'DBW1294'
+          destinationAddr: 'DBW1294',
+          motorName: '07033',
+          sensorName: 'SP_07032-1'
         },
         '08028': {
           name: '08028',
@@ -4378,7 +4800,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 11 },
           sensorAddr: { db: 'DBW1648', bit: 3 },
           trayIdAddr: 'DBW626',
-          destinationAddr: 'DBW1366'
+          destinationAddr: 'DBW1366',
+          motorName: '08028',
+          sensorName: 'SP_08028-2'
         },
         '08029': {
           name: '08029',
@@ -4390,7 +4814,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 12 },
           sensorAddr: { db: 'DBW1648', bit: 2 },
           trayIdAddr: 'DBW628',
-          destinationAddr: 'DBW1368'
+          destinationAddr: 'DBW1368',
+          motorName: '08029',
+          sensorName: 'SP_08028-1'
         },
         '08025': {
           name: '08025',
@@ -4404,7 +4830,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 8 },
           sensorAddr: { db: 'DBW1648', bit: 1 },
           trayIdAddr: 'DBW622',
-          destinationAddr: 'DBW1362'
+          destinationAddr: 'DBW1362',
+          motorName: '08025',
+          sensorName: 'SP_08025-2'
         },
         '08026': {
           name: '08026',
@@ -4416,7 +4844,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 9 },
           sensorAddr: { db: 'DBW1648', bit: 0 },
           trayIdAddr: 'DBW624',
-          destinationAddr: 'DBW1364'
+          destinationAddr: 'DBW1364',
+          motorName: '08026',
+          sensorName: 'SP_08025-1'
         },
         '08035': {
           name: '08035',
@@ -4430,7 +4860,9 @@ export default {
           motorAddr: { db: 'DBW50', bit: 2 },
           sensorAddr: { db: 'DBW1648', bit: 9 },
           trayIdAddr: 'DBW636',
-          destinationAddr: 'DBW1376'
+          destinationAddr: 'DBW1376',
+          motorName: '08035',
+          sensorName: 'SP_08035-2'
         },
         '08036': {
           name: '08036',
@@ -4442,7 +4874,9 @@ export default {
           motorAddr: { db: 'DBW50', bit: 3 },
           sensorAddr: { db: 'DBW1648', bit: 8 },
           trayIdAddr: 'DBW638',
-          destinationAddr: 'DBW1378'
+          destinationAddr: 'DBW1378',
+          motorName: '08036',
+          sensorName: 'SP_08035-1'
         },
         '08032': {
           name: '08032',
@@ -4456,7 +4890,9 @@ export default {
           motorAddr: { db: 'DBW48', bit: 15 },
           sensorAddr: { db: 'DBW1648', bit: 7 },
           trayIdAddr: 'DBW632',
-          destinationAddr: 'DBW1372'
+          destinationAddr: 'DBW1372',
+          motorName: '08032',
+          sensorName: 'SP_08032-2'
         },
         '08033': {
           name: '08033',
@@ -4468,7 +4904,9 @@ export default {
           motorAddr: { db: 'DBW50', bit: 0 },
           sensorAddr: { db: 'DBW1650', bit: 6 },
           trayIdAddr: 'DBW634',
-          destinationAddr: 'DBW1374'
+          destinationAddr: 'DBW1374',
+          motorName: '08033',
+          sensorName: 'SP_08032-1'
         },
         '09017': {
           name: '09017',
@@ -4482,7 +4920,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 1 },
           sensorAddr: { db: 'DBW1652', bit: 12 },
           trayIdAddr: 'DBW696',
-          destinationAddr: 'DBW1436'
+          destinationAddr: 'DBW1436',
+          motorName: '09017',
+          sensorName: 'SP_09017-2'
         },
         '09018': {
           name: '09018',
@@ -4494,7 +4934,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 2 },
           sensorAddr: { db: 'DBW1652', bit: 11 },
           trayIdAddr: 'DBW698',
-          destinationAddr: 'DBW1438'
+          destinationAddr: 'DBW1438',
+          motorName: '09018',
+          sensorName: 'SP_09017-1'
         },
         '09014': {
           name: '09014',
@@ -4508,7 +4950,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 13 },
           sensorAddr: { db: 'DBW1652', bit: 10 },
           trayIdAddr: 'DBW692',
-          destinationAddr: 'DBW1432'
+          destinationAddr: 'DBW1432',
+          motorName: '09014',
+          sensorName: 'SP_09014-2'
         },
         '09015': {
           name: '09015',
@@ -4520,7 +4964,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 14 },
           sensorAddr: { db: 'DBW1652', bit: 9 },
           trayIdAddr: 'DBW694',
-          destinationAddr: 'DBW1434'
+          destinationAddr: 'DBW1434',
+          motorName: '09015',
+          sensorName: 'SP_09014-1'
         },
         // 以上为下货第一排
         // 以下为下货第二排
@@ -4534,9 +4980,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW54', bit: 6 },
-          sensorAddr: { db: 'DBW1654', bit: 2 },
+          sensorAddr: { db: 'DBW1654', bit: 1 },
           trayIdAddr: 'DBW704',
-          destinationAddr: 'DBW1444'
+          destinationAddr: 'DBW1444',
+          motorName: '09023',
+          sensorName: 'SP_09023-2'
         },
         '09024': {
           name: '09024',
@@ -4546,9 +4994,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW54', bit: 7 },
-          sensorAddr: { db: 'DBW1654', bit: 2 },
+          sensorAddr: { db: 'DBW1654', bit: 0 },
           trayIdAddr: 'DBW706',
-          destinationAddr: 'DBW1446'
+          destinationAddr: 'DBW1446',
+          motorName: '09024',
+          sensorName: 'SP_09023-1'
         },
         '09020': {
           name: '09020',
@@ -4560,9 +5010,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW54', bit: 3 },
-          sensorAddr: { db: 'DBW1652', bit: 15 },
+          sensorAddr: { db: 'DBW1652', bit: 14 },
           trayIdAddr: 'DBW700',
-          destinationAddr: 'DBW1440'
+          destinationAddr: 'DBW1440',
+          motorName: '09020',
+          sensorName: 'SP_09020-2'
         },
         '09021': {
           name: '09021',
@@ -4572,9 +5024,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW54', bit: 4 },
-          sensorAddr: { db: 'DBW1652', bit: 15 },
+          sensorAddr: { db: 'DBW1652', bit: 13 },
           trayIdAddr: 'DBW702',
-          destinationAddr: 'DBW1442'
+          destinationAddr: 'DBW1442',
+          motorName: '09021',
+          sensorName: 'SP_09020-1'
         },
         'SP_09025-2': {
           name: 'SP_09025-2',
@@ -4588,7 +5042,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 8 },
           sensorAddr: { db: 'DBW1654', bit: 4 },
           trayIdAddr: 'DBW708',
-          destinationAddr: 'DBW1448'
+          destinationAddr: 'DBW1448',
+          motorName: '09025',
+          sensorName: 'SP_09025-2'
         },
         'SP_09025-1': {
           name: 'SP_09025-1',
@@ -4600,7 +5056,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 8 },
           sensorAddr: { db: 'DBW1654', bit: 3 },
           trayIdAddr: 'DBW708',
-          destinationAddr: 'DBW1448'
+          destinationAddr: 'DBW1448',
+          motorName: '09025',
+          sensorName: 'SP_09025-1'
         },
         'SP_09026-2': {
           name: 'SP_09026-2',
@@ -4614,7 +5072,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 9 },
           sensorAddr: { db: 'DBW1654', bit: 6 },
           trayIdAddr: 'DBW710',
-          destinationAddr: 'DBW1450'
+          destinationAddr: 'DBW1450',
+          motorName: '09026',
+          sensorName: 'SP_09026-2'
         },
         'SP_09026-1': {
           name: 'SP_09026-1',
@@ -4626,7 +5086,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 9 },
           sensorAddr: { db: 'DBW1654', bit: 5 },
           trayIdAddr: 'DBW710',
-          destinationAddr: 'DBW1450'
+          destinationAddr: 'DBW1450',
+          motorName: '09026',
+          sensorName: 'SP_09026-1'
         },
         'SP_09027-2': {
           name: 'SP_09027-2',
@@ -4640,7 +5102,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 10 },
           sensorAddr: { db: 'DBW1654', bit: 8 },
           trayIdAddr: 'DBW712',
-          destinationAddr: 'DBW1452'
+          destinationAddr: 'DBW1452',
+          motorName: '09027',
+          sensorName: 'SP_09027-2'
         },
         'SP_09027-1': {
           name: 'SP_09027-1',
@@ -4652,7 +5116,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 10 },
           sensorAddr: { db: 'DBW1654', bit: 7 },
           trayIdAddr: 'DBW712',
-          destinationAddr: 'DBW1452'
+          destinationAddr: 'DBW1452',
+          motorName: '09027',
+          sensorName: 'SP_09027-1'
         },
         'SP_09028-2': {
           name: 'SP_09028-2',
@@ -4666,7 +5132,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 11 },
           sensorAddr: { db: 'DBW1654', bit: 10 },
           trayIdAddr: 'DBW714',
-          destinationAddr: 'DBW1454'
+          destinationAddr: 'DBW1454',
+          motorName: '09028',
+          sensorName: 'SP_09028-2'
         },
         'SP_09028-1': {
           name: 'SP_09028-1',
@@ -4678,7 +5146,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 11 },
           sensorAddr: { db: 'DBW1654', bit: 9 },
           trayIdAddr: 'DBW714',
-          destinationAddr: 'DBW1454'
+          destinationAddr: 'DBW1454',
+          motorName: '09028',
+          sensorName: 'SP_09028-1'
         },
         'SP_09029-2': {
           name: 'SP_09029-2',
@@ -4692,7 +5162,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 12 },
           sensorAddr: { db: 'DBW1654', bit: 12 },
           trayIdAddr: 'DBW716',
-          destinationAddr: 'DBW1456'
+          destinationAddr: 'DBW1456',
+          motorName: '09029',
+          sensorName: 'SP_09029-2'
         },
         'SP_09029-1': {
           name: 'SP_09029-1',
@@ -4704,7 +5176,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 12 },
           sensorAddr: { db: 'DBW1654', bit: 11 },
           trayIdAddr: 'DBW716',
-          destinationAddr: 'DBW1456'
+          destinationAddr: 'DBW1456',
+          motorName: '09029',
+          sensorName: 'SP_09029-1'
         },
         'SP_09030-2': {
           name: 'SP_09030-2',
@@ -4718,7 +5192,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 13 },
           sensorAddr: { db: 'DBW1654', bit: 14 },
           trayIdAddr: 'DBW718',
-          destinationAddr: 'DBW1458'
+          destinationAddr: 'DBW1458',
+          motorName: '09030',
+          sensorName: 'SP_09030-2'
         },
         'SP_09030-1': {
           name: 'SP_09030-1',
@@ -4730,7 +5206,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 13 },
           sensorAddr: { db: 'DBW1654', bit: 13 },
           trayIdAddr: 'DBW718',
-          destinationAddr: 'DBW1458'
+          destinationAddr: 'DBW1458',
+          motorName: '09030',
+          sensorName: 'SP_09030-1'
         },
         'SP_09031-2': {
           name: 'SP_09031-2',
@@ -4744,7 +5222,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 14 },
           sensorAddr: { db: 'DBW1656', bit: 0 },
           trayIdAddr: 'DBW720',
-          destinationAddr: 'DBW1460'
+          destinationAddr: 'DBW1460',
+          motorName: '09031',
+          sensorName: 'SP_09031-2'
         },
         'SP_09031-1': {
           name: 'SP_09031-1',
@@ -4756,7 +5236,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 14 },
           sensorAddr: { db: 'DBW1654', bit: 15 },
           trayIdAddr: 'DBW720',
-          destinationAddr: 'DBW1460'
+          destinationAddr: 'DBW1460',
+          motorName: '09031',
+          sensorName: 'SP_09031-1'
         },
         'SP_09032-2': {
           name: 'SP_09032-2',
@@ -4770,7 +5252,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 15 },
           sensorAddr: { db: 'DBW1656', bit: 2 },
           trayIdAddr: 'DBW722',
-          destinationAddr: 'DBW1462'
+          destinationAddr: 'DBW1462',
+          motorName: '09032',
+          sensorName: 'SP_09032-2'
         },
         'SP_09032-1': {
           name: 'SP_09032-1',
@@ -4782,7 +5266,9 @@ export default {
           motorAddr: { db: 'DBW54', bit: 15 },
           sensorAddr: { db: 'DBW1656', bit: 1 },
           trayIdAddr: 'DBW722',
-          destinationAddr: 'DBW1462'
+          destinationAddr: 'DBW1462',
+          motorName: '09032',
+          sensorName: 'SP_09032-1'
         },
         'SP_09033-2': {
           name: 'SP_09033-2',
@@ -4796,7 +5282,9 @@ export default {
           motorAddr: { db: 'DBW56', bit: 0 },
           sensorAddr: { db: 'DBW1656', bit: 4 },
           trayIdAddr: 'DBW724',
-          destinationAddr: 'DBW1464'
+          destinationAddr: 'DBW1464',
+          motorName: '09033',
+          sensorName: 'SP_09033-2'
         },
         'SP_09033-1': {
           name: 'SP_09033-1',
@@ -4808,7 +5296,9 @@ export default {
           motorAddr: { db: 'DBW56', bit: 0 },
           sensorAddr: { db: 'DBW1656', bit: 3 },
           trayIdAddr: 'DBW724',
-          destinationAddr: 'DBW1464'
+          destinationAddr: 'DBW1464',
+          motorName: '09033',
+          sensorName: 'SP_09033-1'
         },
         '09038': {
           name: '09038',
@@ -4820,9 +5310,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW56', bit: 5 },
-          sensorAddr: { db: 'DBW1656', bit: 10 },
+          sensorAddr: { db: 'DBW1656', bit: 9 },
           trayIdAddr: 'DBW730',
-          destinationAddr: 'DBW1470'
+          destinationAddr: 'DBW1470',
+          motorName: '09038',
+          sensorName: 'SP_09038-2'
         },
         '09039': {
           name: '09039',
@@ -4832,9 +5324,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW56', bit: 6 },
-          sensorAddr: { db: 'DBW1656', bit: 10 },
+          sensorAddr: { db: 'DBW1656', bit: 8 },
           trayIdAddr: 'DBW732',
-          destinationAddr: 'DBW1472'
+          destinationAddr: 'DBW1472',
+          motorName: '09039',
+          sensorName: 'SP_09038-1'
         },
         '09035': {
           name: '09035',
@@ -4846,9 +5340,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW56', bit: 2 },
-          sensorAddr: { db: 'DBW1656', bit: 7 },
+          sensorAddr: { db: 'DBW1656', bit: 6 },
           trayIdAddr: 'DBW726',
-          destinationAddr: 'DBW1466'
+          destinationAddr: 'DBW1466',
+          motorName: '09035',
+          sensorName: 'SP_09035-2'
         },
         '09036': {
           name: '09036',
@@ -4858,9 +5354,11 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW56', bit: 3 },
-          sensorAddr: { db: 'DBW1656', bit: 7 },
+          sensorAddr: { db: 'DBW1656', bit: 5 },
           trayIdAddr: 'DBW728',
-          destinationAddr: 'DBW1468'
+          destinationAddr: 'DBW1468',
+          motorName: '09036',
+          sensorName: 'SP_09035-1'
         }
       },
 
@@ -5002,8 +5500,11 @@ export default {
             ...this.deviceNodes[id]
           }));
         }
-        // 更新 popoverData 指向最新的对象引用
-        this.popoverData = this.deviceNodes[this.popoverData.id];
+        // 更新 popoverData 指向最新的对象引用（若找不到则保持原引用，防止被置为 undefined 导致渲染报错）
+        const latestNode = this.deviceNodes[this.popoverData.id];
+        if (latestNode) {
+          this.popoverData = latestNode;
+        }
       }
 
       // 灭菌前1#小车位置值
@@ -5379,11 +5880,11 @@ export default {
       const containerRect = container.getBoundingClientRect();
 
       // 3. 计算弹窗尺寸
-      // 独立设备：320px，成组设备：每个设备约 180px
+      // 独立设备：320px，成组设备：每个设备约 210px（为容纳编号前缀加宽）
       const popoverWidth =
         this.popoverList.length === 1
           ? 320
-          : this.popoverList.length * 180 + 32;
+          : this.popoverList.length * 210 + 32;
       const popoverHeight = 200; // 预估弹窗高度
 
       // 4. 计算初始位置（弹窗中心对齐点击点）
