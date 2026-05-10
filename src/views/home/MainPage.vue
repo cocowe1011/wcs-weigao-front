@@ -567,56 +567,75 @@
                   style="width: 110px"
                 >
                   <div class="preheating-room-content">
-                    <div class="preheating-room-header">灭菌柜到解析房选择</div>
+                    <div class="preheating-room-header">预热柜到灭菌柜选择</div>
                     <div class="preheating-room-body">
                       <div class="route-select-container">
                         <div class="route-row">
-                          <span class="route-label">灭菌：</span>
+                          <span class="route-label">预热：</span>
                           <el-select
-                            :value="null"
-                            placeholder="灭菌"
+                            v-model="preheatSelectedFrom"
+                            placeholder="预热柜"
                             size="mini"
-                            disabled
+                            :disabled="disinfectionExecuting"
+                            style="width: 80px"
                           >
-                            <el-option label="不执行" :value="null"></el-option>
-                            <el-option label="A" value="A"></el-option>
-                            <el-option label="B" value="B"></el-option>
-                            <el-option label="C" value="C"></el-option>
+                            <el-option
+                              v-for="item in preHeatQueues"
+                              :key="'from-' + item.queueName"
+                              :label="item.queueName"
+                              :value="item.queueName.replace('Y', '')"
+                            ></el-option>
                           </el-select>
                         </div>
                         <div class="route-row">
-                          <span class="route-label">解析：</span>
+                          <span class="route-label">灭菌：</span>
                           <el-select
-                            :value="null"
-                            placeholder="解析"
+                            v-model="sterilizeSelectedTo"
+                            placeholder="灭菌柜"
                             size="mini"
-                            disabled
+                            :disabled="disinfectionExecuting"
+                            style="width: 80px"
                           >
-                            <el-option label="不执行" :value="null"></el-option>
-                            <el-option label="A" value="A"></el-option>
-                            <el-option label="B" value="B"></el-option>
-                            <el-option label="C" value="C"></el-option>
+                            <el-option
+                              v-for="item in sterilizationQueues"
+                              :key="'to-' + item.queueName"
+                              :label="item.queueName"
+                              :value="item.queueName"
+                            ></el-option>
                           </el-select>
                         </div>
                       </div>
-                      <el-button type="primary" size="mini" style="width: 100%"
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        :loading="disinfectionRoomLoading"
+                        @click="sendToDisinfectionRoom"
+                        style="width: 100%"
                         >执行</el-button
                       >
                       <el-button
+                        v-if="disinfectionExecuting"
                         type="danger"
                         size="mini"
+                        @click="cancelDisinfectionRoom"
                         style="width: 100%; margin-left: 0px"
                         >取消</el-button
                       >
-                      <div style="display: flex; align-items: center">
-                        <span style="font-size: 12px; color: greenyellow"
-                          ><span style="font-size: 12px; color: #9fe3d3"
-                            >执行中：<br /></span
-                          >T-202502</span
+                      <div
+                        v-if="disinfectionExecuting && disinfectionTrayCode"
+                        style="display: flex; align-items: center"
+                      >
+                        <span style="font-size: 12px; color: #9fe3d3"
+                          >执行中：</span
                         >
+                        <span style="font-size: 12px; color: greenyellow">{{
+                          disinfectionTrayCode
+                        }}</span>
                       </div>
                       <div style="font-size: 12px; color: #9fe3d3">
-                        需进货：<b style="color: greenyellow">12</b>
+                        需进货：<b style="color: greenyellow">{{
+                          disinfectionNeedQty
+                        }}</b>
                       </div>
                     </div>
                   </div>
@@ -1372,6 +1391,82 @@ import HttpUtil from '@/utils/HttpUtil';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
+
+// 预热柜编号 → 预热柜队列索引(Y前缀)
+// queues: [0]上货区, [1]Y3215, [3]Y3214, [5]Y3213, ... [29]Y3201
+const PREHEAT_QUEUE_MAP = {
+  3201: 29,
+  3202: 27,
+  3203: 25,
+  3204: 23,
+  3205: 21,
+  3206: 19,
+  3207: 17,
+  3208: 15,
+  3209: 13,
+  3210: 11,
+  3211: 9,
+  3212: 7,
+  3213: 5,
+  3214: 3,
+  3215: 1
+};
+// 灭菌柜编号 → 灭菌柜队列索引
+// queues: [2]3215, [4]3214, [6]3213, ... [30]3201
+const STERILIZE_QUEUE_MAP = {
+  3201: 30,
+  3202: 28,
+  3203: 26,
+  3204: 24,
+  3205: 22,
+  3206: 20,
+  3207: 18,
+  3208: 16,
+  3209: 14,
+  3210: 12,
+  3211: 10,
+  3212: 8,
+  3213: 6,
+  3214: 4,
+  3215: 2
+};
+// 预热柜编号 → W_DBW18 bit位键名(预热房出货命令)
+const PREHEAT_DBW18_MAP = {
+  3201: 'W_DBW18_BIT0',
+  3202: 'W_DBW18_BIT1',
+  3203: 'W_DBW18_BIT2',
+  3204: 'W_DBW18_BIT3',
+  3205: 'W_DBW18_BIT4',
+  3206: 'W_DBW18_BIT5',
+  3207: 'W_DBW18_BIT6',
+  3208: 'W_DBW18_BIT7',
+  3209: 'W_DBW18_BIT8',
+  3210: 'W_DBW18_BIT9',
+  3211: 'W_DBW18_BIT10',
+  3212: 'W_DBW18_BIT11',
+  3213: 'W_DBW18_BIT12',
+  3214: 'W_DBW18_BIT13',
+  3215: 'W_DBW18_BIT14'
+};
+// 灭菌柜编号 → W_DBW20 bit位键名(灭菌柜进货命令)
+const STERILIZE_DBW20_MAP = {
+  3201: 'W_DBW20_BIT0',
+  3202: 'W_DBW20_BIT1',
+  3203: 'W_DBW20_BIT2',
+  3204: 'W_DBW20_BIT3',
+  3205: 'W_DBW20_BIT4',
+  3206: 'W_DBW20_BIT5',
+  3207: 'W_DBW20_BIT6',
+  3208: 'W_DBW20_BIT7',
+  3209: 'W_DBW20_BIT8',
+  3210: 'W_DBW20_BIT9',
+  3211: 'W_DBW20_BIT10',
+  3212: 'W_DBW20_BIT11',
+  3213: 'W_DBW20_BIT12',
+  3214: 'W_DBW20_BIT13',
+  3215: 'W_DBW20_BIT14'
+};
+
 export default {
   name: 'MonitorScreen',
   components: {
@@ -1576,6 +1671,15 @@ export default {
         { x: 178, y: 215, completed: true } // 3201
       ],
       logId: 1000,
+
+      // ---- 预热柜到灭菌柜相关 ----
+      preheatSelectedFrom: null, // 选择的预热柜编号(3201-3215)
+      sterilizeSelectedTo: null, // 选择的灭菌柜编号(3201-3215)
+      disinfectionRoomLoading: false, // 执行按钮loading
+      disinfectionExecuting: false, // 是否正在执行
+      disinfectionTrayCode: '', // 执行中显示的托盘编码
+      disinfectionNeedQty: 0, // 需进货数量
+      disinfectionTargetTotal: 0, // 目标总数量
 
       // ==========================================================
       // 【修改结果】直接在 data 里定义好所有设备点位
@@ -4542,7 +4646,7 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW32', bit: 0 },
-          sensorAddr: { db: 'DBW1632', bit: 6 },
+          sensorAddr: { db: 'DBW1630', bit: 6 },
           trayIdAddr: 'DBW394',
           destinationAddr: 'DBW1134',
           motorName: '05033',
@@ -4662,7 +4766,7 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW38', bit: 0 },
-          sensorAddr: { db: 'DBW1638', bit: 6 },
+          sensorAddr: { db: 'DBW1636', bit: 6 },
           trayIdAddr: 'DBW474',
           destinationAddr: 'DBW1214',
           motorName: '06033',
@@ -4902,7 +5006,7 @@ export default {
           trayId: '',
           destination: 0,
           motorAddr: { db: 'DBW50', bit: 0 },
-          sensorAddr: { db: 'DBW1650', bit: 6 },
+          sensorAddr: { db: 'DBW1648', bit: 6 },
           trayIdAddr: 'DBW634',
           destinationAddr: 'DBW1374',
           motorName: '08033',
@@ -5000,6 +5104,14 @@ export default {
           motorName: '09024',
           sensorName: 'SP_09023-1'
         },
+        '09024SP': {
+          name: 'SP_09024',
+          x: 460,
+          y: 76,
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1654', bit: 2 },
+          sensorName: 'SP_09024'
+        },
         '09020': {
           name: '09020',
           x: 486,
@@ -5029,6 +5141,14 @@ export default {
           destinationAddr: 'DBW1442',
           motorName: '09021',
           sensorName: 'SP_09020-1'
+        },
+        '09021SP': {
+          name: 'SP_09021',
+          x: 486,
+          y: 76,
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1652', bit: 15 },
+          sensorName: 'SP_09021'
         },
         'SP_09025-2': {
           name: 'SP_09025-2',
@@ -5330,6 +5450,14 @@ export default {
           motorName: '09039',
           sensorName: 'SP_09038-1'
         },
+        '09039SP': {
+          name: 'SP_09039',
+          x: 165,
+          y: 76,
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1656', bit: 10 },
+          sensorName: 'SP_09039'
+        },
         '09035': {
           name: '09035',
           x: 191,
@@ -5359,6 +5487,14 @@ export default {
           destinationAddr: 'DBW1468',
           motorName: '09036',
           sensorName: 'SP_09035-1'
+        },
+        '09036SP': {
+          name: 'SP_09036',
+          x: 191,
+          y: 76,
+          sensorStatus: false,
+          sensorAddr: { db: 'DBW1656', bit: 7 },
+          sensorName: 'SP_09036'
         }
       },
 
@@ -5417,13 +5553,19 @@ export default {
     },
     // 预热(Yxxx)队列列表，用于上货前电机信号按钮
     preHeatQueues() {
-      return this.queues.filter((q) => q.queueName.startsWith('Y'));
+      return this.queues
+        .filter((q) => q.queueName.startsWith('Y'))
+        .sort(
+          (a, b) =>
+            Number(a.queueName.replace('Y', '')) -
+            Number(b.queueName.replace('Y', ''))
+        );
     },
     // 灭菌(xxxx)队列列表，用于灭菌后预热信号按钮
     sterilizationQueues() {
-      return this.queues.filter(
-        (q) => !q.queueName.startsWith('Y') && q.queueName !== '上货区'
-      );
+      return this.queues
+        .filter((q) => !q.queueName.startsWith('Y') && q.queueName !== '上货区')
+        .sort((a, b) => Number(a.queueName) - Number(b.queueName));
     }
   },
   mounted() {
@@ -6886,6 +7028,126 @@ export default {
     formatConnectionTime(timeValue) {
       if (!timeValue) return '--';
       return moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
+    },
+
+    // ================= 预热柜到灭菌柜 =================
+    /**
+     * 预热柜到灭菌柜 - 执行
+     * 参考写入点位.csv:
+     *   DB1001.DBW14: WCS执行出货预热房编号(起始: 3201-3215)
+     *   DB1001.DBW16: WCS执行进货灭菌柜编号(目的地: 3201-3215)
+     *   DB1001.DBW18: WCS执行预热房出货命令(BIT0-14对应3201-3215)
+     *   DB1001.DBW20: WCS执行进货灭菌柜出货命令(BIT0-14对应3201-3215)
+     *   发送命令2秒后取消
+     */
+    sendToDisinfectionRoom() {
+      if (!this.preheatSelectedFrom || !this.sterilizeSelectedTo) {
+        this.$message.warning('请选择预热柜和灭菌柜编号');
+        return;
+      }
+
+      const fromCabinet = Number(this.preheatSelectedFrom);
+      const toCabinet = Number(this.sterilizeSelectedTo);
+      const fromIdx = PREHEAT_QUEUE_MAP[fromCabinet];
+      const toIdx = STERILIZE_QUEUE_MAP[toCabinet];
+
+      // 检查起始预热柜是否有托盘
+      const sourceCount =
+        this.queues[fromIdx] && this.queues[fromIdx].trayInfo
+          ? this.queues[fromIdx].trayInfo.length
+          : 0;
+      if (sourceCount <= 0) {
+        this.$message.warning(
+          `预热柜Y${fromCabinet}出队列中没有可用的托盘，请检查起始地数量`
+        );
+        return;
+      }
+
+      // 计算目标总数量
+      const destinationCount =
+        this.queues[toIdx] && this.queues[toIdx].trayInfo
+          ? this.queues[toIdx].trayInfo.length
+          : 0;
+      this.disinfectionTargetTotal = sourceCount + destinationCount;
+
+      this.addLog(
+        `预热到灭菌执行开始：起始预热柜=Y${fromCabinet}，队列数量=${sourceCount}，目的地灭菌柜=${toCabinet}，当前数量=${destinationCount}，目标总数量=${this.disinfectionTargetTotal}`
+      );
+
+      this.disinfectionRoomLoading = true;
+      this.disinfectionExecuting = true;
+
+      // 1. 写入起始预热柜编号到 W_DBW14 (DB1001.DBW14)，2秒后取消
+      this.addLog(`[PLC发送] W_DBW14 = ${fromCabinet} (出货预热房编号)`);
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW14', fromCabinet);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW14');
+      }, 2000);
+
+      // 2. 写入目的地灭菌柜编号到 W_DBW16 (DB1001.DBW16)，2秒后取消
+      this.addLog(`[PLC发送] W_DBW16 = ${toCabinet} (进货灭菌柜编号)`);
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW16', toCabinet);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW16');
+      }, 2000);
+
+      // 3. 设置起始预热柜对应的 W_DBW18 bit位(true)，2秒后取消
+      const fromBitKey = PREHEAT_DBW18_MAP[fromCabinet];
+      if (fromBitKey) {
+        this.addLog(
+          `[PLC发送] ${fromBitKey} = true (预热房Y${fromCabinet}出货命令)`
+        );
+        ipcRenderer.send('writeSingleValueToPLC', fromBitKey, true);
+        setTimeout(() => {
+          ipcRenderer.send('cancelWriteToPLC', fromBitKey);
+        }, 2000);
+      }
+
+      // 4. 设置目的地灭菌柜对应的 W_DBW20 bit位(true)，2秒后取消
+      const toBitKey = STERILIZE_DBW20_MAP[toCabinet];
+      if (toBitKey) {
+        this.addLog(
+          `[PLC发送] ${toBitKey} = true (灭菌柜${toCabinet}进货命令)`
+        );
+        ipcRenderer.send('writeSingleValueToPLC', toBitKey, true);
+        setTimeout(() => {
+          ipcRenderer.send('cancelWriteToPLC', toBitKey);
+        }, 2000);
+      }
+
+      // 显示执行中状态 - 取起始预热柜队列第一个托盘编码
+      if (
+        this.queues[fromIdx] &&
+        this.queues[fromIdx].trayInfo &&
+        this.queues[fromIdx].trayInfo.length > 0
+      ) {
+        this.disinfectionTrayCode =
+          this.queues[fromIdx].trayInfo[0].trayCode || '';
+      }
+
+      // 更新需进货数量
+      this.disinfectionNeedQty = sourceCount;
+
+      this.addLog(
+        `预热柜Y${fromCabinet}到灭菌柜${toCabinet}开始执行，需进货：${sourceCount}`
+      );
+      this.$message.success(
+        `已发送从预热柜Y${fromCabinet}到灭菌柜${toCabinet}的执行命令`
+      );
+    },
+    /**
+     * 预热柜到灭菌柜 - 取消执行
+     */
+    cancelDisinfectionRoom() {
+      this.disinfectionExecuting = false;
+      this.disinfectionTrayCode = '';
+      this.disinfectionNeedQty = 0;
+      this.disinfectionRoomLoading = false;
+      this.preheatSelectedFrom = null;
+      this.sterilizeSelectedTo = null;
+
+      this.addLog('预热柜到灭菌柜执行已取消');
+      this.$message.info('已取消预热柜到灭菌柜执行');
     }
   },
   beforeDestroy() {
