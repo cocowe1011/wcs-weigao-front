@@ -880,13 +880,17 @@
                       <div class="tray-info-row">
                         <span class="tray-name">{{ tray.name }}</span>
                         <div class="tray-batch-group">
-                          <span class="tray-batch">
-                            <span>
-                              {{
-                                tray.isTerile === 1 ? '消毒' : '不消毒'
-                              }}</span
-                            >
-                          </span>
+                          <span
+                            class="tray-batch"
+                            v-if="tray.sendTo && selectedQueue"
+                            >{{
+                              selectedQueue.queueName === '上货区'
+                                ? '目的地：'
+                                : selectedQueue.queueName.startsWith('Y')
+                                ? '预热柜位置：'
+                                : '灭菌柜位置：'
+                            }}{{ tray.sendTo }}</span
+                          >
                           <span
                             class="tray-batch"
                             v-if="tray.sequenceNumber > 0"
@@ -1060,19 +1064,41 @@
                 margin-bottom: 6px;
               "
             >
-              触发后将上货区第一个托盘移入对应预热队列
+              触发后在上货区找到对应目的地托盘移入预热队列（需先发送目的地）
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px">
-              <el-button
-                v-for="q in preHeatQueues"
-                :key="q.id"
-                size="mini"
-                type="success"
-                plain
-                @click="triggerPreHeatMotorSignal(q)"
-              >
-                {{ q.queueName }}
-              </el-button>
+              <template v-for="q in preHeatQueues">
+                <el-button
+                  :key="q.queueName + '-1'"
+                  size="mini"
+                  type="success"
+                  plain
+                  @click="
+                    handleLoadingMotorSignal(
+                      Number(q.queueName.replace('Y', '')),
+                      q.queueName,
+                      1
+                    )
+                  "
+                >
+                  {{ q.queueName }}-1
+                </el-button>
+                <el-button
+                  :key="q.queueName + '-2'"
+                  size="mini"
+                  type="warning"
+                  plain
+                  @click="
+                    handleLoadingMotorSignal(
+                      Number(q.queueName.replace('Y', '')),
+                      q.queueName,
+                      2
+                    )
+                  "
+                >
+                  {{ q.queueName }}-2
+                </el-button>
+              </template>
             </div>
           </div>
           <!-- 灭菌后预热信号 -->
@@ -1430,6 +1456,24 @@ const STERILIZE_QUEUE_MAP = {
   3214: 4,
   3215: 2
 };
+// 上货电机映射：灭菌柜编号 → { 预热队列名, 线1电机ID(sendTo末位1), 线2电机ID(sendTo末位2) }
+const LOADING_MOTOR_MAP = [
+  { cabinetNo: 3201, queueName: 'Y3201', motor1: '09011', motor2: '09008' },
+  { cabinetNo: 3202, queueName: 'Y3202', motor1: '08022', motor2: '08019' },
+  { cabinetNo: 3203, queueName: 'Y3203', motor1: '08015', motor2: '08012' },
+  { cabinetNo: 3204, queueName: 'Y3204', motor1: '07022', motor2: '07019' },
+  { cabinetNo: 3205, queueName: 'Y3205', motor1: '07015', motor2: '07012' },
+  { cabinetNo: 3206, queueName: 'Y3206', motor1: '06022', motor2: '06019' },
+  { cabinetNo: 3207, queueName: 'Y3207', motor1: '06015', motor2: '06012' },
+  { cabinetNo: 3208, queueName: 'Y3208', motor1: '05022', motor2: '05019' },
+  { cabinetNo: 3209, queueName: 'Y3209', motor1: '05015', motor2: '05012' },
+  { cabinetNo: 3210, queueName: 'Y3210', motor1: '04022', motor2: '04019' },
+  { cabinetNo: 3211, queueName: 'Y3211', motor1: '04015', motor2: '04012' },
+  { cabinetNo: 3212, queueName: 'Y3212', motor1: '03022', motor2: '03019' },
+  { cabinetNo: 3213, queueName: 'Y3213', motor1: '03015', motor2: '03012' },
+  { cabinetNo: 3214, queueName: 'Y3214', motor1: '02022', motor2: '02019' },
+  { cabinetNo: 3215, queueName: 'Y3215', motor1: '02015', motor2: '02012' }
+];
 // 预热柜编号 → W_DBW18 bit位键名(预热房出货命令)
 const PREHEAT_DBW18_MAP = {
   3201: 'W_DBW18_BIT0',
@@ -6253,6 +6297,25 @@ export default {
         this._queueWatchers.push(unwatch);
       });
     });
+
+    // 上货电机标记：为 30 个电机节点附加静态配置，供 receivedMsg 循环内上升沿检测使用
+    LOADING_MOTOR_MAP.forEach(({ cabinetNo, queueName, motor1, motor2 }) => {
+      if (this.deviceNodes[motor1]) {
+        this.deviceNodes[motor1]._loadingConfig = {
+          cabinetNo,
+          queueName,
+          slot: 1
+        };
+      }
+      if (this.deviceNodes[motor2]) {
+        this.deviceNodes[motor2]._loadingConfig = {
+          cabinetNo,
+          queueName,
+          slot: 2
+        };
+      }
+    });
+
     ipcRenderer.on('receivedMsg', (event, values, values2) => {
       // S7 PLC 位解析工具: 逻辑bit序号 → word中的实际bit位置
       // S7大端序: 逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
@@ -6267,8 +6330,13 @@ export default {
         return parsedWords[db];
       };
 
-      // 核心：遍历设备列表，统一赋值
+      // 核心：遍历设备列表，统一赋值；同时对标记了 _loadingConfig 的上货电机做上升沿检测
       Object.values(this.deviceNodes).forEach((node) => {
+        // 记录更新前旧状态（仅标记了上货配置的节点需要）
+        const prevMotorStatus = node._loadingConfig
+          ? node.motorStatus
+          : undefined;
+
         // 赋值电机状态
         if (node.motorAddr) {
           const { db, bit } = node.motorAddr;
@@ -6292,6 +6360,16 @@ export default {
         // 赋值目的地
         if (node.destinationAddr) {
           node.destination = Number(values[node.destinationAddr] ?? 0);
+        }
+
+        // 上货电机上升沿检测：false→true 时将上货区对应托盘移入预热队列
+        if (
+          node._loadingConfig &&
+          node.motorStatus === true &&
+          prevMotorStatus === false
+        ) {
+          const { cabinetNo, queueName, slot } = node._loadingConfig;
+          this.handleLoadingMotorSignal(cabinetNo, queueName, slot);
         }
       });
 
@@ -6391,31 +6469,33 @@ export default {
         this.$message.warning('当前批次未设置目的地，请先通过 PDA 设置目的地');
         return;
       }
-      const batchId = this.currentExecutingBatch.batch.id;
+
+      // 1. 从上货区队列 this.queues[0].trayInfo 中找第一个未发送目的地的托盘
+      const loadingQueue = this.queues[0];
+      if (!loadingQueue.trayInfo || loadingQueue.trayInfo.length === 0) {
+        this.$message.warning('上货区暂无托盘，请先触发写虚拟ID请求');
+        return;
+      }
+      const targetTray = loadingQueue.trayInfo.find(
+        (t) => !t.sendStatus || t.sendStatus === '0'
+      );
+      if (!targetTray) {
+        this.$message.warning('上货区所有托盘均已发送过目的地');
+        return;
+      }
+      if (!targetTray.virtualId) {
+        this.$message.warning('目标托盘尚未分配虚拟ID，请先触发写虚拟ID请求');
+        return;
+      }
+
       try {
-        // 1. 单独查询当前批次最新托盘列表
-        const listRes = await HttpUtil.get(
-          `/produce_pallet/listByBatchId?batchId=${batchId}`
-        );
-        if (!listRes || !listRes.data) {
-          this.$message.error('查询托盘列表失败，请重试');
-          return;
-        }
-        const pallets = listRes.data;
-        // 2. 遍历找第一个没有发送过目的地的托盘（send_status=0）
-        const target = pallets.find(
-          (p) => !p.sendStatus || p.sendStatus === '0'
-        );
-        if (!target) {
-          this.$message.warning('当前批次所有托盘均已发送过目的地');
-          return;
-        }
-        // 3. 调后端发送目的地接口
+        // 2. 调后端发送目的地接口（后端内部会根据当前批次上一个已发送托盘确定后缀1/2/3）
         const res = await HttpUtil.post('/produce_pallet/sendDestination', {
-          palletId: String(target.id),
-          virtualId: target.virtualId,
+          palletId: targetTray.palletId,
+          virtualId: targetTray.virtualId,
           destinationCode: this.currentDestination.destinationCode
         });
+
         if (res && res.code === '200') {
           const updated = res.data;
           const trayStatusText =
@@ -6424,6 +6504,37 @@ export default {
               1: '部分扫描完成',
               2: '全部扫描完成'
             }[updated.trayStatus] || '未知状态';
+
+          // 3. 给PLC写目的地命令 W_DBW12 (DB1001.DBW12)，发送2秒后取消
+          const plcValue = parseInt(updated.sendDestinationCode, 10);
+          ipcRenderer.send('writeSingleValueToPLC', 'W_DBW12', plcValue);
+          this.addLog(
+            `[PLC发送] W_DBW12 = ${plcValue} (目的地编码: ${updated.sendDestinationCode})`,
+            'running'
+          );
+          setTimeout(() => {
+            ipcRenderer.send('cancelWriteToPLC', 'W_DBW12');
+          }, 2000);
+
+          // 4. 更新上货区队列中该托盘的 destination、sendStatus 和 sendTo
+          const idx = loadingQueue.trayInfo.findIndex(
+            (t) => t.palletId === targetTray.palletId
+          );
+          if (idx !== -1) {
+            this.$set(
+              loadingQueue.trayInfo[idx],
+              'destination',
+              updated.sendDestinationCode
+            );
+            this.$set(loadingQueue.trayInfo[idx], 'sendStatus', '1');
+            this.$set(
+              loadingQueue.trayInfo[idx],
+              'sendTo',
+              updated.sendDestinationCode
+            );
+          }
+
+          // 5. 日志和提示
           this.addLog(
             `发送目的地: 托盘 ${updated.palletNo || updated.id}(virtualId=${
               updated.virtualId
@@ -6494,7 +6605,7 @@ export default {
         // 7. 将托盘追加到上货区队列（前端展示）
         const trayEntry = {
           palletId: String(updatedPallet.id),
-          trayCode: updatedPallet.palletNo || 'P' + updatedPallet.id,
+          trayCode: updatedPallet.virtualId || 'V' + updatedPallet.id,
           virtualId: updatedPallet.virtualId,
           trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
           batchId: String(updatedPallet.batchId),
@@ -6524,6 +6635,63 @@ export default {
       }
     },
 
+    // ================= 上货电机自动监听 =================
+    /**
+     * 上货电机 rising edge 回调：在上货区找到目的地匹配的托盘，移入对应预热队列
+     * @param {number} cabinetNo  - 灭菌柜编号，如 3201
+     * @param {string} queueName  - 目标预热队列名，如 'Y3201'
+     * @param {number} slot       - 列号 1 或 2
+     */
+    handleLoadingMotorSignal(cabinetNo, queueName, slot) {
+      const loadingArea = this.queues[0];
+      if (
+        !loadingArea ||
+        !loadingArea.trayInfo ||
+        loadingArea.trayInfo.length === 0
+      ) {
+        this.addLog(
+          `[上货电机] ${queueName}-线${slot} 启动，上货区无托盘`,
+          'warning'
+        );
+        return;
+      }
+
+      const sendToCode = `${cabinetNo}${slot}`; // e.g., '32011'
+      const trayIndex = loadingArea.trayInfo.findIndex(
+        (t) => t.sendTo === sendToCode
+      );
+
+      if (trayIndex === -1) {
+        this.addLog(
+          `[上货电机] ${queueName}-线${slot} 启动，上货区无目的地为 ${sendToCode} 的托盘`,
+          'warning'
+        );
+        return;
+      }
+
+      const targetQueue = this.queues.find((q) => q.queueName === queueName);
+      if (!targetQueue) {
+        this.addLog(`[上货电机] 未找到队列 ${queueName}`, 'warning');
+        return;
+      }
+
+      if (!Array.isArray(targetQueue.trayInfo)) {
+        this.$set(targetQueue, 'trayInfo', []);
+      }
+
+      const tray = loadingArea.trayInfo.splice(trayIndex, 1)[0];
+      // 两列共享序号：1,1,2,2,3,3...（Math.ceil((已有数+1)/2)）
+      const existingCount = targetQueue.trayInfo.filter(
+        (t) => t.sequenceNumber && t.sequenceNumber > 0
+      ).length;
+      this.$set(tray, 'sequenceNumber', Math.ceil((existingCount + 1) / 2));
+      targetQueue.trayInfo.push(tray);
+
+      this.addLog(
+        `[上货电机] ${queueName}-线${slot} 启动：托盘 ${tray.trayCode}(目的地=${sendToCode}) 从上货区移入 ${queueName}，序号：${tray.sequenceNumber}`
+      );
+    },
+
     // ================= 测试面板：电机信号模拟 =================
     /**
      * 上货前电机信号：将上货区第一个托盘移入指定预热(Yxxx)队列
@@ -6541,9 +6709,14 @@ export default {
         this.$set(targetQueue, 'trayInfo', []);
       }
       const tray = loadingArea.trayInfo.splice(0, 1)[0];
+      // 两列共享序号：1,1,2,2,3,3...
+      const existingCount = targetQueue.trayInfo.filter(
+        (t) => t.sequenceNumber && t.sequenceNumber > 0
+      ).length;
+      this.$set(tray, 'sequenceNumber', Math.ceil((existingCount + 1) / 2));
       targetQueue.trayInfo.push(tray);
       this.addLog(
-        `[电机信号] 上货前电机触发(${targetQueue.queueName})：托盘 ${tray.trayCode} 从上货区移入 ${targetQueue.queueName}`
+        `[电机信号] 上货前电机触发(${targetQueue.queueName})：托盘 ${tray.trayCode} 从上货区移入 ${targetQueue.queueName}，序号：${tray.sequenceNumber}`
       );
       this.$message.success(
         `托盘 ${tray.trayCode} 已从上货区移入 ${targetQueue.queueName}`
@@ -7775,6 +7948,20 @@ export default {
         }, 2000);
       }
 
+      // 给源预热队列中所有托盘标记目的地灭菌柜编号（保留原列号后缀，如 32011→32011）
+      if (
+        this.queues[fromIdx] &&
+        Array.isArray(this.queues[fromIdx].trayInfo)
+      ) {
+        this.queues[fromIdx].trayInfo.forEach((tray, i) => {
+          // 原 sendTo 末位是列号（1或2），直接继承；若未设置则按奇偶交替分配
+          const slotSuffix = tray.sendTo
+            ? tray.sendTo.slice(-1)
+            : String((i % 2) + 1);
+          this.$set(tray, 'sendTo', `${toCabinet}${slotSuffix}`);
+        });
+      }
+
       // 显示执行中状态 - 取起始预热柜队列第一个托盘编码
       if (
         this.queues[fromIdx] &&
@@ -7789,7 +7976,7 @@ export default {
       this.disinfectionNeedQty = sourceCount;
 
       this.addLog(
-        `预热柜Y${fromCabinet}到灭菌柜${toCabinet}开始执行，需进货：${sourceCount}`
+        `预热柜Y${fromCabinet}到灭菌柜${toCabinet}开始执行，需进货：${sourceCount}，已为队列托盘设置目的地=${toCabinet}`
       );
       this.$message.success(
         `已发送从预热柜Y${fromCabinet}到灭菌柜${toCabinet}的执行命令`
