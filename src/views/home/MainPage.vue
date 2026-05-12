@@ -6240,10 +6240,12 @@ export default {
     this._pollBatchTimer = setInterval(this.pollBatchAndDestination, 5000);
     // 数据加载完成后创建监听（跳过 id 为 1-5 的队列）
     this._queueWatchers = []; // 保存 watcher 取消函数
+    this._queueInitDone = false; // 初始化标记，跳过首次赋值触发的watch
     this.$nextTick(() => {
       this.queues.forEach((queue, index) => {
         const unwatch = this.$watch(`queues.${index}.trayInfo`, {
           handler(newVal, oldVal) {
+            if (!this._queueInitDone) return;
             this.updateQueueInfo(queue.id);
           },
           deep: true
@@ -6316,13 +6318,6 @@ export default {
     });
   },
   watch: {
-    // 监听上货区 (ID: 1)
-    'queues.0.trayInfo': {
-      deep: true,
-      handler(newVal, oldVal) {
-        this.updateQueueInfo(1);
-      }
-    },
     // 监听小车位置数值变化
     'cartPositionValues.cart1'(newVal) {
       this.updateCartPositionByValue(1, newVal);
@@ -7548,6 +7543,9 @@ export default {
           console.error('加载队列信息失败:', err);
           this.$message.error('加载队列信息失败: ' + err);
           this.addLog('队列信息加载失败');
+        })
+        .finally(() => {
+          this._queueInitDone = true;
         });
     },
     // 切换到报警日志时清除未读状态
