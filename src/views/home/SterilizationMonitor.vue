@@ -28,19 +28,25 @@
           <div class="status-left">
             <div class="status-card">
               <div class="card-label">当前货物批次信息：</div>
-              <div class="card-value card-value-cyan">WG-2025-1017-A</div>
+              <div class="card-value card-value-cyan">{{ batchNo }}</div>
             </div>
             <div class="status-card">
               <div class="card-label">当前货物产品信息：</div>
-              <div class="card-value card-value-cyan">混合医疗器材</div>
+              <div class="card-value card-value-cyan">
+                {{ productInfoText }}
+              </div>
             </div>
             <div class="status-card">
               <div class="card-label">当前货物待加工数量：</div>
-              <div class="card-value card-value-orange">360</div>
+              <div class="card-value card-value-orange">
+                {{ pendingGoodsCount }}
+              </div>
             </div>
             <div class="status-card">
               <div class="card-label">当前指定预热柜：</div>
-              <div class="card-value card-value-cyan">3号柜</div>
+              <div class="card-value card-value-cyan">
+                {{ destinationCabinetText }}
+              </div>
             </div>
           </div>
           <div class="status-right">
@@ -63,7 +69,8 @@
               </div>
             </div>
             <div class="batch-info">
-              已完成: 8/16 | 进行中: 4 | 预热柜: 3号柜
+              已完成: {{ batchCompletedCount }}/{{ batchTotalCount }} | 进行中:
+              {{ batchInProgressCount }} | 预热柜: {{ destinationCabinetText }}
             </div>
           </div>
         </div>
@@ -178,6 +185,35 @@
 </template>
 
 <script>
+import HttpUtil from '@/utils/HttpUtil';
+
+const EMPTY_WORKSTATIONS = [
+  {
+    id: 'A',
+    name: 'A工位',
+    productInfo: '--',
+    targetQty: 0,
+    scannedQty: 0,
+    items: []
+  },
+  {
+    id: 'B',
+    name: 'B工位',
+    productInfo: '--',
+    targetQty: 0,
+    scannedQty: 0,
+    items: []
+  },
+  {
+    id: 'C',
+    name: 'C工位',
+    productInfo: '--',
+    targetQty: 0,
+    scannedQty: 0,
+    items: []
+  }
+];
+
 export default {
   name: 'SterilizationMonitor',
   data() {
@@ -186,53 +222,20 @@ export default {
       currentDate: '',
       footerTime: '',
       timer: null,
-      workstations: [
-        {
-          id: 'A',
-          name: 'A工位',
-          productInfo: '医用敷料包 - 批次 A2025001',
-          targetQty: 120,
-          scannedQty: 87,
-          items: Array(24)
-            .fill(null)
-            .map((_, i) => ({
-              id: `A-${i}`,
-              code: `MD-${2025000 + i}`,
-              status: i < 12 ? 'success' : i < 18 ? 'failed' : 'pending'
-            }))
-        },
-        {
-          id: 'B',
-          name: 'B工位',
-          productInfo: '手术器械包 - 批次 B2025002',
-          targetQty: 96,
-          scannedQty: 64,
-          items: Array(24)
-            .fill(null)
-            .map((_, i) => ({
-              id: `B-${i}`,
-              code: `SI-${2025000 + i}`,
-              status: i < 10 ? 'success' : i < 14 ? 'failed' : 'pending'
-            }))
-        },
-        {
-          id: 'C',
-          name: 'C工位',
-          productInfo: '输液器材包 - 批次 C2025003',
-          targetQty: 144,
-          scannedQty: 102,
-          items: Array(24)
-            .fill(null)
-            .map((_, i) => ({
-              id: `C-${i}`,
-              code: `IV-${2025000 + i}`,
-              status: i < 15 ? 'success' : i < 17 ? 'failed' : 'pending'
-            }))
-        }
-      ],
-      batchStatus: Array(32)
-        .fill(null)
-        .map((_, i) => i < 16) // 前16个有货，后16个没有
+      pollTimer: null,
+      // 状态面板左侧卡片数据
+      batchNo: '--',
+      productInfoText: '--',
+      pendingGoodsCount: 0,
+      destinationCabinetText: '--',
+      // 批次灭菌数量统计
+      batchCompletedCount: 0,
+      batchInProgressCount: 0,
+      batchTotalCount: 0,
+      // 工位数据（A/*1、B/*2、C/*3目的地，框架固定三个）
+      workstations: EMPTY_WORKSTATIONS.map((s) => ({ ...s })),
+      // 32格托盘状态
+      batchStatus: Array(32).fill(false)
     };
   },
   methods: {
@@ -255,6 +258,118 @@ export default {
       this.currentTime = this.formatTime(now);
       this.currentDate = this.formatDate(now);
       this.footerTime = this.formatTime(now);
+    },
+    async pollData() {
+      try {
+        const batchRes = await HttpUtil.get(
+          '/produce_batch/getCurrentExecuting'
+        );
+        if (batchRes && batchRes.data) {
+          const { batch, pallets } = batchRes.data;
+
+          this.batchNo = batch.batchNo || '--';
+
+          const allGoods = (pallets || []).flatMap((p) => p.goods || []);
+          this.productInfoText =
+            allGoods.length > 0 ? allGoods[0].productName || '--' : '--';
+          this.pendingGoodsCount = allGoods.filter(
+            (g) => g.scanStatus === '0'
+          ).length;
+
+          // 批次统计与32格状态
+          const palletList = pallets || [];
+          this.batchTotalCount = palletList.length;
+          this.batchCompletedCount = palletList.filter(
+            (p) => p.trayStatus === '2'
+          ).length;
+          this.batchInProgressCount = palletList.filter(
+            (p) => p.loadStatus === '1' && p.trayStatus !== '2'
+          ).length;
+          this.batchStatus = Array(32)
+            .fill(false)
+            .map(
+              (_, i) =>
+                i < palletList.length && palletList[i].loadStatus === '1'
+            );
+
+          // 目的地（预热柜）
+          try {
+            const destRes = await HttpUtil.get(
+              `/produce_batch_destination/current?batchId=${batch.id}`
+            );
+            if (destRes && destRes.data && destRes.data.destinationCode) {
+              const code = destRes.data.destinationCode;
+              const cabNum = parseInt(code, 10) - 3200;
+              this.destinationCabinetText = cabNum > 0 ? `${cabNum}号柜` : code;
+            } else {
+              this.destinationCabinetText = '--';
+            }
+          } catch (e) {
+            this.destinationCabinetText = '--';
+          }
+
+          // A工位=最新*1目的地托盘，B工位=最新*2目的地托盘，C工位=最新*3目的地托盘
+          const latestBySuffix = (suffix) => {
+            const matches = palletList.filter(
+              (p) =>
+                p.sendDestinationCode &&
+                String(p.sendDestinationCode).endsWith(suffix)
+            );
+            if (!matches.length) return null;
+            return matches.sort((a, b) => {
+              const ta = a.sendTime ? new Date(a.sendTime).getTime() : 0;
+              const tb = b.sendTime ? new Date(b.sendTime).getTime() : 0;
+              return tb - ta;
+            })[0];
+          };
+          const buildStation = (id, name, pallet) => {
+            if (!pallet)
+              return {
+                id,
+                name,
+                productInfo: '--',
+                targetQty: 0,
+                scannedQty: 0,
+                items: []
+              };
+            const goods = pallet.goods || [];
+            const firstGood = goods[0];
+            return {
+              id,
+              name,
+              productInfo: firstGood
+                ? `${firstGood.productName || ''} - 批次 ${
+                    pallet.palletNo || ''
+                  }`
+                : `托盘 ${pallet.palletNo || '--'}`,
+              targetQty: goods.length,
+              scannedQty: goods.filter((g) => g.scanStatus === '1').length,
+              items: goods.map((g) => ({
+                id: g.id,
+                code: g.uid || '--',
+                status: g.scanStatus === '1' ? 'success' : 'pending'
+              }))
+            };
+          };
+          this.workstations = [
+            buildStation('A', 'A工位', latestBySuffix('1')),
+            buildStation('B', 'B工位', latestBySuffix('2')),
+            buildStation('C', 'C工位', latestBySuffix('3'))
+          ];
+        } else {
+          this.batchNo = '--';
+          this.productInfoText = '--';
+          this.pendingGoodsCount = 0;
+          this.destinationCabinetText = '--';
+          this.batchStatus = Array(32).fill(false);
+          this.batchCompletedCount = 0;
+          this.batchInProgressCount = 0;
+          this.batchTotalCount = 0;
+          this.workstations = EMPTY_WORKSTATIONS.map((s) => ({ ...s }));
+        }
+      } catch (e) {
+        console.error('灭菌监控数据轮询失败:', e);
+      }
     },
     getItemStatusClass(status) {
       switch (status) {
@@ -289,10 +404,15 @@ export default {
   mounted() {
     this.updateTime();
     this.timer = setInterval(this.updateTime, 1000);
+    this.pollData();
+    this.pollTimer = setInterval(this.pollData, 2000);
   },
   beforeDestroy() {
     if (this.timer) {
       clearInterval(this.timer);
+    }
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
     }
   }
 };
