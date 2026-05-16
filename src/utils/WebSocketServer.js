@@ -177,7 +177,8 @@ class AlarmWebSocketServer {
     if (!this.mainWindow) return;
     this.mainWindow.webContents.send('mobile-tray-data-changed', {
       clientId: clientId,
-      timestamp: data.timestamp
+      timestamp: data.timestamp,
+      data: data.data
     });
   }
 

@@ -977,13 +977,36 @@
         <div class="test-panel-content">
           <div class="test-section">
             <span class="test-label">上货测试:</span>
-            <div style="margin-top: 10px">
+            <div
+              style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap"
+            >
               <el-button
                 type="primary"
                 size="small"
-                @click="triggerVirtualIdRequest"
+                @click="simulatePlcRising('bit1658RequestReadCode01002')"
               >
-                触发写虚拟ID请求
+                01002请求读码
+              </el-button>
+              <el-button
+                type="primary"
+                size="small"
+                @click="simulatePlcRising('bit1658RequestVirtualId')"
+              >
+                01002请求写虚拟ID
+              </el-button>
+              <el-button
+                type="primary"
+                size="small"
+                @click="simulatePlcRising('bit1658RequestReadCode01006')"
+              >
+                01006请求读码
+              </el-button>
+              <el-button
+                type="warning"
+                size="small"
+                @click="simulatePlcRising('bit1658RequestDestination')"
+              >
+                请求写目的地
               </el-button>
             </div>
           </div>
@@ -1040,19 +1063,6 @@
               </div>
             </div>
           </div>
-          <!-- 发送目的地 -->
-          <div class="test-section">
-            <span class="test-label">发送目的地:</span>
-            <div style="margin-top: 8px">
-              <el-button
-                type="warning"
-                size="small"
-                @click="handleSendDestination"
-              >
-                请求发送目的地
-              </el-button>
-            </div>
-          </div>
           <!-- 上货前电机信号 -->
           <div class="test-section">
             <span class="test-label">上货前电机信号:</span>
@@ -1067,38 +1077,38 @@
               触发后在上货区找到对应目的地托盘移入预热队列（需先发送目的地）
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px">
-              <template v-for="q in preHeatQueues">
-                <el-button
-                  :key="q.queueName + '-1'"
-                  size="mini"
-                  type="success"
-                  plain
-                  @click="
-                    handleLoadingMotorSignal(
-                      Number(q.queueName.replace('Y', '')),
-                      q.queueName,
-                      1
-                    )
-                  "
-                >
-                  {{ q.queueName }}-1
-                </el-button>
-                <el-button
-                  :key="q.queueName + '-2'"
-                  size="mini"
-                  type="warning"
-                  plain
-                  @click="
-                    handleLoadingMotorSignal(
-                      Number(q.queueName.replace('Y', '')),
-                      q.queueName,
-                      2
-                    )
-                  "
-                >
-                  {{ q.queueName }}-2
-                </el-button>
-              </template>
+              <el-button
+                v-for="q in preHeatQueues"
+                :key="q.queueName + '-1'"
+                size="mini"
+                type="success"
+                plain
+                @click="
+                  handleLoadingMotorSignal(
+                    Number(q.queueName.replace('Y', '')),
+                    q.queueName,
+                    1
+                  )
+                "
+              >
+                {{ q.queueName }}-1
+              </el-button>
+              <el-button
+                v-for="q in preHeatQueues"
+                :key="q.queueName + '-2'"
+                size="mini"
+                type="warning"
+                plain
+                @click="
+                  handleLoadingMotorSignal(
+                    Number(q.queueName.replace('Y', '')),
+                    q.queueName,
+                    2
+                  )
+                "
+              >
+                {{ q.queueName }}-2
+              </el-button>
             </div>
           </div>
           <!-- 灭菌后预热信号 -->
@@ -1524,6 +1534,15 @@ export default {
       // ---- 测试面板扫码输入 ----
       scanInput01002: '',
       scanInput01006: '',
+      // ---- 01002 上货流程 ----
+      scanBuffer01002: [], // 01002 当前读码会话缓存的条码列表
+      // ---- 01006 目的地流程 ----
+      scanBuffer01006: [], // 01006 当前读码会话缓存的条码列表
+      // DB1000.DBW1658 各bit当前值，watch中做上升沿检测
+      bit1658RequestVirtualId: '0', // BIT0：01002处请求写虚拟ID
+      bit1658RequestReadCode01002: '0', // BIT1：01002处请求读码
+      bit1658RequestReadCode01006: '0', // BIT2：01006处请求读码
+      bit1658RequestDestination: '0', // BIT3：请求写目的地
       // ---- 面板A-第二部分：最近一次触发虚拟ID后更新，不被轮询覆盖 ----
       lastProcessedPallet: {
         virtualId: '',
@@ -6373,6 +6392,14 @@ export default {
         }
       });
 
+      // ---- DB1000.DBW1658 上货请求信号赋值（上升沿检测由 watch 处理） ----
+      // S7大端序：逻辑bit0→word.bit8, bit1→word.bit9, bit2→word.bit10, bit3→word.bit11
+      const word1658 = getParsedWord('DBW1658');
+      this.bit1658RequestVirtualId = getBit(word1658, 8); // BIT0→bit8：01002处请求写虚拟ID
+      this.bit1658RequestReadCode01002 = getBit(word1658, 9); // BIT1→bit9：01002处请求读码
+      this.bit1658RequestReadCode01006 = getBit(word1658, 10); // BIT2→bit10：01006处请求读码
+      this.bit1658RequestDestination = getBit(word1658, 11); // BIT3→bit11：请求写目的地
+
       // 如果弹窗处于打开状态，同步更新弹窗内的数据
       if (this.popoverVisible && this.popoverData) {
         if (!this.popoverData.groupId) {
@@ -6399,6 +6426,42 @@ export default {
     // 监听小车位置数值变化
     'cartPositionValues.cart1'(newVal) {
       this.updateCartPositionByValue(1, newVal);
+    },
+    // BIT1 上升沿：01002请求读码 → 清空缓存，开始缓存；下降沿：读码结束
+    bit1658RequestReadCode01002(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.scanBuffer01002 = [];
+        this.addLog('[上货] 01002请求读码，开始缓存条码', 'running');
+      } else if (newVal === '0' && oldVal === '1') {
+        this.addLog(
+          `[上货] 01002读码结束，共缓存 ${this.scanBuffer01002.length} 个条码`,
+          'running'
+        );
+      }
+    },
+    // BIT0 上升沿：01002请求写虚拟ID → 用缓存的条码匹配托盘
+    bit1658RequestVirtualId(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleVirtualIdRequest01002();
+      }
+    },
+    // BIT2 上升沿：01006请求读码 → 清空缓存；下降沿：读码结束
+    bit1658RequestReadCode01006(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.scanBuffer01006 = [];
+        this.addLog('[上货] 01006请求读码，开始缓存条码', 'running');
+      } else if (newVal === '0' && oldVal === '1') {
+        this.addLog(
+          `[上货] 01006读码结束，共缓存 ${this.scanBuffer01006.length} 个条码`,
+          'running'
+        );
+      }
+    },
+    // BIT3 上升沿：请求写目的地 → 用01006缓存条码匹配+写目的地
+    bit1658RequestDestination(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleDestinationRequest();
+      }
     }
   },
   methods: {
@@ -6424,6 +6487,27 @@ export default {
       }
     },
 
+    /** PDA下发通行命令后通知PC端，直接更新上货区队列中对应托盘状态 */
+    refreshLoadingQueueFromBackend(data) {
+      const loadingQueue = this.queues[0];
+      if (!loadingQueue || !loadingQueue.trayInfo) return;
+      const palletId = data && String(data.palletId);
+      const sendCode = data && data.sendDestinationCode;
+      if (!palletId || !sendCode) return;
+      const tray = loadingQueue.trayInfo.find(
+        (t) => String(t.palletId) === palletId
+      );
+      if (tray) {
+        this.$set(tray, 'destination', sendCode);
+        this.$set(tray, 'sendTo', sendCode);
+        this.$set(tray, 'sendStatus', '1');
+        this.addLog(
+          `[上货] PDA通知：托盘${tray.trayCode}状态已同步 → ${sendCode}`,
+          'running'
+        );
+      }
+    },
+
     // ================= 扫码模拟 =================
     async handleScanConfirm(location) {
       const uid =
@@ -6434,205 +6518,270 @@ export default {
         this.$message.warning('请输入货物 uid');
         return;
       }
+
+      // 01002：只缓存，不调后端；扫码状态在写虚拟ID成功后统一更新
+      if (location === '01002') {
+        this.scanBuffer01002.push(uid);
+        this.$message.success(`[01002] uid ${uid} 已缓存`);
+        this.addLog(
+          `[上货] 01002扫码缓存: uid=${uid}，当前缓存数=${this.scanBuffer01002.length}`,
+          'running'
+        );
+        this.scanInput01002 = '';
+        return;
+      }
+
+      // 01006：只缓存，不调后端；扫码状态在写目的地成功后统一更新
+      this.scanBuffer01006.push(uid);
+      this.$message.success(`[01006] uid ${uid} 已缓存`);
+      this.addLog(
+        `[上货] 01006扫码缓存: uid=${uid}，当前缓存数=${this.scanBuffer01006.length}`,
+        'running'
+      );
+      this.scanInput01006 = '';
+    },
+
+    // ================= 01002 上货自动流程 =================
+    /**
+     * 01002处请求写虚拟ID的核心逻辑：
+     * 1. 用缓存的条码去后端匹配托盘+生成虚拟ID（后端统一处理匹配和ID分配）
+     * 2. 匹配成功：写虚拟ID到PLC，托盘进入上货队列
+     * 3. 匹配失败：虚拟ID写999，DB1001.DBW6写2持续2秒
+     */
+    async handleVirtualIdRequest01002() {
+      if (!this.currentExecutingBatch) {
+        this.addLog('[上货] 请求写虚拟ID但无运行中的批次，忽略', 'warning');
+        return;
+      }
+
+      const scannedUids = [...this.scanBuffer01002];
+      if (scannedUids.length === 0) {
+        this.addLog('[上货] 请求写虚拟ID但无缓存条码，视为匹配失败', 'warning');
+        this.writeVirtualIdError();
+        return;
+      }
+
       try {
-        const res = await HttpUtil.post('/produce_goods/markScanned', {
-          uid,
-          scanLocation: location
-        });
-        if (res && res.code === '200') {
-          this.$message.success(`[${location}] uid ${uid} 已标记为已扫码`);
-          this.addLog(`扫码模拟[${location}]: uid=${uid} 已扫码`, 'running');
-          if (location === '01002') {
-            this.scanInput01002 = '';
-          } else {
-            this.scanInput01006 = '';
+        // 调后端接口：匹配托盘 + 分配虚拟ID（后端生成10000-29999递增的虚拟ID）
+        const res = await HttpUtil.post(
+          '/produce_pallet/matchAndAssignVirtualId',
+          {
+            batchId: this.currentExecutingBatch.batch.id,
+            barcodes: scannedUids
           }
+        );
+
+        if (res && res.code === '200' && res.data) {
+          const assignResult = res.data;
+          const virtualId = Number(assignResult.virtualId);
+
+          // 写虚拟ID到PLC: DB1001.DBW10
+          ipcRenderer.send('writeSingleValueToPLC', 'W_DBW10', virtualId);
+          this.addLog(`[上货] 写虚拟ID: W_DBW10 = ${virtualId}`, 'running');
+          // 2秒后取消（PLC协议：发送信号2秒）
+          setTimeout(() => {
+            ipcRenderer.send('cancelWriteToPLC', 'W_DBW10');
+          }, 2000);
+
+          // 更新面板
+          const goods = assignResult.goods || [];
+          this.lastProcessedPallet = {
+            virtualId: String(virtualId),
+            cargoName: goods.length > 0 ? goods[0].productName : '--',
+            barcodes: goods.map((g) => g.uid)
+          };
+
+          // 托盘进入上货队列
+          const trayEntry = {
+            palletId: String(assignResult.id),
+            trayCode: String(virtualId),
+            virtualId: String(virtualId),
+            trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+            batchId: String(assignResult.batchId),
+            destination: this.currentDestination
+              ? this.currentDestination.destinationCode
+              : '',
+            sendStatus: '0',
+            state: '1',
+            barcodes: this.lastProcessedPallet.barcodes
+          };
+          this.queues[0].trayInfo.push(trayEntry);
+
+          // 更新本地批次缓存
+          const pallets = this.currentExecutingBatch.pallets || [];
+          const localPallet = pallets.find((p) => p.id === assignResult.id);
+          if (localPallet) {
+            this.$set(localPallet, 'virtualId', String(virtualId));
+          }
+
+          this.addLog(
+            `[上货] 托盘${
+              assignResult.palletNo || assignResult.id
+            }匹配成功，虚拟ID=${virtualId}`,
+            'running'
+          );
         } else {
-          this.$message.error(res?.message || '扫码失败，请重试');
+          // 匹配失败
+          this.writeVirtualIdError();
         }
       } catch (e) {
-        console.error('扫码模拟失败:', e);
-        this.$message.error('网络异常，请重试');
+        console.error('01002虚拟ID请求处理失败:', e);
+        this.writeVirtualIdError();
       }
     },
 
-    // ================= 发送目的地 =================
-    async handleSendDestination() {
+    /** 匹配失败：虚拟ID写999，DB1001.DBW6写2，持续2秒 */
+    writeVirtualIdError() {
+      this.addLog('[上货] 条码匹配失败，写虚拟ID=999，DBW6=2', 'warning');
+      // 写虚拟ID 999
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW10', 999);
+      // 写 WCS-允许进料 = 2（批次上货错误）
+      ipcRenderer.send('writeValuesToPLC', 'W_DBW6', 2);
+      // 2秒后取消
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW10');
+        ipcRenderer.send('writeValuesToPLC', 'W_DBW6', 0);
+      }, 2000);
+    },
+
+    /** 测试用：模拟PLC位信号上升沿（赋值'1'，1秒后恢复'0'） */
+    simulatePlcRising(field) {
+      this[field] = '1';
+      setTimeout(() => {
+        this[field] = '0';
+      }, 1000);
+    },
+
+    // ================= 01006 目的地自动流程 =================
+    /**
+     * 请求写目的地的核心逻辑：
+     * 1. 取01006缓存条码 + 上货区队首未发送托盘
+     * 2. 调后端校验匹配+更新扫码状态+生成目的地编码（1/2交替）
+     * 3. 正常：写目的地到PLC
+     * 4. 异常：目的地写999，DB1001.DBW182写2持续2秒
+     */
+    async handleDestinationRequest() {
       if (!this.currentExecutingBatch) {
-        this.$message.warning('暂无运行中的批次，请先通过 PDA 确认批次');
+        this.addLog('[目的地] 无运行中的批次，忽略', 'warning');
         return;
       }
       if (
         !this.currentDestination ||
         !this.currentDestination.destinationCode
       ) {
-        this.$message.warning('当前批次未设置目的地，请先通过 PDA 设置目的地');
+        this.addLog('[目的地] 当前批次未设置目的地，忽略', 'warning');
         return;
       }
 
-      // 1. 从上货区队列 this.queues[0].trayInfo 中找第一个未发送目的地的托盘
+      // 找队首未发送目的地的托盘
       const loadingQueue = this.queues[0];
       if (!loadingQueue.trayInfo || loadingQueue.trayInfo.length === 0) {
-        this.$message.warning('上货区暂无托盘，请先触发写虚拟ID请求');
+        this.addLog('[目的地] 上货区无托盘，视为异常', 'warning');
+        this.writeDestinationError();
         return;
       }
       const targetTray = loadingQueue.trayInfo.find(
         (t) => !t.sendStatus || t.sendStatus === '0'
       );
       if (!targetTray) {
-        this.$message.warning('上货区所有托盘均已发送过目的地');
+        this.addLog('[目的地] 上货区所有托盘已发送目的地，视为异常', 'warning');
+        this.writeDestinationError();
         return;
       }
       if (!targetTray.virtualId) {
-        this.$message.warning('目标托盘尚未分配虚拟ID，请先触发写虚拟ID请求');
+        this.addLog('[目的地] 目标托盘无虚拟ID，视为异常', 'warning');
+        this.writeDestinationError();
         return;
       }
 
+      const scannedUids = [...this.scanBuffer01006];
+
       try {
-        // 2. 调后端发送目的地接口（后端内部会根据当前批次上一个已发送托盘确定后缀1/2/3）
+        this.addLog(
+          `[目的地] 调用sendDestination palletId=${targetTray.palletId}, virtualId=${targetTray.virtualId}, barcodes=${scannedUids.length}`,
+          'running'
+        );
         const res = await HttpUtil.post('/produce_pallet/sendDestination', {
           palletId: targetTray.palletId,
           virtualId: targetTray.virtualId,
-          destinationCode: this.currentDestination.destinationCode
+          destinationCode: this.currentDestination.destinationCode,
+          barcodes: scannedUids
         });
+        this.addLog(
+          `[目的地] 后端响应: code=${res && res.code}, sendCode=${
+            res && res.data && res.data.sendDestinationCode
+          }`,
+          'running'
+        );
 
-        if (res && res.code === '200') {
+        if (res && res.code === '200' && res.data) {
           const updated = res.data;
-          const trayStatusText =
-            {
-              0: '未扫描',
-              1: '部分扫描完成',
-              2: '全部扫描完成'
-            }[updated.trayStatus] || '未知状态';
+          const sendCode = String(updated.sendDestinationCode);
 
-          // 3. 给PLC写目的地命令 W_DBW12 (DB1001.DBW12)，发送2秒后取消
-          const plcValue = parseInt(updated.sendDestinationCode, 10);
+          // 非全扫场景：后端落库sendDestinationCode='999'，走异常PLC写值
+          if (sendCode === '999') {
+            this.addLog(
+              `[目的地] 托盘${updated.palletNo || updated.id} 未全扫，落库999`,
+              'warning'
+            );
+            // 同步队列状态（已落库为999、send_status=1）
+            const idx = loadingQueue.trayInfo.findIndex(
+              (t) => t.palletId === targetTray.palletId
+            );
+            if (idx !== -1) {
+              this.$set(loadingQueue.trayInfo[idx], 'destination', '999');
+              this.$set(loadingQueue.trayInfo[idx], 'sendStatus', '1');
+              this.$set(loadingQueue.trayInfo[idx], 'sendTo', '999');
+            }
+            this.writeDestinationError();
+            return;
+          }
+
+          // 写目的地到PLC: DB1001.DBW12
+          const plcValue = parseInt(sendCode, 10);
           ipcRenderer.send('writeSingleValueToPLC', 'W_DBW12', plcValue);
-          this.addLog(
-            `[PLC发送] W_DBW12 = ${plcValue} (目的地编码: ${updated.sendDestinationCode})`,
-            'running'
-          );
+          this.addLog(`[目的地] 写W_DBW12 = ${plcValue}`, 'running');
           setTimeout(() => {
             ipcRenderer.send('cancelWriteToPLC', 'W_DBW12');
           }, 2000);
 
-          // 4. 更新上货区队列中该托盘的 destination、sendStatus 和 sendTo
+          // 更新队列中该托盘的destination、sendStatus
           const idx = loadingQueue.trayInfo.findIndex(
             (t) => t.palletId === targetTray.palletId
           );
           if (idx !== -1) {
-            this.$set(
-              loadingQueue.trayInfo[idx],
-              'destination',
-              updated.sendDestinationCode
-            );
+            this.$set(loadingQueue.trayInfo[idx], 'destination', sendCode);
             this.$set(loadingQueue.trayInfo[idx], 'sendStatus', '1');
-            this.$set(
-              loadingQueue.trayInfo[idx],
-              'sendTo',
-              updated.sendDestinationCode
-            );
+            this.$set(loadingQueue.trayInfo[idx], 'sendTo', sendCode);
           }
 
-          // 5. 日志和提示
           this.addLog(
-            `发送目的地: 托盘 ${updated.palletNo || updated.id}(virtualId=${
-              updated.virtualId
-            }) → 目的地=${updated.sendDestinationCode}，扫码状态=${
-              updated.trayStatus
-            }(${trayStatusText})`,
+            `[目的地] 托盘${updated.palletNo || updated.id} → ${sendCode}`,
             'running'
           );
-          this.$message.success(`目的地已发送: ${updated.sendDestinationCode}`);
         } else {
-          this.$message.error(res?.message || '发送目的地失败，请重试');
+          this.addLog(
+            `[目的地] 后端返回非成功: ${JSON.stringify(res)}`,
+            'warning'
+          );
+          this.writeDestinationError();
         }
       } catch (e) {
-        console.error('发送目的地失败:', e);
-        this.$message.error('操作失败，请重试');
+        console.error('目的地请求处理失败:', e);
+        this.addLog(`[目的地] 请求异常: ${e && e.message}`, 'warning');
+        this.writeDestinationError();
       }
     },
 
-    // ================= 上货信息面板 =================
-    async triggerVirtualIdRequest() {
-      // 1. 校验：必须有运行中的批次
-      if (!this.currentExecutingBatch) {
-        this.$message.warning('暂无运行中的批次，请先通过 PDA 确认批次');
-        return;
-      }
-
-      const pallets = this.currentExecutingBatch.pallets || [];
-
-      // 2. 校验：已发送数量未超限
-      const sentCount = pallets.filter((p) => p.virtualId).length;
-      if (sentCount >= 28) {
-        this.$message.warning(
-          '本批次已完成 28 个托盘上货，请等待 PDA 重新设置目的地'
-        );
-        return;
-      }
-
-      // 3. 找到当前批次中第一个没有虚拟ID的托盘
-      const targetPallet = pallets.find((p) => !p.virtualId);
-      if (!targetPallet) {
-        this.$message.warning('当前批次所有托盘已分配虚拟ID，无可处理托盘');
-        return;
-      }
-
-      // 4. 生成唯一虚拟ID（时间戳，天然不重复）
-      const virtualId = 'VID' + Date.now();
-
-      // 5. 调接口持久化到数据库
-      try {
-        const res = await HttpUtil.post('/produce_pallet/assignVirtualId', {
-          palletId: String(targetPallet.id),
-          virtualId: virtualId
-        });
-        if (!res || !res.data) {
-          this.$message.error('分配虚拟ID失败，请重试');
-          return;
-        }
-        const updatedPallet = res.data; // PalletDetailDTO
-
-        // 6. 更新面板A-第二部分（最近处理托盘快照）
-        const goods = updatedPallet.goods || [];
-        this.lastProcessedPallet = {
-          virtualId: updatedPallet.virtualId,
-          cargoName: goods.length > 0 ? goods[0].productName : '--',
-          barcodes: goods.map((g) => g.uid)
-        };
-
-        // 7. 将托盘追加到上货区队列（前端展示）
-        const trayEntry = {
-          palletId: String(updatedPallet.id),
-          trayCode: updatedPallet.virtualId || 'V' + updatedPallet.id,
-          virtualId: updatedPallet.virtualId,
-          trayTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-          batchId: String(updatedPallet.batchId),
-          destination: this.currentDestination
-            ? this.currentDestination.destinationCode
-            : '',
-          sendStatus: '0',
-          state: '1',
-          barcodes: this.lastProcessedPallet.barcodes
-        };
-        this.queues[0].trayInfo.push(trayEntry);
-
-        // 8. 更新本地批次缓存中该托盘的 virtualId（避免轮询刷新前重复分配）
-        const localPallet = pallets.find((p) => p.id === targetPallet.id);
-        if (localPallet) {
-          this.$set(localPallet, 'virtualId', virtualId);
-        }
-
-        this.$message.success(
-          `托盘 ${
-            updatedPallet.palletNo || updatedPallet.id
-          } 已分配虚拟ID: ${virtualId}`
-        );
-      } catch (e) {
-        console.error('触发写虚拟ID请求失败:', e);
-        this.$message.error('操作失败，请重试');
-      }
+    /** 目的地异常：写999 + DB1001.DBW182=2，持续2秒 */
+    writeDestinationError() {
+      this.addLog('[目的地] 异常，写W_DBW12=999，W_DBW182=2', 'warning');
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW12', 999);
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW182', 2);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW12');
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW182');
+      }, 2000);
     },
 
     // ================= 上货电机自动监听 =================
@@ -7844,7 +7993,8 @@ export default {
     },
     handleMobileTrayDataChanged(data) {
       console.log('收到移动端托盘数据变更通知:', data);
-      // 可按需重新加载队列数据
+      // PDA下发通行命令后通知PC端，直接用data中的palletId和sendDestinationCode更新上货区队列
+      this.refreshLoadingQueueFromBackend(data && data.data);
     },
     showMobileConnectionStatus() {
       this.mobileConnectionDialogVisible = true;

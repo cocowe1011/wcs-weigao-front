@@ -145,7 +145,7 @@
                 <div class="item-icon">
                   <i :class="getItemIcon(item.status)"></i>
                 </div>
-                <div class="item-code">{{ item.code }}</div>
+                <div class="item-code" :title="item.code">{{ item.code }}</div>
               </div>
             </div>
             <div class="items-tip">
@@ -308,12 +308,35 @@ export default {
             this.destinationCabinetText = '--';
           }
 
-          // A工位=最新*1目的地托盘，B工位=最新*2目的地托盘，C工位=最新*3目的地托盘
-          const latestBySuffix = (suffix) => {
+          // A工位=01002最新一个已分配虚拟ID的托盘
+          const latestByVirtualId = () => {
+            const matches = palletList.filter(
+              (p) => p.virtualId && p.loadStatus === '1'
+            );
+            if (!matches.length) return null;
+            return matches.sort((a, b) => {
+              const ta = a.loadTime ? new Date(a.loadTime).getTime() : 0;
+              const tb = b.loadTime ? new Date(b.loadTime).getTime() : 0;
+              return tb - ta;
+            })[0];
+          };
+          // B工位=02006最新一个发送非999目的地的托盘
+          const latestNon999 = () => {
             const matches = palletList.filter(
               (p) =>
-                p.sendDestinationCode &&
-                String(p.sendDestinationCode).endsWith(suffix)
+                p.sendDestinationCode && String(p.sendDestinationCode) !== '999'
+            );
+            if (!matches.length) return null;
+            return matches.sort((a, b) => {
+              const ta = a.sendTime ? new Date(a.sendTime).getTime() : 0;
+              const tb = b.sendTime ? new Date(b.sendTime).getTime() : 0;
+              return tb - ta;
+            })[0];
+          };
+          // C工位=最新一个发送999目的地的托盘
+          const latest999 = () => {
+            const matches = palletList.filter(
+              (p) => p.sendDestinationCode === '999'
             );
             if (!matches.length) return null;
             return matches.sort((a, b) => {
@@ -352,9 +375,9 @@ export default {
             };
           };
           this.workstations = [
-            buildStation('A', 'A工位', latestBySuffix('1')),
-            buildStation('B', 'B工位', latestBySuffix('2')),
-            buildStation('C', 'C工位', latestBySuffix('3'))
+            buildStation('A', 'A工位（01002）', latestByVirtualId()),
+            buildStation('B', 'B工位（02006）', latestNon999()),
+            buildStation('C', 'C工位（异常）', latest999())
           ];
         } else {
           this.batchNo = '--';
@@ -972,7 +995,7 @@ export default {
 
           .items-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 8px;
             flex: 1;
             overflow-y: auto;
@@ -1005,6 +1028,7 @@ export default {
               padding: 8px;
               text-align: center;
               transition: all 0.2s;
+              min-width: 0;
 
               &.item-success {
                 border-color: #10b981;
@@ -1044,9 +1068,17 @@ export default {
               }
 
               .item-code {
+                box-sizing: border-box;
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                margin: 0 auto;
                 font-size: 12px;
                 font-family: 'Courier New', monospace;
                 color: #cbd5e1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
               }
             }
           }
