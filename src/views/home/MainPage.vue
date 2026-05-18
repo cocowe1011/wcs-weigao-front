@@ -8021,6 +8021,7 @@ export default {
      *   DB1001.DBW16: WCS执行进货灭菌柜编号(目的地: 3201-3215)
      *   DB1001.DBW18: WCS执行预热房出货命令(BIT0-14对应3201-3215)
      *   DB1001.DBW20: WCS执行进货灭菌柜出货命令(BIT0-14对应3201-3215)
+     *   DB1001.DBW22: WCS执行小车移栽命令(写1)
      *   发送命令2秒后取消
      */
     sendToDisinfectionRoom() {
@@ -8097,6 +8098,13 @@ export default {
           ipcRenderer.send('cancelWriteToPLC', toBitKey);
         }, 2000);
       }
+
+      // 5. 写入小车移栽命令 W_DBW22 = 1 (DB1001.DBW22)，2秒后取消
+      this.addLog('[PLC发送] W_DBW22 = 1 (小车移栽命令)');
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW22', 1);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW22');
+      }, 2000);
 
       // 给源预热队列中所有托盘标记目的地灭菌柜编号（保留原列号后缀，如 32011→32011）
       if (
