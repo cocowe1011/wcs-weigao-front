@@ -1074,40 +1074,28 @@
                 margin-bottom: 6px;
               "
             >
-              触发后在上货区找到对应目的地托盘移入预热队列（需先发送目的地）
+              触发后模拟电机上升沿（需先发送目的地）
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px">
               <el-button
-                v-for="q in preHeatQueues"
-                :key="q.queueName + '-1'"
+                v-for="config in LOADING_MOTOR_MAP"
+                :key="config.cabinetNo + '-1'"
                 size="mini"
                 type="success"
                 plain
-                @click="
-                  handleLoadingMotorSignal(
-                    Number(q.queueName.replace('Y', '')),
-                    q.queueName,
-                    1
-                  )
-                "
+                @click="simulateLoadingMotorSignal(config.cabinetNo, 1)"
               >
-                {{ q.queueName }}-1
+                Y{{ config.cabinetNo }}-1
               </el-button>
               <el-button
-                v-for="q in preHeatQueues"
-                :key="q.queueName + '-2'"
+                v-for="config in LOADING_MOTOR_MAP"
+                :key="config.cabinetNo + '-2'"
                 size="mini"
                 type="warning"
                 plain
-                @click="
-                  handleLoadingMotorSignal(
-                    Number(q.queueName.replace('Y', '')),
-                    q.queueName,
-                    2
-                  )
-                "
+                @click="simulateLoadingMotorSignal(config.cabinetNo, 2)"
               >
-                {{ q.queueName }}-2
+                Y{{ config.cabinetNo }}-2
               </el-button>
             </div>
           </div>
@@ -1134,6 +1122,42 @@
                 @click="triggerSterilizationMotorSignal(q)"
               >
                 {{ q.queueName }}
+              </el-button>
+            </div>
+          </div>
+          <!-- 预热柜到灭菌柜电机信号 -->
+          <div class="test-section">
+            <span class="test-label">预热柜到灭菌柜电机信号:</span>
+            <div
+              style="
+                margin-top: 8px;
+                font-size: 11px;
+                color: #909399;
+                margin-bottom: 6px;
+              "
+            >
+              触发后模拟电机下降沿（需先执行预热柜到灭菌柜命令）
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px">
+              <el-button
+                v-for="config in PREHEAT_TO_STERILIZE_MOTOR_MAP"
+                :key="config.cabinetNo + '-1'"
+                size="mini"
+                type="success"
+                plain
+                @click="simulatePreheatToSterilizeMotor(config.cabinetNo, 1)"
+              >
+                {{ config.cabinetNo }}-1
+              </el-button>
+              <el-button
+                v-for="config in PREHEAT_TO_STERILIZE_MOTOR_MAP"
+                :key="config.cabinetNo + '-2'"
+                size="mini"
+                type="warning"
+                plain
+                @click="simulatePreheatToSterilizeMotor(config.cabinetNo, 2)"
+              >
+                {{ config.cabinetNo }}-2
               </el-button>
             </div>
           </div>
@@ -1484,6 +1508,24 @@ const LOADING_MOTOR_MAP = [
   { cabinetNo: 3214, queueName: 'Y3214', motor1: '02022', motor2: '02019' },
   { cabinetNo: 3215, queueName: 'Y3215', motor1: '02015', motor2: '02012' }
 ];
+// 预热柜到灭菌柜电机映射：预热柜编号 → { motor1(左线xxx-1), motor2(右线xxx-2) }
+const PREHEAT_TO_STERILIZE_MOTOR_MAP = [
+  { cabinetNo: 3201, motor1: '09004', motor2: '09003' },
+  { cabinetNo: 3202, motor1: '08008', motor2: '08007' },
+  { cabinetNo: 3203, motor1: '08006', motor2: '08005' },
+  { cabinetNo: 3204, motor1: '07008', motor2: '07007' },
+  { cabinetNo: 3205, motor1: '07006', motor2: '07005' },
+  { cabinetNo: 3206, motor1: '06008', motor2: '06007' },
+  { cabinetNo: 3207, motor1: '06006', motor2: '06005' },
+  { cabinetNo: 3208, motor1: '05008', motor2: '05007' },
+  { cabinetNo: 3209, motor1: '05006', motor2: '05005' },
+  { cabinetNo: 3210, motor1: '04008', motor2: '04007' },
+  { cabinetNo: 3211, motor1: '04006', motor2: '04005' },
+  { cabinetNo: 3212, motor1: '03008', motor2: '03007' },
+  { cabinetNo: 3213, motor1: '03006', motor2: '03005' },
+  { cabinetNo: 3214, motor1: '02008', motor2: '02007' },
+  { cabinetNo: 3215, motor1: '02006', motor2: '02005' }
+];
 // 预热柜编号 → W_DBW18 bit位键名(预热房出货命令)
 const PREHEAT_DBW18_MAP = {
   3201: 'W_DBW18_BIT0',
@@ -1521,12 +1563,44 @@ const STERILIZE_DBW20_MAP = {
   3215: 'W_DBW20_BIT14'
 };
 
+// 预热柜编号 → W_DBW188 bit位键名(预热柜允许进货命令)
+const PREHEAT_DBW188_MAP = {
+  3201: 'W_DBW188_BIT0',
+  3202: 'W_DBW188_BIT1',
+  3203: 'W_DBW188_BIT2',
+  3204: 'W_DBW188_BIT3',
+  3205: 'W_DBW188_BIT4',
+  3206: 'W_DBW188_BIT5',
+  3207: 'W_DBW188_BIT6',
+  3208: 'W_DBW188_BIT7',
+  3209: 'W_DBW188_BIT8',
+  3210: 'W_DBW188_BIT9',
+  3211: 'W_DBW188_BIT10',
+  3212: 'W_DBW188_BIT11',
+  3213: 'W_DBW188_BIT12',
+  3214: 'W_DBW188_BIT13',
+  3215: 'W_DBW188_BIT14'
+};
+
 export default {
   name: 'MonitorScreen',
   components: {
     OrderQueryDialog
   },
   data() {
+    // 先构建电机状态初始值（在return之前）
+    const loadingMotorInit = {};
+    LOADING_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
+      loadingMotorInit[motor1] = false;
+      loadingMotorInit[motor2] = false;
+    });
+
+    const preheatToSterilizeInit = {};
+    PREHEAT_TO_STERILIZE_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
+      preheatToSterilizeInit[motor1] = false;
+      preheatToSterilizeInit[motor2] = false;
+    });
+
     return {
       // ---- 轮询数据（批次 + 目的地） ----
       currentExecutingBatch: null, // BatchDetailDTO: { batch, pallets }
@@ -1743,6 +1817,15 @@ export default {
       disinfectionTrayCode: '', // 执行中显示的托盘编码
       disinfectionNeedQty: 0, // 需进货数量
       disinfectionTargetTotal: 0, // 目标总数量
+
+      // ---- 预热柜到灭菌柜电机状态（独立存储，供watch监听）----
+      preheatToSterilizeMotorStatus: preheatToSterilizeInit,
+      // ---- 上货电机状态（独立存储，供watch监听）----
+      loadingMotorStatus: loadingMotorInit,
+
+      // ---- 测试面板配置引用（Vue模板需要访问常量）----
+      LOADING_MOTOR_MAP: LOADING_MOTOR_MAP,
+      PREHEAT_TO_STERILIZE_MOTOR_MAP: PREHEAT_TO_STERILIZE_MOTOR_MAP,
 
       // ==========================================================
       // 【修改结果】直接在 data 里定义好所有设备点位
@@ -6317,21 +6400,93 @@ export default {
       });
     });
 
-    // 上货电机标记：为 30 个电机节点附加静态配置，供 receivedMsg 循环内上升沿检测使用
+    // 上货电机监听：打开页面直接监听独立存储变量,一直监听直到页面关闭
+    // 创建watch监听器（初始值已在data中定义）
+
     LOADING_MOTOR_MAP.forEach(({ cabinetNo, queueName, motor1, motor2 }) => {
       if (this.deviceNodes[motor1]) {
-        this.deviceNodes[motor1]._loadingConfig = {
-          cabinetNo,
-          queueName,
-          slot: 1
-        };
+        // 使用$watch监听独立存储变量
+        const unwatch1 = this.$watch(
+          () => this.loadingMotorStatus[motor1],
+          (newVal, oldVal) => {
+            // 调试日志
+            console.log(`[watch] ${motor1} newVal=${newVal}, oldVal=${oldVal}`);
+            this.addLog(
+              `[watch触发] 上货电机${motor1}状态变化：${oldVal} → ${newVal}`,
+              'running'
+            );
+            // 上升沿检测：false → true
+            if (newVal === true && oldVal === false) {
+              this.addLog(
+                `[watch] 上货电机${motor1}上升沿触发，调用handleLoadingMotorSignal`,
+                'running'
+              );
+              this.handleLoadingMotorSignal(cabinetNo, queueName, 1);
+            }
+          }
+        );
+        if (!this._loadingMotorWatchers) {
+          this._loadingMotorWatchers = [];
+        }
+        this._loadingMotorWatchers.push(unwatch1);
       }
       if (this.deviceNodes[motor2]) {
-        this.deviceNodes[motor2]._loadingConfig = {
-          cabinetNo,
-          queueName,
-          slot: 2
-        };
+        // 使用$watch监听独立存储变量
+        const unwatch2 = this.$watch(
+          () => this.loadingMotorStatus[motor2],
+          (newVal, oldVal) => {
+            // 调试日志
+            console.log(`[watch] ${motor2} newVal=${newVal}, oldVal=${oldVal}`);
+            this.addLog(
+              `[watch触发] 上货电机${motor2}状态变化：${oldVal} → ${newVal}`,
+              'running'
+            );
+            // 上升沿检测：false → true
+            if (newVal === true && oldVal === false) {
+              this.addLog(
+                `[watch] 上货电机${motor2}上升沿触发，调用handleLoadingMotorSignal`,
+                'running'
+              );
+              this.handleLoadingMotorSignal(cabinetNo, queueName, 2);
+            }
+          }
+        );
+        this._loadingMotorWatchers.push(unwatch2);
+      }
+    });
+
+    // 预热柜到灭菌柜电机监听：打开页面直接监听独立存储变量,一直监听直到页面关闭
+    // 创建watch监听器（初始值已在data中定义）
+
+    PREHEAT_TO_STERILIZE_MOTOR_MAP.forEach(({ cabinetNo, motor1, motor2 }) => {
+      if (this.deviceNodes[motor1]) {
+        // 使用$watch监听独立存储变量
+        const unwatch1 = this.$watch(
+          () => this.preheatToSterilizeMotorStatus[motor1],
+          (newVal, oldVal) => {
+            // 下降沿检测：true → false
+            if (newVal === false && oldVal === true) {
+              this.handlePreheatToSterilizeMotorFallingEdge(cabinetNo, 1);
+            }
+          }
+        );
+        if (!this._preheatToSterilizeWatchers) {
+          this._preheatToSterilizeWatchers = [];
+        }
+        this._preheatToSterilizeWatchers.push(unwatch1);
+      }
+      if (this.deviceNodes[motor2]) {
+        // 使用$watch监听独立存储变量
+        const unwatch2 = this.$watch(
+          () => this.preheatToSterilizeMotorStatus[motor2],
+          (newVal, oldVal) => {
+            // 下降沿检测：true → false
+            if (newVal === false && oldVal === true) {
+              this.handlePreheatToSterilizeMotorFallingEdge(cabinetNo, 2);
+            }
+          }
+        );
+        this._preheatToSterilizeWatchers.push(unwatch2);
       }
     });
 
@@ -6349,13 +6504,8 @@ export default {
         return parsedWords[db];
       };
 
-      // 核心：遍历设备列表，统一赋值；同时对标记了 _loadingConfig 的上货电机做上升沿检测
+      // 核心：遍历设备列表，统一赋值
       Object.values(this.deviceNodes).forEach((node) => {
-        // 记录更新前旧状态（仅标记了上货配置的节点需要）
-        const prevMotorStatus = node._loadingConfig
-          ? node.motorStatus
-          : undefined;
-
         // 赋值电机状态
         if (node.motorAddr) {
           const { db, bit } = node.motorAddr;
@@ -6380,15 +6530,43 @@ export default {
         if (node.destinationAddr) {
           node.destination = Number(values[node.destinationAddr] ?? 0);
         }
+      });
 
-        // 上货电机上升沿检测：false→true 时将上货区对应托盘移入预热队列
-        if (
-          node._loadingConfig &&
-          node.motorStatus === true &&
-          prevMotorStatus === false
-        ) {
-          const { cabinetNo, queueName, slot } = node._loadingConfig;
-          this.handleLoadingMotorSignal(cabinetNo, queueName, slot);
+      // 给预热柜到灭菌柜电机状态变量赋值（独立存储，供watch监听）
+      // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
+      PREHEAT_TO_STERILIZE_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
+        if (this.deviceNodes[motor1]) {
+          const newStatus = this.deviceNodes[motor1].motorStatus;
+          const oldStatus = this.preheatToSterilizeMotorStatus[motor1];
+          if (newStatus !== oldStatus) {
+            this.preheatToSterilizeMotorStatus[motor1] = newStatus;
+          }
+        }
+        if (this.deviceNodes[motor2]) {
+          const newStatus = this.deviceNodes[motor2].motorStatus;
+          const oldStatus = this.preheatToSterilizeMotorStatus[motor2];
+          if (newStatus !== oldStatus) {
+            this.preheatToSterilizeMotorStatus[motor2] = newStatus;
+          }
+        }
+      });
+
+      // 给上货电机状态变量赋值（独立存储，供watch监听）
+      // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
+      LOADING_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
+        if (this.deviceNodes[motor1]) {
+          const newStatus = this.deviceNodes[motor1].motorStatus;
+          const oldStatus = this.loadingMotorStatus[motor1];
+          if (newStatus !== oldStatus) {
+            this.loadingMotorStatus[motor1] = newStatus;
+          }
+        }
+        if (this.deviceNodes[motor2]) {
+          const newStatus = this.deviceNodes[motor2].motorStatus;
+          const oldStatus = this.loadingMotorStatus[motor2];
+          if (newStatus !== oldStatus) {
+            this.loadingMotorStatus[motor2] = newStatus;
+          }
         }
       });
 
@@ -6888,6 +7066,64 @@ export default {
       this.$message.success(
         `${targetQueue.queueName} 队列托盘 ${tray.trayCode} 已删除`
       );
+    },
+
+    /**
+     * 测试面板：模拟预热柜到灭菌柜电机下降沿
+     * @param {number} cabinetNo - 灭菌柜编号(3201-3215)
+     * @param {number} slot - 列号(1或2)
+     */
+    simulatePreheatToSterilizeMotor(cabinetNo, slot) {
+      const config = PREHEAT_TO_STERILIZE_MOTOR_MAP.find(
+        (c) => c.cabinetNo === cabinetNo
+      );
+      if (!config) {
+        this.$message.warning(`未找到灭菌柜${cabinetNo}的电机配置`);
+        return;
+      }
+
+      const motorId = slot === 1 ? config.motor1 : config.motor2;
+
+      // 直接设置为true触发上升沿，1秒后恢复为false触发下降沿
+      this.preheatToSterilizeMotorStatus[motorId] = true;
+      this.addLog(
+        `[测试模拟] ${cabinetNo}-线${slot}电机(${motorId})设置为true`
+      );
+
+      setTimeout(() => {
+        this.preheatToSterilizeMotorStatus[motorId] = false;
+        this.addLog(
+          `[测试模拟] ${cabinetNo}-线${slot}电机(${motorId})恢复为false`
+        );
+      }, 1000);
+    },
+
+    /**
+     * 测试面板：模拟上货电机上升沿
+     * @param {number} cabinetNo - 预热柜编号(3201-3215)
+     * @param {number} slot - 列号(1或2)
+     */
+    simulateLoadingMotorSignal(cabinetNo, slot) {
+      const config = LOADING_MOTOR_MAP.find((c) => c.cabinetNo === cabinetNo);
+      if (!config) {
+        this.$message.warning(`未找到预热柜${cabinetNo}的电机配置`);
+        return;
+      }
+
+      const motorId = slot === 1 ? config.motor1 : config.motor2;
+
+      // 直接设置为true触发上升沿，1秒后恢复为false
+      this.loadingMotorStatus[motorId] = true;
+      this.addLog(
+        `[测试模拟] Y${cabinetNo}-线${slot}电机(${motorId})设置为true`
+      );
+
+      setTimeout(() => {
+        this.loadingMotorStatus[motorId] = false;
+        this.addLog(
+          `[测试模拟] Y${cabinetNo}-线${slot}电机(${motorId})恢复为false`
+        );
+      }, 1000);
     },
 
     // ================= 分组索引构建 =================
@@ -8015,6 +8251,199 @@ export default {
 
     // ================= 预热柜到灭菌柜 =================
     /**
+     * 预热柜到灭菌柜电机下降沿处理
+     * @param {number} cabinetNo - 预热柜编号(3201-3215)
+     * @param {number} slot - 列号(1或2)
+     */
+    handlePreheatToSterilizeMotorFallingEdge(cabinetNo, slot) {
+      // 必须正在执行预热柜到灭菌柜操作
+      if (!this.disinfectionExecuting) {
+        return;
+      }
+
+      // 必须已选择预热柜和灭菌柜
+      if (!this.preheatSelectedFrom || !this.sterilizeSelectedTo) {
+        return;
+      }
+
+      const fromCabinet = Number(this.preheatSelectedFrom);
+      const toCabinet = Number(this.sterilizeSelectedTo);
+
+      // 当前触发的预热柜编号必须与选择的预热柜编号一致
+      if (cabinetNo !== fromCabinet) {
+        return;
+      }
+
+      const fromIdx = PREHEAT_QUEUE_MAP[fromCabinet];
+      const toIdx = STERILIZE_QUEUE_MAP[toCabinet];
+
+      const sourceQueue = this.queues[fromIdx];
+      const targetQueue = this.queues[toIdx];
+
+      if (!sourceQueue || !sourceQueue.trayInfo) {
+        this.addLog(
+          `[预热到灭菌] 预热柜Y${fromCabinet}队列不存在或无托盘`,
+          'warning'
+        );
+        return;
+      }
+
+      if (!targetQueue) {
+        this.addLog(`[预热到灭菌] 灭菌柜${toCabinet}队列不存在`, 'warning');
+        return;
+      }
+
+      if (!Array.isArray(targetQueue.trayInfo)) {
+        this.$set(targetQueue, 'trayInfo', []);
+      }
+
+      // 判断是否直连（预热柜编号 == 灭菌柜编号）
+      const isDirectConnection = fromCabinet === toCabinet;
+
+      if (isDirectConnection) {
+        // 直连：移动预热柜队列对应列的所有托盘（xxx-1或xxx-2）
+        const destinationSuffix = String(slot); // '1' 或 '2'
+        const traysToMove = sourceQueue.trayInfo.filter(
+          (tray) => tray.sendTo && tray.sendTo.slice(-1) === destinationSuffix
+        );
+
+        if (traysToMove.length === 0) {
+          this.addLog(
+            `[预热到灭菌直连] Y${fromCabinet}-线${slot}电机下降沿，但队列无目的地=${toCabinet}${destinationSuffix}的托盘`,
+            'warning'
+          );
+          return;
+        }
+
+        // 移动所有符合条件的托盘
+        const movedTrayCodes = [];
+        traysToMove.forEach((tray) => {
+          const idx = sourceQueue.trayInfo.indexOf(tray);
+          if (idx !== -1) {
+            sourceQueue.trayInfo.splice(idx, 1);
+            // 更新目的地为灭菌柜编号（去掉列号）
+            this.$set(tray, 'sendTo', String(toCabinet));
+            targetQueue.trayInfo.push(tray);
+            movedTrayCodes.push(tray.trayCode);
+          }
+        });
+
+        this.disinfectionNeedQty -= movedTrayCodes.length;
+        this.addLog(
+          `[预热到灭菌直连] Y${fromCabinet}-线${slot}电机下降沿 → 灭菌柜${toCabinet}，已移动 ${
+            movedTrayCodes.length
+          } 个托盘：${movedTrayCodes.join(',')}，剩余需进货：${
+            this.disinfectionNeedQty
+          }`
+        );
+      } else {
+        // 非直连：只移动一个托盘（对应列的第一个托盘）
+        const destinationSuffix = String(slot);
+        const trayIndex = sourceQueue.trayInfo.findIndex(
+          (tray) => tray.sendTo && tray.sendTo.slice(-1) === destinationSuffix
+        );
+
+        if (trayIndex === -1) {
+          this.addLog(
+            `[预热到灭菌非直连] Y${fromCabinet}-线${slot}电机下降沿，但队列无目的地=${toCabinet}${destinationSuffix}的托盘`,
+            'warning'
+          );
+          return;
+        }
+
+        const tray = sourceQueue.trayInfo.splice(trayIndex, 1)[0];
+        this.$set(tray, 'sendTo', String(toCabinet));
+        targetQueue.trayInfo.push(tray);
+
+        this.disinfectionNeedQty -= 1;
+        this.disinfectionTrayCode = tray.trayCode;
+
+        this.addLog(
+          `[预热到灭菌非直连] Y${fromCabinet}-线${slot}电机下降沿 → 灭菌柜${toCabinet}，已移动托盘：${tray.trayCode}，剩余需进货：${this.disinfectionNeedQty}`
+        );
+      }
+
+      // 检查是否完成
+      if (this.disinfectionNeedQty <= 0) {
+        this.addLog(
+          `[预热到灭菌] 预热柜Y${fromCabinet}到灭菌柜${toCabinet}完成，所有托盘已移动`
+        );
+
+        // 执行完成后，发送恢复命令和允许进货命令（持续2秒）
+        this.addLog(
+          `[预热到灭菌完成] 发送恢复命令和允许进货命令（预热柜Y${fromCabinet}）`
+        );
+
+        // 1. 恢复 DB1001.DBW14 = 0（出货预热房编号），持续2秒
+        this.addLog('[PLC发送] W_DBW14 = 0 (恢复出货预热房编号)');
+        ipcRenderer.send('writeSingleValueToPLC', 'W_DBW14', 0);
+        setTimeout(() => {
+          ipcRenderer.send('cancelWriteToPLC', 'W_DBW14');
+        }, 2000);
+
+        // 2. 恢复 DB1001.DBW16 = 0（进货灭菌柜编号），持续2秒
+        this.addLog('[PLC发送] W_DBW16 = 0 (恢复进货灭菌柜编号)');
+        ipcRenderer.send('writeSingleValueToPLC', 'W_DBW16', 0);
+        setTimeout(() => {
+          ipcRenderer.send('cancelWriteToPLC', 'W_DBW16');
+        }, 2000);
+
+        // 3. 恢复 DB1001.DBW18 对应预热柜位 = false（预热房出货命令），持续2秒
+        const fromBitKey18 = PREHEAT_DBW18_MAP[fromCabinet];
+        if (fromBitKey18) {
+          this.addLog(
+            `[PLC发送] ${fromBitKey18} = false (恢复预热房Y${fromCabinet}出货命令)`
+          );
+          ipcRenderer.send('writeSingleValueToPLC', fromBitKey18, false);
+          setTimeout(() => {
+            ipcRenderer.send('cancelWriteToPLC', fromBitKey18);
+          }, 2000);
+        }
+
+        // 4. 恢复 DB1001.DBW20 对应灭菌柜位 = false（灭菌柜进货命令），持续2秒
+        const toBitKey20 = STERILIZE_DBW20_MAP[toCabinet];
+        if (toBitKey20) {
+          this.addLog(
+            `[PLC发送] ${toBitKey20} = false (恢复灭菌柜${toCabinet}进货命令)`
+          );
+          ipcRenderer.send('writeSingleValueToPLC', toBitKey20, false);
+          setTimeout(() => {
+            ipcRenderer.send('cancelWriteToPLC', toBitKey20);
+          }, 2000);
+        }
+
+        // 5. 恢复 DB1001.DBW22 = 0（小车移栽命令），持续2秒
+        this.addLog('[PLC发送] W_DBW22 = 0 (恢复小车移栽命令)');
+        ipcRenderer.send('writeSingleValueToPLC', 'W_DBW22', 0);
+        setTimeout(() => {
+          ipcRenderer.send('cancelWriteToPLC', 'W_DBW22');
+        }, 2000);
+
+        // 6. 发送 DB1001.DBW188 对应预热柜位 = true（允许进货命令），持续2秒
+        const allowBitKey188 = PREHEAT_DBW188_MAP[fromCabinet];
+        if (allowBitKey188) {
+          this.addLog(
+            `[PLC发送] ${allowBitKey188} = true (预热柜Y${fromCabinet}允许进货命令)`
+          );
+          ipcRenderer.send('writeSingleValueToPLC', allowBitKey188, true);
+          setTimeout(() => {
+            ipcRenderer.send('cancelWriteToPLC', allowBitKey188);
+          }, 2000);
+        }
+
+        this.disinfectionExecuting = false;
+        this.disinfectionTrayCode = '';
+        this.disinfectionNeedQty = 0;
+        this.disinfectionRoomLoading = false;
+        this.preheatSelectedFrom = null;
+        this.sterilizeSelectedTo = null;
+        this.$message.success(
+          `预热柜Y${fromCabinet}到灭菌柜${toCabinet}执行完成`
+        );
+      }
+    },
+
+    /**
      * 预热柜到灭菌柜 - 执行
      * 参考写入点位.csv:
      *   DB1001.DBW14: WCS执行出货预热房编号(起始: 3201-3215)
@@ -8162,7 +8591,7 @@ export default {
       clearInterval(this._pollBatchTimer);
       this._pollBatchTimer = null;
     }
-    // 取消动态创建的 $watch 监听器
+    // 取消队列监听器
     if (this._queueWatchers && this._queueWatchers.length > 0) {
       this._queueWatchers.forEach((unwatch) => {
         if (typeof unwatch === 'function') {
@@ -8170,6 +8599,27 @@ export default {
         }
       });
       this._queueWatchers = [];
+    }
+    // 取消上货电机监听器
+    if (this._loadingMotorWatchers && this._loadingMotorWatchers.length > 0) {
+      this._loadingMotorWatchers.forEach((unwatch) => {
+        if (typeof unwatch === 'function') {
+          unwatch();
+        }
+      });
+      this._loadingMotorWatchers = [];
+    }
+    // 取消预热柜到灭菌柜电机监听器
+    if (
+      this._preheatToSterilizeWatchers &&
+      this._preheatToSterilizeWatchers.length > 0
+    ) {
+      this._preheatToSterilizeWatchers.forEach((unwatch) => {
+        if (typeof unwatch === 'function') {
+          unwatch();
+        }
+      });
+      this._preheatToSterilizeWatchers = [];
     }
   }
 };
