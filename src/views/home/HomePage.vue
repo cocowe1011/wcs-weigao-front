@@ -4,7 +4,7 @@
       <div class="maskDiv-top">
         <div class="maskDiv-top-left" @dblclick="maxWindow">
           <img
-            src="../../../build/icons/64x64.png"
+            src="@/assets/fengke-logo.jpg"
             style="width: 38px; height: 38px"
           />
           <div style="margin-left: 10px; height: 100%">

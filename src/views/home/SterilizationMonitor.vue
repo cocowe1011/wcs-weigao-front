@@ -5,7 +5,7 @@
       <div class="header-content">
         <div class="header-left">
           <div class="logo-icon">
-            <i class="el-icon-s-operation"></i>
+            <img src="@/assets/fengke-logo.jpg" alt="logo" class="logo-img" />
           </div>
           <div>
             <h1 class="main-title">威高灭菌中心</h1>
@@ -142,9 +142,6 @@
                 :key="item.id"
                 :class="['item-box', getItemStatusClass(item.status)]"
               >
-                <div class="item-icon">
-                  <i :class="getItemIcon(item.status)"></i>
-                </div>
                 <div class="item-code" :title="item.code">{{ item.code }}</div>
               </div>
             </div>
@@ -404,16 +401,6 @@ export default {
           return 'item-pending';
       }
     },
-    getItemIcon(status) {
-      switch (status) {
-        case 'success':
-          return 'el-icon-success';
-        case 'failed':
-          return 'el-icon-error';
-        default:
-          return 'el-icon-remove-outline';
-      }
-    },
     getSuccessCount(station) {
       return station.items.filter((i) => i.status === 'success').length;
     },
@@ -452,7 +439,7 @@ export default {
 
   // Header Styles
   .monitor-header {
-    height: 80px;
+    height: 70px;
     border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     background: rgba(15, 23, 42, 0.8);
 
@@ -466,45 +453,32 @@ export default {
       .header-left {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
 
         .logo-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+          width: 44px;
+          height: 44px;
+          border-radius: 8px;
+          background: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
+          box-shadow: 0 2px 6px rgba(8, 145, 178, 0.15);
           border: 1px solid rgba(34, 211, 238, 0.3);
           position: relative;
           overflow: hidden;
 
-          &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-              135deg,
-              rgba(255, 255, 255, 0.1) 0%,
-              rgba(255, 255, 255, 0) 100%
-            );
-          }
-
-          i {
-            font-size: 26px;
-            color: #e0f2fe;
+          .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             position: relative;
             z-index: 1;
           }
         }
 
         .main-title {
-          font-size: 24px;
+          font-size: 22px;
           font-weight: bold;
           background: linear-gradient(90deg, #22d3ee 0%, #60a5fa 100%);
           background-clip: text;
@@ -529,7 +503,7 @@ export default {
           text-align: right;
 
           .current-time {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             color: #22d3ee;
           }
@@ -545,43 +519,46 @@ export default {
 
   // Status Panel
   .status-panel-container {
-    padding: 20px 24px;
+    padding: 12px;
     flex-shrink: 0;
 
     .status-panel {
-      border-radius: 16px;
+      border-radius: 12px;
       border: 1px solid rgba(6, 182, 212, 0.3);
       background: linear-gradient(
         135deg,
         rgba(15, 23, 42, 0.8) 0%,
         rgba(30, 41, 59, 0.6) 100%
       );
-      padding: 20px;
+      padding: 16px;
       position: relative;
 
       .status-grid {
         display: grid;
         grid-template-columns: 2fr 3fr;
-        gap: 28px;
-        align-items: start;
+        gap: 12px;
+        align-items: stretch;
 
         .status-left {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           grid-template-rows: repeat(2, 1fr);
-          gap: 16px;
+          gap: 12px;
+          align-content: stretch;
 
           .status-card {
+            display: flex;
+            flex-direction: column;
             background: linear-gradient(
               135deg,
               rgba(30, 41, 59, 0.8) 0%,
               rgba(15, 23, 42, 0.6) 100%
             );
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 12px;
             border: 1px solid rgba(34, 211, 238, 0.2);
             border-left: 2px solid rgba(34, 211, 238, 0.6);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -602,25 +579,28 @@ export default {
               transform: translateY(-2px);
               border-color: rgba(34, 211, 238, 0.4);
               border-left-color: rgba(34, 211, 238, 1);
-              box-shadow: 0 8px 24px rgba(34, 211, 238, 0.15);
+              box-shadow: 0 4px 16px rgba(34, 211, 238, 0.08);
 
               &::before {
                 opacity: 1;
                 width: 3px;
-                box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+                box-shadow: 0 0 6px rgba(34, 211, 238, 0.2);
               }
             }
 
             .card-label {
-              font-size: 13px;
+              font-size: 12px;
               color: #94a3b8;
-              margin-bottom: 8px;
+              margin-bottom: 6px;
               font-weight: 500;
               letter-spacing: 0.5px;
             }
 
             .card-value {
-              font-size: 18px;
+              flex: 1;
+              display: flex;
+              align-items: center;
+              font-size: 16px;
               font-weight: 700;
               line-height: 1.2;
 
@@ -630,7 +610,7 @@ export default {
               }
 
               &.card-value-orange {
-                font-size: 20px;
+                font-size: 18px;
                 font-weight: 800;
                 color: #fb923c;
                 text-shadow: 0 0 8px rgba(251, 146, 60, 0.3);
@@ -645,15 +625,15 @@ export default {
             rgba(30, 41, 59, 0.6) 0%,
             rgba(15, 23, 42, 0.4) 100%
           );
-          border-radius: 12px;
-          padding: 16px;
+          border-radius: 10px;
+          padding: 12px;
           border: 1px solid rgba(34, 211, 238, 0.2);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
           .batch-title {
-            font-size: 15px;
+            font-size: 13px;
             color: #e2e8f0;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-align: center;
@@ -663,13 +643,13 @@ export default {
             display: grid;
             grid-template-columns: repeat(16, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 5px;
+            margin-bottom: 10px;
 
             .batch-item {
-              width: 28px;
-              height: 28px;
-              border-radius: 6px;
+              width: 26px;
+              height: 26px;
+              border-radius: 5px;
               border: 1px solid rgba(71, 85, 105, 0.3);
               transition: all 0.3s ease;
               display: flex;
@@ -706,12 +686,12 @@ export default {
                   rgba(16, 185, 129, 0.15) 0%,
                   rgba(34, 197, 94, 0.1) 100%
                 );
-                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+                box-shadow: 0 1px 4px rgba(16, 185, 129, 0.1);
 
                 &:hover {
                   transform: scale(1.1);
                   border-color: rgba(16, 185, 129, 0.7);
-                  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
                 }
 
                 .tray-img {
@@ -752,32 +732,32 @@ export default {
 
   // Workstations
   .workstations-container {
-    padding: 0 24px 16px;
+    padding: 0 12px 12px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 12px;
     flex: 1;
     overflow: hidden;
     min-height: 0;
 
     .workstation-card {
-      border-radius: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(6, 182, 212, 0.3);
       background: rgba(15, 23, 42, 0.5);
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
       transition: box-shadow 0.3s;
       display: flex;
       flex-direction: column;
       min-height: 0;
 
       &:hover {
-        box-shadow: 0 4px 20px rgba(6, 182, 212, 0.2);
+        box-shadow: 0 2px 12px rgba(6, 182, 212, 0.1);
       }
 
       .workstation-header {
         background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
-        padding: 16px;
+        padding: 12px;
         border-bottom: 1px solid rgba(6, 182, 212, 0.3);
         display: flex;
         align-items: center;
@@ -789,12 +769,12 @@ export default {
           gap: 12px;
 
           .station-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 3px 10px;
+            border-radius: 16px;
             background: rgba(34, 211, 238, 0.2);
             border: 1px solid rgba(34, 211, 238, 0.5);
             color: #22d3ee;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
           }
 
@@ -819,9 +799,9 @@ export default {
         }
 
         .refresh-button {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
+          width: 30px;
+          height: 30px;
+          border-radius: 6px;
           background: #1e293b;
           border: none;
           display: flex;
@@ -842,7 +822,7 @@ export default {
       }
 
       .workstation-body {
-        padding: 16px;
+        padding: 10px;
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -852,9 +832,9 @@ export default {
         .product-info-card {
           background: rgba(30, 41, 59, 0.5);
           border-radius: 8px;
-          padding: 12px;
+          padding: 8px;
           border: 1px solid rgba(71, 85, 105, 0.5);
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           flex-shrink: 0;
 
           .info-label {
@@ -872,14 +852,14 @@ export default {
         .quantity-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 8px;
-          margin-bottom: 12px;
+          gap: 6px;
+          margin-bottom: 8px;
           flex-shrink: 0;
 
           .quantity-card {
             background: rgba(30, 41, 59, 0.3);
             border-radius: 6px;
-            padding: 8px;
+            padding: 4px 6px;
             border: 1px solid rgba(71, 85, 105, 0.2);
             transition: all 0.2s ease;
 
@@ -909,9 +889,9 @@ export default {
             }
 
             .quantity-label {
-              font-size: 11px;
+              font-size: 10px;
               color: #94a3b8;
-              margin-bottom: 6px;
+              margin-bottom: 2px;
               font-weight: 500;
               text-transform: uppercase;
               letter-spacing: 0.5px;
@@ -922,9 +902,9 @@ export default {
               background: transparent;
               border: none;
               border-radius: 4px;
-              padding: 6px 8px;
+              padding: 2px 4px;
               font-family: 'Courier New', monospace;
-              font-size: 16px;
+              font-size: 14px;
               text-align: center;
               font-weight: 600;
               outline: none;
@@ -939,9 +919,9 @@ export default {
               background: transparent;
               border: none;
               border-radius: 4px;
-              padding: 6px 8px;
+              padding: 2px 4px;
               font-family: 'Courier New', monospace;
-              font-size: 16px;
+              font-size: 14px;
               text-align: center;
               font-weight: 600;
 
@@ -955,7 +935,7 @@ export default {
         .items-card {
           background: rgba(30, 41, 59, 0.5);
           border-radius: 8px;
-          padding: 12px;
+          padding: 8px;
           border: 1px solid rgba(71, 85, 105, 0.5);
           flex: 1;
           display: flex;
@@ -967,7 +947,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
 
             .items-title {
               font-size: 12px;
@@ -1024,8 +1004,8 @@ export default {
 
             .item-box {
               border-radius: 4px;
-              border: 2px solid;
-              padding: 8px;
+              border: 1px solid;
+              padding: 4px 6px;
               text-align: center;
               transition: all 0.2s;
               min-width: 0;
@@ -1045,40 +1025,17 @@ export default {
                 background: rgba(30, 41, 59, 0.3);
               }
 
-              .item-icon {
-                display: flex;
-                justify-content: center;
-                margin-bottom: 4px;
-
-                i {
-                  font-size: 16px;
-                }
-              }
-
-              .item-success .item-icon i {
-                color: #10b981;
-              }
-
-              .item-failed .item-icon i {
-                color: #f43f5e;
-              }
-
-              .item-pending .item-icon i {
-                color: #64748b;
-              }
-
               .item-code {
                 box-sizing: border-box;
                 width: 100%;
                 max-width: 100%;
                 min-width: 0;
                 margin: 0 auto;
-                font-size: 12px;
+                font-size: 11px;
                 font-family: 'Courier New', monospace;
                 color: #cbd5e1;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                word-break: break-all;
+                line-height: 1.3;
               }
             }
           }
@@ -1108,7 +1065,7 @@ export default {
 
   // Footer
   .monitor-footer {
-    height: 56px;
+    height: 48px;
     border-top: 1px solid rgba(6, 182, 212, 0.3);
     background: rgba(15, 23, 42, 0.8);
     flex-shrink: 0;
@@ -1132,7 +1089,7 @@ export default {
             border-radius: 50%;
             background: #10b981;
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
           }
 
           .status-label {
