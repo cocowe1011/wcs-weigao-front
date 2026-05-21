@@ -288,7 +288,7 @@
                   class="preheating-room-marker"
                   data-x="65"
                   data-y="120"
-                  style="width: 110px"
+                  style="width: 120px"
                 >
                   <div class="preheating-room-content">
                     <div class="preheating-room-header">下货信息1</div>
@@ -337,7 +337,7 @@
                   class="preheating-room-marker"
                   data-x="65"
                   data-y="250"
-                  style="width: 110px"
+                  style="width: 120px"
                 >
                   <div class="preheating-room-content">
                     <div class="preheating-room-header">下货信息2</div>
@@ -560,11 +560,69 @@
                     灭菌完成
                   </el-tag>
                 </div>
+                <!-- 下货执行卡片 -->
+                <div
+                  class="preheating-room-marker"
+                  data-x="800"
+                  data-y="30"
+                  style="width: 150px"
+                >
+                  <div class="preheating-room-content">
+                    <div class="preheating-room-header">下货执行</div>
+                    <div class="preheating-room-body">
+                      <div class="route-select-container">
+                        <div class="route-row">
+                          <span class="route-label">灭菌柜：</span>
+                          <el-select
+                            v-model="outSterilizeSelected"
+                            placeholder="选择"
+                            size="mini"
+                            style="width: 80px"
+                          >
+                            <el-option
+                              v-for="n in 15"
+                              :key="n"
+                              :label="String(3201 + n - 1)"
+                              :value="3201 + n - 1"
+                            ></el-option>
+                          </el-select>
+                        </div>
+                      </div>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        :loading="outSterilizeLoading"
+                        @click="sendOutSterilize"
+                        style="width: 100%"
+                        >执行</el-button
+                      >
+                      <el-button
+                        v-if="outSterilizeExecuting"
+                        type="danger"
+                        size="mini"
+                        @click="cancelOutSterilize"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
+                      >
+                      <div
+                        v-if="outSterilizeExecuting && outSterilizeTrayCode"
+                        style="display: flex; align-items: center"
+                      >
+                        <span style="font-size: 12px; color: #9fe3d3"
+                          >执行中：</span
+                        >
+                        <span style="font-size: 12px; color: greenyellow">{{
+                          outSterilizeTrayCode
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   class="preheating-room-marker"
                   data-x="65"
                   data-y="450"
-                  style="width: 110px"
+                  style="width: 120px"
                 >
                   <div class="preheating-room-content">
                     <div class="preheating-room-header">预热柜到灭菌柜选择</div>
@@ -1582,6 +1640,25 @@ const PREHEAT_DBW188_MAP = {
   3215: 'W_DBW188_BIT14'
 };
 
+// 灭菌柜编号 → W_DBW186 bit位键名(灭菌柜出货命令 - 下货)
+const STERILIZE_DBW186_MAP = {
+  3201: 'W_DBW186_BIT0',
+  3202: 'W_DBW186_BIT1',
+  3203: 'W_DBW186_BIT2',
+  3204: 'W_DBW186_BIT3',
+  3205: 'W_DBW186_BIT4',
+  3206: 'W_DBW186_BIT5',
+  3207: 'W_DBW186_BIT6',
+  3208: 'W_DBW186_BIT7',
+  3209: 'W_DBW186_BIT8',
+  3210: 'W_DBW186_BIT9',
+  3211: 'W_DBW186_BIT10',
+  3212: 'W_DBW186_BIT11',
+  3213: 'W_DBW186_BIT12',
+  3214: 'W_DBW186_BIT13',
+  3215: 'W_DBW186_BIT14'
+};
+
 export default {
   name: 'MonitorScreen',
   components: {
@@ -1817,6 +1894,12 @@ export default {
       disinfectionTrayCode: '', // 执行中显示的托盘编码
       disinfectionNeedQty: 0, // 需进货数量
       disinfectionTargetTotal: 0, // 目标总数量
+
+      // ---- 下货执行相关 ----
+      outSterilizeSelected: 3201, // 选中的灭菌柜编号（3201-3215）
+      outSterilizeLoading: false, // 执行按钮loading状态
+      outSterilizeExecuting: false, // 是否正在执行
+      outSterilizeTrayCode: '', // 执行中显示的托盘号
 
       // ---- 预热柜到灭菌柜电机状态（独立存储，供watch监听）----
       preheatToSterilizeMotorStatus: preheatToSterilizeInit,
@@ -8596,6 +8679,63 @@ export default {
 
       this.addLog('预热柜到灭菌柜执行已取消');
       this.$message.info('已取消预热柜到灭菌柜执行');
+    },
+    /**
+     * 下货执行 - 灭菌柜出货
+     * 参考写入点位.csv:
+     *   DB1001.DBW186: WCS执行进货灭菌柜出货命令
+     *   PLC命令2秒后自动取消（脉冲发送规范），但loading状态保持
+     *   只有手动取消时才取消loading
+     */
+    sendOutSterilize() {
+      if (!this.outSterilizeSelected) {
+        this.$message.warning('请选择灭菌柜编号');
+        return;
+      }
+
+      const cabinetNo = this.outSterilizeSelected;
+      this.addLog(`下货执行开始：灭菌柜=${cabinetNo}`);
+
+      // 设置执行状态
+      this.outSterilizeLoading = true;
+      this.outSterilizeExecuting = true;
+
+      // 生成随机托盘号（测试用）
+      const randomTrayNo = Math.floor(Math.random() * 9000) + 1000;
+      this.outSterilizeTrayCode = `TP-${cabinetNo}-${randomTrayNo}`;
+
+      // 发送灭菌柜出货命令到 W_DBW186 (DB1001.DBW186)
+      const bitKey = STERILIZE_DBW186_MAP[cabinetNo];
+      if (bitKey) {
+        this.addLog(`[PLC发送] ${bitKey} = true (灭菌柜${cabinetNo}出货命令)`);
+        ipcRenderer.send('writeSingleValueToPLC', bitKey, true);
+        // PLC命令2秒后自动取消（脉冲发送规范）
+        setTimeout(() => {
+          ipcRenderer.send('cancelWriteToPLC', bitKey);
+          // 注意：这里只取消PLC命令，不取消loading状态
+          // loading状态只有手动点击取消按钮时才取消
+        }, 2000);
+      }
+
+      this.addLog(
+        `灭菌柜${cabinetNo}下货命令已发送，执行托盘：${this.outSterilizeTrayCode}`
+      );
+      this.$message.success(
+        `已发送灭菌柜${cabinetNo}的下货执行命令，托盘号：${this.outSterilizeTrayCode}`
+      );
+    },
+    /**
+     * 下货执行 - 取消执行
+     */
+    cancelOutSterilize() {
+      // 手动取消时才取消loading和executing状态
+      this.outSterilizeExecuting = false;
+      this.outSterilizeTrayCode = '';
+      this.outSterilizeLoading = false;
+      this.outSterilizeSelected = 3201;
+
+      this.addLog('下货执行已取消');
+      this.$message.info('已取消下货执行');
     }
   },
   beforeDestroy() {
