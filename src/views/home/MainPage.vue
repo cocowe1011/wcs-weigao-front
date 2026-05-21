@@ -8269,8 +8269,8 @@ export default {
       const fromCabinet = Number(this.preheatSelectedFrom);
       const toCabinet = Number(this.sterilizeSelectedTo);
 
-      // 当前触发的预热柜编号必须与选择的预热柜编号一致
-      if (cabinetNo !== fromCabinet) {
+      // 当前触发的灭菌柜编号必须与选择的灭菌柜编号一致（电机下降沿在灭菌柜触发）
+      if (cabinetNo !== toCabinet) {
         return;
       }
 
@@ -8301,38 +8301,40 @@ export default {
       const isDirectConnection = fromCabinet === toCabinet;
 
       if (isDirectConnection) {
-        // 直连：移动预热柜队列对应列的所有托盘（xxx-1或xxx-2）
-        const destinationSuffix = String(slot); // '1' 或 '2'
-        const traysToMove = sourceQueue.trayInfo.filter(
-          (tray) => tray.sendTo && tray.sendTo.slice(-1) === destinationSuffix
-        );
+        // 直连：只要任何一个电机下降沿触发，移动预热柜队列的所有托盘
+        // 保持原有序号，只更新目的地
 
-        if (traysToMove.length === 0) {
+        // 如果队列已空，跳过（防止第二个电机重复触发）
+        if (sourceQueue.trayInfo.length === 0) {
           this.addLog(
-            `[预热到灭菌直连] Y${fromCabinet}-线${slot}电机下降沿，但队列无目的地=${toCabinet}${destinationSuffix}的托盘`,
+            `[预热到灭菌直连] Y${fromCabinet}-线${slot}电机下降沿，但队列已空（可能已被另一电机触发）`,
             'warning'
           );
           return;
         }
 
-        // 移动所有符合条件的托盘
+        // 移动所有托盘，保持原有序号，只更新目的地
         const movedTrayCodes = [];
-        traysToMove.forEach((tray) => {
-          const idx = sourceQueue.trayInfo.indexOf(tray);
-          if (idx !== -1) {
-            sourceQueue.trayInfo.splice(idx, 1);
-            // 更新目的地为灭菌柜编号（去掉列号）
-            this.$set(tray, 'sendTo', String(toCabinet));
-            targetQueue.trayInfo.push(tray);
-            movedTrayCodes.push(tray.trayCode);
-          }
+        const allTrays = [...sourceQueue.trayInfo];
+        sourceQueue.trayInfo = [];
+
+        allTrays.forEach((tray) => {
+          // 继承原sendTo的末位列号（1或2），如未设置则用当前触发的slot
+          const slotSuffix = tray.sendTo ? tray.sendTo.slice(-1) : String(slot);
+          const newPosition = `${toCabinet}${slotSuffix}`;
+          this.$set(tray, 'sendTo', newPosition);
+          // 保持原有序号，不重新计算
+          targetQueue.trayInfo.push(tray);
+          movedTrayCodes.push(
+            `${tray.trayCode}(序号${tray.sequenceNumber || '--'})`
+          );
         });
 
-        this.disinfectionNeedQty -= movedTrayCodes.length;
+        this.disinfectionNeedQty -= allTrays.length;
         this.addLog(
-          `[预热到灭菌直连] Y${fromCabinet}-线${slot}电机下降沿 → 灭菌柜${toCabinet}，已移动 ${
-            movedTrayCodes.length
-          } 个托盘：${movedTrayCodes.join(',')}，剩余需进货：${
+          `[预热到灭菌直连] Y${fromCabinet}-线${slot}电机下降沿 → 灭菌柜${toCabinet}，已移动整个队列 ${
+            allTrays.length
+          } 个托盘：${movedTrayCodes.join(',')}，保持原有序号，剩余需进货：${
             this.disinfectionNeedQty
           }`
         );
@@ -8352,14 +8354,26 @@ export default {
         }
 
         const tray = sourceQueue.trayInfo.splice(trayIndex, 1)[0];
-        this.$set(tray, 'sendTo', String(toCabinet));
+
+        // 设置新位置：灭菌柜编号+列号（如32021、32022）
+        const newPosition = `${toCabinet}${slot}`;
+        this.$set(tray, 'sendTo', newPosition);
+
+        // 重新计算序号：根据进入顺序编号112233（序号=行号，每行2个托盘）
+        // 计算该列中已有的托盘数（即第几行）
+        const traysInColumn = targetQueue.trayInfo.filter(
+          (t) => t.sendTo && t.sendTo.slice(-1) === destinationSuffix
+        );
+        const newSequenceNumber = traysInColumn.length + 1; // 序号 = 该列中的位置数（第几行）
+        this.$set(tray, 'sequenceNumber', newSequenceNumber);
+
         targetQueue.trayInfo.push(tray);
 
         this.disinfectionNeedQty -= 1;
         this.disinfectionTrayCode = tray.trayCode;
 
         this.addLog(
-          `[预热到灭菌非直连] Y${fromCabinet}-线${slot}电机下降沿 → 灭菌柜${toCabinet}，已移动托盘：${tray.trayCode}，剩余需进货：${this.disinfectionNeedQty}`
+          `[预热到灭菌非直连] Y${fromCabinet}-线${slot}电机下降沿 → 灭菌柜${toCabinet}，已移动托盘：${tray.trayCode}，新位置：${newPosition}，新序号：${newSequenceNumber}（第${newSequenceNumber}行），剩余需进货：${this.disinfectionNeedQty}`
         );
       }
 

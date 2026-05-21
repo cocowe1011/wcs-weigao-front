@@ -3,6 +3,9 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const path = require('path');
 module.exports = defineConfig({
   transpileDependencies: true,
+  devServer: {
+    port: 8090
+  },
   configureWebpack: {
     resolve: {
       fallback: {
