@@ -7048,11 +7048,11 @@ export default {
       // 写虚拟ID 999
       ipcRenderer.send('writeSingleValueToPLC', 'W_DBW10', 999);
       // 写 WCS-允许进料 = 2（批次上货错误）
-      ipcRenderer.send('writeValuesToPLC', 'W_DBW6', 2);
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW6', 2);
       // 2秒后取消
       setTimeout(() => {
         ipcRenderer.send('cancelWriteToPLC', 'W_DBW10');
-        ipcRenderer.send('writeValuesToPLC', 'W_DBW6', 0);
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW6');
       }, 2000);
     },
 
@@ -7152,7 +7152,11 @@ export default {
           // 写目的地到PLC: DB1001.DBW12
           const plcValue = parseInt(sendCode, 10);
           ipcRenderer.send('writeSingleValueToPLC', 'W_DBW12', plcValue);
-          this.addLog(`[目的地] 写W_DBW12 = ${plcValue}`, 'running');
+          ipcRenderer.send('writeSingleValueToPLC', 'W_DBW182', 1);
+          this.addLog(
+            `[目的地] 写W_DBW12 = ${plcValue}， 写W_DBW182 = 1`,
+            'running'
+          );
           setTimeout(() => {
             ipcRenderer.send('cancelWriteToPLC', 'W_DBW12');
           }, 2000);
@@ -7554,9 +7558,9 @@ export default {
               clear: false
             };
             // 全线启动：写入 DB1001.DBW2（WCS-全线启动），见 写入PLC点位.csv
-            ipcRenderer.send('writeValuesToPLC', 'W_DBW2', 1);
+            ipcRenderer.send('writeSingleValueToPLC', 'W_DBW2', 1);
             setTimeout(() => {
-              ipcRenderer.send('writeValuesToPLC', 'W_DBW2', 0);
+              ipcRenderer.send('cancelWriteToPLC', 'W_DBW2');
             }, 2000);
             this.buttonStates[button] = !this.buttonStates[button];
             this.$message.success('全线启动成功');
@@ -7580,9 +7584,9 @@ export default {
               clear: false
             };
             // 全线停止：写入 DB1001.DBW4（WCS-全线停止），见 写入PLC点位.csv
-            ipcRenderer.send('writeValuesToPLC', 'W_DBW4', 1);
+            ipcRenderer.send('writeSingleValueToPLC', 'W_DBW4', 1);
             setTimeout(() => {
-              ipcRenderer.send('writeValuesToPLC', 'W_DBW4', 0);
+              ipcRenderer.send('cancelWriteToPLC', 'W_DBW4');
             }, 2000);
             this.buttonStates[button] = !this.buttonStates[button];
             this.$message.success('全线停止成功');
@@ -7607,9 +7611,9 @@ export default {
             };
             this.buttonStates[button] = !this.buttonStates[button];
             // 全线暂停：写入点位以 写入PLC点位.csv 为准，暂用 W_DBW6；可按实际协议调整
-            ipcRenderer.send('writeValuesToPLC', 'W_DBW6', 1);
+            ipcRenderer.send('writeSingleValueToPLC', 'W_DBW6', 1);
             setTimeout(() => {
-              ipcRenderer.send('writeValuesToPLC', 'W_DBW6', 0);
+              ipcRenderer.send('cancelWriteToPLC', 'W_DBW6');
             }, 2000);
             this.$message.success('全线暂停成功');
             this.addLog('全线暂停成功');
@@ -7625,9 +7629,9 @@ export default {
         })
           .then(() => {
             // 故障复位：写入 DB1001.DBW8（WCS-故障复位），见 写入PLC点位.csv
-            ipcRenderer.send('writeValuesToPLC', 'W_DBW8', 1);
+            ipcRenderer.send('writeSingleValueToPLC', 'W_DBW8', 1);
             setTimeout(() => {
-              ipcRenderer.send('writeValuesToPLC', 'W_DBW8', 0);
+              ipcRenderer.send('cancelWriteToPLC', 'W_DBW8');
             }, 2000);
             this.$message.success('故障复位成功');
             this.addLog('故障复位成功');
@@ -8259,13 +8263,14 @@ export default {
         unread: type === 'alarm'
       };
 
-      if (type === 'running') {
-        this.runningLogs.unshift(log);
-        // 保持日志数量在合理范围内
-        if (this.runningLogs.length > 100) {
-          this.runningLogs.pop();
-        }
-      } else {
+      // 只要是日志就往运行日志中添加
+      this.runningLogs.unshift(log);
+      // 保持日志数量在合理范围内
+      if (this.runningLogs.length > 100) {
+        this.runningLogs.pop();
+      }
+
+      if (type === 'alarm') {
         this.alarmLogs.unshift(log);
         if (this.alarmLogs.length > 100) {
           this.alarmLogs.pop();

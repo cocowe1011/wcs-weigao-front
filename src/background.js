@@ -2510,13 +2510,9 @@ var variables = {
 };
 
 // 批量写入数组 - 仅包含 "是否一直写" 为 "是" 的点位
-var writeStrArr = [0, 0, 0, 0, 0];
+var writeStrArr = [0];
 var writeAddArr = [
-  'W_DBW0', // WCS看门狗心跳
-  'W_DBW2', // WCS-全线启动
-  'W_DBW4', // WCS-全线停止
-  'W_DBW6', // WCS-允许进料
-  'W_DBW8' // WCS-故障复位
+  'W_DBW0' // WCS看门狗心跳
 ];
 
 // 给PLC写值
