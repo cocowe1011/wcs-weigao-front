@@ -1510,6 +1510,17 @@ import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
 
+const net = require('net');
+
+// 扫码枪TCP连接配置（与 ScannerDebug.vue 一致）
+const SCANNER_CONFIG = [
+  { station: '01002', ip: '192.168.2.230', port: 55256 },
+  { station: '01002', ip: '192.168.2.234', port: 55256 },
+  { station: '01006', ip: '192.168.2.238', port: 55256 },
+  { station: '01006', ip: '192.168.2.242', port: 55256 }
+];
+const SCANNER_RECONNECT_DELAY = 3000;
+
 // 预热柜编号 → 预热柜队列索引(Y前缀)
 // queues: [0]上货区, [1]Y3215, [3]Y3214, [5]Y3213, ... [29]Y3201
 const PREHEAT_QUEUE_MAP = {
@@ -1685,6 +1696,13 @@ export default {
       // ---- 测试面板扫码输入 ----
       scanInput01002: '',
       scanInput01006: '',
+      // ---- 扫码枪TCP连接状态 ----
+      scannerConnected: {
+        '192.168.2.230': false,
+        '192.168.2.234': false,
+        '192.168.2.238': false,
+        '192.168.2.242': false
+      },
       // ---- 01002 上货流程 ----
       scanBuffer01002: [], // 01002 当前读码会话缓存的条码列表
       // ---- 01006 目的地流程 ----
@@ -6464,6 +6482,8 @@ export default {
     this.loadQueueInfoFromDatabase();
     this.buildGroupIndex();
     this.initWebSocketServer();
+    // 连接扫码枪TCP
+    this.connectAllScanners();
     // 启动批次+目的地轮询
     this.pollBatchAndDestination();
     this._pollBatchTimer = setInterval(this.pollBatchAndDestination, 5000);
@@ -6693,6 +6713,8 @@ export default {
       if (newVal === '1' && oldVal === '0') {
         this.scanBuffer01002 = [];
         this.addLog('[上货] 01002请求读码，开始缓存条码', 'running');
+        // 向01002工位所有扫码枪发送TRIGGER
+        this.triggerScannersByStation('01002');
       } else if (newVal === '0' && oldVal === '1') {
         this.addLog(
           `[上货] 01002读码结束，共缓存 ${this.scanBuffer01002.length} 个条码`,
@@ -6711,6 +6733,8 @@ export default {
       if (newVal === '1' && oldVal === '0') {
         this.scanBuffer01006 = [];
         this.addLog('[上货] 01006请求读码，开始缓存条码', 'running');
+        // 向01006工位所有扫码枪发送TRIGGER
+        this.triggerScannersByStation('01006');
       } else if (newVal === '0' && oldVal === '1') {
         this.addLog(
           `[上货] 01006读码结束，共缓存 ${this.scanBuffer01006.length} 个条码`,
@@ -6770,6 +6794,133 @@ export default {
     },
 
     // ================= 扫码模拟 =================
+    // ---- 条码清洗：去除非字母数字字符 ----
+    cleanBarcode(code) {
+      if (!code) return '';
+      return String(code)
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .trim();
+    },
+
+    // ================= 扫码枪TCP连接管理 =================
+    connectAllScanners() {
+      this._scannerSockets = {};
+      this._scannerReconnectTimers = {};
+      this._scannerDestroyed = false;
+      SCANNER_CONFIG.forEach((c) => this.connectScanner(c));
+    },
+    connectScanner(config) {
+      if (this._scannerDestroyed) return;
+      const { station, ip, port } = config;
+      // 先关闭已有连接
+      if (this._scannerSockets[ip]) {
+        this._scannerSockets[ip].destroy();
+        delete this._scannerSockets[ip];
+      }
+      const socket = new net.Socket();
+      socket.setEncoding('utf8');
+
+      socket.on('connect', () => {
+        console.log(`[扫码枪] ${ip}(${station}) 已连接`);
+        this.$set(this.scannerConnected, ip, true);
+        this.addLog(`[扫码枪] ${ip}(${station}) 已连接`, 'running');
+      });
+
+      socket.on('data', (data) => {
+        this.handleScannerData(station, ip, data);
+      });
+
+      socket.on('close', () => {
+        console.log(`[扫码枪] ${ip}(${station}) 连接关闭`);
+        this.$set(this.scannerConnected, ip, false);
+        delete this._scannerSockets[ip];
+        if (!this._scannerDestroyed) {
+          this._scannerReconnectTimers[ip] = setTimeout(() => {
+            this.connectScanner(config);
+          }, SCANNER_RECONNECT_DELAY);
+        }
+      });
+
+      socket.on('error', (err) => {
+        console.error(`[扫码枪] ${ip}(${station}) 连接错误:`, err.message);
+        this.$set(this.scannerConnected, ip, false);
+      });
+
+      this._scannerSockets[ip] = socket;
+      socket.connect(port, ip);
+    },
+    /**
+     * 处理扫码枪返回的原始数据：
+     * 按换行符拆分每行，提取条码（去除特殊字符），缓存到对应工位 buffer
+     */
+    handleScannerData(station, ip, rawData) {
+      if (!rawData) return;
+      // 按换行符拆分，兼容 \r\n / \n / \r
+      const lines = String(rawData)
+        .split(/[\r\n]+/)
+        .filter(Boolean);
+      lines.forEach((line) => {
+        // 去除首尾空白和管道符等特殊字符
+        const trimmed = line.trim().replace(/^\|+|\|+$/g, '');
+        if (!trimmed) return;
+        const barcode = this.cleanBarcode(trimmed);
+        if (!barcode) return;
+        console.log(
+          `[扫码枪] ${ip}(${station}) 原始: ${trimmed} → 清洗: ${barcode}`
+        );
+        // 根据工位缓存到对应 buffer
+        if (station === '01002') {
+          this.scanBuffer01002.push(barcode);
+          this.addLog(
+            `[扫码枪] 01002 缓存条码: ${barcode}，当前缓存数=${this.scanBuffer01002.length}`,
+            'running'
+          );
+        } else if (station === '01006') {
+          this.scanBuffer01006.push(barcode);
+          this.addLog(
+            `[扫码枪] 01006 缓存条码: ${barcode}，当前缓存数=${this.scanBuffer01006.length}`,
+            'running'
+          );
+        }
+      });
+    },
+    /**
+     * 向指定工位的所有扫码枪发送 TRIGGER 命令
+     */
+    triggerScannersByStation(station) {
+      SCANNER_CONFIG.filter((c) => c.station === station).forEach((c) => {
+        const socket = this._scannerSockets && this._scannerSockets[c.ip];
+        if (socket && !socket.destroyed) {
+          socket.write('TRIGGER');
+          console.log(`[扫码枪] ${c.ip}(${station}) 已发送 TRIGGER`);
+          this.addLog(`[扫码枪] ${c.ip}(${station}) 已发送TRIGGER`, 'running');
+        } else {
+          console.warn(`[扫码枪] ${c.ip}(${station}) 未连接，无法发送 TRIGGER`);
+          this.addLog(
+            `[扫码枪] ${c.ip}(${station}) 未连接，无法发送TRIGGER`,
+            'alarm'
+          );
+        }
+      });
+    },
+    disconnectAllScanners() {
+      this._scannerDestroyed = true;
+      // 清除重连定时器
+      if (this._scannerReconnectTimers) {
+        Object.keys(this._scannerReconnectTimers).forEach((ip) => {
+          clearTimeout(this._scannerReconnectTimers[ip]);
+        });
+        this._scannerReconnectTimers = {};
+      }
+      // 关闭所有连接
+      if (this._scannerSockets) {
+        Object.values(this._scannerSockets).forEach((socket) => {
+          socket.destroy();
+        });
+        this._scannerSockets = {};
+      }
+    },
+
     async handleScanConfirm(location) {
       const uid =
         location === '01002'
@@ -8741,6 +8892,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.updateMarkerPositions);
     this._removeWebSocketIpcListeners();
+    this.disconnectAllScanners();
     if (this._pollBatchTimer) {
       clearInterval(this._pollBatchTimer);
       this._pollBatchTimer = null;
