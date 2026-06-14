@@ -8622,57 +8622,12 @@ export default {
           `[预热到灭菌] 预热柜Y${fromCabinet}到灭菌柜${toCabinet}完成，所有托盘已移动`
         );
 
-        // 执行完成后，发送恢复命令和允许进货命令（持续2秒）
+        // 执行完成后，只发送允许进货命令（持续2秒）
         this.addLog(
-          `[预热到灭菌完成] 发送恢复命令和允许进货命令（预热柜Y${fromCabinet}）`
+          `[预热到灭菌完成] 发送允许进货命令（预热柜Y${fromCabinet}）`
         );
 
-        // 1. 恢复 DB1001.DBW14 = 0（出货预热房编号），持续2秒
-        this.addLog('[PLC发送] W_DBW14 = 0 (恢复出货预热房编号)');
-        ipcRenderer.send('writeSingleValueToPLC', 'W_DBW14', 0);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', 'W_DBW14');
-        }, 2000);
-
-        // 2. 恢复 DB1001.DBW16 = 0（进货灭菌柜编号），持续2秒
-        this.addLog('[PLC发送] W_DBW16 = 0 (恢复进货灭菌柜编号)');
-        ipcRenderer.send('writeSingleValueToPLC', 'W_DBW16', 0);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', 'W_DBW16');
-        }, 2000);
-
-        // 3. 恢复 DB1001.DBW18 对应预热柜位 = false（预热房出货命令），持续2秒
-        const fromBitKey18 = PREHEAT_DBW18_MAP[fromCabinet];
-        if (fromBitKey18) {
-          this.addLog(
-            `[PLC发送] ${fromBitKey18} = false (恢复预热房Y${fromCabinet}出货命令)`
-          );
-          ipcRenderer.send('writeSingleValueToPLC', fromBitKey18, false);
-          setTimeout(() => {
-            ipcRenderer.send('cancelWriteToPLC', fromBitKey18);
-          }, 2000);
-        }
-
-        // 4. 恢复 DB1001.DBW20 对应灭菌柜位 = false（灭菌柜进货命令），持续2秒
-        const toBitKey20 = STERILIZE_DBW20_MAP[toCabinet];
-        if (toBitKey20) {
-          this.addLog(
-            `[PLC发送] ${toBitKey20} = false (恢复灭菌柜${toCabinet}进货命令)`
-          );
-          ipcRenderer.send('writeSingleValueToPLC', toBitKey20, false);
-          setTimeout(() => {
-            ipcRenderer.send('cancelWriteToPLC', toBitKey20);
-          }, 2000);
-        }
-
-        // 5. 恢复 DB1001.DBW22 = 0（小车移栽命令），持续2秒
-        this.addLog('[PLC发送] W_DBW22 = 0 (恢复小车移栽命令)');
-        ipcRenderer.send('writeSingleValueToPLC', 'W_DBW22', 0);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', 'W_DBW22');
-        }, 2000);
-
-        // 6. 发送 DB1001.DBW188 对应预热柜位 = true（允许进货命令），持续2秒
+        // 发送 DB1001.DBW188 对应预热柜位 = true（允许进货命令），持续2秒
         const allowBitKey188 = PREHEAT_DBW188_MAP[fromCabinet];
         if (allowBitKey188) {
           this.addLog(
