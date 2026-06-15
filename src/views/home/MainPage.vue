@@ -604,7 +604,7 @@
                         style="width: 100%; margin-left: 0px"
                         >取消</el-button
                       >
-                      <div
+                      <!-- <div
                         v-if="outSterilizeExecuting && outSterilizeTrayCode"
                         style="display: flex; align-items: center"
                       >
@@ -614,7 +614,7 @@
                         <span style="font-size: 12px; color: greenyellow">{{
                           outSterilizeTrayCode
                         }}</span>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -1200,9 +1200,9 @@
               </el-button>
             </div>
           </div>
-          <!-- 灭菌后预热信号 -->
+          <!-- 出库信号(DBW1670/1672) -->
           <div class="test-section">
-            <span class="test-label">灭菌后预热信号:</span>
+            <span class="test-label">出库信号(DBW1670/1672):</span>
             <div
               style="
                 margin-top: 8px;
@@ -1211,18 +1211,18 @@
                 margin-bottom: 6px;
               "
             >
-              触发后删除对应灭菌队列的第一个托盘
+              触发后模拟PLC出库信号上升沿(左线/右线)
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px">
               <el-button
-                v-for="q in sterilizationQueues"
-                :key="q.id"
+                v-for="config in OUTBOUND_REQUEST_MAP"
+                :key="config.db + '-' + config.bit"
                 size="mini"
-                type="danger"
+                :type="config.lineNo === 1 ? 'success' : 'warning'"
                 plain
-                @click="triggerSterilizationMotorSignal(q)"
+                @click="simulateOutboundSignal(config)"
               >
-                {{ q.queueName }}
+                {{ config.motorId }}
               </el-button>
             </div>
           </div>
@@ -1713,6 +1713,290 @@ const STERILIZE_DBW186_MAP = {
   3215: 'W_DBW186_BIT14'
 };
 
+// 出库请求电机映射：DBW1670/DBW1672的bit位 → { cabinetNo, lineNo, motorId }
+// lineNo: 1=左线, 2=右线
+// 根据读取点位.csv和用户需求：左线电机上升沿触发，则队列中左线第一个托盘出队
+const OUTBOUND_REQUEST_MAP = [
+  // DBW1670 各bit位（3208-3215柜的出库请求）
+  {
+    db: 'DBW1670',
+    bit: 0,
+    cabinetNo: 3215,
+    lineNo: 2,
+    motorId: '2026',
+    destAddr: 'W_DBW60',
+    idAddr: 'W_DBW120'
+  }, // BIT0: 2026(右线)
+  {
+    db: 'DBW1670',
+    bit: 1,
+    cabinetNo: 3215,
+    lineNo: 1,
+    motorId: '2029',
+    destAddr: 'W_DBW62',
+    idAddr: 'W_DBW122'
+  }, // BIT1: 2029(左线)
+  {
+    db: 'DBW1670',
+    bit: 2,
+    cabinetNo: 3214,
+    lineNo: 2,
+    motorId: '2033',
+    destAddr: 'W_DBW64',
+    idAddr: 'W_DBW124'
+  }, // BIT2: 2033(右线)
+  {
+    db: 'DBW1670',
+    bit: 3,
+    cabinetNo: 3214,
+    lineNo: 1,
+    motorId: '2036',
+    destAddr: 'W_DBW66',
+    idAddr: 'W_DBW126'
+  }, // BIT3: 2036(左线)
+  {
+    db: 'DBW1670',
+    bit: 4,
+    cabinetNo: 3213,
+    lineNo: 2,
+    motorId: '3026',
+    destAddr: 'W_DBW68',
+    idAddr: 'W_DBW128'
+  }, // BIT4: 3026(右线)
+  {
+    db: 'DBW1670',
+    bit: 5,
+    cabinetNo: 3213,
+    lineNo: 1,
+    motorId: '3029',
+    destAddr: 'W_DBW70',
+    idAddr: 'W_DBW130'
+  }, // BIT5: 3029(左线)
+  {
+    db: 'DBW1670',
+    bit: 6,
+    cabinetNo: 3212,
+    lineNo: 2,
+    motorId: '3033',
+    destAddr: 'W_DBW72',
+    idAddr: 'W_DBW132'
+  }, // BIT6: 3033(右线)
+  {
+    db: 'DBW1670',
+    bit: 7,
+    cabinetNo: 3212,
+    lineNo: 1,
+    motorId: '3036',
+    destAddr: 'W_DBW74',
+    idAddr: 'W_DBW134'
+  }, // BIT7: 3036(左线)
+  {
+    db: 'DBW1670',
+    bit: 8,
+    cabinetNo: 3211,
+    lineNo: 2,
+    motorId: '4026',
+    destAddr: 'W_DBW76',
+    idAddr: 'W_DBW136'
+  }, // BIT8: 4026(右线)
+  {
+    db: 'DBW1670',
+    bit: 9,
+    cabinetNo: 3211,
+    lineNo: 1,
+    motorId: '4029',
+    destAddr: 'W_DBW78',
+    idAddr: 'W_DBW138'
+  }, // BIT9: 4029(左线)
+  {
+    db: 'DBW1670',
+    bit: 10,
+    cabinetNo: 3210,
+    lineNo: 2,
+    motorId: '4033',
+    destAddr: 'W_DBW80',
+    idAddr: 'W_DBW140'
+  }, // BIT10: 4033(右线)
+  {
+    db: 'DBW1670',
+    bit: 11,
+    cabinetNo: 3210,
+    lineNo: 1,
+    motorId: '4036',
+    destAddr: 'W_DBW82',
+    idAddr: 'W_DBW142'
+  }, // BIT11: 4036(左线)
+  {
+    db: 'DBW1670',
+    bit: 12,
+    cabinetNo: 3209,
+    lineNo: 2,
+    motorId: '5026',
+    destAddr: 'W_DBW84',
+    idAddr: 'W_DBW144'
+  }, // BIT12: 5026(右线)
+  {
+    db: 'DBW1670',
+    bit: 13,
+    cabinetNo: 3209,
+    lineNo: 1,
+    motorId: '5029',
+    destAddr: 'W_DBW86',
+    idAddr: 'W_DBW146'
+  }, // BIT13: 5029(左线)
+  {
+    db: 'DBW1670',
+    bit: 14,
+    cabinetNo: 3208,
+    lineNo: 2,
+    motorId: '5033',
+    destAddr: 'W_DBW88',
+    idAddr: 'W_DBW148'
+  }, // BIT14: 5033(右线)
+  {
+    db: 'DBW1670',
+    bit: 15,
+    cabinetNo: 3208,
+    lineNo: 1,
+    motorId: '5036',
+    destAddr: 'W_DBW90',
+    idAddr: 'W_DBW150'
+  }, // BIT15: 5036(左线)
+  // DBW1672 各bit位（3201-3207柜的出库请求）
+  {
+    db: 'DBW1672',
+    bit: 0,
+    cabinetNo: 3207,
+    lineNo: 2,
+    motorId: '6026',
+    destAddr: 'W_DBW92',
+    idAddr: 'W_DBW152'
+  }, // BIT0: 6026(右线)
+  {
+    db: 'DBW1672',
+    bit: 1,
+    cabinetNo: 3207,
+    lineNo: 1,
+    motorId: '6029',
+    destAddr: 'W_DBW94',
+    idAddr: 'W_DBW154'
+  }, // BIT1: 6029(左线)
+  {
+    db: 'DBW1672',
+    bit: 2,
+    cabinetNo: 3206,
+    lineNo: 2,
+    motorId: '6033',
+    destAddr: 'W_DBW96',
+    idAddr: 'W_DBW156'
+  }, // BIT2: 6033(右线)
+  {
+    db: 'DBW1672',
+    bit: 3,
+    cabinetNo: 3206,
+    lineNo: 1,
+    motorId: '6036',
+    destAddr: 'W_DBW98',
+    idAddr: 'W_DBW158'
+  }, // BIT3: 6036(左线)
+  {
+    db: 'DBW1672',
+    bit: 4,
+    cabinetNo: 3205,
+    lineNo: 2,
+    motorId: '7026',
+    destAddr: 'W_DBW100',
+    idAddr: 'W_DBW160'
+  }, // BIT4: 7026(右线)
+  {
+    db: 'DBW1672',
+    bit: 5,
+    cabinetNo: 3205,
+    lineNo: 1,
+    motorId: '7029',
+    destAddr: 'W_DBW102',
+    idAddr: 'W_DBW162'
+  }, // BIT5: 7029(左线)
+  {
+    db: 'DBW1672',
+    bit: 6,
+    cabinetNo: 3204,
+    lineNo: 2,
+    motorId: '7033',
+    destAddr: 'W_DBW104',
+    idAddr: 'W_DBW164'
+  }, // BIT6: 7033(右线)
+  {
+    db: 'DBW1672',
+    bit: 7,
+    cabinetNo: 3204,
+    lineNo: 1,
+    motorId: '7036',
+    destAddr: 'W_DBW106',
+    idAddr: 'W_DBW166'
+  }, // BIT7: 7036(左线)
+  {
+    db: 'DBW1672',
+    bit: 8,
+    cabinetNo: 3203,
+    lineNo: 2,
+    motorId: '8026',
+    destAddr: 'W_DBW108',
+    idAddr: 'W_DBW168'
+  }, // BIT8: 8026(右线)
+  {
+    db: 'DBW1672',
+    bit: 9,
+    cabinetNo: 3203,
+    lineNo: 1,
+    motorId: '8029',
+    destAddr: 'W_DBW110',
+    idAddr: 'W_DBW170'
+  }, // BIT9: 8029(左线)
+  {
+    db: 'DBW1672',
+    bit: 10,
+    cabinetNo: 3202,
+    lineNo: 2,
+    motorId: '8033',
+    destAddr: 'W_DBW112',
+    idAddr: 'W_DBW172'
+  }, // BIT10: 8033(右线)
+  {
+    db: 'DBW1672',
+    bit: 11,
+    cabinetNo: 3202,
+    lineNo: 1,
+    motorId: '8036',
+    destAddr: 'W_DBW114',
+    idAddr: 'W_DBW174'
+  }, // BIT11: 8036(左线)
+  {
+    db: 'DBW1672',
+    bit: 12,
+    cabinetNo: 3201,
+    lineNo: 2,
+    motorId: '9015',
+    destAddr: 'W_DBW116',
+    idAddr: 'W_DBW176'
+  }, // BIT12: 9015(右线)
+  {
+    db: 'DBW1672',
+    bit: 13,
+    cabinetNo: 3201,
+    lineNo: 1,
+    motorId: '9018',
+    destAddr: 'W_DBW118',
+    idAddr: 'W_DBW178'
+  } // BIT13: 9018(左线)
+];
+
+// 目的地代码：去连廊方向321，去本层输出口方向323
+const DESTINATION_CODE = {
+  CORRIDOR: 321, // 连廊方向
+  LOCAL_OUTPUT: 323 // 本层输出口方向
+};
+
 export default {
   name: 'MonitorScreen',
   components: {
@@ -1755,6 +2039,41 @@ export default {
       bit1658RequestReadCode01002: '0', // BIT1：01002处请求读码
       bit1658RequestReadCode01006: '0', // BIT2：01006处请求读码
       bit1658RequestDestination: '0', // BIT3：请求写目的地
+
+      // ---- DB1000.DBW1670/1672 出库请求信号（上升沿触发出库） ----
+      // DBW1670 各bit位（3208-3215柜的出库请求）
+      outbound1670Bit0: '0', // BIT0: 3215柜右线2026电机
+      outbound1670Bit1: '0', // BIT1: 3215柜左线2029电机
+      outbound1670Bit2: '0', // BIT2: 3214柜右线2033电机
+      outbound1670Bit3: '0', // BIT3: 3214柜左线2036电机
+      outbound1670Bit4: '0', // BIT4: 3213柜右线3026电机
+      outbound1670Bit5: '0', // BIT5: 3213柜左线3029电机
+      outbound1670Bit6: '0', // BIT6: 3212柜右线3033电机
+      outbound1670Bit7: '0', // BIT7: 3212柜左线3036电机
+      outbound1670Bit8: '0', // BIT8: 3211柜右线4026电机
+      outbound1670Bit9: '0', // BIT9: 3211柜左线4029电机
+      outbound1670Bit10: '0', // BIT10: 3210柜右线4033电机
+      outbound1670Bit11: '0', // BIT11: 3210柜左线4036电机
+      outbound1670Bit12: '0', // BIT12: 3209柜右线5026电机
+      outbound1670Bit13: '0', // BIT13: 3209柜左线5029电机
+      outbound1670Bit14: '0', // BIT14: 3208柜右线5033电机
+      outbound1670Bit15: '0', // BIT15: 3208柜左线5036电机
+      // DBW1672 各bit位（3201-3207柜的出库请求）
+      outbound1672Bit0: '0', // BIT0: 3207柜右线6026电机
+      outbound1672Bit1: '0', // BIT1: 3207柜左线6029电机
+      outbound1672Bit2: '0', // BIT2: 3206柜右线6033电机
+      outbound1672Bit3: '0', // BIT3: 3206柜左线6036电机
+      outbound1672Bit4: '0', // BIT4: 3205柜右线7026电机
+      outbound1672Bit5: '0', // BIT5: 3205柜左线7029电机
+      outbound1672Bit6: '0', // BIT6: 3204柜右线7033电机
+      outbound1672Bit7: '0', // BIT7: 3204柜左线7036电机
+      outbound1672Bit8: '0', // BIT8: 3203柜右线8026电机
+      outbound1672Bit9: '0', // BIT9: 3203柜左线8029电机
+      outbound1672Bit10: '0', // BIT10: 3202柜右线8033电机
+      outbound1672Bit11: '0', // BIT11: 3202柜左线8036电机
+      outbound1672Bit12: '0', // BIT12: 3201柜右线9015电机
+      outbound1672Bit13: '0', // BIT13: 3201柜左线9018电机
+
       // ---- 面板A-第二部分：最近一次触发虚拟ID后更新，不被轮询覆盖 ----
       lastProcessedPallet: {
         virtualId: '',
@@ -1975,6 +2294,7 @@ export default {
       // ---- 测试面板配置引用（Vue模板需要访问常量）----
       LOADING_MOTOR_MAP: LOADING_MOTOR_MAP,
       PREHEAT_TO_STERILIZE_MOTOR_MAP: PREHEAT_TO_STERILIZE_MOTOR_MAP,
+      OUTBOUND_REQUEST_MAP: OUTBOUND_REQUEST_MAP,
 
       // ==========================================================
       // 【修改结果】直接在 data 里定义好所有设备点位
@@ -6729,6 +7049,43 @@ export default {
       this.bit1658RequestReadCode01006 = getBit(word1658, 10); // BIT2→bit10：01006处请求读码
       this.bit1658RequestDestination = getBit(word1658, 11); // BIT3→bit11：请求写目的地
 
+      // ---- DB1000.DBW1670/1672 出库请求信号赋值（上升沿触发出库） ----
+      // S7大端序：逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
+      const word1670 = getParsedWord('DBW1670');
+      const word1672 = getParsedWord('DBW1672');
+      // DBW1670 各bit位（3208-3215柜的出库请求）
+      this.outbound1670Bit0 = getBit(word1670, 8); // BIT0→bit8: 3215柜右线2026
+      this.outbound1670Bit1 = getBit(word1670, 9); // BIT1→bit9: 3215柜左线2029
+      this.outbound1670Bit2 = getBit(word1670, 10); // BIT2→bit10: 3214柜右线2033
+      this.outbound1670Bit3 = getBit(word1670, 11); // BIT3→bit11: 3214柜左线2036
+      this.outbound1670Bit4 = getBit(word1670, 12); // BIT4→bit12: 3213柜右线3026
+      this.outbound1670Bit5 = getBit(word1670, 13); // BIT5→bit13: 3213柜左线3029
+      this.outbound1670Bit6 = getBit(word1670, 14); // BIT6→bit14: 3212柜右线3033
+      this.outbound1670Bit7 = getBit(word1670, 15); // BIT7→bit15: 3212柜左线3036
+      this.outbound1670Bit8 = getBit(word1670, 0); // BIT8→bit0: 3211柜右线4026
+      this.outbound1670Bit9 = getBit(word1670, 1); // BIT9→bit1: 3211柜左线4029
+      this.outbound1670Bit10 = getBit(word1670, 2); // BIT10→bit2: 3210柜右线4033
+      this.outbound1670Bit11 = getBit(word1670, 3); // BIT11→bit3: 3210柜左线4036
+      this.outbound1670Bit12 = getBit(word1670, 4); // BIT12→bit4: 3209柜右线5026
+      this.outbound1670Bit13 = getBit(word1670, 5); // BIT13→bit5: 3209柜左线5029
+      this.outbound1670Bit14 = getBit(word1670, 6); // BIT14→bit6: 3208柜右线5033
+      this.outbound1670Bit15 = getBit(word1670, 7); // BIT15→bit7: 3208柜左线5036
+      // DBW1672 各bit位（3201-3207柜的出库请求）
+      this.outbound1672Bit0 = getBit(word1672, 8); // BIT0→bit8: 3207柜右线6026
+      this.outbound1672Bit1 = getBit(word1672, 9); // BIT1→bit9: 3207柜左线6029
+      this.outbound1672Bit2 = getBit(word1672, 10); // BIT2→bit10: 3206柜右线6033
+      this.outbound1672Bit3 = getBit(word1672, 11); // BIT3→bit11: 3206柜左线6036
+      this.outbound1672Bit4 = getBit(word1672, 12); // BIT4→bit12: 3205柜右线7026
+      this.outbound1672Bit5 = getBit(word1672, 13); // BIT5→bit13: 3205柜左线7029
+      this.outbound1672Bit6 = getBit(word1672, 14); // BIT6→bit14: 3204柜右线7033
+      this.outbound1672Bit7 = getBit(word1672, 15); // BIT7→bit15: 3204柜左线7036
+      this.outbound1672Bit8 = getBit(word1672, 0); // BIT8→bit0: 3203柜右线8026
+      this.outbound1672Bit9 = getBit(word1672, 1); // BIT9→bit1: 3203柜左线8029
+      this.outbound1672Bit10 = getBit(word1672, 2); // BIT10→bit2: 3202柜右线8033
+      this.outbound1672Bit11 = getBit(word1672, 3); // BIT11→bit3: 3202柜左线8036
+      this.outbound1672Bit12 = getBit(word1672, 4); // BIT12→bit4: 3201柜右线9015
+      this.outbound1672Bit13 = getBit(word1672, 5); // BIT13→bit5: 3201柜左线9018
+
       // 如果弹窗处于打开状态，同步更新弹窗内的数据
       if (this.popoverVisible && this.popoverData) {
         if (!this.popoverData.groupId) {
@@ -6795,9 +7152,314 @@ export default {
       if (newVal === '1' && oldVal === '0') {
         this.handleDestinationRequest();
       }
+    },
+
+    // ================= 出库请求信号监听（DBW1670/1672） =================
+    // DBW1670 各bit位监听（3208-3215柜的出库请求）
+    outbound1670Bit0(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3215, 2, '2026', 'W_DBW60', 'W_DBW120');
+      }
+    },
+    outbound1670Bit1(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3215, 1, '2029', 'W_DBW62', 'W_DBW122');
+      }
+    },
+    outbound1670Bit2(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3214, 2, '2033', 'W_DBW64', 'W_DBW124');
+      }
+    },
+    outbound1670Bit3(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3214, 1, '2036', 'W_DBW66', 'W_DBW126');
+      }
+    },
+    outbound1670Bit4(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3213, 2, '3026', 'W_DBW68', 'W_DBW128');
+      }
+    },
+    outbound1670Bit5(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3213, 1, '3029', 'W_DBW70', 'W_DBW130');
+      }
+    },
+    outbound1670Bit6(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3212, 2, '3033', 'W_DBW72', 'W_DBW132');
+      }
+    },
+    outbound1670Bit7(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3212, 1, '3036', 'W_DBW74', 'W_DBW134');
+      }
+    },
+    outbound1670Bit8(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3211, 2, '4026', 'W_DBW76', 'W_DBW136');
+      }
+    },
+    outbound1670Bit9(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3211, 1, '4029', 'W_DBW78', 'W_DBW138');
+      }
+    },
+    outbound1670Bit10(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3210, 2, '4033', 'W_DBW80', 'W_DBW140');
+      }
+    },
+    outbound1670Bit11(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3210, 1, '4036', 'W_DBW82', 'W_DBW142');
+      }
+    },
+    outbound1670Bit12(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3209, 2, '5026', 'W_DBW84', 'W_DBW144');
+      }
+    },
+    outbound1670Bit13(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3209, 1, '5029', 'W_DBW86', 'W_DBW146');
+      }
+    },
+    outbound1670Bit14(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3208, 2, '5033', 'W_DBW88', 'W_DBW148');
+      }
+    },
+    outbound1670Bit15(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3208, 1, '5036', 'W_DBW90', 'W_DBW150');
+      }
+    },
+    // DBW1672 各bit位监听（3201-3207柜的出库请求）
+    outbound1672Bit0(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3207, 2, '6026', 'W_DBW92', 'W_DBW152');
+      }
+    },
+    outbound1672Bit1(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3207, 1, '6029', 'W_DBW94', 'W_DBW154');
+      }
+    },
+    outbound1672Bit2(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3206, 2, '6033', 'W_DBW96', 'W_DBW156');
+      }
+    },
+    outbound1672Bit3(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3206, 1, '6036', 'W_DBW98', 'W_DBW158');
+      }
+    },
+    outbound1672Bit4(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3205, 2, '7026', 'W_DBW100', 'W_DBW160');
+      }
+    },
+    outbound1672Bit5(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3205, 1, '7029', 'W_DBW102', 'W_DBW162');
+      }
+    },
+    outbound1672Bit6(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3204, 2, '7033', 'W_DBW104', 'W_DBW164');
+      }
+    },
+    outbound1672Bit7(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3204, 1, '7036', 'W_DBW106', 'W_DBW166');
+      }
+    },
+    outbound1672Bit8(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3203, 2, '8026', 'W_DBW108', 'W_DBW168');
+      }
+    },
+    outbound1672Bit9(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3203, 1, '8029', 'W_DBW110', 'W_DBW170');
+      }
+    },
+    outbound1672Bit10(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3202, 2, '8033', 'W_DBW112', 'W_DBW172');
+      }
+    },
+    outbound1672Bit11(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3202, 1, '8036', 'W_DBW114', 'W_DBW174');
+      }
+    },
+    outbound1672Bit12(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3201, 2, '9015', 'W_DBW116', 'W_DBW176');
+      }
+    },
+    outbound1672Bit13(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleOutboundRequest(3201, 1, '9018', 'W_DBW118', 'W_DBW178');
+      }
     }
   },
   methods: {
+    // ================= 出库请求处理（DBW1670/1672） =================
+    /**
+     * 处理出库请求：从灭菌柜队列中出队托盘并写入PLC
+     * @param {number} cabinetNo - 灭菌柜编号（3201-3215）
+     * @param {number} lineNo - 线号（1=左线，2=右线）
+     * @param {string} motorId - 电机编号（如'9018'）
+     * @param {string} destAddr - 目的地写入地址（如'W_DBW118'）
+     * @param {string} idAddr - 虚拟ID写入地址（如'W_DBW178'）
+     */
+    handleOutboundRequest(cabinetNo, lineNo, motorId, destAddr, idAddr) {
+      this.addLog(
+        `[出库] 收到${cabinetNo}柜${
+          lineNo === 1 ? '左' : '右'
+        }线电机${motorId}出库请求`,
+        'running'
+      );
+
+      // 获取灭菌柜队列索引
+      const queueIndex = STERILIZE_QUEUE_MAP[cabinetNo];
+      if (queueIndex === undefined) {
+        this.addLog(`[出库] 未找到${cabinetNo}柜的队列索引`, 'alarm');
+        return;
+      }
+
+      const queue = this.queues[queueIndex];
+      if (!queue || !queue.trayInfo || queue.trayInfo.length === 0) {
+        this.addLog(`[出库] ${cabinetNo}柜队列空，无法出库`, 'alarm');
+        return;
+      }
+
+      // 查找对应线号的托盘：sendTo末位为lineNo（如32011末位是1=左线）
+      // 找到队列中第一个匹配线号的托盘
+      const trayIndex = queue.trayInfo.findIndex((tray) => {
+        const sendTo = tray.sendTo || '';
+        const lastChar = sendTo.slice(-1);
+        return lastChar === String(lineNo);
+      });
+
+      if (trayIndex === -1) {
+        this.addLog(
+          `[出库] ${cabinetNo}柜队列中没有${
+            lineNo === 1 ? '左' : '右'
+          }线托盘，队列托盘数=${queue.trayInfo.length}`,
+          'alarm'
+        );
+        return;
+      }
+
+      const tray = queue.trayInfo[trayIndex];
+      this.processOutboundTray(
+        tray,
+        queue,
+        trayIndex,
+        destAddr,
+        idAddr,
+        motorId,
+        cabinetNo,
+        lineNo
+      );
+    },
+
+    /**
+     * 处理出库托盘：写入PLC并从队列中移除
+     */
+    processOutboundTray(
+      tray,
+      queue,
+      trayIndex,
+      destAddr,
+      idAddr,
+      motorId,
+      cabinetNo,
+      lineNo
+    ) {
+      // 获取目的地代码：以设定的下货目的地面板为准
+      // dischargeDestSetted=true 且 dischargeDestination=1 → 连廊方向(321)
+      // dischargeDestSetted=true 且 dischargeDestination=2 → 本层输出口方向(323)
+      // dischargeDestSetted=false → 默认323
+      let destinationCode = DESTINATION_CODE.LOCAL_OUTPUT; // 默认323
+      if (this.dischargeDestSetted) {
+        destinationCode =
+          this.dischargeDestination === 1
+            ? DESTINATION_CODE.CORRIDOR
+            : DESTINATION_CODE.LOCAL_OUTPUT;
+      }
+
+      // 获取虚拟ID
+      const virtualId = tray.virtualId;
+      if (!virtualId) {
+        this.addLog(`[出库] 托盘无虚拟ID，无法出库`, 'alarm');
+        return;
+      }
+
+      this.addLog(
+        `[出库] 托盘${
+          tray.trayCode || virtualId
+        }出库，电机${motorId}，目的地=${destinationCode}，虚拟ID=${virtualId}`,
+        'running'
+      );
+
+      // 写入PLC：目的地（持续2秒）
+      ipcRenderer.send('writeSingleValueToPLC', destAddr, destinationCode);
+
+      // 写入PLC：虚拟ID（持续2秒）
+      ipcRenderer.send('writeSingleValueToPLC', idAddr, Number(virtualId));
+      this.addLog(
+        `[出库] 写入目的地: ${destAddr} = ${destinationCode},写入虚拟ID: ${idAddr} = ${virtualId}`,
+        'running'
+      );
+
+      // 2秒后取消写入
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', destAddr);
+        ipcRenderer.send('cancelWriteToPLC', idAddr);
+      }, 2000);
+
+      // 更新下货面板1
+      this.unloadInfo = {
+        virtualId: String(virtualId),
+        cargoName: tray.cargoName || '--'
+      };
+
+      // 从队列中移除托盘
+      queue.trayInfo.splice(trayIndex, 1);
+
+      // 输出丰富的托盘货物详细信息日志
+      this.addLog(
+        `[出库] 托盘已出库: 柜号=${cabinetNo}, 线号=${
+          lineNo === 1 ? '左' : '右'
+        }, 电机=${motorId}, 虚拟ID=${virtualId}, 托盘码=${
+          tray.trayCode || '--'
+        }, 货物名=${tray.cargoName || '--'}, 目的地=${destinationCode}`,
+        'running'
+      );
+
+      // 如果队列空了，取消出库执行状态
+      if (
+        queue.trayInfo.length === 0 &&
+        this.outSterilizeExecuting &&
+        this.outSterilizeSelected === cabinetNo
+      ) {
+        this.outSterilizeExecuting = false;
+        this.outSterilizeTrayCode = '';
+        this.outSterilizeLoading = false;
+        this.addLog(
+          `[出库] ${cabinetNo}柜队列已空，自动取消出库执行状态`,
+          'running'
+        );
+      }
+    },
+
     // ================= 批次+目的地轮询 =================
     async pollBatchAndDestination() {
       try {
@@ -7337,24 +7999,6 @@ export default {
     },
 
     /**
-     * 灭菌后预热信号：删除指定灭菌(xxxx)队列的第一个托盘
-     * @param {Object} targetQueue - 目标灭菌队列对象
-     */
-    triggerSterilizationMotorSignal(targetQueue) {
-      if (!targetQueue.trayInfo || targetQueue.trayInfo.length === 0) {
-        this.$message.warning(`${targetQueue.queueName} 队列暂无托盘`);
-        return;
-      }
-      const tray = targetQueue.trayInfo.splice(0, 1)[0];
-      this.addLog(
-        `[电机信号] 灭菌后预热信号触发(${targetQueue.queueName})：托盘 ${tray.trayCode} 已从队列首位删除`
-      );
-      this.$message.success(
-        `${targetQueue.queueName} 队列托盘 ${tray.trayCode} 已删除`
-      );
-    },
-
-    /**
      * 测试面板：模拟预热柜到灭菌柜电机下降沿
      * @param {number} cabinetNo - 灭菌柜编号(3201-3215)
      * @param {number} slot - 列号(1或2)
@@ -7409,6 +8053,27 @@ export default {
         this.addLog(
           `[测试模拟] Y${cabinetNo}-线${slot}电机(${motorId})恢复为false`
         );
+      }, 1000);
+    },
+
+    /**
+     * 测试面板：模拟出库信号上升沿(DBW1670/1672)
+     * @param {Object} config - OUTBOUND_REQUEST_MAP中的配置项
+     */
+    simulateOutboundSignal(config) {
+      const bitProp = `outbound${config.db.slice(-4)}Bit${config.bit}`;
+
+      // 直接设置为'1'触发上升沿，1秒后恢复为'0'
+      this[bitProp] = '1';
+      this.addLog(
+        `[测试模拟] ${config.db}.BIT${config.bit} 设置为'1' (${
+          config.cabinetNo
+        }柜${config.lineNo === 1 ? '左' : '右'}线电机${config.motorId})`
+      );
+
+      setTimeout(() => {
+        this[bitProp] = '0';
+        this.addLog(`[测试模拟] ${config.db}.BIT${config.bit} 恢复为'0'`);
       }, 1000);
     },
 
