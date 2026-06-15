@@ -618,6 +618,49 @@
                     </div>
                   </div>
                 </div>
+                <!-- 下货目的地面板 -->
+                <div
+                  class="preheating-room-marker"
+                  data-x="1000"
+                  data-y="30"
+                  style="width: 150px"
+                >
+                  <div class="preheating-room-content">
+                    <div class="preheating-room-header">下货目的地</div>
+                    <div class="preheating-room-body">
+                      <div class="route-select-container">
+                        <div class="route-row">
+                          <span class="route-label">目的地：</span>
+                          <el-select
+                            v-model="dischargeDestination"
+                            placeholder="选择"
+                            size="mini"
+                            style="width: 100px"
+                          >
+                            <el-option :value="1" label="连廊方向"></el-option>
+                            <el-option :value="2" label="本层方向"></el-option>
+                          </el-select>
+                        </div>
+                      </div>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        :loading="dischargeDestLoading"
+                        @click="setDischargeDestination"
+                        style="width: 100%"
+                        >设定</el-button
+                      >
+                      <el-button
+                        v-if="dischargeDestSetted"
+                        type="danger"
+                        size="mini"
+                        @click="cancelDischargeDestination"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
+                      >
+                    </div>
+                  </div>
+                </div>
                 <div
                   class="preheating-room-marker"
                   data-x="65"
@@ -1918,6 +1961,11 @@ export default {
       outSterilizeLoading: false, // 执行按钮loading状态
       outSterilizeExecuting: false, // 是否正在执行
       outSterilizeTrayCode: '', // 执行中显示的托盘号
+
+      // ---- 下货目的地相关 ----
+      dischargeDestination: 1, // 目的地选择：1=去连廊方向，2=去本层输出口方向
+      dischargeDestLoading: false, // 设定按钮loading状态
+      dischargeDestSetted: false, // 是否已设定目的地
 
       // ---- 预热柜到灭菌柜电机状态（独立存储，供watch监听）----
       preheatToSterilizeMotorStatus: preheatToSterilizeInit,
@@ -8847,6 +8895,35 @@ export default {
 
       this.addLog('下货执行已取消');
       this.$message.info('已取消下货执行');
+    },
+    /**
+     * 下货目的地 - 设定
+     * 将下货目的地写入PLC
+     */
+    setDischargeDestination() {
+      const dest = this.dischargeDestination;
+      const destText = dest === 1 ? '去连廊方向' : '去本层输出口方向';
+      this.addLog(`下货目的地设定：${destText}`);
+
+      // 设置设定状态
+      this.dischargeDestLoading = true;
+      this.dischargeDestSetted = true;
+
+      // TODO: 根据实际PLC点位写入目的地值
+      // ipcRenderer.send('writeSingleValueToPLC', '下货目的地点位', dest);
+
+      this.$message.success(`下货目的地已设定：${destText}`);
+    },
+    /**
+     * 下货目的地 - 取消设定
+     */
+    cancelDischargeDestination() {
+      this.dischargeDestination = 1;
+      this.dischargeDestLoading = false;
+      this.dischargeDestSetted = false;
+
+      this.addLog('下货目的地设定已取消');
+      this.$message.info('已取消下货目的地设定');
     }
   },
   beforeDestroy() {
