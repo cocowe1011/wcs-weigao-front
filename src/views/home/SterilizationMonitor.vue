@@ -305,10 +305,37 @@ export default {
             this.destinationCabinetText = '--';
           }
 
-          // A工位=01002最新一个已分配虚拟ID的托盘
+          // 关联上货区托盘队列：仅展示上货区中仍存在的托盘
+          let loadingPalletIds = null;
+          try {
+            const queueRes = await HttpUtil.post(
+              '/queue_info/queryQueueList',
+              {}
+            );
+            if (queueRes && queueRes.data) {
+              const loadingQueue = queueRes.data.find((q) => q.id === 1);
+              if (loadingQueue && loadingQueue.trayInfo) {
+                const trayInfo = JSON.parse(loadingQueue.trayInfo);
+                loadingPalletIds = new Set(
+                  (Array.isArray(trayInfo) ? trayInfo : []).map((t) =>
+                    String(t.palletId)
+                  )
+                );
+              }
+            }
+          } catch (e) {
+            console.error('获取上货区队列失败:', e);
+          }
+          // ABC工位展示用托盘列表：关联上货区队列过滤已删除的托盘
+          const displayPallets = loadingPalletIds
+            ? palletList.filter((p) => loadingPalletIds.has(String(p.id)))
+            : palletList;
+
+          // A工位=01002最新一个已分配虚拟ID且未发送目的地的托盘
           const latestByVirtualId = () => {
-            const matches = palletList.filter(
-              (p) => p.virtualId && p.loadStatus === '1'
+            const matches = displayPallets.filter(
+              (p) =>
+                p.virtualId && p.loadStatus === '1' && !p.sendDestinationCode
             );
             if (!matches.length) return null;
             return matches.sort((a, b) => {
@@ -319,7 +346,7 @@ export default {
           };
           // B工位=02006最新一个发送非999目的地的托盘
           const latestNon999 = () => {
-            const matches = palletList.filter(
+            const matches = displayPallets.filter(
               (p) =>
                 p.sendDestinationCode && String(p.sendDestinationCode) !== '999'
             );
@@ -332,7 +359,7 @@ export default {
           };
           // C工位=最新一个发送999目的地的托盘
           const latest999 = () => {
-            const matches = palletList.filter(
+            const matches = displayPallets.filter(
               (p) => p.sendDestinationCode === '999'
             );
             if (!matches.length) return null;
