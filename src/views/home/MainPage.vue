@@ -6967,152 +6967,152 @@ export default {
       }
     });
 
-    // ipcRenderer.on('receivedMsg', (event, values, values2) => {
-    //   // S7 PLC 位解析工具: 逻辑bit序号 → word中的实际bit位置
-    //   // S7大端序: 逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
-    //   const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
+    ipcRenderer.on('receivedMsg', (event, values, values2) => {
+      // S7 PLC 位解析工具: 逻辑bit序号 → word中的实际bit位置
+      // S7大端序: 逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
+      const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
 
-    //   // 预先解析高频使用的 Word (按需从 values 里取并转换)
-    //   const parsedWords = {};
-    //   const getParsedWord = (db) => {
-    //     if (parsedWords[db] === undefined) {
-    //       parsedWords[db] = this.convertToWord(values[db]);
-    //     }
-    //     return parsedWords[db];
-    //   };
+      // 预先解析高频使用的 Word (按需从 values 里取并转换)
+      const parsedWords = {};
+      const getParsedWord = (db) => {
+        if (parsedWords[db] === undefined) {
+          parsedWords[db] = this.convertToWord(values[db]);
+        }
+        return parsedWords[db];
+      };
 
-    //   // 核心：遍历设备列表，统一赋值
-    //   Object.values(this.deviceNodes).forEach((node) => {
-    //     // 赋值电机状态
-    //     if (node.motorAddr) {
-    //       const { db, bit } = node.motorAddr;
-    //       const actualBit = bit < 8 ? bit + 8 : bit - 8;
-    //       node.motorStatus = getBit(getParsedWord(db), actualBit) === '1';
-    //     }
+      // 核心：遍历设备列表，统一赋值
+      Object.values(this.deviceNodes).forEach((node) => {
+        // 赋值电机状态
+        if (node.motorAddr) {
+          const { db, bit } = node.motorAddr;
+          const actualBit = bit < 8 ? bit + 8 : bit - 8;
+          node.motorStatus = getBit(getParsedWord(db), actualBit) === '1';
+        }
 
-    //     // 赋值传感器状态
-    //     if (node.sensorAddr) {
-    //       const { db, bit } = node.sensorAddr;
-    //       const actualBit = bit < 8 ? bit + 8 : bit - 8;
-    //       node.sensorStatus = getBit(getParsedWord(db), actualBit) === '1';
-    //     }
+        // 赋值传感器状态
+        if (node.sensorAddr) {
+          const { db, bit } = node.sensorAddr;
+          const actualBit = bit < 8 ? bit + 8 : bit - 8;
+          node.sensorStatus = getBit(getParsedWord(db), actualBit) === '1';
+        }
 
-    //     // 赋值托盘 ID
-    //     if (node.trayIdAddr) {
-    //       const v = Number(values[node.trayIdAddr] ?? 0);
-    //       node.trayId = v !== 0 ? String(v) : '';
-    //     }
+        // 赋值托盘 ID
+        if (node.trayIdAddr) {
+          const v = Number(values[node.trayIdAddr] ?? 0);
+          node.trayId = v !== 0 ? String(v) : '';
+        }
 
-    //     // 赋值目的地
-    //     if (node.destinationAddr) {
-    //       node.destination = Number(values[node.destinationAddr] ?? 0);
-    //     }
-    //   });
+        // 赋值目的地
+        if (node.destinationAddr) {
+          node.destination = Number(values[node.destinationAddr] ?? 0);
+        }
+      });
 
-    //   // 给预热柜到灭菌柜电机状态变量赋值（独立存储，供watch监听）
-    //   // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
-    //   PREHEAT_TO_STERILIZE_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
-    //     if (this.deviceNodes[motor1]) {
-    //       const newStatus = this.deviceNodes[motor1].motorStatus;
-    //       const oldStatus = this.preheatToSterilizeMotorStatus[motor1];
-    //       if (newStatus !== oldStatus) {
-    //         this.preheatToSterilizeMotorStatus[motor1] = newStatus;
-    //       }
-    //     }
-    //     if (this.deviceNodes[motor2]) {
-    //       const newStatus = this.deviceNodes[motor2].motorStatus;
-    //       const oldStatus = this.preheatToSterilizeMotorStatus[motor2];
-    //       if (newStatus !== oldStatus) {
-    //         this.preheatToSterilizeMotorStatus[motor2] = newStatus;
-    //       }
-    //     }
-    //   });
+      // 给预热柜到灭菌柜电机状态变量赋值（独立存储，供watch监听）
+      // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
+      PREHEAT_TO_STERILIZE_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
+        if (this.deviceNodes[motor1]) {
+          const newStatus = this.deviceNodes[motor1].motorStatus;
+          const oldStatus = this.preheatToSterilizeMotorStatus[motor1];
+          if (newStatus !== oldStatus) {
+            this.preheatToSterilizeMotorStatus[motor1] = newStatus;
+          }
+        }
+        if (this.deviceNodes[motor2]) {
+          const newStatus = this.deviceNodes[motor2].motorStatus;
+          const oldStatus = this.preheatToSterilizeMotorStatus[motor2];
+          if (newStatus !== oldStatus) {
+            this.preheatToSterilizeMotorStatus[motor2] = newStatus;
+          }
+        }
+      });
 
-    //   // 给上货电机状态变量赋值（独立存储，供watch监听）
-    //   // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
-    //   LOADING_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
-    //     if (this.deviceNodes[motor1]) {
-    //       const newStatus = this.deviceNodes[motor1].motorStatus;
-    //       const oldStatus = this.loadingMotorStatus[motor1];
-    //       if (newStatus !== oldStatus) {
-    //         this.loadingMotorStatus[motor1] = newStatus;
-    //       }
-    //     }
-    //     if (this.deviceNodes[motor2]) {
-    //       const newStatus = this.deviceNodes[motor2].motorStatus;
-    //       const oldStatus = this.loadingMotorStatus[motor2];
-    //       if (newStatus !== oldStatus) {
-    //         this.loadingMotorStatus[motor2] = newStatus;
-    //       }
-    //     }
-    //   });
+      // 给上货电机状态变量赋值（独立存储，供watch监听）
+      // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
+      LOADING_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
+        if (this.deviceNodes[motor1]) {
+          const newStatus = this.deviceNodes[motor1].motorStatus;
+          const oldStatus = this.loadingMotorStatus[motor1];
+          if (newStatus !== oldStatus) {
+            this.loadingMotorStatus[motor1] = newStatus;
+          }
+        }
+        if (this.deviceNodes[motor2]) {
+          const newStatus = this.deviceNodes[motor2].motorStatus;
+          const oldStatus = this.loadingMotorStatus[motor2];
+          if (newStatus !== oldStatus) {
+            this.loadingMotorStatus[motor2] = newStatus;
+          }
+        }
+      });
 
-    //   // ---- DB1000.DBW1658 上货请求信号赋值（上升沿检测由 watch 处理） ----
-    //   // S7大端序：逻辑bit0→word.bit8, bit1→word.bit9, bit2→word.bit10, bit3→word.bit11
-    //   const word1658 = getParsedWord('DBW1658');
-    //   this.bit1658RequestVirtualId = getBit(word1658, 8); // BIT0→bit8：01002处请求写虚拟ID
-    //   this.bit1658RequestReadCode01002 = getBit(word1658, 9); // BIT1→bit9：01002处请求读码
-    //   this.bit1658RequestReadCode01006 = getBit(word1658, 10); // BIT2→bit10：01006处请求读码
-    //   this.bit1658RequestDestination = getBit(word1658, 11); // BIT3→bit11：请求写目的地
+      // ---- DB1000.DBW1658 上货请求信号赋值（上升沿检测由 watch 处理） ----
+      // S7大端序：逻辑bit0→word.bit8, bit1→word.bit9, bit2→word.bit10, bit3→word.bit11
+      const word1658 = getParsedWord('DBW1658');
+      this.bit1658RequestVirtualId = getBit(word1658, 8); // BIT0→bit8：01002处请求写虚拟ID
+      this.bit1658RequestReadCode01002 = getBit(word1658, 9); // BIT1→bit9：01002处请求读码
+      this.bit1658RequestReadCode01006 = getBit(word1658, 10); // BIT2→bit10：01006处请求读码
+      this.bit1658RequestDestination = getBit(word1658, 11); // BIT3→bit11：请求写目的地
 
-    //   // ---- DB1000.DBW1670/1672 出库请求信号赋值（上升沿触发出库） ----
-    //   // S7大端序：逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
-    //   const word1670 = getParsedWord('DBW1670');
-    //   const word1672 = getParsedWord('DBW1672');
-    //   // DBW1670 各bit位（3208-3215柜的出库请求）
-    //   this.outbound1670Bit0 = getBit(word1670, 8); // BIT0→bit8: 3215柜右线2026
-    //   this.outbound1670Bit1 = getBit(word1670, 9); // BIT1→bit9: 3215柜左线2029
-    //   this.outbound1670Bit2 = getBit(word1670, 10); // BIT2→bit10: 3214柜右线2033
-    //   this.outbound1670Bit3 = getBit(word1670, 11); // BIT3→bit11: 3214柜左线2036
-    //   this.outbound1670Bit4 = getBit(word1670, 12); // BIT4→bit12: 3213柜右线3026
-    //   this.outbound1670Bit5 = getBit(word1670, 13); // BIT5→bit13: 3213柜左线3029
-    //   this.outbound1670Bit6 = getBit(word1670, 14); // BIT6→bit14: 3212柜右线3033
-    //   this.outbound1670Bit7 = getBit(word1670, 15); // BIT7→bit15: 3212柜左线3036
-    //   this.outbound1670Bit8 = getBit(word1670, 0); // BIT8→bit0: 3211柜右线4026
-    //   this.outbound1670Bit9 = getBit(word1670, 1); // BIT9→bit1: 3211柜左线4029
-    //   this.outbound1670Bit10 = getBit(word1670, 2); // BIT10→bit2: 3210柜右线4033
-    //   this.outbound1670Bit11 = getBit(word1670, 3); // BIT11→bit3: 3210柜左线4036
-    //   this.outbound1670Bit12 = getBit(word1670, 4); // BIT12→bit4: 3209柜右线5026
-    //   this.outbound1670Bit13 = getBit(word1670, 5); // BIT13→bit5: 3209柜左线5029
-    //   this.outbound1670Bit14 = getBit(word1670, 6); // BIT14→bit6: 3208柜右线5033
-    //   this.outbound1670Bit15 = getBit(word1670, 7); // BIT15→bit7: 3208柜左线5036
-    //   // DBW1672 各bit位（3201-3207柜的出库请求）
-    //   this.outbound1672Bit0 = getBit(word1672, 8); // BIT0→bit8: 3207柜右线6026
-    //   this.outbound1672Bit1 = getBit(word1672, 9); // BIT1→bit9: 3207柜左线6029
-    //   this.outbound1672Bit2 = getBit(word1672, 10); // BIT2→bit10: 3206柜右线6033
-    //   this.outbound1672Bit3 = getBit(word1672, 11); // BIT3→bit11: 3206柜左线6036
-    //   this.outbound1672Bit4 = getBit(word1672, 12); // BIT4→bit12: 3205柜右线7026
-    //   this.outbound1672Bit5 = getBit(word1672, 13); // BIT5→bit13: 3205柜左线7029
-    //   this.outbound1672Bit6 = getBit(word1672, 14); // BIT6→bit14: 3204柜右线7033
-    //   this.outbound1672Bit7 = getBit(word1672, 15); // BIT7→bit15: 3204柜左线7036
-    //   this.outbound1672Bit8 = getBit(word1672, 0); // BIT8→bit0: 3203柜右线8026
-    //   this.outbound1672Bit9 = getBit(word1672, 1); // BIT9→bit1: 3203柜左线8029
-    //   this.outbound1672Bit10 = getBit(word1672, 2); // BIT10→bit2: 3202柜右线8033
-    //   this.outbound1672Bit11 = getBit(word1672, 3); // BIT11→bit3: 3202柜左线8036
-    //   this.outbound1672Bit12 = getBit(word1672, 4); // BIT12→bit4: 3201柜右线9015
-    //   this.outbound1672Bit13 = getBit(word1672, 5); // BIT13→bit5: 3201柜左线9018
+      // ---- DB1000.DBW1670/1672 出库请求信号赋值（上升沿触发出库） ----
+      // S7大端序：逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
+      const word1670 = getParsedWord('DBW1670');
+      const word1672 = getParsedWord('DBW1672');
+      // DBW1670 各bit位（3208-3215柜的出库请求）
+      this.outbound1670Bit0 = getBit(word1670, 8); // BIT0→bit8: 3215柜右线2026
+      this.outbound1670Bit1 = getBit(word1670, 9); // BIT1→bit9: 3215柜左线2029
+      this.outbound1670Bit2 = getBit(word1670, 10); // BIT2→bit10: 3214柜右线2033
+      this.outbound1670Bit3 = getBit(word1670, 11); // BIT3→bit11: 3214柜左线2036
+      this.outbound1670Bit4 = getBit(word1670, 12); // BIT4→bit12: 3213柜右线3026
+      this.outbound1670Bit5 = getBit(word1670, 13); // BIT5→bit13: 3213柜左线3029
+      this.outbound1670Bit6 = getBit(word1670, 14); // BIT6→bit14: 3212柜右线3033
+      this.outbound1670Bit7 = getBit(word1670, 15); // BIT7→bit15: 3212柜左线3036
+      this.outbound1670Bit8 = getBit(word1670, 0); // BIT8→bit0: 3211柜右线4026
+      this.outbound1670Bit9 = getBit(word1670, 1); // BIT9→bit1: 3211柜左线4029
+      this.outbound1670Bit10 = getBit(word1670, 2); // BIT10→bit2: 3210柜右线4033
+      this.outbound1670Bit11 = getBit(word1670, 3); // BIT11→bit3: 3210柜左线4036
+      this.outbound1670Bit12 = getBit(word1670, 4); // BIT12→bit4: 3209柜右线5026
+      this.outbound1670Bit13 = getBit(word1670, 5); // BIT13→bit5: 3209柜左线5029
+      this.outbound1670Bit14 = getBit(word1670, 6); // BIT14→bit6: 3208柜右线5033
+      this.outbound1670Bit15 = getBit(word1670, 7); // BIT15→bit7: 3208柜左线5036
+      // DBW1672 各bit位（3201-3207柜的出库请求）
+      this.outbound1672Bit0 = getBit(word1672, 8); // BIT0→bit8: 3207柜右线6026
+      this.outbound1672Bit1 = getBit(word1672, 9); // BIT1→bit9: 3207柜左线6029
+      this.outbound1672Bit2 = getBit(word1672, 10); // BIT2→bit10: 3206柜右线6033
+      this.outbound1672Bit3 = getBit(word1672, 11); // BIT3→bit11: 3206柜左线6036
+      this.outbound1672Bit4 = getBit(word1672, 12); // BIT4→bit12: 3205柜右线7026
+      this.outbound1672Bit5 = getBit(word1672, 13); // BIT5→bit13: 3205柜左线7029
+      this.outbound1672Bit6 = getBit(word1672, 14); // BIT6→bit14: 3204柜右线7033
+      this.outbound1672Bit7 = getBit(word1672, 15); // BIT7→bit15: 3204柜左线7036
+      this.outbound1672Bit8 = getBit(word1672, 0); // BIT8→bit0: 3203柜右线8026
+      this.outbound1672Bit9 = getBit(word1672, 1); // BIT9→bit1: 3203柜左线8029
+      this.outbound1672Bit10 = getBit(word1672, 2); // BIT10→bit2: 3202柜右线8033
+      this.outbound1672Bit11 = getBit(word1672, 3); // BIT11→bit3: 3202柜左线8036
+      this.outbound1672Bit12 = getBit(word1672, 4); // BIT12→bit4: 3201柜右线9015
+      this.outbound1672Bit13 = getBit(word1672, 5); // BIT13→bit5: 3201柜左线9018
 
-    //   // 如果弹窗处于打开状态，同步更新弹窗内的数据
-    //   if (this.popoverVisible && this.popoverData) {
-    //     if (!this.popoverData.groupId) {
-    //       this.popoverList = [this.deviceNodes[this.popoverData.id]];
-    //     } else {
-    //       const groupIds = this.groupIndex?.[this.popoverData.groupId] || [];
-    //       this.popoverList = groupIds.map((id) => ({
-    //         id,
-    //         ...this.deviceNodes[id]
-    //       }));
-    //     }
-    //     // 更新 popoverData 指向最新的对象引用（若找不到则保持原引用，防止被置为 undefined 导致渲染报错）
-    //     const latestNode = this.deviceNodes[this.popoverData.id];
-    //     if (latestNode) {
-    //       this.popoverData = latestNode;
-    //     }
-    //   }
+      // 如果弹窗处于打开状态，同步更新弹窗内的数据
+      if (this.popoverVisible && this.popoverData) {
+        if (!this.popoverData.groupId) {
+          this.popoverList = [this.deviceNodes[this.popoverData.id]];
+        } else {
+          const groupIds = this.groupIndex?.[this.popoverData.groupId] || [];
+          this.popoverList = groupIds.map((id) => ({
+            id,
+            ...this.deviceNodes[id]
+          }));
+        }
+        // 更新 popoverData 指向最新的对象引用（若找不到则保持原引用，防止被置为 undefined 导致渲染报错）
+        const latestNode = this.deviceNodes[this.popoverData.id];
+        if (latestNode) {
+          this.popoverData = latestNode;
+        }
+      }
 
-    //   // 灭菌前1#小车位置值
-    //   this.cartPositionValues.cart1 = Number(values.DBW58 ?? 0);
-    // });
+      // 灭菌前1#小车位置值
+      this.cartPositionValues.cart1 = Number(values.DBW58 ?? 0);
+    });
   },
   watch: {
     // 监听小车位置数值变化
