@@ -741,6 +741,25 @@
                     font-size: 12px; /* 调整标签字体大小 */
                   }
 
+                  /* 面板内独立复选框样式（与面板标签字体一致） */
+                  .data-panel-row .el-checkbox {
+                    ::v-deep .el-checkbox__label {
+                      font-size: 12px;
+                      color: #fff;
+                    }
+                    ::v-deep .el-checkbox__inner {
+                      background-color: transparent;
+                      border-color: rgba(255, 255, 255, 0.6);
+                    }
+                    ::v-deep .el-checkbox__input.is-checked .el-checkbox__inner {
+                      background-color: #0ac5a8;
+                      border-color: #0ac5a8;
+                    }
+                    ::v-deep .el-checkbox__input.is-checked + .el-checkbox__label {
+                      color: #0ac5a8;
+                    }
+                  }
+
                   /* 执行控制区域的特殊样式 */
                   .exec-controls {
                     display: flex;
