@@ -109,6 +109,9 @@ class AlarmWebSocketServer {
       case 'scan_code':
         this.handleScanCodeMessage(clientId, data);
         break;
+      case 'query_mse_order':
+        this.handleMseQueryMessage(clientId, data);
+        break;
       case 'tray_data_changed':
         this.handleTrayDataChanged(clientId, data);
         break;
@@ -170,6 +173,34 @@ class AlarmWebSocketServer {
       success: result.success,
       message: result.message,
       data: result.data
+    });
+  }
+
+  /** PDA 发来的 MSE 订单查询请求：转发给渲染进程处理（加括号->调MSE->写库），结果异步回传 */
+  handleMseQueryMessage(clientId, data) {
+    const { udi, requestId } = data;
+    if (!this.mainWindow) {
+      this.sendMseOrderResult(clientId, {
+        requestId,
+        success: false,
+        message: '服务器内部错误'
+      });
+      return;
+    }
+    this.mainWindow.webContents.send('mobile-mse-query', {
+      udi,
+      requestId,
+      clientId
+    });
+  }
+
+  /** 渲染进程处理完 MSE 查询后，将结果回传给 PDA */
+  sendMseOrderResult(clientId, result) {
+    this.sendToClient(clientId, {
+      type: 'mse_order_result',
+      requestId: result.requestId,
+      success: result.success,
+      message: result.message
     });
   }
 

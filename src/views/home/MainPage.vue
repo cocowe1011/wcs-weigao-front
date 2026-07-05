@@ -1008,23 +1008,44 @@
                       </div>
                       <div class="tray-info-row">
                         <span class="tray-detail"
-                          >订单ID：{{ tray.orderId || '--' }}</span
+                          >灭菌单号：{{ tray.orderNo || '--' }}</span
                         >
                         <span class="tray-detail"
-                          >物料编码：{{ tray.productCode || '--' }}</span
+                          >工艺方案：{{
+                            tray.processPlanNameCode || '--'
+                          }}</span
                         >
                       </div>
                       <div class="tray-info-row">
+                        <span class="tray-detail"
+                          >托盘编码：{{ tray.palletNo || '--' }}</span
+                        >
+                        <span class="tray-detail"
+                          >是否入库：{{
+                            tray.toWarehouse === '1'
+                              ? '是'
+                              : tray.toWarehouse === '0'
+                              ? '否'
+                              : '--'
+                          }}</span
+                        >
+                      </div>
+                      <div class="tray-info-row">
+                        <span class="tray-detail"
+                          >产品货号：{{ tray.productCode || '--' }}</span
+                        >
                         <span class="tray-detail"
                           >产品名称：{{ tray.productName || '--' }}</span
                         >
-                        <span class="tray-detail"
-                          >规格：{{ tray.unit || '--' }}</span
-                        >
                       </div>
                       <div class="tray-info-row">
                         <span class="tray-detail"
-                          >备注：{{ tray.batchNo || '--' }}</span
+                          >规格：{{ tray.spec || '--' }}</span
+                        >
+                        <span class="tray-detail"
+                          >生产批次号：{{
+                            tray.productionBatchNumber || '--'
+                          }}</span
                         >
                       </div>
                       <span class="tray-time">{{ tray.time }}</span>
@@ -1318,10 +1339,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="订单号" prop="orderId">
+              <el-form-item label="灭菌单号" prop="orderId">
                 <el-input
                   v-model="traySearchForm.orderId"
-                  placeholder="请输入订单号进行查询"
+                  placeholder="请输入灭菌单号进行查询"
                   clearable
                 >
                 </el-input>
@@ -1375,13 +1396,13 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="orderId"
-              label="订单号"
+              prop="orderNo"
+              label="灭菌单号"
               width="180"
               align="center"
             >
               <template slot-scope="scope">
-                {{ scope.row.orderId || '--' }}
+                {{ scope.row.orderNo || '--' }}
               </template>
             </el-table-column>
             <el-table-column
@@ -1554,6 +1575,7 @@
 
 <script>
 import HttpUtil from '@/utils/HttpUtil';
+import HttpUtilMes from '@/utils/HttpUtilMes';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
@@ -7743,13 +7765,17 @@ export default {
 
           // 更新面板
           const goods = assignResult.goods || [];
+          const firstGoods = goods.length > 0 ? goods[0] : {};
+          const batchInfo =
+            (this.currentExecutingBatch && this.currentExecutingBatch.batch) ||
+            {};
           this.lastProcessedPallet = {
             virtualId: String(virtualId),
             cargoName: goods.length > 0 ? goods[0].productName : '--',
             barcodes: goods.map((g) => g.uid)
           };
 
-          // 托盘进入上货队列
+          // 托盘进入上货队列（trayInfo 存订单真实数据）
           const trayEntry = {
             palletId: String(assignResult.id),
             trayCode: String(virtualId),
@@ -7761,7 +7787,20 @@ export default {
               : '',
             sendStatus: '0',
             state: '1',
-            barcodes: this.lastProcessedPallet.barcodes
+            barcodes: this.lastProcessedPallet.barcodes,
+            // ===== 订单真实数据 =====
+            palletNo: assignResult.palletNo, // MSE托盘编码 pallet_code
+            orderNo: batchInfo.sterilizationOrderNo, // 灭菌单号 sterilization_order_no
+            sterilizerNameCode: batchInfo.sterilizerNameCode, // 灭菌柜编码
+            processPlanNameCode: batchInfo.processPlanNameCode, // 工艺方案 process_plan_name_code
+            toWarehouse: assignResult.toWarehouse, // 是否入库 to_warehouse
+            productCode: firstGoods.productCode, // 产品货号 product_code
+            productName: firstGoods.productName, // 产品名称 product_name
+            spec: firstGoods.spec, // 规格 product_specification
+            productionBatchNumber: firstGoods.productionBatchNumber, // 生产批次号 production_batch_number
+            productionDate: firstGoods.productionDate, // 生产日期
+            udi: firstGoods.uid, // udi
+            goodsCount: goods.length // 货物数量
           };
           this.queues[0].trayInfo.push(trayEntry);
 
@@ -8555,11 +8594,19 @@ export default {
             sendTo: tray.sendTo || '', // 添加sendTo属性
             state: tray.state || '', // 添加state属性
             sequenceNumber: tray.sequenceNumber || '', // 添加sequenceNumber属性
-            orderId: tray.orderId || '', // 添加订单ID
-            productCode: tray.productCode || '', // 添加物料编码
-            productName: tray.productName || '', // 添加产品名称
-            unit: tray.unit || '', // 添加规格
-            batchNo: tray.batchNo || '' // 添加备注
+            // ===== 订单真实数据 =====
+            palletNo: tray.palletNo || '', // MSE托盘编码 pallet_code
+            orderNo: tray.orderNo || '', // 灭菌单号 sterilization_order_no
+            sterilizerNameCode: tray.sterilizerNameCode || '', // 灭菌柜编码
+            processPlanNameCode: tray.processPlanNameCode || '', // 工艺方案 process_plan_name_code
+            toWarehouse: tray.toWarehouse || '', // 是否入库 to_warehouse
+            productCode: tray.productCode || '', // 产品货号 product_code
+            productName: tray.productName || '', // 产品名称 product_name
+            spec: tray.spec || '', // 规格 product_specification
+            productionBatchNumber: tray.productionBatchNumber || '', // 生产批次号 production_batch_number
+            productionDate: tray.productionDate || '', // 生产日期
+            udi: tray.udi || '', // udi
+            goodsCount: tray.goodsCount || 0 // 货物数量
           }))
           .filter((tray) => tray.id); // 过滤掉没有 id 的托盘
       } catch (error) {
@@ -8884,8 +8931,8 @@ export default {
               }
               if (
                 searchCriteria.orderId &&
-                (!tray.orderId ||
-                  !String(tray.orderId).includes(searchCriteria.orderId))
+                (!tray.orderNo ||
+                  !String(tray.orderNo).includes(searchCriteria.orderId))
               ) {
                 matches = false;
               }
@@ -9117,12 +9164,16 @@ export default {
         this._mobileTrayDataChangedHandler = (event, data) => {
           this.handleMobileTrayDataChanged(data);
         };
+        this._mobileMseQueryHandler = (event, data) => {
+          this.handleMobileMseQuery(data);
+        };
         ipcRenderer.on('websocket-status-update', this._wsStatusHandler);
         ipcRenderer.on('mobile-scan-code', this._mobileScanCodeHandler);
         ipcRenderer.on(
           'mobile-tray-data-changed',
           this._mobileTrayDataChangedHandler
         );
+        ipcRenderer.on('mobile-mse-query', this._mobileMseQueryHandler);
         ipcRenderer.send('get-websocket-status');
         if (this._wsStatusInterval) clearInterval(this._wsStatusInterval);
         this._wsStatusInterval = setInterval(() => {
@@ -9153,6 +9204,13 @@ export default {
           this._mobileTrayDataChangedHandler
         );
         this._mobileTrayDataChangedHandler = null;
+      }
+      if (this._mobileMseQueryHandler) {
+        ipcRenderer.removeListener(
+          'mobile-mse-query',
+          this._mobileMseQueryHandler
+        );
+        this._mobileMseQueryHandler = null;
       }
       if (this._wsStatusInterval) {
         clearInterval(this._wsStatusInterval);
@@ -9193,6 +9251,208 @@ export default {
       this.addLog('[PDA]收到扫码复核通行命令', 'running');
       // PDA下发通行命令后通知PC端，直接用data中的palletId和sendDestinationCode更新上货区队列
       this.refreshLoadingQueueFromBackend(data && data.data);
+    },
+
+    /**
+     * 将原始扫码串解析为 GS1 标准带括号格式（MSE FBARCODE 入参要求）
+     * 例：0126932992101039... -> (01)26932992101039(10)...(11)...(17)...(91)...(21)...
+     */
+    parseUDICode(rawUdi) {
+      if (!rawUdi) return '';
+      let cleanUdi = String(rawUdi)
+        .replace(/^F<'?/, '')
+        .replace(/[^0-9A-Za-z]/g, '')
+        .trim();
+      if (!cleanUdi) return '';
+      try {
+        let result = '';
+        let position = 0;
+        if (cleanUdi.substr(0, 2) === '01') {
+          position = 2;
+        }
+        // GTIN (01) 14位
+        if (position + 14 <= cleanUdi.length) {
+          result += `(01)${cleanUdi.substr(position, 14)}`;
+          position += 14;
+        }
+        // 批号 (10) 变长：查找后续 "11" + 合法日期
+        if (
+          position + 2 < cleanUdi.length &&
+          cleanUdi.substr(position, 2) === '10'
+        ) {
+          position += 2;
+          let foundNext = false;
+          const remaining = cleanUdi.substr(position);
+          const isValidDate = (dateStr) => {
+            if (!/^\d{6}$/.test(dateStr)) return false;
+            const mm = parseInt(dateStr.substr(2, 2));
+            const dd = parseInt(dateStr.substr(4, 2));
+            return mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31;
+          };
+          for (let i = 1; i < remaining.length - 7; i++) {
+            const potentialDate = remaining.substr(i + 2, 6);
+            if (remaining.substr(i, 2) === '11' && isValidDate(potentialDate)) {
+              result += `(10)${remaining.substr(0, i)}`;
+              position += i;
+              foundNext = true;
+              break;
+            }
+          }
+          if (!foundNext && position + 8 <= cleanUdi.length) {
+            result += `(10)${cleanUdi.substr(position, 8)}`;
+            position += 8;
+          }
+        }
+        // 生产日期 (11) 6位
+        if (
+          position + 2 < cleanUdi.length &&
+          cleanUdi.substr(position, 2) === '11'
+        ) {
+          position += 2;
+          if (position + 6 <= cleanUdi.length) {
+            result += `(11)${cleanUdi.substr(position, 6)}`;
+            position += 6;
+          }
+        }
+        // 有效期 (17) 6位
+        if (
+          position + 2 < cleanUdi.length &&
+          cleanUdi.substr(position, 2) === '17'
+        ) {
+          position += 2;
+          if (position + 6 <= cleanUdi.length) {
+            result += `(17)${cleanUdi.substr(position, 6)}`;
+            position += 6;
+          }
+        }
+        // 公司内部信息 (91) 变长：到下一个 "21"
+        if (
+          position + 2 < cleanUdi.length &&
+          cleanUdi.substr(position, 2) === '91'
+        ) {
+          position += 2;
+          const remainingPart = cleanUdi.substr(position);
+          const ai21Index = remainingPart.indexOf('21');
+          if (ai21Index !== -1) {
+            result += `(91)${remainingPart.substr(0, ai21Index)}`;
+            position += ai21Index;
+          }
+        }
+        // 序列号 (21) 剩余
+        if (
+          position + 2 < cleanUdi.length &&
+          cleanUdi.substr(position, 2) === '21'
+        ) {
+          position += 2;
+          if (position < cleanUdi.length) {
+            result += `(21)${cleanUdi.substr(position)}`;
+          }
+        }
+        // 无损保证：加括号后去括号必须与原始清洗值完全一致，否则说明解析丢/改了字符，
+        // 回退为原始清洗值，确保 cleanBarcode(parseUDICode(x)) === x，
+        // 从而库里存的 uid 与 PDA 扫码查询条码始终一致（避免重复建档/查不到）
+        if (!result || result.replace(/[^0-9A-Za-z]/g, '') !== cleanUdi) {
+          return cleanUdi;
+        }
+        return result;
+      } catch (error) {
+        console.error('UDI解析失败:', error);
+        return rawUdi;
+      }
+    },
+
+    /**
+     * 处理 PDA 通过 WebSocket 发来的 MSE 订单查询请求：
+     * 加括号 -> 调 MSE -> 解析 pallet_list -> 组装 BatchDetailDTO -> 写库 -> IPC 回传结果给 PDA
+     */
+    async handleMobileMseQuery(data) {
+      const { udi, requestId, clientId } = data || {};
+      const respond = (success, message) => {
+        ipcRenderer.send('send-mse-result-to-mobile', {
+          clientId,
+          result: { requestId, success, message }
+        });
+      };
+      try {
+        if (!udi) {
+          throw new Error('UDI为空');
+        }
+        // 1. 加括号（转 GS1 标准格式，作为 MSE FBARCODE 入参）
+        const parenUdi = this.parseUDICode(udi);
+        this.addLog(
+          `[MSE]收到PDA查询请求 udi=${udi} -> ${parenUdi}`,
+          'running'
+        );
+
+        // 2. 调用 MSE 接口（dev: localhost:7005 mock 正常路径 / prod: 真实 MSE 路径，2s 超时）
+        const mseApiPath =
+          process.env.NODE_ENV === 'development'
+            ? '/mse/getProductInfo'
+            : '/captcha/MJsendUDI.ashx';
+        const url = `${mseApiPath}?method=getProductInfo&FBARCODE=${encodeURIComponent(
+          parenUdi
+        )}`;
+        const res = await HttpUtilMes.get(url);
+        if (!res || Number(res.code) !== 200 || !res.data) {
+          throw new Error(`MSE返回异常: ${(res && res.message) || '无数据'}`);
+        }
+
+        // 3. 解析 MSE 数据并组装 BatchDetailDTO
+        const mse = res.data;
+        const palletList = mse.pallet_list || [];
+        if (!palletList.length) {
+          throw new Error('MSE未返回托盘数据');
+        }
+        const dto = {
+          batch: {
+            batchNo: mse.sterilization_order_no,
+            sterilizationOrderNo: mse.sterilization_order_no,
+            palletQuantity: mse.pallet_quantity,
+            sterilizerNameCode: mse.sterilizer_name_code,
+            processPlanNameCode: mse.process_plan_name_code,
+            status: '0'
+          },
+          pallets: palletList.map((p) => ({
+            // MSE 托盘编码直接存入 palletNo
+            palletNo: p.pallet_code,
+            toWarehouse: p.to_warehouse ? '1' : '0',
+            trayStatus: '0',
+            goods: (p.material_details || []).map((m) => ({
+              // uid 存去括号后的条码，便于 PDA 用扫码原串 getByGoodsUid 命中
+              uid: this.cleanBarcode(m.udi),
+              // udi 存 MSE 原始带括号 GS1 码，用于对外接口原样返回
+              udi: m.udi,
+              productName: m.product_name,
+              spec: m.product_specification,
+              productCode: m.product_code,
+              productionBatchNumber: m.production_batch_number,
+              productionDate: m.production_date,
+              remark: ''
+            }))
+          }))
+        };
+
+        // 4. 写库（HTTP 调 Java middle）
+        const saveRes = await HttpUtil.post('/produce_batch/save', dto);
+        if (!saveRes || saveRes.code !== '200') {
+          throw new Error(
+            `写库失败: ${(saveRes && saveRes.message) || '未知错误'}`
+          );
+        }
+
+        this.addLog(
+          `[MSE]查询并写库成功 灭菌单号=${mse.sterilization_order_no} 托盘数=${palletList.length}`,
+          'running'
+        );
+        respond(true, '查询成功');
+      } catch (error) {
+        const msg =
+          error && error.code === 'ECONNABORTED'
+            ? 'MSE接口超时'
+            : (error && error.message) || 'MSE查询失败';
+        this.addLog(`[MSE]查询失败: ${msg}`, 'alarm');
+        respond(false, msg);
+      }
     },
     showMobileConnectionStatus() {
       this.mobileConnectionDialogVisible = true;

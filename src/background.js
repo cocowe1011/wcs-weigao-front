@@ -273,6 +273,11 @@ app.on('ready', () => {
       alarmWebSocketServer.sendScanResult(data.clientId, data.result);
     }
   });
+  ipcMain.on('send-mse-result-to-mobile', (event, data) => {
+    if (alarmWebSocketServer) {
+      alarmWebSocketServer.sendMseOrderResult(data.clientId, data.result);
+    }
+  });
   ipcMain.on('push-alarm-to-mobile', (event, alarmData) => {
     if (alarmWebSocketServer) {
       alarmWebSocketServer.pushAlarmToMobile(alarmData);

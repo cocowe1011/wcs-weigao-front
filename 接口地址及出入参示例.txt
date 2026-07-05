@@ -1,0 +1,898 @@
+https://mes-prod.weigaogroup.com/captcha/MJsendUDI.ashx?method=getProductInfo&FBARCODE=(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0062
+
+
+
+{
+  "code": 200,
+  "message": "OK",
+  "data": {
+    "sterilization_order_no": "202606220503022-MJ",
+    "pallet_quantity": 7,
+    "sterilizer_name_code": "0302",
+    "process_plan_name_code": "EO",
+    "pallet_list": [
+      {
+        "pallet_code": "MJF260624052718",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)01B(21)0146"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)01B(21)0147"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)01B(21)0148"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)02B(21)0148"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)02B(21)0149"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)02B(21)0150"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)02B(21)0153"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)03B(21)0143"
+          },
+          {
+            "product_code": "01.02.03.0617",
+            "product_name": "溶药注射器20ml",
+            "product_specification": "20ml1.6*33X筒外侧孔针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101558(10)20260621(11)260624(17)290620(91)03B(21)0144"
+          }
+        ]
+      },
+      {
+        "pallet_code": "MJF260625052925",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0057"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0058"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0059"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0060"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0061"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0055"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0056"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0057"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0058"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0059"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0058"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0059"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0060"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0061"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0062"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0063"
+          }
+        ]
+      },
+      {
+        "pallet_code": "MJF260625052933",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0062"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0063"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0064"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0065"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0066"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0060"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0061"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0062"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0063"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0064"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0064"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0065"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0066"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0067"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0068"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0069"
+          }
+        ]
+      },
+      {
+        "pallet_code": "MJF260625052953",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0072"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0073"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0074"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0075"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0076"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0077"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0072"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0073"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0074"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0075"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0076"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0077"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0078"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0079"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0080"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0081"
+          }
+        ]
+      },
+      {
+        "pallet_code": "MJF260625052970",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0078"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0079"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0080"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0081"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0076"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0077"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0078"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0079"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0080"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0081"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0082"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0082"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0083"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0084"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0085"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0086"
+          }
+        ]
+      },
+      {
+        "pallet_code": "MJF260625052982",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0082"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0083"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0084"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0085"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0086"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0087"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0083"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0084"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0085"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0086"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0087"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0087"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0088"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0089"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0090"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0091"
+          }
+        ]
+      },
+      {
+        "pallet_code": "MJF260625052998",
+        "to_warehouse": true,
+        "material_details": [
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0094"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0095"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0096"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)04C(21)0097"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0093"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0094"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0095"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0096"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0097"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)05C(21)0098"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0097"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0098"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0099"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0100"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0101"
+          },
+          {
+            "product_code": "01.02.01.0615",
+            "product_name": "注射器20ml",
+            "product_specification": "20ml1.2*38X筒外针",
+            "production_batch_number": "20260621",
+            "production_date": "2026-06-24",
+            "udi": "(01)26932992101039(10)20260621(11)260624(17)290620(91)06C(21)0102"
+          }
+        ]
+      }
+    ]
+  }
+}
