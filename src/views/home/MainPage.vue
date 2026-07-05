@@ -2859,6 +2859,21 @@ export default {
           motorName: '01024B',
           sensorName: 'SP_01024'
         },
+        // '01025': {
+        //   name: '01025',
+        //   x: 1273,
+        //   y: 778,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: '',
+        //   destination: 0,
+        //   motorAddr: { db: 'DBW8', bit: 8 },
+        //   sensorAddr: { db: 'DBW1608', bit: 6 },
+        //   trayIdAddr: 'DBW1808',
+        //   destinationAddr: 'DBW1916',
+        //   motorName: '01025',
+        //   sensorName: 'SP_01027'
+        // },
         '01026': {
           name: '01026',
           x: 1273,
@@ -2893,6 +2908,21 @@ export default {
           motorName: '01027',
           sensorName: 'SP_01027'
         },
+        // '01028': {
+        //   name: '01028',
+        //   x: 1300,
+        //   y: 778,
+        //   motorStatus: false,
+        //   sensorStatus: false,
+        //   trayId: '',
+        //   destination: 0,
+        //   motorAddr: { db: 'DBW8', bit: 11 },
+        //   sensorAddr: { db: 'DBW1608', bit: 7 },
+        //   trayIdAddr: 'DBW1812',
+        //   destinationAddr: 'DBW1920',
+        //   motorName: '01028',
+        //   sensorName: 'SP_01030'
+        // },
         '01029': {
           name: '01029',
           x: 1300,
@@ -3685,7 +3715,7 @@ export default {
           sensorStatus: false,
           trayId: '',
           destination: 0,
-          motorAddr: { db: 'DBW44', bit: 4 },
+          motorAddr: { db: 'DBW42', bit: 4 },
           sensorAddr: { db: 'DBW1640', bit: 13 },
           trayIdAddr: 'DBW536',
           destinationAddr: 'DBW1276',
@@ -3702,7 +3732,7 @@ export default {
           sensorStatus: false,
           trayId: '',
           destination: 0,
-          motorAddr: { db: 'DBW44', bit: 5 },
+          motorAddr: { db: 'DBW42', bit: 5 },
           sensorAddr: { db: 'DBW1640', bit: 13 },
           trayIdAddr: 'DBW536',
           destinationAddr: 'DBW1276',
@@ -3719,7 +3749,7 @@ export default {
           sensorStatus: false,
           trayId: '',
           destination: 0,
-          motorAddr: { db: 'DBW44', bit: 1 },
+          motorAddr: { db: 'DBW42', bit: 1 },
           sensorAddr: { db: 'DBW1640', bit: 12 },
           trayIdAddr: 'DBW532',
           destinationAddr: 'DBW1272',
@@ -3736,7 +3766,7 @@ export default {
           sensorStatus: false,
           trayId: '',
           destination: 0,
-          motorAddr: { db: 'DBW44', bit: 2 },
+          motorAddr: { db: 'DBW42', bit: 2 },
           sensorAddr: { db: 'DBW1640', bit: 12 },
           trayIdAddr: 'DBW532',
           destinationAddr: 'DBW1272',
@@ -5612,7 +5642,7 @@ export default {
           sensorStatus: false,
           trayId: '',
           destination: 0,
-          motorAddr: { db: 'DBW54', bit: 1 },
+          motorAddr: { db: 'DBW54', bit: 0 },
           sensorAddr: { db: 'DBW1652', bit: 12 },
           trayIdAddr: 'DBW696',
           destinationAddr: 'DBW1436',
@@ -5626,7 +5656,7 @@ export default {
           sensorStatus: false,
           trayId: '',
           destination: 0,
-          motorAddr: { db: 'DBW54', bit: 2 },
+          motorAddr: { db: 'DBW54', bit: 1 },
           sensorAddr: { db: 'DBW1652', bit: 11 },
           trayIdAddr: 'DBW696',
           destinationAddr: 'DBW1436',
@@ -9159,35 +9189,8 @@ export default {
         });
       }
     },
-    /** PDA 扫码添加托盘到上货区（由 handleMobileScanCode 调用） */
-    addTrayFromPda(trayCode, source) {
-      const shanghuoQueue = this.queues.find((q) => q.queueName === '上货区');
-      if (!shanghuoQueue) {
-        throw new Error('未找到上货区队列');
-      }
-      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-      const newTray = {
-        trayCode: trayCode,
-        trayTime: currentTime,
-        batchId: 'PDA',
-        isTerile: 1,
-        state: '0',
-        sendTo: '',
-        sequenceNumber: null
-      };
-      if (!Array.isArray(shanghuoQueue.trayInfo)) {
-        shanghuoQueue.trayInfo = [];
-      }
-      shanghuoQueue.trayInfo.push(newTray);
-      this.updateQueueTrays(shanghuoQueue.id, shanghuoQueue.trayInfo);
-      this.addLog(
-        `PDA扫码托盘 ${trayCode} 已加入上货区（来源: ${source}）`,
-        'running'
-      );
-      this.$message.success(`托盘 ${trayCode} 已加入上货区`);
-    },
     handleMobileTrayDataChanged(data) {
-      console.log('收到移动端托盘数据变更通知:', data);
+      this.addLog('[PDA]收到扫码复核通行命令', 'running');
       // PDA下发通行命令后通知PC端，直接用data中的palletId和sendDestinationCode更新上货区队列
       this.refreshLoadingQueueFromBackend(data && data.data);
     },

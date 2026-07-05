@@ -400,7 +400,7 @@ export default {
           };
           this.workstations = [
             buildStation('A', 'A工位（01002）', latestByVirtualId()),
-            buildStation('B', 'B工位（02006）', latestNon999()),
+            buildStation('B', 'B工位（01006）', latestNon999()),
             buildStation('C', 'C工位（异常）', latest999())
           ];
         } else {
