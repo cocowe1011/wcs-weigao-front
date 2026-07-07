@@ -8,7 +8,7 @@ import axios from 'axios';
  */
 const HttpUtilMes = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL_MES,
-  timeout: 2000
+  timeout: 10000
 });
 
 HttpUtilMes.interceptors.response.use(
