@@ -549,7 +549,11 @@
                   :data-x="item.x"
                   :data-y="item.y"
                 >
-                  <el-tag v-show="item.completed" type="success" size="small">
+                  <el-tag
+                    v-show="item.completed === '1'"
+                    type="success"
+                    size="small"
+                  >
                     预热完成
                   </el-tag>
                 </div>
@@ -561,7 +565,11 @@
                   :data-x="item.x"
                   :data-y="item.y"
                 >
-                  <el-tag v-show="item.completed" type="success" size="small">
+                  <el-tag
+                    v-show="item.completed === '1'"
+                    type="success"
+                    size="small"
+                  >
                     灭菌完成
                   </el-tag>
                 </div>
@@ -2256,41 +2264,41 @@ export default {
         { id: 30, name: 'Y3201', queueId: 30, x: 178, y: 615 },
         { id: 31, name: '3201', queueId: 31, x: 178, y: 300 }
       ],
-      // 预热完成信号（15条线，含位置和状态）
+      // 预热完成信号（15条线，含位置和状态，由DB1000.DBW1614驱动：1显示，0隐藏）
       preheatCompleted: [
-        { x: 1210, y: 530, completed: true }, // Y3215
-        { x: 1135, y: 530, completed: true }, // Y3214
-        { x: 1065, y: 530, completed: true }, // Y3213
-        { x: 990, y: 530, completed: true }, // Y3212
-        { x: 915, y: 530, completed: true }, // Y3211
-        { x: 842, y: 530, completed: true }, // Y3210
-        { x: 767, y: 530, completed: true }, // Y3209
-        { x: 692, y: 530, completed: true }, // Y3208
-        { x: 620, y: 530, completed: true }, // Y3207
-        { x: 545, y: 530, completed: true }, // Y3206
-        { x: 472, y: 530, completed: true }, // Y3205
-        { x: 397, y: 530, completed: true }, // Y3204
-        { x: 328, y: 530, completed: true }, // Y3203
-        { x: 253, y: 530, completed: true }, // Y3202
-        { x: 178, y: 530, completed: true } // Y3201
+        { x: 1210, y: 530, completed: '0' }, // Y3215
+        { x: 1135, y: 530, completed: '0' }, // Y3214
+        { x: 1065, y: 530, completed: '0' }, // Y3213
+        { x: 990, y: 530, completed: '0' }, // Y3212
+        { x: 915, y: 530, completed: '0' }, // Y3211
+        { x: 842, y: 530, completed: '0' }, // Y3210
+        { x: 767, y: 530, completed: '0' }, // Y3209
+        { x: 692, y: 530, completed: '0' }, // Y3208
+        { x: 620, y: 530, completed: '0' }, // Y3207
+        { x: 545, y: 530, completed: '0' }, // Y3206
+        { x: 472, y: 530, completed: '0' }, // Y3205
+        { x: 397, y: 530, completed: '0' }, // Y3204
+        { x: 328, y: 530, completed: '0' }, // Y3203
+        { x: 253, y: 530, completed: '0' }, // Y3202
+        { x: 178, y: 530, completed: '0' } // Y3201
       ],
-      // 灭菌完成信号（15条线，含位置和状态）
+      // 灭菌完成信号（15条线，含位置和状态，由DB1000.DBW1620驱动：1显示，0隐藏）
       sterilizationCompleted: [
-        { x: 1210, y: 215, completed: true }, // 3215
-        { x: 1135, y: 215, completed: true }, // 3214
-        { x: 1065, y: 215, completed: true }, // 3213
-        { x: 990, y: 215, completed: true }, // 3212
-        { x: 915, y: 215, completed: true }, // 3211
-        { x: 842, y: 215, completed: true }, // 3210
-        { x: 767, y: 215, completed: true }, // 3209
-        { x: 692, y: 215, completed: true }, // 3208
-        { x: 620, y: 215, completed: true }, // 3207
-        { x: 545, y: 215, completed: true }, // 3206
-        { x: 472, y: 215, completed: true }, // 3205
-        { x: 397, y: 215, completed: true }, // 3204
-        { x: 328, y: 215, completed: true }, // 3203
-        { x: 253, y: 215, completed: true }, // 3202
-        { x: 178, y: 215, completed: true } // 3201
+        { x: 1210, y: 215, completed: '0' }, // 3215
+        { x: 1135, y: 215, completed: '0' }, // 3214
+        { x: 1065, y: 215, completed: '0' }, // 3213
+        { x: 990, y: 215, completed: '0' }, // 3212
+        { x: 915, y: 215, completed: '0' }, // 3211
+        { x: 842, y: 215, completed: '0' }, // 3210
+        { x: 767, y: 215, completed: '0' }, // 3209
+        { x: 692, y: 215, completed: '0' }, // 3208
+        { x: 620, y: 215, completed: '0' }, // 3207
+        { x: 545, y: 215, completed: '0' }, // 3206
+        { x: 472, y: 215, completed: '0' }, // 3205
+        { x: 397, y: 215, completed: '0' }, // 3204
+        { x: 328, y: 215, completed: '0' }, // 3203
+        { x: 253, y: 215, completed: '0' }, // 3202
+        { x: 178, y: 215, completed: '0' } // 3201
       ],
       logId: 1000,
 
@@ -7143,6 +7151,43 @@ export default {
       this.outbound1672Bit11 = getBit(word1672, 3); // BIT11→bit3: 3202柜左线8036
       this.outbound1672Bit12 = getBit(word1672, 4); // BIT12→bit4: 3201柜右线9015
       this.outbound1672Bit13 = getBit(word1672, 5); // BIT13→bit5: 3201柜左线9018
+
+      // ---- DB1000.DBW1614/1620 预热完成/灭菌完成信号赋值（1显示，0隐藏） ----
+      // S7大端序：逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit14→word.bit6
+      // 按读取点位.csv：BIT0-BIT14 对应 3201-3215；数组按 3215→3201 排列（索引0=3215，索引14=3201）
+      // completed 存 getBit 结果('1'/'0')，模板里用 === '1' 判断显示
+      const word1614 = getParsedWord('DBW1614');
+      this.preheatCompleted[14].completed = getBit(word1614, 8); // BIT0→bit8: 3201预热完成
+      this.preheatCompleted[13].completed = getBit(word1614, 9); // BIT1→bit9: 3202预热完成
+      this.preheatCompleted[12].completed = getBit(word1614, 10); // BIT2→bit10: 3203预热完成
+      this.preheatCompleted[11].completed = getBit(word1614, 11); // BIT3→bit11: 3204预热完成
+      this.preheatCompleted[10].completed = getBit(word1614, 12); // BIT4→bit12: 3205预热完成
+      this.preheatCompleted[9].completed = getBit(word1614, 13); // BIT5→bit13: 3206预热完成
+      this.preheatCompleted[8].completed = getBit(word1614, 14); // BIT6→bit14: 3207预热完成
+      this.preheatCompleted[7].completed = getBit(word1614, 15); // BIT7→bit15: 3208预热完成
+      this.preheatCompleted[6].completed = getBit(word1614, 0); // BIT8→bit0: 3209预热完成
+      this.preheatCompleted[5].completed = getBit(word1614, 1); // BIT9→bit1: 3210预热完成
+      this.preheatCompleted[4].completed = getBit(word1614, 2); // BIT10→bit2: 3211预热完成
+      this.preheatCompleted[3].completed = getBit(word1614, 3); // BIT11→bit3: 3212预热完成
+      this.preheatCompleted[2].completed = getBit(word1614, 4); // BIT12→bit4: 3213预热完成
+      this.preheatCompleted[1].completed = getBit(word1614, 5); // BIT13→bit5: 3214预热完成
+      this.preheatCompleted[0].completed = getBit(word1614, 6); // BIT14→bit6: 3215预热完成
+      const word1620 = getParsedWord('DBW1620');
+      this.sterilizationCompleted[14].completed = getBit(word1620, 8); // BIT0→bit8: 3201灭菌完成
+      this.sterilizationCompleted[13].completed = getBit(word1620, 9); // BIT1→bit9: 3202灭菌完成
+      this.sterilizationCompleted[12].completed = getBit(word1620, 10); // BIT2→bit10: 3203灭菌完成
+      this.sterilizationCompleted[11].completed = getBit(word1620, 11); // BIT3→bit11: 3204灭菌完成
+      this.sterilizationCompleted[10].completed = getBit(word1620, 12); // BIT4→bit12: 3205灭菌完成
+      this.sterilizationCompleted[9].completed = getBit(word1620, 13); // BIT5→bit13: 3206灭菌完成
+      this.sterilizationCompleted[8].completed = getBit(word1620, 14); // BIT6→bit14: 3207灭菌完成
+      this.sterilizationCompleted[7].completed = getBit(word1620, 15); // BIT7→bit15: 3208灭菌完成
+      this.sterilizationCompleted[6].completed = getBit(word1620, 0); // BIT8→bit0: 3209灭菌完成
+      this.sterilizationCompleted[5].completed = getBit(word1620, 1); // BIT9→bit1: 3210灭菌完成
+      this.sterilizationCompleted[4].completed = getBit(word1620, 2); // BIT10→bit2: 3211灭菌完成
+      this.sterilizationCompleted[3].completed = getBit(word1620, 3); // BIT11→bit3: 3212灭菌完成
+      this.sterilizationCompleted[2].completed = getBit(word1620, 4); // BIT12→bit4: 3213灭菌完成
+      this.sterilizationCompleted[1].completed = getBit(word1620, 5); // BIT13→bit5: 3214灭菌完成
+      this.sterilizationCompleted[0].completed = getBit(word1620, 6); // BIT14→bit6: 3215灭菌完成
 
       // 如果弹窗处于打开状态，同步更新弹窗内的数据
       if (this.popoverVisible && this.popoverData) {
