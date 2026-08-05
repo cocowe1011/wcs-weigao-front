@@ -8401,14 +8401,17 @@ export default {
               fault_reset: false,
               clear: false
             };
-            // 全线启动：写入 DB1001.DBW2（WCS-全线启动），见 写入PLC点位.csv
+            // 全线启动：写入 DB1001.DBW2（WCS-全线启动）
+            // 同时写 DB1001.DBW6=1（WCS-允许进料），持续2秒
             ipcRenderer.send('writeSingleValueToPLC', 'W_DBW2', 1);
+            ipcRenderer.send('writeSingleValueToPLC', 'W_DBW6', 1);
             setTimeout(() => {
               ipcRenderer.send('cancelWriteToPLC', 'W_DBW2');
+              ipcRenderer.send('cancelWriteToPLC', 'W_DBW6');
             }, 2000);
             this.buttonStates[button] = !this.buttonStates[button];
             this.$message.success('全线启动成功');
-            this.addLog('全线启动成功');
+            this.addLog('全线启动成功（W_DBW2=1，W_DBW6=1）');
           })
           .catch(() => {
             // 用户取消操作，不做任何处理
