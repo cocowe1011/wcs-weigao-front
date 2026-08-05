@@ -1113,6 +1113,59 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
+
+                /* 布局按标注图：左上61.2红 / 右上61.3绿 / 左下61.0红 / 右下61.1绿 */
+                .cart-indicator {
+                  position: absolute;
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 50%;
+                  background: #9e9e9e;
+                  border: 1px solid rgba(0, 0, 0, 0.25);
+                  z-index: 4;
+                  pointer-events: none;
+                  transform: translate(-50%, -50%);
+
+                  &--bit8 {
+                    /* 61.0 左下 红 */
+                    left: 28%;
+                    top: 78%;
+
+                    &.is-on {
+                      background: #f56c6c;
+                    }
+                  }
+
+                  &--bit9 {
+                    /* 61.1 右下 绿 */
+                    left: 72%;
+                    top: 78%;
+
+                    &.is-on {
+                      background: #67c23a;
+                    }
+                  }
+
+                  &--bit10 {
+                    /* 61.2 左上 红 */
+                    left: 28%;
+                    top: 22%;
+
+                    &.is-on {
+                      background: #f56c6c;
+                    }
+                  }
+
+                  &--bit11 {
+                    /* 61.3 右上 绿 */
+                    left: 72%;
+                    top: 22%;
+
+                    &.is-on {
+                      background: #67c23a;
+                    }
+                  }
+                }
               }
 
               .cart-image {

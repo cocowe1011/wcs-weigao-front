@@ -547,6 +547,23 @@
                   :data-width="cart.width"
                 >
                   <img :src="cart.image" :alt="cart.name" class="cart-image" />
+                  <!-- DBW60.BIT8~11 小车翻转到位指示灯 -->
+                  <div
+                    class="cart-indicator cart-indicator--bit8"
+                    :class="{ 'is-on': cartIndicator.bit8 === '1' }"
+                  ></div>
+                  <div
+                    class="cart-indicator cart-indicator--bit9"
+                    :class="{ 'is-on': cartIndicator.bit9 === '1' }"
+                  ></div>
+                  <div
+                    class="cart-indicator cart-indicator--bit10"
+                    :class="{ 'is-on': cartIndicator.bit10 === '1' }"
+                  ></div>
+                  <div
+                    class="cart-indicator cart-indicator--bit11"
+                    :class="{ 'is-on': cartIndicator.bit11 === '1' }"
+                  ></div>
                 </div>
                 <!-- 预热完成信号 -->
                 <div
@@ -1322,6 +1339,45 @@
                   ></el-slider>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="test-section">
+            <span class="test-label">小车指示灯(DBW60.BIT8~11):</span>
+            <div
+              style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px"
+            >
+              <el-button
+                size="mini"
+                type="danger"
+                plain
+                @click="simulateCartIndicator('bit8')"
+              >
+                入口翻转出
+              </el-button>
+              <el-button
+                size="mini"
+                type="success"
+                plain
+                @click="simulateCartIndicator('bit9')"
+              >
+                入口翻转回
+              </el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                plain
+                @click="simulateCartIndicator('bit10')"
+              >
+                出口翻转出
+              </el-button>
+              <el-button
+                size="mini"
+                type="success"
+                plain
+                @click="simulateCartIndicator('bit11')"
+              >
+                出口翻转回
+              </el-button>
             </div>
           </div>
         </div>
@@ -2172,6 +2228,13 @@ export default {
       // 小车位置数值-读取PLC
       cartPositionValues: {
         cart1: 19 // 范围19-6210
+      },
+      // DBW60.BIT8~11 小车翻转到位指示灯
+      cartIndicator: {
+        bit8: '0', // 61.0 入口翻转出到位 → 红
+        bit9: '0', // 61.1 入口翻转回到位 → 绿
+        bit10: '0', // 61.2 出口翻转出到位 → 红
+        bit11: '0' // 61.3 出口翻转回到位 → 绿
       },
       nowTrays: [],
       draggedTray: null,
@@ -7219,6 +7282,13 @@ export default {
 
       // 灭菌前1#小车位置值
       this.cartPositionValues.cart1 = Number(values.DBW58 ?? 0);
+
+      // DBW60.BIT8~11 小车翻转到位指示灯（PLC 偏移 61.0~61.3）
+      const word60 = getParsedWord('DBW60');
+      this.cartIndicator.bit8 = getBit(word60, 0); // BIT8→bit0: 入口翻转出到位
+      this.cartIndicator.bit9 = getBit(word60, 1); // BIT9→bit1: 入口翻转回到位
+      this.cartIndicator.bit10 = getBit(word60, 2); // BIT10→bit2: 出口翻转出到位
+      this.cartIndicator.bit11 = getBit(word60, 3); // BIT11→bit3: 出口翻转回到位
     });
   },
   watch: {
@@ -7901,6 +7971,14 @@ export default {
       this[field] = '1';
       setTimeout(() => {
         this[field] = '0';
+      }, 1000);
+    },
+
+    /** 测试用：模拟小车指示灯位脉冲（DBW60.BIT8~11） */
+    simulateCartIndicator(bitKey) {
+      this.cartIndicator[bitKey] = '1';
+      setTimeout(() => {
+        this.cartIndicator[bitKey] = '0';
       }, 1000);
     },
 
