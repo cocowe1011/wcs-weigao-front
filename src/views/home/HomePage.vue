@@ -2,7 +2,11 @@
   <div class="homePage">
     <div class="maskDiv">
       <div class="maskDiv-top">
-        <div class="maskDiv-top-left" @dblclick="maxWindow">
+        <div
+          class="maskDiv-top-left"
+          :class="{ 'no-drag': !isAdmin && enableWindowRestriction }"
+          @dblclick="handleTitleDblclick"
+        >
           <img
             src="@/assets/fengke-logo.jpg"
             style="width: 38px; height: 38px"
@@ -72,23 +76,28 @@
                 v-if="userRole !== 'ADMIN'"
                 >修改密码</el-dropdown-item
               >
-              <el-dropdown-item
-                icon="el-icon-upload2"
-                command="logout"
-                v-if="userRole === 'ADMIN'"
+              <el-dropdown-item icon="el-icon-upload2" command="logout"
                 >退出登录</el-dropdown-item
               >
             </el-dropdown-menu>
           </el-dropdown>
           <div class="el-divider el-divider--vertical"></div>
         </div>
-        <div class="maskDiv-top-min" @click="minWindow">
+        <div
+          class="maskDiv-top-min"
+          @click="minWindow"
+          v-if="!enableWindowRestriction || isAdmin"
+        >
           <i
             class="el-icon-minus"
             style="font-size: 18px; font-weight: 600"
           ></i>
         </div>
-        <div class="maskDiv-top-max" @click="maxWindow">
+        <div
+          class="maskDiv-top-max"
+          @click="maxWindow"
+          v-if="!enableWindowRestriction || isAdmin"
+        >
           <i
             :class="
               windowSize === 'unmax-window'
@@ -98,11 +107,7 @@
             style="font-size: 18px; font-weight: 600"
           ></i>
         </div>
-        <div
-          class="maskDiv-top-close"
-          @click="closewindow"
-          v-if="userRole === 'ADMIN'"
-        >
+        <div class="maskDiv-top-close" @click="closewindow">
           <i
             class="el-icon-close"
             style="font-size: 18px; font-weight: 600"
@@ -143,6 +148,52 @@
         >
       </div>
     </el-dialog>
+
+    <!-- 管理员授权弹窗 -->
+    <el-dialog
+      :title="authDialogTitle"
+      :visible.sync="showAuthDialog"
+      width="460px"
+      :close-on-click-modal="false"
+      append-to-body
+    >
+      <div class="auth-warning-tip">
+        <i class="el-icon-warning"></i>
+        <div class="auth-warning-text">
+          <span class="auth-warning-title">风险提示</span>
+          <span>{{ authWarningText }}</span>
+        </div>
+      </div>
+      <el-form
+        :model="authForm"
+        ref="authForm"
+        :rules="authRules"
+        label-width="100px"
+      >
+        <el-form-item label="管理员账号" prop="adminCode">
+          <el-input
+            v-model="authForm.adminCode"
+            placeholder="请输入管理员账号"
+            @keyup.enter.native="confirmAuth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="管理员密码" prop="adminPassword">
+          <el-input
+            v-model="authForm.adminPassword"
+            type="password"
+            placeholder="请输入管理员密码"
+            show-password
+            @keyup.enter.native="confirmAuth"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelAuth">取 消</el-button>
+        <el-button type="primary" @click="confirmAuth" :loading="authLoading"
+          >确认授权</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -150,6 +201,7 @@
 import { ipcRenderer } from 'electron';
 import StatusMonitor from '@/components/StatusMonitoring.vue';
 import HttpUtil from '@/utils/HttpUtil';
+import config from '@/config';
 const remote = require('electron').remote;
 export default {
   name: 'HomePage',
@@ -167,11 +219,49 @@ export default {
         newPassword: '',
         newPasswordAgain: ''
       },
-      userRole: ''
+      userRole: '',
+      showAuthDialog: false,
+      authLoading: false,
+      authAction: '', // 'close' 或 'logout'
+      authForm: {
+        adminCode: '',
+        adminPassword: ''
+      },
+      authRules: {
+        adminCode: [
+          { required: true, message: '请输入管理员账号', trigger: 'blur' }
+        ],
+        adminPassword: [
+          { required: true, message: '请输入管理员密码', trigger: 'blur' }
+        ]
+      },
+      // 是否开启非管理员权限不让关闭/最大小化页面/改变窗口大小false不开启。true开启
+      enableWindowRestriction: config.enableWindowRestriction
     };
   },
   watch: {},
-  computed: {},
+  computed: {
+    isAdmin() {
+      return this.userRole === 'ADMIN';
+    },
+    authDialogTitle() {
+      const titleMap = {
+        close: '退出授权验证',
+        logout: '退出授权验证',
+        updatePassword: '修改密码授权验证'
+      };
+      return titleMap[this.authAction] || '授权验证';
+    },
+    authWarningText() {
+      const textMap = {
+        close: '关闭系统将中断所有正在运行的任务，请确认是否需要退出。',
+        logout: '退出登录将中断所有正在运行的任务，请确认是否需要退出。',
+        updatePassword:
+          '修改密码后将强制退出登录，所有正在运行的任务将被中断，请确认是否需要修改。'
+      };
+      return textMap[this.authAction] || '';
+    }
+  },
   methods: {
     handleSelect(key, keyPath) {
       switch (key) {
@@ -235,22 +325,37 @@ export default {
       }
     },
     closewindow() {
-      // 检查用户权限，只有管理员可以关闭系统
-      if (this.userRole !== 'ADMIN') {
-        this.$message.warning('操作员权限不足，无法关闭系统！');
+      if (this.userRole === 'ADMIN') {
+        ipcRenderer.send('close-window');
         return;
       }
-      ipcRenderer.send('close-window');
+      this.authAction = 'close';
+      this.showAuthDialog = true;
     },
     minWindow() {
+      if (!this.isAdmin && this.enableWindowRestriction) return;
       ipcRenderer.send('min-window');
     },
     maxWindow() {
+      if (!this.isAdmin && this.enableWindowRestriction) return;
       this.windowSize =
         this.windowSize === 'unmax-window' ? 'max-window' : 'unmax-window';
       ipcRenderer.send('max-window', this.windowSize);
     },
+    handleTitleDblclick(e) {
+      if (!this.isAdmin && this.enableWindowRestriction) {
+        e.preventDefault();
+        return;
+      }
+      e.preventDefault();
+      this.maxWindow();
+    },
     fullScreen() {
+      // 全屏切换前，如果窗口是最大化状态，先还原
+      if (this.windowSize === 'max-window') {
+        this.windowSize = 'unmax-window';
+        ipcRenderer.send('max-window', 'unmax-window');
+      }
       ipcRenderer.send('full_screen');
     },
     logoutMethod() {
@@ -266,50 +371,26 @@ export default {
     handelCommand(command) {
       switch (command) {
         case 'logout':
-          // 检查用户权限，只有管理员可以退出登录
-          if (this.userRole !== 'ADMIN') {
-            this.$message.warning('操作员权限不足，无法退出登录！');
+          if (this.userRole === 'ADMIN') {
+            this.$notify({
+              title: '已退出登录！',
+              message: '退出登录！',
+              type: 'success',
+              duration: 2000
+            });
+            this.logoutMethod();
             return;
           }
-          this.$notify({
-            title: '已退出登录！',
-            message: '退出登录！',
-            type: 'success',
-            duration: 2000
-          });
-          this.logoutMethod();
+          this.authAction = 'logout';
+          this.showAuthDialog = true;
           break;
         case 'updatePassword':
-          this.$prompt('请输入注册账号时保存的姓名：', '敏感操作！验证用户！', {
-            confirmButtonText: '验证',
-            cancelButtonText: '取消'
-          })
-            .then(({ value }) => {
-              // 验证姓名是否正确
-              const param = {
-                userName: value,
-                userCode: remote.getGlobal('sharedObject').userInfo.userCode
-              };
-              HttpUtil.post('/userInfo/verifyName', param)
-                .then((res) => {
-                  if (res.data) {
-                    this.$message.success('验证通过！');
-                    // 打开修改密码的弹窗，可以修改密码
-                    this.dialogFormVisible = true;
-                  } else {
-                    this.$message.error('验证未通过！');
-                  }
-                })
-                .catch((err) => {
-                  this.$message.error('验证未通过！请重试！');
-                });
-            })
-            .catch(() => {
-              this.$message({
-                type: 'info',
-                message: '取消验证！'
-              });
-            });
+          if (this.userRole !== 'ADMIN') {
+            this.authAction = 'updatePassword';
+            this.showAuthDialog = true;
+            return;
+          }
+          this.showNameVerifyPrompt();
           break;
         default:
           break;
@@ -329,6 +410,86 @@ export default {
       ipcRenderer.on('mainWin-max', (e, status) => {
         this.windowSize = status;
       });
+    },
+    cancelAuth() {
+      this.showAuthDialog = false;
+      this.authForm.adminCode = '';
+      this.authForm.adminPassword = '';
+      this.$nextTick(() => {
+        if (this.$refs.authForm) {
+          this.$refs.authForm.clearValidate();
+        }
+      });
+    },
+    confirmAuth() {
+      this.$refs.authForm.validate((valid) => {
+        if (!valid) return;
+        this.authLoading = true;
+        const param = {
+          userCode: this.authForm.adminCode,
+          userPassword: this.authForm.adminPassword
+        };
+        HttpUtil.post('/login/login', param)
+          .then((res) => {
+            this.authLoading = false;
+            if (res.data && res.data.userRole === 'ADMIN') {
+              this.showAuthDialog = false;
+              this.authForm.adminCode = '';
+              this.authForm.adminPassword = '';
+              if (this.authAction === 'close') {
+                ipcRenderer.send('close-window');
+              } else if (this.authAction === 'logout') {
+                this.$notify({
+                  title: '已退出登录！',
+                  message: '退出登录！',
+                  type: 'success',
+                  duration: 2000
+                });
+                this.logoutMethod();
+              } else if (this.authAction === 'updatePassword') {
+                this.showNameVerifyPrompt();
+              }
+            } else {
+              this.$message.error('授权失败，仅管理员账号可授权退出');
+            }
+          })
+          .catch((err) => {
+            this.authLoading = false;
+            this.$message.error('账号或密码错误，授权失败');
+          });
+      });
+    },
+    showNameVerifyPrompt() {
+      this.$prompt('请输入注册账号时保存的姓名：', '敏感操作！验证用户！', {
+        confirmButtonText: '验证',
+        cancelButtonText: '取消'
+      })
+        .then(({ value }) => {
+          // 验证姓名是否正确
+          const param = {
+            userName: value,
+            userCode: remote.getGlobal('sharedObject').userInfo.userCode
+          };
+          HttpUtil.post('/userInfo/verifyName', param)
+            .then((res) => {
+              if (res.data) {
+                this.$message.success('验证通过！');
+                // 打开修改密码的弹窗，可以修改密码
+                this.dialogFormVisible = true;
+              } else {
+                this.$message.error('验证未通过！');
+              }
+            })
+            .catch((err) => {
+              this.$message.error('验证未通过！请重试！');
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消验证！'
+          });
+        });
     },
     cancelUpdatePassword() {
       this.dialogFormVisible = false;
@@ -373,11 +534,15 @@ export default {
     }
   },
   created() {
+    // 获取用户角色
+    this.userRole = remote.getGlobal('sharedObject').userInfo.userRole || '';
+    // 同步角色到store
+    this.$store.commit('SET_USER_ROLE', this.userRole);
+    // 给主进程发送用户角色，用于窗口权限控制
+    ipcRenderer.send('set-user-role', this.userRole);
     // 给主进程发送消息，更改窗口大小，设置最小大小，默认全屏
     ipcRenderer.send('logStatus', 'login');
     this.changeIcon();
-    // 获取用户角色
-    this.userRole = remote.getGlobal('sharedObject').userInfo.userRole || '';
   },
   mounted() {}
 };
@@ -407,6 +572,9 @@ export default {
         display: flex;
         align-items: center;
         padding-left: 10px;
+        &.no-drag {
+          -webkit-app-region: no-drag;
+        }
         &-top-title {
           font-size: 16px;
           font-weight: 550;
@@ -505,6 +673,41 @@ export default {
     }
     .v-modal {
       top: auto;
+    }
+  }
+}
+
+::v-deep .auth-warning-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 15px;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 4px;
+  margin-bottom: 22px;
+
+  i {
+    color: #ff4d4f;
+    font-size: 16px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .auth-warning-text {
+    display: flex;
+    flex-direction: column;
+
+    .auth-warning-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #262626;
+    }
+
+    span {
+      font-size: 13px;
+      color: #595959;
+      line-height: 1.5;
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="scanner-debug">
+  <div class="scanner-debug" :class="{ 'readonly-mode': isOperator }">
     <!-- 01002工位 -->
     <div class="sd-station">
       <div class="sd-station-bar">
@@ -15,6 +15,7 @@
                 {{ s.connected ? '已连接' : '未连接' }}
               </span>
               <button
+                v-if="!isOperator"
                 class="sd-trigger-btn"
                 :disabled="!s.connected"
                 @click="triggerScanner(s.ip)"
@@ -45,6 +46,7 @@
                 {{ s.connected ? '已连接' : '未连接' }}
               </span>
               <button
+                v-if="!isOperator"
                 class="sd-trigger-btn"
                 :disabled="!s.connected"
                 @click="triggerScanner(s.ip)"
@@ -65,7 +67,9 @@
       <div class="sd-debug-bar">
         <span class="sd-debug-title">原始数据调试日志</span>
         <span class="sd-debug-actions">
-          <button class="sd-clear-btn" @click="clearLogs">清空</button>
+          <button v-if="!isOperator" class="sd-clear-btn" @click="clearLogs">
+            清空
+          </button>
         </span>
       </div>
       <div ref="debugLogBox" class="sd-debug-log">
@@ -118,6 +122,7 @@
 
 <script>
 const net = require('net');
+import permissionMixin from '@/mixins/permissionMixin';
 
 // 扫码枪TCP连接配置
 const SCANNER_CONFIG = [
@@ -132,6 +137,7 @@ const MAX_DEBUG_LOGS = 50;
 
 export default {
   name: 'ScannerDebug',
+  mixins: [permissionMixin],
   data() {
     return {
       scanners: SCANNER_CONFIG.map((c) => ({

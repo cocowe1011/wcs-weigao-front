@@ -1,5 +1,9 @@
 <template>
-  <div class="smart-workshop" @click="handleGlobalClick">
+  <div
+    class="smart-workshop"
+    :class="{ 'readonly-mode': isOperator }"
+    @click="handleGlobalClick"
+  >
     <!-- 内容区包装器 -->
     <div class="content-wrapper">
       <!-- 左侧面板 -->
@@ -445,7 +449,10 @@
                         </span>
                       </div>
                       <div class="data-panel-row" style="margin-top: 6px">
-                        <el-checkbox v-model="skipScanCheck" size="mini"
+                        <el-checkbox
+                          v-model="skipScanCheck"
+                          size="mini"
+                          :disabled="isOperator"
                           >不判断扫码</el-checkbox
                         >
                       </div>
@@ -962,6 +969,7 @@
                 <h3>{{ selectedQueue.queueName }}</h3>
                 <div class="queue-header-actions">
                   <el-button
+                    v-if="!isOperator"
                     type="primary"
                     size="small"
                     @click="showAddTrayDialog"
@@ -984,7 +992,7 @@
                     :class="{
                       dragging: isDragging && draggedTray?.id === tray.id
                     }"
-                    draggable="true"
+                    :draggable="!isOperator"
                     @dragstart="
                       handleDragStart($event, tray, selectedQueueIndex)
                     "
@@ -1058,7 +1066,7 @@
                       </div>
                       <span class="tray-time">{{ tray.time }}</span>
                     </div>
-                    <div class="tray-actions">
+                    <div class="tray-actions" v-if="!isOperator">
                       <el-button
                         type="primary"
                         size="mini"
@@ -1098,7 +1106,7 @@
       </div>
     </div>
     <!-- 测试面板 -->
-    <div class="test-panel-container">
+    <div class="test-panel-container" v-if="!isOperator">
       <!-- 测试按钮 -->
       <div class="test-toggle-btn" @click="showTestPanel = !showTestPanel">
         <i class="el-icon-setting"></i>
@@ -1587,6 +1595,7 @@ import HttpUtilMes from '@/utils/HttpUtilMes';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
+import permissionMixin from '@/mixins/permissionMixin';
 
 const net = require('net');
 
@@ -2034,6 +2043,7 @@ const DESTINATION_CODE = {
 
 export default {
   name: 'MonitorScreen',
+  mixins: [permissionMixin],
   components: {
     OrderQueryDialog
   },
@@ -9949,4 +9959,51 @@ export default {
 </script>
 <style lang="less" scoped>
 @import './css/MainPage.less';
+
+/* 操作员只读模式 - 仅禁用操作类元素，保留查看类功能 */
+.readonly-mode {
+  /* 操作区按钮 */
+  :deep(.operation-buttons) button {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed !important;
+  }
+
+  /* 下货/灭菌执行控件 */
+  :deep(.preheating-room-marker) {
+    select,
+    .el-select,
+    .el-button,
+    button {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+  }
+
+  /* 队列操作 */
+  :deep(.tray-actions) {
+    display: none !important;
+  }
+
+  :deep(.queue-header-actions .el-button) {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed !important;
+  }
+
+  :deep(.tray-item) {
+    cursor: default !important;
+  }
+
+  /* 设备面板写操作按钮（保留查询类迷你按钮） */
+  :deep(.side-info-panel) {
+    .el-button--danger,
+    .el-button--warning {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+  }
+}
 </style>
