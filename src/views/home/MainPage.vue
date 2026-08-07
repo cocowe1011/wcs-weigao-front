@@ -1010,7 +1010,7 @@
     <div
       class="side-info-panel-queue"
       :style="{
-        width: isQueueExpanded ? '850px' : 'auto',
+        width: isQueueExpanded ? '1280px' : 'auto',
         height: isQueueExpanded ? 'calc(100% - 40px)' : 'auto'
       }"
     >
@@ -1076,121 +1076,273 @@
                   >
                     添加托盘
                   </el-button>
+                  <template v-if="isTwoColCabinetQueue">
+                    <span class="tray-total"
+                      >1列: {{ nowTraysCol1.length }}</span
+                    >
+                    <span class="tray-total"
+                      >2列: {{ nowTraysCol2.length }}</span
+                    >
+                  </template>
                   <span class="tray-total"
                     >托盘数量: {{ selectedQueue.trayInfo?.length || 0 }}</span
                   >
                 </div>
               </div>
-              <div class="tray-list">
+              <div
+                class="tray-list"
+                :class="{ 'tray-list--two-cols': isTwoColCabinetQueue }"
+              >
                 <template v-if="nowTrays && nowTrays.length > 0">
                   <div
-                    v-for="(tray, index) in nowTrays"
-                    :key="'tray-' + tray.id + '-' + index"
-                    class="tray-item"
-                    :class="{
-                      dragging: isDragging && draggedTray?.id === tray.id
-                    }"
-                    :draggable="!isOperator"
-                    @dragstart="
-                      handleDragStart($event, tray, selectedQueueIndex)
-                    "
-                    @dragend="handleDragEnd"
+                    v-for="col in trayDisplayColumns"
+                    :key="'tray-col-' + col.key"
+                    class="tray-col"
+                    :class="{ 'tray-col--full': !isTwoColCabinetQueue }"
                   >
-                    <div class="tray-info">
-                      <div class="tray-info-row">
-                        <span class="tray-name">{{ tray.name }}</span>
-                        <div class="tray-batch-group">
-                          <span
-                            class="tray-batch"
-                            v-if="tray.sendTo && selectedQueue"
-                            >{{
-                              selectedQueue.queueName === '上货区'
-                                ? '目的地：'
-                                : selectedQueue.queueName.startsWith('Y')
-                                ? '预热柜位置：'
-                                : '灭菌柜位置：'
-                            }}{{ tray.sendTo }}</span
-                          >
-                          <span
-                            class="tray-batch"
-                            v-if="tray.sequenceNumber > 0"
-                            ><span class="sequence-number"
-                              >(序号：{{ tray.sequenceNumber }})</span
-                            ></span
-                          >
+                    <div v-if="isTwoColCabinetQueue" class="tray-col-header">
+                      <span>{{ col.label }}</span>
+                      <span class="tray-col-count">{{ col.trays.length }}</span>
+                    </div>
+                    <template v-if="col.trays.length > 0">
+                      <div
+                        v-for="(tray, index) in col.trays"
+                        :key="'tray-' + col.key + '-' + tray.id + '-' + index"
+                        class="tray-item"
+                        :class="{
+                          dragging: isDragging && draggedTray?.id === tray.id
+                        }"
+                        :draggable="!isOperator"
+                        @dragstart="
+                          handleDragStart($event, tray, selectedQueueIndex)
+                        "
+                        @dragend="handleDragEnd"
+                      >
+                        <div class="tray-info">
+                          <div class="tray-info-row">
+                            <span class="tray-name">{{ tray.name }}</span>
+                            <div class="tray-batch-group">
+                              <span
+                                class="tray-batch"
+                                v-if="tray.sendTo && selectedQueue"
+                                >{{
+                                  selectedQueue.queueName === '上货区'
+                                    ? '目的地：'
+                                    : selectedQueue.queueName.startsWith('Y')
+                                    ? '预热柜位置：'
+                                    : '灭菌柜位置：'
+                                }}{{ tray.sendTo }}</span
+                              >
+                              <span
+                                class="tray-batch"
+                                v-if="tray.sequenceNumber > 0"
+                                ><span class="sequence-number"
+                                  >(序号：{{ tray.sequenceNumber }})</span
+                                ></span
+                              >
+                            </div>
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >灭菌单号：{{ tray.orderNo || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >工艺方案：{{
+                                tray.processPlanNameCode || '--'
+                              }}</span
+                            >
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >托盘编码：{{ tray.palletNo || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >是否入库：{{
+                                tray.toWarehouse === '1'
+                                  ? '是'
+                                  : tray.toWarehouse === '0'
+                                  ? '否'
+                                  : '--'
+                              }}</span
+                            >
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >产品货号：{{ tray.productCode || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >产品名称：{{ tray.productName || '--' }}</span
+                            >
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >规格：{{ tray.spec || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >生产批次号：{{
+                                tray.productionBatchNumber || '--'
+                              }}</span
+                            >
+                          </div>
+                          <span class="tray-time">{{ tray.time }}</span>
+                        </div>
+                        <div class="tray-actions" v-if="!isOperator">
+                          <el-button
+                            type="primary"
+                            size="mini"
+                            icon="el-icon-arrow-up"
+                            circle
+                            :disabled="index === 0"
+                            @click.stop="moveTrayUp(tray)"
+                            class="move-btn"
+                          ></el-button>
+                          <el-button
+                            type="primary"
+                            size="mini"
+                            icon="el-icon-arrow-down"
+                            circle
+                            :disabled="index === col.trays.length - 1"
+                            @click.stop="moveTrayDown(tray)"
+                            class="move-btn"
+                          ></el-button>
+                          <el-button
+                            type="danger"
+                            size="mini"
+                            icon="el-icon-delete"
+                            circle
+                            @click.stop="deleteTray(tray)"
+                          ></el-button>
                         </div>
                       </div>
-                      <div class="tray-info-row">
-                        <span class="tray-detail"
-                          >灭菌单号：{{ tray.orderNo || '--' }}</span
-                        >
-                        <span class="tray-detail"
-                          >工艺方案：{{
-                            tray.processPlanNameCode || '--'
-                          }}</span
-                        >
-                      </div>
-                      <div class="tray-info-row">
-                        <span class="tray-detail"
-                          >托盘编码：{{ tray.palletNo || '--' }}</span
-                        >
-                        <span class="tray-detail"
-                          >是否入库：{{
-                            tray.toWarehouse === '1'
-                              ? '是'
-                              : tray.toWarehouse === '0'
-                              ? '否'
-                              : '--'
-                          }}</span
-                        >
-                      </div>
-                      <div class="tray-info-row">
-                        <span class="tray-detail"
-                          >产品货号：{{ tray.productCode || '--' }}</span
-                        >
-                        <span class="tray-detail"
-                          >产品名称：{{ tray.productName || '--' }}</span
-                        >
-                      </div>
-                      <div class="tray-info-row">
-                        <span class="tray-detail"
-                          >规格：{{ tray.spec || '--' }}</span
-                        >
-                        <span class="tray-detail"
-                          >生产批次号：{{
-                            tray.productionBatchNumber || '--'
-                          }}</span
-                        >
-                      </div>
-                      <span class="tray-time">{{ tray.time }}</span>
+                    </template>
+                    <div
+                      v-else-if="isTwoColCabinetQueue"
+                      class="tray-col-empty"
+                    >
+                      暂无托盘
                     </div>
-                    <div class="tray-actions" v-if="!isOperator">
-                      <el-button
-                        type="primary"
-                        size="mini"
-                        icon="el-icon-arrow-up"
-                        circle
-                        :disabled="index === 0"
-                        @click.stop="moveTrayUp(index)"
-                        class="move-btn"
-                      ></el-button>
-                      <el-button
-                        type="primary"
-                        size="mini"
-                        icon="el-icon-arrow-down"
-                        circle
-                        :disabled="index === nowTrays.length - 1"
-                        @click.stop="moveTrayDown(index)"
-                        class="move-btn"
-                      ></el-button>
-                      <el-button
-                        type="danger"
-                        size="mini"
-                        icon="el-icon-delete"
-                        circle
-                        @click.stop="deleteTray(tray, index)"
-                      ></el-button>
-                    </div>
+                    <!-- 末位非 1/2 的托盘归入 1 列下方「其他」 -->
+                    <template
+                      v-if="
+                        isTwoColCabinetQueue &&
+                        col.key === 1 &&
+                        nowTraysOther.length > 0
+                      "
+                    >
+                      <div class="tray-col-header tray-col-header--other">
+                        <span>其他</span>
+                        <span class="tray-col-count">{{
+                          nowTraysOther.length
+                        }}</span>
+                      </div>
+                      <div
+                        v-for="(tray, index) in nowTraysOther"
+                        :key="'tray-other-' + tray.id + '-' + index"
+                        class="tray-item"
+                        :class="{
+                          dragging: isDragging && draggedTray?.id === tray.id
+                        }"
+                        :draggable="!isOperator"
+                        @dragstart="
+                          handleDragStart($event, tray, selectedQueueIndex)
+                        "
+                        @dragend="handleDragEnd"
+                      >
+                        <div class="tray-info">
+                          <div class="tray-info-row">
+                            <span class="tray-name">{{ tray.name }}</span>
+                            <div class="tray-batch-group">
+                              <span
+                                class="tray-batch"
+                                v-if="tray.sendTo && selectedQueue"
+                                >{{
+                                  selectedQueue.queueName.startsWith('Y')
+                                    ? '预热柜位置：'
+                                    : '灭菌柜位置：'
+                                }}{{ tray.sendTo }}</span
+                              >
+                              <span
+                                class="tray-batch"
+                                v-if="tray.sequenceNumber > 0"
+                                ><span class="sequence-number"
+                                  >(序号：{{ tray.sequenceNumber }})</span
+                                ></span
+                              >
+                            </div>
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >灭菌单号：{{ tray.orderNo || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >工艺方案：{{
+                                tray.processPlanNameCode || '--'
+                              }}</span
+                            >
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >托盘编码：{{ tray.palletNo || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >是否入库：{{
+                                tray.toWarehouse === '1'
+                                  ? '是'
+                                  : tray.toWarehouse === '0'
+                                  ? '否'
+                                  : '--'
+                              }}</span
+                            >
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >产品货号：{{ tray.productCode || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >产品名称：{{ tray.productName || '--' }}</span
+                            >
+                          </div>
+                          <div class="tray-info-row">
+                            <span class="tray-detail"
+                              >规格：{{ tray.spec || '--' }}</span
+                            >
+                            <span class="tray-detail"
+                              >生产批次号：{{
+                                tray.productionBatchNumber || '--'
+                              }}</span
+                            >
+                          </div>
+                          <span class="tray-time">{{ tray.time }}</span>
+                        </div>
+                        <div class="tray-actions" v-if="!isOperator">
+                          <el-button
+                            type="primary"
+                            size="mini"
+                            icon="el-icon-arrow-up"
+                            circle
+                            :disabled="index === 0"
+                            @click.stop="moveTrayUp(tray)"
+                            class="move-btn"
+                          ></el-button>
+                          <el-button
+                            type="primary"
+                            size="mini"
+                            icon="el-icon-arrow-down"
+                            circle
+                            :disabled="index === nowTraysOther.length - 1"
+                            @click.stop="moveTrayDown(tray)"
+                            class="move-btn"
+                          ></el-button>
+                          <el-button
+                            type="danger"
+                            size="mini"
+                            icon="el-icon-delete"
+                            circle
+                            @click.stop="deleteTray(tray)"
+                          ></el-button>
+                        </div>
+                      </div>
+                    </template>
                   </div>
                 </template>
                 <div v-else class="empty-state">
@@ -7062,6 +7214,37 @@ export default {
     selectedQueue() {
       return this.queues[this.selectedQueueIndex];
     },
+    // 预热柜/灭菌柜：右侧托盘按 sendTo 末位拆成两列
+    isTwoColCabinetQueue() {
+      return !!(
+        this.selectedQueue && this.selectedQueue.queueName !== '上货区'
+      );
+    },
+    nowTraysCol1() {
+      return (this.nowTrays || []).filter(
+        (t) => String(t.sendTo || '').slice(-1) === '1'
+      );
+    },
+    nowTraysCol2() {
+      return (this.nowTrays || []).filter(
+        (t) => String(t.sendTo || '').slice(-1) === '2'
+      );
+    },
+    nowTraysOther() {
+      return (this.nowTrays || []).filter((t) => {
+        const last = String(t.sendTo || '').slice(-1);
+        return last !== '1' && last !== '2';
+      });
+    },
+    trayDisplayColumns() {
+      if (this.isTwoColCabinetQueue) {
+        return [
+          { key: 1, label: '1列', trays: this.nowTraysCol1 },
+          { key: 2, label: '2列', trays: this.nowTraysCol2 }
+        ];
+      }
+      return [{ key: 'all', label: '', trays: this.nowTrays || [] }];
+    },
     // 动态计算弹窗位置样式
     popoverStyle() {
       return {
@@ -9015,8 +9198,36 @@ export default {
         this.$message.error('找不到队列ID: ' + queueId);
       }
     },
-    async deleteTray(tray, index) {
-      if (!this.selectedQueue) return;
+    findTrayInfoIndexByCode(trayCode) {
+      if (!this.selectedQueue || !trayCode) return -1;
+      const trayInfo = Array.isArray(this.selectedQueue.trayInfo)
+        ? this.selectedQueue.trayInfo
+        : [];
+      return trayInfo.findIndex((t) => t.trayCode === trayCode);
+    },
+    getSendToLine(sendTo) {
+      return String(sendTo || '').slice(-1);
+    },
+    // 查找同线相邻托盘在 trayInfo 中的下标（direction: -1 上一个, 1 下一个）
+    findSameLineNeighborIndex(trayInfo, currentIndex, direction) {
+      const currentLine = this.getSendToLine(trayInfo[currentIndex]?.sendTo);
+      if (direction < 0) {
+        for (let i = currentIndex - 1; i >= 0; i--) {
+          if (this.getSendToLine(trayInfo[i].sendTo) === currentLine) {
+            return i;
+          }
+        }
+      } else {
+        for (let i = currentIndex + 1; i < trayInfo.length; i++) {
+          if (this.getSendToLine(trayInfo[i].sendTo) === currentLine) {
+            return i;
+          }
+        }
+      }
+      return -1;
+    },
+    async deleteTray(tray) {
+      if (!this.selectedQueue || !tray) return;
 
       try {
         // 确认是否删除
@@ -9030,7 +9241,7 @@ export default {
           }
         );
 
-        // 从队列中移除托盘，直接使用传递的index
+        const index = this.findTrayInfoIndexByCode(tray.id);
         if (index >= 0 && index < this.selectedQueue.trayInfo.length) {
           this.selectedQueue.trayInfo.splice(index, 1);
 
@@ -9049,6 +9260,8 @@ export default {
           );
 
           this.$message.success('托盘删除成功');
+        } else {
+          this.$message.error('找不到要删除的托盘');
         }
       } catch (error) {
         if (error !== 'cancel') {
@@ -9056,18 +9269,36 @@ export default {
         }
       }
     },
-    // 上移托盘
-    async moveTrayUp(index) {
-      if (!this.selectedQueue || index <= 0) return;
+    // 上移托盘（柜队列仅与同线相邻托盘交换）
+    async moveTrayUp(tray) {
+      if (!this.selectedQueue || !tray) return;
 
       try {
-        // 获取当前队列的托盘信息
         const trayInfo = Array.isArray(this.selectedQueue.trayInfo)
           ? this.selectedQueue.trayInfo
           : [];
 
-        const currentTray = trayInfo[index];
-        const prevTray = trayInfo[index - 1];
+        const currentIndex = this.findTrayInfoIndexByCode(tray.id);
+        if (currentIndex < 0) {
+          this.$message.error('找不到要移动的托盘');
+          return;
+        }
+
+        let swapIndex = -1;
+        if (this.isTwoColCabinetQueue) {
+          swapIndex = this.findSameLineNeighborIndex(
+            trayInfo,
+            currentIndex,
+            -1
+          );
+        } else {
+          swapIndex = currentIndex > 0 ? currentIndex - 1 : -1;
+        }
+
+        if (swapIndex < 0) return;
+
+        const currentTray = trayInfo[currentIndex];
+        const prevTray = trayInfo[swapIndex];
 
         // 确认上移操作
         await this.$confirm(
@@ -9081,8 +9312,8 @@ export default {
         );
 
         // 交换位置
-        trayInfo[index] = prevTray;
-        trayInfo[index - 1] = currentTray;
+        trayInfo[currentIndex] = prevTray;
+        trayInfo[swapIndex] = currentTray;
 
         // 更新队列数据
         this.updateQueueTrays(this.selectedQueue.id, trayInfo);
@@ -9104,18 +9335,33 @@ export default {
         this.$message.error('托盘上移失败，请重试');
       }
     },
-    // 下移托盘
-    async moveTrayDown(index) {
-      if (!this.selectedQueue || index >= this.nowTrays.length - 1) return;
+    // 下移托盘（柜队列仅与同线相邻托盘交换）
+    async moveTrayDown(tray) {
+      if (!this.selectedQueue || !tray) return;
 
       try {
-        // 获取当前队列的托盘信息
         const trayInfo = Array.isArray(this.selectedQueue.trayInfo)
           ? this.selectedQueue.trayInfo
           : [];
 
-        const currentTray = trayInfo[index];
-        const nextTray = trayInfo[index + 1];
+        const currentIndex = this.findTrayInfoIndexByCode(tray.id);
+        if (currentIndex < 0) {
+          this.$message.error('找不到要移动的托盘');
+          return;
+        }
+
+        let swapIndex = -1;
+        if (this.isTwoColCabinetQueue) {
+          swapIndex = this.findSameLineNeighborIndex(trayInfo, currentIndex, 1);
+        } else {
+          swapIndex =
+            currentIndex < trayInfo.length - 1 ? currentIndex + 1 : -1;
+        }
+
+        if (swapIndex < 0) return;
+
+        const currentTray = trayInfo[currentIndex];
+        const nextTray = trayInfo[swapIndex];
 
         // 确认下移操作
         await this.$confirm(
@@ -9129,8 +9375,8 @@ export default {
         );
 
         // 交换位置
-        trayInfo[index] = nextTray;
-        trayInfo[index + 1] = currentTray;
+        trayInfo[currentIndex] = nextTray;
+        trayInfo[swapIndex] = currentTray;
 
         // 更新队列数据
         this.updateQueueTrays(this.selectedQueue.id, trayInfo);

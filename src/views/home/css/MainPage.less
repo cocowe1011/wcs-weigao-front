@@ -1295,23 +1295,27 @@
           }
           /* 滚动条样式 */
           .queue-container-left::-webkit-scrollbar,
-          .tray-list::-webkit-scrollbar {
+          .tray-list::-webkit-scrollbar,
+          .tray-col::-webkit-scrollbar {
             width: 4px;
           }
 
           .queue-container-left::-webkit-scrollbar-track,
-          .tray-list::-webkit-scrollbar-track {
+          .tray-list::-webkit-scrollbar-track,
+          .tray-col::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.1);
             border-radius: 2px;
           }
 
           .queue-container-left::-webkit-scrollbar-thumb,
-          .tray-list::-webkit-scrollbar-thumb {
+          .tray-list::-webkit-scrollbar-thumb,
+          .tray-col::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
           }
 
           .queue-container-left::-webkit-scrollbar-thumb:hover,
-          .tray-list::-webkit-scrollbar-thumb:hover {
+          .tray-list::-webkit-scrollbar-thumb:hover,
+          .tray-col::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
           }
           .queue-container-right {
@@ -1364,6 +1368,114 @@
               overflow-y: auto;
               min-height: 0;
               padding-right: 5px;
+
+              &.tray-list--two-cols {
+                display: flex;
+                overflow: hidden;
+                padding-right: 0;
+
+                > .empty-state {
+                  flex: 1;
+                  width: 100%;
+                  height: 100%;
+                  align-self: stretch;
+                }
+
+                .tray-col {
+                  flex: 1;
+                  min-width: 0;
+                  display: flex;
+                  flex-direction: column;
+                  overflow-x: hidden;
+                  overflow-y: auto;
+                  padding: 0 8px;
+                  min-height: 0;
+
+                  &:first-child {
+                    padding-left: 0;
+                    border-right: 1px solid rgba(255, 255, 255, 0.1);
+                    padding-right: 12px;
+                  }
+
+                  &:last-child {
+                    padding-right: 0;
+                    padding-left: 12px;
+                  }
+                }
+
+                .tray-col-header {
+                  position: sticky;
+                  top: 0;
+                  z-index: 2;
+                  flex-shrink: 0;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 10px;
+                  padding: 6px 10px;
+                  /* 等价于 rgba(10,197,168,0.12) 叠在面板底色 #1e2a38 上的不透明色 */
+                  background: #1c3d45;
+                  border: 1px solid rgba(10, 197, 168, 0.3);
+                  border-radius: 6px;
+                  color: #0ac5a8;
+                  font-size: 13px;
+                  font-weight: 600;
+
+                  .tray-col-count {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: rgba(255, 255, 255, 0.75);
+                    font-size: 12px;
+                    font-weight: 500;
+                    padding: 1px 8px;
+                    border-radius: 10px;
+                    min-width: 20px;
+                    text-align: center;
+                  }
+
+                  &--other {
+                    margin-top: 12px;
+                    background: #353632;
+                    border-color: rgba(255, 165, 0, 0.35);
+                    color: #ffa500;
+                  }
+                }
+
+                .tray-col-empty {
+                  padding: 24px 0;
+                  text-align: center;
+                  color: rgba(255, 255, 255, 0.4);
+                  font-size: 13px;
+                }
+
+                .tray-item {
+                  padding: 10px 12px;
+
+                  .tray-info {
+                    .tray-info-row {
+                      .tray-name {
+                        font-size: 13px;
+                      }
+
+                      .tray-detail {
+                        font-size: 10px;
+                      }
+
+                      .tray-batch {
+                        font-size: 11px;
+                        padding: 1px 6px;
+                      }
+                    }
+                  }
+
+                  &:hover {
+                    transform: none;
+                  }
+                }
+              }
+
+              .tray-col--full {
+                width: 100%;
+              }
 
               /* 托盘项样式 */
               .tray-item {
@@ -1521,7 +1633,7 @@
     /* 展开状态的样式 */
     .queue-section.expanded {
       padding: 15px;
-      width: 850px;
+      width: 1280px;
       height: 100%;
       display: flex;
       flex-direction: column;
