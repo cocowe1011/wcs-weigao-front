@@ -83,7 +83,7 @@
               icon="el-icon-search"
               @click="showOrderQueryDialog"
             >
-              查询历史订单
+              查询历史批次
             </el-button>
           </div>
           <div class="operation-buttons">
