@@ -778,6 +778,87 @@
                     </div>
                   </div>
                 </div>
+                <!-- 预热房移柜面板 -->
+                <div
+                  class="preheating-room-marker"
+                  data-x="65"
+                  data-y="680"
+                  style="width: 120px"
+                >
+                  <div class="preheating-room-content">
+                    <div class="preheating-room-header">预热房移柜</div>
+                    <div class="preheating-room-body">
+                      <div class="route-select-container">
+                        <div class="route-row">
+                          <span class="route-label">起始：</span>
+                          <el-select
+                            v-model="transferSelectedFrom"
+                            placeholder="预热房"
+                            size="mini"
+                            :disabled="transferExecuting"
+                            style="width: 80px"
+                          >
+                            <el-option
+                              v-for="item in preHeatQueues"
+                              :key="'transfer-from-' + item.queueName"
+                              :label="item.queueName"
+                              :value="item.queueName.replace('Y', '')"
+                            ></el-option>
+                          </el-select>
+                        </div>
+                        <div class="route-row">
+                          <span class="route-label">终点：</span>
+                          <el-select
+                            v-model="transferSelectedTo"
+                            placeholder="预热房"
+                            size="mini"
+                            :disabled="transferExecuting"
+                            style="width: 80px"
+                          >
+                            <el-option
+                              v-for="item in preHeatQueues"
+                              :key="'transfer-to-' + item.queueName"
+                              :label="item.queueName"
+                              :value="item.queueName.replace('Y', '')"
+                            ></el-option>
+                          </el-select>
+                        </div>
+                      </div>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        :loading="transferLoading"
+                        @click="sendTransferCabinet"
+                        style="width: 100%"
+                        >执行</el-button
+                      >
+                      <el-button
+                        v-if="transferExecuting"
+                        type="danger"
+                        size="mini"
+                        @click="cancelTransferCabinet"
+                        style="width: 100%; margin-left: 0px"
+                        >取消</el-button
+                      >
+                      <div
+                        v-if="transferExecuting && transferTrayCode"
+                        style="display: flex; align-items: center"
+                      >
+                        <span style="font-size: 12px; color: #9fe3d3"
+                          >执行中：</span
+                        >
+                        <span style="font-size: 12px; color: greenyellow">{{
+                          transferTrayCode
+                        }}</span>
+                      </div>
+                      <div style="font-size: 12px; color: #9fe3d3">
+                        需移柜：<b style="color: greenyellow">{{
+                          transferNeedQty
+                        }}</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <transition name="fade-scale">
@@ -1377,6 +1458,38 @@
                 @click="simulateCartIndicator('bit11')"
               >
                 出口翻转回
+              </el-button>
+            </div>
+          </div>
+          <!-- 预热房移柜光电信号 -->
+          <div class="test-section">
+            <span class="test-label">预热房移柜光电(DBW60.BIT4/5):</span>
+            <div
+              style="
+                margin-top: 8px;
+                font-size: 11px;
+                color: #909399;
+                margin-bottom: 6px;
+              "
+            >
+              触发后模拟光电上升沿（需先执行预热房移柜命令）
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px">
+              <el-button
+                size="mini"
+                type="success"
+                plain
+                @click="simulateTransferPhoto(4)"
+              >
+                11002-1进货光电(BIT4)
+              </el-button>
+              <el-button
+                size="mini"
+                type="warning"
+                plain
+                @click="simulateTransferPhoto(5)"
+              >
+                11002-2到位光电(BIT5)
               </el-button>
             </div>
           </div>
@@ -2383,6 +2496,16 @@ export default {
       disinfectionTrayCode: '', // 执行中显示的托盘编码
       disinfectionNeedQty: 0, // 需进货数量
       disinfectionTargetTotal: 0, // 目标总数量
+
+      // ---- 预热房移柜相关 ----
+      transferSelectedFrom: null, // 起始预热房编号(3201-3215)
+      transferSelectedTo: null, // 终点预热房编号(3201-3215)
+      transferLoading: false, // 执行按钮loading
+      transferExecuting: false, // 是否正在执行
+      transferTrayCode: '', // 执行中显示的托盘编码
+      transferNeedQty: 0, // 需移柜数量
+      transferPhotoBit4: '0', // DBW60.BIT4 11002-1进货光电
+      transferPhotoBit5: '0', // DBW60.BIT5 11002-2到位光电
 
       // ---- 下货执行相关 ----
       outSterilizeSelected: 3201, // 选中的灭菌柜编号（3201-3215）
@@ -7283,8 +7406,11 @@ export default {
       // 灭菌前1#小车位置值
       this.cartPositionValues.cart1 = Number(values.DBW58 ?? 0);
 
-      // DBW60.BIT8~11 小车翻转到位指示灯（PLC 偏移 61.0~61.3）
+      // DBW60 小车/移柜光电与指示灯
       const word60 = getParsedWord('DBW60');
+      this.transferPhotoBit4 = getBit(word60, 12); // BIT4→bit12: 11002-1进货光电
+      this.transferPhotoBit5 = getBit(word60, 13); // BIT5→bit13: 11002-2到位光电
+      // DBW60.BIT8~11 小车翻转到位指示灯（PLC 偏移 61.0~61.3）
       this.cartIndicator.bit8 = getBit(word60, 0); // BIT8→bit0: 入口翻转出到位
       this.cartIndicator.bit9 = getBit(word60, 1); // BIT9→bit1: 入口翻转回到位
       this.cartIndicator.bit10 = getBit(word60, 2); // BIT10→bit2: 出口翻转出到位
@@ -7295,6 +7421,18 @@ export default {
     // 监听小车位置数值变化
     'cartPositionValues.cart1'(newVal) {
       this.updateCartPositionByValue(1, newVal);
+    },
+    // DBW60.BIT4 上升沿：11002-1进货光电 → 移柜第1列
+    transferPhotoBit4(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleTransferPhotoRisingEdge(1);
+      }
+    },
+    // DBW60.BIT5 上升沿：11002-2到位光电 → 移柜第2列
+    transferPhotoBit5(newVal, oldVal) {
+      if (newVal === '1' && oldVal === '0') {
+        this.handleTransferPhotoRisingEdge(2);
+      }
     },
     // BIT1 上升沿：01002请求读码 → 清空缓存，开始缓存；下降沿：读码结束
     bit1658RequestReadCode01002(newVal, oldVal) {
@@ -7979,6 +8117,15 @@ export default {
       this.cartIndicator[bitKey] = '1';
       setTimeout(() => {
         this.cartIndicator[bitKey] = '0';
+      }, 1000);
+    },
+
+    /** 测试用：模拟预热房移柜光电上升沿（DBW60.BIT4/BIT5） */
+    simulateTransferPhoto(bit) {
+      const field = bit === 4 ? 'transferPhotoBit4' : 'transferPhotoBit5';
+      this[field] = '1';
+      setTimeout(() => {
+        this[field] = '0';
       }, 1000);
     },
 
@@ -9786,6 +9933,13 @@ export default {
         return;
       }
 
+      if (this.transferExecuting) {
+        this.$message.warning(
+          '预热房移柜正在执行中，请先取消后再执行预热到灭菌'
+        );
+        return;
+      }
+
       const fromCabinet = Number(this.preheatSelectedFrom);
       const toCabinet = Number(this.sterilizeSelectedTo);
       const fromIdx = PREHEAT_QUEUE_MAP[fromCabinet];
@@ -9909,6 +10063,219 @@ export default {
 
       this.addLog('预热柜到灭菌柜执行已取消');
       this.$message.info('已取消预热柜到灭菌柜执行');
+    },
+    // ================= 预热房移柜 =================
+    /**
+     * 预热房移柜 - 执行
+     * 参考写入点位:
+     *   DB1001.DBW14: 出货预热房编号(起始)
+     *   DB1001.DBW190: 执行转柜预热柜编号(终点)
+     *   发送命令2秒后取消
+     */
+    sendTransferCabinet() {
+      if (!this.transferSelectedFrom || !this.transferSelectedTo) {
+        this.$message.warning('请选择起始和终点预热房编号');
+        return;
+      }
+
+      if (this.disinfectionExecuting) {
+        this.$message.warning('预热到灭菌正在执行中，请先取消后再执行移柜');
+        return;
+      }
+
+      const fromCabinet = Number(this.transferSelectedFrom);
+      const toCabinet = Number(this.transferSelectedTo);
+
+      if (fromCabinet === toCabinet) {
+        this.$message.warning('起始预热房与终点预热房不能相同');
+        return;
+      }
+
+      const fromIdx = PREHEAT_QUEUE_MAP[fromCabinet];
+      const toIdx = PREHEAT_QUEUE_MAP[toCabinet];
+
+      if (fromIdx === undefined || toIdx === undefined) {
+        this.$message.warning('预热房编号无效');
+        return;
+      }
+
+      const sourceCount =
+        this.queues[fromIdx] && this.queues[fromIdx].trayInfo
+          ? this.queues[fromIdx].trayInfo.length
+          : 0;
+      if (sourceCount <= 0) {
+        this.$message.warning(
+          `预热房Y${fromCabinet}队列中没有可用的托盘，请检查起始地数量`
+        );
+        return;
+      }
+
+      this.addLog(
+        `预热房移柜执行开始：起始=Y${fromCabinet}，队列数量=${sourceCount}，终点=Y${toCabinet}`
+      );
+
+      this.transferLoading = true;
+      this.transferExecuting = true;
+
+      // 1. 写入起始预热房编号到 W_DBW14，2秒后取消
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW14', fromCabinet);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW14');
+      }, 2000);
+
+      // 2. 写入终点转柜预热柜编号到 W_DBW190，2秒后取消
+      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW190', toCabinet);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', 'W_DBW190');
+      }, 2000);
+      this.addLog(
+        `[PLC发送] W_DBW14 = ${fromCabinet} (出货预热房编号)，W_DBW190 = ${toCabinet} (执行转柜预热柜编号)`
+      );
+
+      // 给源预热队列中所有托盘标记目的地预热柜编号（保留原列号后缀）
+      if (
+        this.queues[fromIdx] &&
+        Array.isArray(this.queues[fromIdx].trayInfo)
+      ) {
+        this.queues[fromIdx].trayInfo.forEach((tray, i) => {
+          const slotSuffix = tray.sendTo
+            ? tray.sendTo.slice(-1)
+            : String((i % 2) + 1);
+          this.$set(tray, 'sendTo', `${toCabinet}${slotSuffix}`);
+        });
+      }
+
+      if (
+        this.queues[fromIdx] &&
+        this.queues[fromIdx].trayInfo &&
+        this.queues[fromIdx].trayInfo.length > 0
+      ) {
+        this.transferTrayCode = this.queues[fromIdx].trayInfo[0].trayCode || '';
+      }
+
+      this.transferNeedQty = sourceCount;
+
+      this.addLog(
+        `预热房Y${fromCabinet}移柜到Y${toCabinet}开始执行，需移柜：${sourceCount}`
+      );
+      this.$message.success(
+        `已发送从预热房Y${fromCabinet}到Y${toCabinet}的移柜命令`
+      );
+    },
+    /**
+     * 预热房移柜 - 光电上升沿处理
+     * @param {number} slot - 列号(1或2)，BIT4→1，BIT5→2
+     */
+    handleTransferPhotoRisingEdge(slot) {
+      if (!this.transferExecuting) {
+        return;
+      }
+
+      if (!this.transferSelectedFrom || !this.transferSelectedTo) {
+        return;
+      }
+
+      const fromCabinet = Number(this.transferSelectedFrom);
+      const toCabinet = Number(this.transferSelectedTo);
+      const fromIdx = PREHEAT_QUEUE_MAP[fromCabinet];
+      const toIdx = PREHEAT_QUEUE_MAP[toCabinet];
+
+      const sourceQueue = this.queues[fromIdx];
+      const targetQueue = this.queues[toIdx];
+
+      if (!sourceQueue || !sourceQueue.trayInfo) {
+        this.addLog(
+          `[预热房移柜] 预热房Y${fromCabinet}队列不存在或无托盘`,
+          'warning'
+        );
+        this.cancelTransferCabinet();
+        return;
+      }
+
+      if (!targetQueue) {
+        this.addLog(
+          `[预热房移柜] 终点预热房Y${toCabinet}队列不存在`,
+          'warning'
+        );
+        return;
+      }
+
+      if (!Array.isArray(targetQueue.trayInfo)) {
+        this.$set(targetQueue, 'trayInfo', []);
+      }
+
+      if (sourceQueue.trayInfo.length === 0) {
+        this.addLog(
+          `[预热房移柜] 起始预热房Y${fromCabinet}已无托盘，自动取消`,
+          'warning'
+        );
+        this.cancelTransferCabinet();
+        return;
+      }
+
+      const destinationSuffix = String(slot);
+      const trayIndex = sourceQueue.trayInfo.findIndex(
+        (tray) => tray.sendTo && tray.sendTo.slice(-1) === destinationSuffix
+      );
+
+      if (trayIndex === -1) {
+        this.addLog(
+          `[预热房移柜] 列${slot}光电上升沿，但起始队列无列${slot}托盘`,
+          'warning'
+        );
+        // 若源队列整体已空则取消；否则仅跳过本次
+        if (sourceQueue.trayInfo.length === 0) {
+          this.cancelTransferCabinet();
+        }
+        return;
+      }
+
+      const tray = sourceQueue.trayInfo.splice(trayIndex, 1)[0];
+      const newPosition = `${toCabinet}${slot}`;
+      this.$set(tray, 'sendTo', newPosition);
+
+      const traysInColumn = targetQueue.trayInfo.filter(
+        (t) => t.sendTo && t.sendTo.slice(-1) === destinationSuffix
+      );
+      const newSequenceNumber = traysInColumn.length + 1;
+      this.$set(tray, 'sequenceNumber', newSequenceNumber);
+
+      targetQueue.trayInfo.push(tray);
+
+      this.transferNeedQty = Math.max(0, this.transferNeedQty - 1);
+      this.transferTrayCode = tray.trayCode;
+
+      this.addLog(
+        `[预热房移柜] 列${slot}光电上升沿 Y${fromCabinet} → Y${toCabinet}，已移动托盘：${tray.trayCode}，新位置：${newPosition}，新序号：${newSequenceNumber}，剩余：${this.transferNeedQty}`
+      );
+
+      // 起始预热房没有托盘后，执行状态变为取消状态
+      if (sourceQueue.trayInfo.length === 0) {
+        this.addLog(
+          `[预热房移柜] 起始预热房Y${fromCabinet}托盘已全部移出，自动取消`
+        );
+        this.$message.success(
+          `预热房Y${fromCabinet}移柜到Y${toCabinet}完成（源已空）`
+        );
+        this.cancelTransferCabinet(true);
+      }
+    },
+    /**
+     * 预热房移柜 - 取消执行
+     * @param {boolean} silent - 自动完成时静默清理，不弹取消提示
+     */
+    cancelTransferCabinet(silent) {
+      this.transferExecuting = false;
+      this.transferTrayCode = '';
+      this.transferNeedQty = 0;
+      this.transferLoading = false;
+      this.transferSelectedFrom = null;
+      this.transferSelectedTo = null;
+
+      if (!silent) {
+        this.addLog('预热房移柜执行已取消');
+        this.$message.info('已取消预热房移柜执行');
+      }
     },
     /**
      * 下货执行 - 灭菌柜出货

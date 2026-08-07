@@ -2475,6 +2475,7 @@ var variables = {
   W_DBW12: 'DB1001,INT12', // WCS上货位写目的地
   W_DBW14: 'DB1001,INT14', // WCS执行出货预热房编号
   W_DBW16: 'DB1001,INT16', // WCS执行进货灭菌柜编号
+  W_DBW190: 'DB1001,INT190', // WCS执行转柜预热柜编号
 
   // W_DBW18 WCS执行预热房出货命令 (Bit位定义)
   // 注意：W_DBW18为INT类型，西门子为大端字节序。
