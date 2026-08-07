@@ -1089,7 +1089,7 @@ function conPLC() {
           conn.addItems('DBW856');
           conn.addItems('DBW858');
 
-          // --- 13. 缓存线各个电机货物目的地 - 续 (DBW1900-DBW1960) ---
+          // --- 13. 缓存线各个电机货物目的地 - 续 (DBW1900-DBW1922) ---
           conn.addItems('DBW1900');
           conn.addItems('DBW1902');
           conn.addItems('DBW1904');
@@ -1102,25 +1102,44 @@ function conPLC() {
           conn.addItems('DBW1918');
           conn.addItems('DBW1920');
           conn.addItems('DBW1922');
-          conn.addItems('DBW1924');
-          conn.addItems('DBW1926');
-          conn.addItems('DBW1928');
-          conn.addItems('DBW1930');
-          conn.addItems('DBW1932');
-          conn.addItems('DBW1934');
-          conn.addItems('DBW1936');
-          conn.addItems('DBW1938');
-          conn.addItems('DBW1940');
-          conn.addItems('DBW1942');
-          conn.addItems('DBW1944');
-          conn.addItems('DBW1946');
-          conn.addItems('DBW1948');
-          conn.addItems('DBW1950');
-          conn.addItems('DBW1952');
-          conn.addItems('DBW1954');
-          conn.addItems('DBW1956');
-          conn.addItems('DBW1958');
-          conn.addItems('DBW1960');
+
+          // --- 13b. 故障报警点位 (DBW1924-DBW1994，见 故障点位_DB1000.xlsx) ---
+          conn.addItems('DBW1924'); // RGV
+          conn.addItems('DBW1926'); // RGV
+          conn.addItems('DBW1928'); // 上线总故障
+          conn.addItems('DBW1930'); // 上线总故障
+          conn.addItems('DBW1932'); // 14_15线总故障
+          conn.addItems('DBW1934'); // 14_15线总故障
+          conn.addItems('DBW1936'); // 14_15线总故障
+          conn.addItems('DBW1938'); // 12_13线总故障
+          conn.addItems('DBW1940'); // 12_13线总故障
+          conn.addItems('DBW1942'); // 12_13线总故障
+          conn.addItems('DBW1944'); // 10_11线总故障
+          conn.addItems('DBW1946'); // 10_11线总故障
+          conn.addItems('DBW1948'); // 10_11线总故障
+          conn.addItems('DBW1950'); // 8_9线总故障
+          conn.addItems('DBW1952'); // 8_9线总故障
+          conn.addItems('DBW1954'); // 8_9线总故障
+          conn.addItems('DBW1956'); // 6_7线总故障
+          conn.addItems('DBW1958'); // 6_7线总故障
+          conn.addItems('DBW1960'); // 6_7线总故障
+          conn.addItems('DBW1962'); // 4_5线总故障
+          conn.addItems('DBW1964'); // 4_5线总故障
+          conn.addItems('DBW1966'); // 4_5线总故障
+          conn.addItems('DBW1968'); // 2_3线总故障
+          conn.addItems('DBW1970'); // 2_3线总故障
+          conn.addItems('DBW1972'); // 2_3线总故障
+          conn.addItems('DBW1974'); // 下线总故障
+          conn.addItems('DBW1976'); // 下线总故障
+          conn.addItems('DBW1978'); // 下线总故障
+          conn.addItems('DBW1980'); // 灭菌出气缸
+          conn.addItems('DBW1982'); // 急停/提升机通讯
+          conn.addItems('DBW1984'); // 预热房通讯
+          conn.addItems('DBW1986'); // 灭菌柜通讯
+          conn.addItems('DBW1988'); // 预热信号箱
+          conn.addItems('DBW1990'); // 灭菌信号箱
+          conn.addItems('DBW1992'); // 信号箱
+          conn.addItems('DBW1994'); // 上线气缸
 
           // --- 14. 1\2#灭菌线线电机货物目的地 (DBW860-DBW938) ---
           conn.addItems('DBW860');
@@ -2049,25 +2068,43 @@ var variables = {
   DBW1918: 'DB1000,INT1918', // 01027电机
   DBW1920: 'DB1000,INT1920', // 01029电机
   DBW1922: 'DB1000,INT1922', // 01030电机
-  DBW1924: 'DB1000,INT1924', // 备用
-  DBW1926: 'DB1000,INT1926', // 备用
-  DBW1928: 'DB1000,INT1928', // 备用
-  DBW1930: 'DB1000,INT1930', // 备用
-  DBW1932: 'DB1000,INT1932', // 备用
-  DBW1934: 'DB1000,INT1934', // 备用
-  DBW1936: 'DB1000,INT1936', // 备用
-  DBW1938: 'DB1000,INT1938', // 备用
-  DBW1940: 'DB1000,INT1940', // 备用
-  DBW1942: 'DB1000,INT1942', // 备用
-  DBW1944: 'DB1000,INT1944', // 备用
-  DBW1946: 'DB1000,INT1946', // 备用
-  DBW1948: 'DB1000,INT1948', // 备用
-  DBW1950: 'DB1000,INT1950', // 备用
-  DBW1952: 'DB1000,INT1952', // 备用
-  DBW1954: 'DB1000,INT1954', // 备用
-  DBW1956: 'DB1000,INT1956', // 备用
-  DBW1958: 'DB1000,INT1958', // 备用
-  DBW1960: 'DB1000,INT1960', // 备用
+  // 故障报警点位 (故障点位_DB1000.xlsx)
+  DBW1924: 'DB1000,INT1924', // RGV
+  DBW1926: 'DB1000,INT1926', // RGV
+  DBW1928: 'DB1000,INT1928', // 上线总故障
+  DBW1930: 'DB1000,INT1930', // 上线总故障
+  DBW1932: 'DB1000,INT1932', // 14_15线总故障
+  DBW1934: 'DB1000,INT1934', // 14_15线总故障
+  DBW1936: 'DB1000,INT1936', // 14_15线总故障
+  DBW1938: 'DB1000,INT1938', // 12_13线总故障
+  DBW1940: 'DB1000,INT1940', // 12_13线总故障
+  DBW1942: 'DB1000,INT1942', // 12_13线总故障
+  DBW1944: 'DB1000,INT1944', // 10_11线总故障
+  DBW1946: 'DB1000,INT1946', // 10_11线总故障
+  DBW1948: 'DB1000,INT1948', // 10_11线总故障
+  DBW1950: 'DB1000,INT1950', // 8_9线总故障
+  DBW1952: 'DB1000,INT1952', // 8_9线总故障
+  DBW1954: 'DB1000,INT1954', // 8_9线总故障
+  DBW1956: 'DB1000,INT1956', // 6_7线总故障
+  DBW1958: 'DB1000,INT1958', // 6_7线总故障
+  DBW1960: 'DB1000,INT1960', // 6_7线总故障
+  DBW1962: 'DB1000,INT1962', // 4_5线总故障
+  DBW1964: 'DB1000,INT1964', // 4_5线总故障
+  DBW1966: 'DB1000,INT1966', // 4_5线总故障
+  DBW1968: 'DB1000,INT1968', // 2_3线总故障
+  DBW1970: 'DB1000,INT1970', // 2_3线总故障
+  DBW1972: 'DB1000,INT1972', // 2_3线总故障
+  DBW1974: 'DB1000,INT1974', // 下线总故障
+  DBW1976: 'DB1000,INT1976', // 下线总故障
+  DBW1978: 'DB1000,INT1978', // 下线总故障
+  DBW1980: 'DB1000,INT1980', // 灭菌出气缸
+  DBW1982: 'DB1000,INT1982', // 急停/提升机通讯
+  DBW1984: 'DB1000,INT1984', // 预热房通讯
+  DBW1986: 'DB1000,INT1986', // 灭菌柜通讯
+  DBW1988: 'DB1000,INT1988', // 预热信号箱
+  DBW1990: 'DB1000,INT1990', // 灭菌信号箱
+  DBW1992: 'DB1000,INT1992', // 信号箱
+  DBW1994: 'DB1000,INT1994', // 上线气缸
 
   // 展开定义：1\2#灭菌线线电机货物目的地 (DBW860-DBW938)
   DBW860: 'DB1000,INT860', // 02009电机

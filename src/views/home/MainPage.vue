@@ -2476,6 +2476,574 @@ export default {
       activeLogType: 'running',
       runningLogs: [],
       alarmLogs: [],
+      alarmPoints: {
+        DBW4: 0,
+        DBW1924: 0,
+        DBW1926: 0,
+        DBW1928: 0,
+        DBW1930: 0,
+        DBW1932: 0,
+        DBW1934: 0,
+        DBW1936: 0,
+        DBW1938: 0,
+        DBW1940: 0,
+        DBW1942: 0,
+        DBW1944: 0,
+        DBW1946: 0,
+        DBW1948: 0,
+        DBW1950: 0,
+        DBW1952: 0,
+        DBW1954: 0,
+        DBW1956: 0,
+        DBW1958: 0,
+        DBW1960: 0,
+        DBW1962: 0,
+        DBW1964: 0,
+        DBW1966: 0,
+        DBW1968: 0,
+        DBW1970: 0,
+        DBW1972: 0,
+        DBW1974: 0,
+        DBW1976: 0,
+        DBW1978: 0,
+        DBW1980: 0,
+        DBW1982: 0,
+        DBW1984: 0,
+        DBW1986: 0,
+        DBW1988: 0,
+        DBW1990: 0,
+        DBW1992: 0,
+        DBW1994: 0
+      },
+      alarmMapping: {
+        'DB1000.DBW4': {
+          bit0: '上货区',
+          bit1: '缓存区',
+          bit2: '预热与环线',
+          bit3: '灭菌与环线',
+          bit4: '急停1',
+          bit5: '急停2',
+          bit6: '急停3',
+          bit7: '急停4',
+          bit8: '急停5',
+          bit9: '急停6',
+          bit10: '急停7',
+          bit11: '急停8',
+          bit12: '急停9',
+          bit13: '急停主柜',
+          bit14: '急停RGV'
+        },
+        'DB1000.DBW1924': {
+          bit0: '行走抱闸',
+          bit1: '行走启动',
+          bit2: '行走变频器',
+          bit3: '行走超时',
+          bit4: '行走总故障',
+          bit5: '编码器',
+          bit6: '输送抱闸_1',
+          bit7: '输送启动_1',
+          bit8: '输送变频_1',
+          bit9: '输送超时_1',
+          bit10: '输送总故障_1',
+          bit11: '输送抱闸_2',
+          bit12: '输送启动_2',
+          bit13: '输送变频_2',
+          bit14: '输送超时_2',
+          bit15: '输送总故障_2'
+        },
+        'DB1000.DBW1926': {
+          bit0: '预热翻转气缸',
+          bit1: '灭菌翻转气缸',
+          bit2: '前进极限',
+          bit3: '后退极限'
+        },
+        'DB1000.DBW1928': {
+          bit0: '上线01001输送故障',
+          bit1: '上线01002输送故障',
+          bit2: '上线01003输送故障',
+          bit3: '上线01004输送故障',
+          bit4: '上线01005输送故障',
+          bit5: '上线01006输送故障',
+          bit6: '上线01007输送故障',
+          bit7: '上线01008输送故障',
+          bit8: '上线01009输送故障',
+          bit9: '上线01010输送故障',
+          bit10: '上线01011输送故障',
+          bit11: '上线01012输送故障',
+          bit12: '上线01013输送故障',
+          bit13: '上线01014输送故障',
+          bit14: '上线01015输送故障',
+          bit15: '上线01016输送故障'
+        },
+        'DB1000.DBW1930': {
+          bit0: '上线01017输送故障',
+          bit1: '上线01018输送故障',
+          bit2: '上线01019输送故障',
+          bit3: '上线01020输送故障',
+          bit4: '上线01021输送故障',
+          bit5: '上线01022输送故障',
+          bit6: '上线01023输送故障',
+          bit7: '上线01024输送故障',
+          bit8: '上线01025输送故障',
+          bit9: '上线01026输送故障',
+          bit10: '上线01027输送故障',
+          bit11: '上线01028输送故障',
+          bit12: '上线01029输送故障',
+          bit13: '上线01030输送故障'
+        },
+        'DB1000.DBW1932': {
+          bit0: '预热02001输送故障',
+          bit1: '预热02002输送故障',
+          bit2: '预热02003输送故障',
+          bit3: '预热02004输送故障',
+          bit4: '灭菌02005输送故障',
+          bit5: '灭菌02006输送故障',
+          bit6: '灭菌02007输送故障',
+          bit7: '灭菌02008输送故障',
+          bit8: '预热上线02009输送故障',
+          bit9: '预热上线02010输送故障',
+          bit10: '14_15线总故障[11]',
+          bit11: '14_15线总故障[12]',
+          bit12: '预热上线02013输送故障',
+          bit13: '14_15线总故障[14]',
+          bit14: '14_15线总故障[15]',
+          bit15: '预热上线02016输送故障'
+        },
+        'DB1000.DBW1934': {
+          bit0: '预热上线02017输送故障',
+          bit1: '14_15线总故障[18]',
+          bit2: '14_15线总故障[19]',
+          bit3: '预热上线02020输送故障',
+          bit4: '14_15线总故障[21]',
+          bit5: '14_15线总故障[22]',
+          bit6: '灭菌下线02023输送故障',
+          bit7: '灭菌下线02024输送故障',
+          bit8: '14_15线总故障[25]',
+          bit9: '14_15线总故障[26]',
+          bit10: '灭菌下线02027输送故障',
+          bit11: '14_15线总故障[28]',
+          bit12: '14_15线总故障[29]',
+          bit13: '灭菌下线02030输送故障',
+          bit14: '灭菌下线02031输送故障',
+          bit15: '14_15线总故障[32]'
+        },
+        'DB1000.DBW1936': {
+          bit0: '14_15线总故障[33]',
+          bit1: '灭菌下线02034输送故障',
+          bit2: '14_15线总故障[35]',
+          bit3: '14_15线总故障[36]'
+        },
+        'DB1000.DBW1938': {
+          bit0: '预热03001输送故障',
+          bit1: '预热03002输送故障',
+          bit2: '预热03003输送故障',
+          bit3: '预热03004输送故障',
+          bit4: '灭菌03005输送故障',
+          bit5: '灭菌03006输送故障',
+          bit6: '灭菌03007输送故障',
+          bit7: '灭菌03008输送故障',
+          bit8: '预热上线03009输送故障',
+          bit9: '预热上线03010输送故障',
+          bit10: '12_13线总故障[11]',
+          bit11: '12_13线总故障[12]',
+          bit12: '预热上线03013输送故障',
+          bit13: '12_13线总故障[14]',
+          bit14: '12_13线总故障[15]',
+          bit15: '预热上线03016输送故障'
+        },
+        'DB1000.DBW1940': {
+          bit0: '预热上线03017输送故障',
+          bit1: '12_13线总故障[18]',
+          bit2: '12_13线总故障[19]',
+          bit3: '预热上线03020输送故障',
+          bit4: '12_13线总故障[21]',
+          bit5: '12_13线总故障[22]',
+          bit6: '灭菌下线03023输送故障',
+          bit7: '灭菌下线03024输送故障',
+          bit8: '12_13线总故障[25]',
+          bit9: '12_13线总故障[26]',
+          bit10: '灭菌下线03027输送故障',
+          bit11: '12_13线总故障[28]',
+          bit12: '12_13线总故障[29]',
+          bit13: '灭菌下线03030输送故障',
+          bit14: '灭菌下线03031输送故障',
+          bit15: '12_13线总故障[32]'
+        },
+        'DB1000.DBW1942': {
+          bit0: '12_13线总故障[33]',
+          bit1: '灭菌下线03034输送故障',
+          bit2: '12_13线总故障[35]',
+          bit3: '12_13线总故障[36]'
+        },
+        'DB1000.DBW1944': {
+          bit0: '预热04001输送故障',
+          bit1: '预热04002输送故障',
+          bit2: '预热04003输送故障',
+          bit3: '预热04004输送故障',
+          bit4: '灭菌04005输送故障',
+          bit5: '灭菌04006输送故障',
+          bit6: '灭菌04007输送故障',
+          bit7: '灭菌04008输送故障',
+          bit8: '预热上线04009输送故障',
+          bit9: '预热上线04010输送故障',
+          bit10: '10_11线总故障[11]',
+          bit11: '10_11线总故障[12]',
+          bit12: '预热上线04013输送故障',
+          bit13: '10_11线总故障[14]',
+          bit14: '10_11线总故障[15]',
+          bit15: '预热上线04016输送故障'
+        },
+        'DB1000.DBW1946': {
+          bit0: '预热上线04017输送故障',
+          bit1: '10_11线总故障[18]',
+          bit2: '10_11线总故障[19]',
+          bit3: '预热上线04020输送故障',
+          bit4: '10_11线总故障[21]',
+          bit5: '10_11线总故障[22]',
+          bit6: '灭菌下线04023输送故障',
+          bit7: '灭菌下线04024输送故障',
+          bit8: '10_11线总故障[25]',
+          bit9: '10_11线总故障[26]',
+          bit10: '灭菌下线04027输送故障',
+          bit11: '10_11线总故障[28]',
+          bit12: '10_11线总故障[29]',
+          bit13: '灭菌下线04030输送故障',
+          bit14: '灭菌下线04031输送故障',
+          bit15: '10_11线总故障[32]'
+        },
+        'DB1000.DBW1948': {
+          bit0: '10_11线总故障[33]',
+          bit1: '灭菌下线04034输送故障',
+          bit2: '10_11线总故障[35]',
+          bit3: '10_11线总故障[36]'
+        },
+        'DB1000.DBW1950': {
+          bit0: '预热05001输送故障',
+          bit1: '预热05002输送故障',
+          bit2: '预热05003输送故障',
+          bit3: '预热05004输送故障',
+          bit4: '灭菌05005输送故障',
+          bit5: '灭菌05006输送故障',
+          bit6: '灭菌05007输送故障',
+          bit7: '灭菌05008输送故障',
+          bit8: '预热上线05009输送故障',
+          bit9: '预热上线05010输送故障',
+          bit10: '8_9线总故障[11]',
+          bit11: '8_9线总故障[12]',
+          bit12: '预热上线05013输送故障',
+          bit13: '8_9线总故障[14]',
+          bit14: '8_9线总故障[15]',
+          bit15: '预热上线05016输送故障'
+        },
+        'DB1000.DBW1952': {
+          bit0: '预热上线05017输送故障',
+          bit1: '8_9线总故障[18]',
+          bit2: '8_9线总故障[19]',
+          bit3: '预热上线05020输送故障',
+          bit4: '8_9线总故障[21]',
+          bit5: '8_9线总故障[22]',
+          bit6: '灭菌下线05023输送故障',
+          bit7: '灭菌下线05024输送故障',
+          bit8: '8_9线总故障[25]',
+          bit9: '8_9线总故障[26]',
+          bit10: '灭菌下线05027输送故障',
+          bit11: '8_9线总故障[28]',
+          bit12: '8_9线总故障[29]',
+          bit13: '灭菌下线05030输送故障',
+          bit14: '灭菌下线05031输送故障',
+          bit15: '8_9线总故障[32]'
+        },
+        'DB1000.DBW1954': {
+          bit0: '8_9线总故障[33]',
+          bit1: '灭菌下线05034输送故障',
+          bit2: '8_9线总故障[35]',
+          bit3: '8_9线总故障[36]'
+        },
+        'DB1000.DBW1956': {
+          bit0: '预热06001输送故障',
+          bit1: '预热06002输送故障',
+          bit2: '预热06003输送故障',
+          bit3: '预热06004输送故障',
+          bit4: '灭菌06005输送故障',
+          bit5: '灭菌06006输送故障',
+          bit6: '灭菌06007输送故障',
+          bit7: '灭菌06008输送故障',
+          bit8: '预热上线06009输送故障',
+          bit9: '预热上线06010输送故障',
+          bit10: '6_7线总故障[11]',
+          bit11: '6_7线总故障[12]',
+          bit12: '预热上线06013输送故障',
+          bit13: '6_7线总故障[14]',
+          bit14: '6_7线总故障[15]',
+          bit15: '预热上线06016输送故障'
+        },
+        'DB1000.DBW1958': {
+          bit0: '预热上线06017输送故障',
+          bit1: '6_7线总故障[18]',
+          bit2: '6_7线总故障[19]',
+          bit3: '预热上线06020输送故障',
+          bit4: '6_7线总故障[21]',
+          bit5: '6_7线总故障[22]',
+          bit6: '灭菌下线06023输送故障',
+          bit7: '灭菌下线06024输送故障',
+          bit8: '6_7线总故障[25]',
+          bit9: '6_7线总故障[26]',
+          bit10: '灭菌下线06027输送故障',
+          bit11: '6_7线总故障[28]',
+          bit12: '6_7线总故障[29]',
+          bit13: '灭菌下线06030输送故障',
+          bit14: '灭菌下线06031输送故障',
+          bit15: '6_7线总故障[32]'
+        },
+        'DB1000.DBW1960': {
+          bit0: '6_7线总故障[33]',
+          bit1: '灭菌下线06034输送故障',
+          bit2: '6_7线总故障[35]',
+          bit3: '6_7线总故障[36]'
+        },
+        'DB1000.DBW1962': {
+          bit0: '预热07001输送故障',
+          bit1: '预热07002输送故障',
+          bit2: '预热07003输送故障',
+          bit3: '预热07004输送故障',
+          bit4: '灭菌07005输送故障',
+          bit5: '灭菌07006输送故障',
+          bit6: '灭菌07007输送故障',
+          bit7: '灭菌07008输送故障',
+          bit8: '预热上线07009输送故障',
+          bit9: '预热上线07010输送故障',
+          bit10: '4_5线总故障[11]',
+          bit11: '4_5线总故障[12]',
+          bit12: '预热上线07013输送故障',
+          bit13: '4_5线总故障[14]',
+          bit14: '4_5线总故障[15]',
+          bit15: '预热上线07016输送故障'
+        },
+        'DB1000.DBW1964': {
+          bit0: '预热上线07017输送故障',
+          bit1: '4_5线总故障[18]',
+          bit2: '4_5线总故障[19]',
+          bit3: '预热上线07020输送故障',
+          bit4: '4_5线总故障[21]',
+          bit5: '4_5线总故障[22]',
+          bit6: '灭菌下线07023输送故障',
+          bit7: '灭菌下线07024输送故障',
+          bit8: '4_5线总故障[25]',
+          bit9: '4_5线总故障[26]',
+          bit10: '灭菌下线07027输送故障',
+          bit11: '4_5线总故障[28]',
+          bit12: '4_5线总故障[29]',
+          bit13: '灭菌下线07030输送故障',
+          bit14: '灭菌下线07031输送故障',
+          bit15: '4_5线总故障[32]'
+        },
+        'DB1000.DBW1966': {
+          bit0: '4_5线总故障[33]',
+          bit1: '灭菌下线07034输送故障',
+          bit2: '4_5线总故障[35]',
+          bit3: '4_5线总故障[36]'
+        },
+        'DB1000.DBW1968': {
+          bit0: '预热08001输送故障',
+          bit1: '预热08002输送故障',
+          bit2: '预热08003输送故障',
+          bit3: '预热08004输送故障',
+          bit4: '灭菌08005输送故障',
+          bit5: '灭菌08006输送故障',
+          bit6: '灭菌08007输送故障',
+          bit7: '灭菌0808输送故障',
+          bit8: '预热上线08009输送故障',
+          bit9: '预热上线08010输送故障',
+          bit10: '2_3线总故障[11]',
+          bit11: '2_3线总故障[12]',
+          bit12: '预热上线08013输送故障',
+          bit13: '2_3线总故障[14]',
+          bit14: '2_3线总故障[15]',
+          bit15: '预热上线08016输送故障'
+        },
+        'DB1000.DBW1970': {
+          bit0: '预热上线08017输送故障',
+          bit1: '2_3线总故障[18]',
+          bit2: '2_3线总故障[19]',
+          bit3: '预热上线08020输送故障',
+          bit4: '2_3线总故障[21]',
+          bit5: '2_3线总故障[22]',
+          bit6: '灭菌下线08023输送故障',
+          bit7: '灭菌下线08024输送故障',
+          bit8: '2_3线总故障[25]',
+          bit9: '2_3线总故障[26]',
+          bit10: '灭菌下线08027输送故障',
+          bit11: '2_3线总故障[28]',
+          bit12: '2_3线总故障[29]',
+          bit13: '灭菌下线08030输送故障',
+          bit14: '灭菌下线08031输送故障',
+          bit15: '2_3线总故障[32]'
+        },
+        'DB1000.DBW1972': {
+          bit0: '2_3线总故障[33]',
+          bit1: '灭菌下线08034输送故障',
+          bit2: '2_3线总故障[35]',
+          bit3: '2_3线总故障[36]'
+        },
+        'DB1000.DBW1974': {
+          bit0: '预热09001输送故障',
+          bit1: '预热09002输送故障',
+          bit2: '灭菌09003输送故障',
+          bit3: '灭菌09004输送故障',
+          bit4: '预热上线09005输送故障',
+          bit5: '预热上线09006输送故障',
+          bit6: '下线总故障[7]',
+          bit7: '下线总故障[8]',
+          bit8: '预热上线09009输送故障',
+          bit9: '下线总故障[10]',
+          bit10: '下线总故障[11]',
+          bit11: '灭菌下线07012输送故障',
+          bit12: '灭菌下线07013输送故障',
+          bit13: '下线总故障[14]',
+          bit14: '下线总故障[15]',
+          bit15: '预热上线07016输送故障'
+        },
+        'DB1000.DBW1976': {
+          bit0: '下线总故障[17]',
+          bit1: '下线总故障[18]',
+          bit2: '下线07019输送故障',
+          bit3: '下线总故障[20]',
+          bit4: '下线总故障[21]',
+          bit5: '下线07022输送故障',
+          bit6: '下线总故障[23]',
+          bit7: '下线总故障[24]',
+          bit8: '下线07025输送故障',
+          bit9: '下线07026输送故障',
+          bit10: '下线07027输送故障',
+          bit11: '下线07028输送故障',
+          bit12: '下线07029输送故障',
+          bit13: '下线07030输送故障',
+          bit14: '下线07031输送故障',
+          bit15: '下线07032输送故障'
+        },
+        'DB1000.DBW1978': {
+          bit0: '下线07033输送故障',
+          bit1: '下线07034输送故障',
+          bit2: '下线总故障[35]',
+          bit3: '下线总故障[36]',
+          bit4: '下线07037输送故障',
+          bit5: '下线总故障[38]',
+          bit6: '下线总故障[39]'
+        },
+        'DB1000.DBW1980': {
+          bit0: '灭菌3201翻转超时',
+          bit1: '灭菌3202翻转超时',
+          bit2: '灭菌3203翻转超时',
+          bit3: '灭菌3204翻转超时',
+          bit4: '灭菌3205翻转超时',
+          bit5: '灭菌3206翻转超时',
+          bit6: '灭菌3207翻转超时',
+          bit7: '灭菌3208翻转超时',
+          bit8: '灭菌3209翻转超时',
+          bit9: '灭菌3210翻转超时',
+          bit10: '灭菌3211翻转超时',
+          bit11: '灭菌3212翻转超时',
+          bit12: '灭菌3213翻转超时',
+          bit13: '灭菌3214翻转超时',
+          bit14: '灭菌3215翻转超时'
+        },
+        'DB1000.DBW1982': {
+          bit0: '上线急停',
+          bit1: '预热急停_1',
+          bit2: '预热急停_2',
+          bit3: 'RGV急停',
+          bit4: '灭菌急停',
+          bit5: '下线急停',
+          bit6: '提升机通讯_1',
+          bit7: '提升机通讯_2'
+        },
+        'DB1000.DBW1984': {
+          bit0: '与3201预热通讯中断',
+          bit1: '与3202预热通讯中断',
+          bit2: '与3203预热通讯中断',
+          bit3: '与3204预热通讯中断',
+          bit4: '与3205预热通讯中断',
+          bit5: '与3206预热通讯中断',
+          bit6: '与3207预热通讯中断',
+          bit7: '与3208预热通讯中断',
+          bit8: '与3209预热通讯中断',
+          bit9: '与3210预热通讯中断',
+          bit10: '与3211预热通讯中断',
+          bit11: '与3212预热通讯中断',
+          bit12: '与3213预热通讯中断',
+          bit13: '与3214预热通讯中断',
+          bit14: '与3215预热通讯中断'
+        },
+        'DB1000.DBW1986': {
+          bit0: '与3201灭菌通讯中断',
+          bit1: '与3202灭菌通讯中断',
+          bit2: '与3203灭菌通讯中断',
+          bit3: '与3204灭菌通讯中断',
+          bit4: '与3205灭菌通讯中断',
+          bit5: '与3206灭菌通讯中断',
+          bit6: '与3207灭菌通讯中断',
+          bit7: '与3208灭菌通讯中断',
+          bit8: '与3209灭菌通讯中断',
+          bit9: '与3210灭菌通讯中断',
+          bit10: '与3211灭菌通讯中断',
+          bit11: '与3212灭菌通讯中断',
+          bit12: '与3213灭菌通讯中断',
+          bit13: '与3214灭菌通讯中断',
+          bit14: '与3215灭菌通讯中断'
+        },
+        'DB1000.DBW1988': {
+          bit0: '与3201预热通讯中断',
+          bit1: '与3202预热通讯中断',
+          bit2: '与3203预热通讯中断',
+          bit3: '与3204预热通讯中断',
+          bit4: '与3205预热通讯中断',
+          bit5: '与3206预热通讯中断',
+          bit6: '与3207预热通讯中断',
+          bit7: '与3208预热通讯中断',
+          bit8: '与3209预热通讯中断',
+          bit9: '与3210预热通讯中断',
+          bit10: '与3211预热通讯中断',
+          bit11: '与3212预热通讯中断',
+          bit12: '与3213预热通讯中断',
+          bit13: '与3214预热通讯中断',
+          bit14: '与3215预热通讯中断'
+        },
+        'DB1000.DBW1990': {
+          bit0: '与3201灭菌通讯中断',
+          bit1: '与3202灭菌通讯中断',
+          bit2: '与3203灭菌通讯中断',
+          bit3: '与3204灭菌通讯中断',
+          bit4: '与3205灭菌通讯中断',
+          bit5: '与3206灭菌通讯中断',
+          bit6: '与3207灭菌通讯中断',
+          bit7: '与3208灭菌通讯中断',
+          bit8: '与3209灭菌通讯中断',
+          bit9: '与3210灭菌通讯中断',
+          bit10: '与3211灭菌通讯中断',
+          bit11: '与3212灭菌通讯中断',
+          bit12: '与3213灭菌通讯中断',
+          bit13: '与3214灭菌通讯中断',
+          bit14: '与3215灭菌通讯中断'
+        },
+        'DB1000.DBW1992': {
+          bit0: '上线信号箱',
+          bit1: '下线信号箱',
+          bit2: 'RGV信号箱'
+        },
+        'DB1000.DBW1994': {
+          bit0: '上线01002左侧托盘剧中气缸超时',
+          bit1: '上线01002右侧托盘剧中气缸超时',
+          bit2: '上线01002左侧货物剧中气缸超时',
+          bit3: '上线01002右侧货物剧中气缸超时',
+          bit4: '上线01006左侧货物剧中气缸超时',
+          bit5: '上线01006右侧货物剧中气缸超时',
+          bit6: '上线气缸[6]',
+          bit7: '上线气缸[7]',
+          bit8: '上线气缸[8]',
+          bit9: '上线气缸[9]',
+          bit10: '上线气缸[10]'
+        }
+      },
       // 小车y轴范围配置（MonitorScreen页面小车沿x轴水平行走）
       cartXRanges: {
         cart1: { min: 175, max: 1215 } // x轴范围318-1395线到G线)
@@ -7325,6 +7893,7 @@ export default {
         const unwatch1 = this.$watch(
           () => this.loadingMotorStatus[motor1],
           (newVal, oldVal) => {
+            if (!this.isDataReady) return;
             // 调试日志
             console.log(`[watch] ${motor1} newVal=${newVal}, oldVal=${oldVal}`);
             this.addLog(
@@ -7351,6 +7920,7 @@ export default {
         const unwatch2 = this.$watch(
           () => this.loadingMotorStatus[motor2],
           (newVal, oldVal) => {
+            if (!this.isDataReady) return;
             // 调试日志
             console.log(`[watch] ${motor2} newVal=${newVal}, oldVal=${oldVal}`);
             this.addLog(
@@ -7380,6 +7950,7 @@ export default {
         const unwatch1 = this.$watch(
           () => this.preheatToSterilizeMotorStatus[motor1],
           (newVal, oldVal) => {
+            if (!this.isDataReady) return;
             // 下降沿检测：true → false
             if (newVal === false && oldVal === true) {
               this.handlePreheatToSterilizeMotorFallingEdge(cabinetNo, 1);
@@ -7396,6 +7967,7 @@ export default {
         const unwatch2 = this.$watch(
           () => this.preheatToSterilizeMotorStatus[motor2],
           (newVal, oldVal) => {
+            if (!this.isDataReady) return;
             // 下降沿检测：true → false
             if (newVal === false && oldVal === true) {
               this.handlePreheatToSterilizeMotorFallingEdge(cabinetNo, 2);
@@ -7598,7 +8170,19 @@ export default {
       this.cartIndicator.bit9 = getBit(word60, 1); // BIT9→bit1: 入口翻转回到位
       this.cartIndicator.bit10 = getBit(word60, 2); // BIT10→bit2: 出口翻转出到位
       this.cartIndicator.bit11 = getBit(word60, 3); // BIT11→bit3: 出口翻转回到位
+
+      // ---- 故障报警点位更新与检测（故障点位_DB1000.xlsx） ----
+      const oldAlarmPoints = { ...this.alarmPoints };
+      Object.keys(this.alarmPoints).forEach((address) => {
+        this.alarmPoints[address] = this.convertToWord(values[address] ?? 0);
+      });
+      this.checkAlarmPoints(oldAlarmPoints);
     });
+    // 给PLC数据加载时间
+    this._isDataReadyTimer = setTimeout(() => {
+      this.addLog('isDataReady数据加载完成');
+      this.isDataReady = true;
+    }, 3000);
   },
   watch: {
     // 监听小车位置数值变化
@@ -7607,18 +8191,21 @@ export default {
     },
     // DBW60.BIT4 上升沿：11002-1进货光电 → 移柜第1列
     transferPhotoBit4(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleTransferPhotoRisingEdge(1);
       }
     },
     // DBW60.BIT5 上升沿：11002-2到位光电 → 移柜第2列
     transferPhotoBit5(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleTransferPhotoRisingEdge(2);
       }
     },
     // BIT1 上升沿：01002请求读码 → 清空缓存，开始缓存；下降沿：读码结束
     bit1658RequestReadCode01002(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.scanBuffer01002 = [];
         this.addLog('[上货] 01002请求读码，开始缓存条码', 'running');
@@ -7633,12 +8220,14 @@ export default {
     },
     // BIT0 上升沿：01002请求写虚拟ID → 用缓存的条码匹配托盘
     bit1658RequestVirtualId(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleVirtualIdRequest01002();
       }
     },
     // BIT2 上升沿：01006请求读码 → 清空缓存；下降沿：读码结束
     bit1658RequestReadCode01006(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.scanBuffer01006 = [];
         this.addLog('[上货] 01006请求读码，开始缓存条码', 'running');
@@ -7653,6 +8242,7 @@ export default {
     },
     // BIT3 上升沿：请求写目的地 → 用01006缓存条码匹配+写目的地
     bit1658RequestDestination(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleDestinationRequest();
       }
@@ -7661,152 +8251,182 @@ export default {
     // ================= 出库请求信号监听（DBW1670/1672） =================
     // DBW1670 各bit位监听（3208-3215柜的出库请求）
     outbound1670Bit0(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3215, 2, '2026', 'W_DBW60', 'W_DBW120');
       }
     },
     outbound1670Bit1(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3215, 1, '2029', 'W_DBW62', 'W_DBW122');
       }
     },
     outbound1670Bit2(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3214, 2, '2033', 'W_DBW64', 'W_DBW124');
       }
     },
     outbound1670Bit3(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3214, 1, '2036', 'W_DBW66', 'W_DBW126');
       }
     },
     outbound1670Bit4(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3213, 2, '3026', 'W_DBW68', 'W_DBW128');
       }
     },
     outbound1670Bit5(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3213, 1, '3029', 'W_DBW70', 'W_DBW130');
       }
     },
     outbound1670Bit6(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3212, 2, '3033', 'W_DBW72', 'W_DBW132');
       }
     },
     outbound1670Bit7(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3212, 1, '3036', 'W_DBW74', 'W_DBW134');
       }
     },
     outbound1670Bit8(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3211, 2, '4026', 'W_DBW76', 'W_DBW136');
       }
     },
     outbound1670Bit9(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3211, 1, '4029', 'W_DBW78', 'W_DBW138');
       }
     },
     outbound1670Bit10(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3210, 2, '4033', 'W_DBW80', 'W_DBW140');
       }
     },
     outbound1670Bit11(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3210, 1, '4036', 'W_DBW82', 'W_DBW142');
       }
     },
     outbound1670Bit12(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3209, 2, '5026', 'W_DBW84', 'W_DBW144');
       }
     },
     outbound1670Bit13(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3209, 1, '5029', 'W_DBW86', 'W_DBW146');
       }
     },
     outbound1670Bit14(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3208, 2, '5033', 'W_DBW88', 'W_DBW148');
       }
     },
     outbound1670Bit15(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3208, 1, '5036', 'W_DBW90', 'W_DBW150');
       }
     },
     // DBW1672 各bit位监听（3201-3207柜的出库请求）
     outbound1672Bit0(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3207, 2, '6026', 'W_DBW92', 'W_DBW152');
       }
     },
     outbound1672Bit1(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3207, 1, '6029', 'W_DBW94', 'W_DBW154');
       }
     },
     outbound1672Bit2(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3206, 2, '6033', 'W_DBW96', 'W_DBW156');
       }
     },
     outbound1672Bit3(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3206, 1, '6036', 'W_DBW98', 'W_DBW158');
       }
     },
     outbound1672Bit4(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3205, 2, '7026', 'W_DBW100', 'W_DBW160');
       }
     },
     outbound1672Bit5(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3205, 1, '7029', 'W_DBW102', 'W_DBW162');
       }
     },
     outbound1672Bit6(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3204, 2, '7033', 'W_DBW104', 'W_DBW164');
       }
     },
     outbound1672Bit7(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3204, 1, '7036', 'W_DBW106', 'W_DBW166');
       }
     },
     outbound1672Bit8(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3203, 2, '8026', 'W_DBW108', 'W_DBW168');
       }
     },
     outbound1672Bit9(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3203, 1, '8029', 'W_DBW110', 'W_DBW170');
       }
     },
     outbound1672Bit10(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3202, 2, '8033', 'W_DBW112', 'W_DBW172');
       }
     },
     outbound1672Bit11(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3202, 1, '8036', 'W_DBW114', 'W_DBW174');
       }
     },
     outbound1672Bit12(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3201, 2, '9015', 'W_DBW116', 'W_DBW176');
       }
     },
     outbound1672Bit13(newVal, oldVal) {
+      if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
         this.handleOutboundRequest(3201, 1, '9018', 'W_DBW118', 'W_DBW178');
       }
@@ -9607,6 +10227,37 @@ export default {
       const logMessage = `[${logTypeText}] ${message}`;
       ipcRenderer.send('writeLogToLocal', logMessage);
     },
+
+    // 检查报警点位变化并触发报警（0→1 上升沿）
+    checkAlarmPoints(oldAlarmPoints) {
+      if (!this.isDataReady) return;
+
+      const getBit = (word, bitIndex) => ((word >> bitIndex) & 1).toString();
+
+      Object.keys(this.alarmPoints).forEach((address) => {
+        const newValue = this.alarmPoints[address];
+        const oldValue = oldAlarmPoints[address];
+
+        if (newValue !== oldValue) {
+          for (let logicalBit = 0; logicalBit < 16; logicalBit++) {
+            // S7大端序：逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
+            const actualBit = logicalBit < 8 ? logicalBit + 8 : logicalBit - 8;
+            const newBit = getBit(newValue, actualBit);
+            const oldBit = getBit(oldValue, actualBit);
+
+            if (oldBit === '0' && newBit === '1') {
+              const dbAddress = `DB1000.${address}`;
+              const bitKey = `bit${logicalBit}`;
+              const alarmMessage = this.alarmMapping[dbAddress]?.[bitKey];
+
+              if (alarmMessage && alarmMessage.trim() !== '') {
+                this.addLog(`报警: ${alarmMessage}`, 'alarm');
+              }
+            }
+          }
+        }
+      });
+    },
     convertToWord(value) {
       if (value < 0) {
         return (value & 0xffff) >>> 0; // 负数转换为无符号的16位整数
@@ -10614,6 +11265,10 @@ export default {
     window.removeEventListener('resize', this.updateMarkerPositions);
     this._removeWebSocketIpcListeners();
     this.disconnectAllScanners();
+    if (this._isDataReadyTimer) {
+      clearTimeout(this._isDataReadyTimer);
+      this._isDataReadyTimer = null;
+    }
     if (this._pollBatchTimer) {
       clearInterval(this._pollBatchTimer);
       this._pollBatchTimer = null;
