@@ -8601,6 +8601,17 @@ export default {
           );
           this.currentDestination = (destRes && destRes.data) || null;
         } else {
+          // 订单完成/取消后 getCurrentExecuting 为空，清理本地执行中批次与目的地缓存
+          if (this.currentExecutingBatch) {
+            const finishedNo =
+              (this.currentExecutingBatch.batch &&
+                this.currentExecutingBatch.batch.batchNo) ||
+              '';
+            this.addLog(
+              `[批次] 当前执行订单已结束${finishedNo ? '：' + finishedNo : ''}`,
+              'running'
+            );
+          }
           this.currentExecutingBatch = null;
           this.currentDestination = null;
         }
