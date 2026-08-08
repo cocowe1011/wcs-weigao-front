@@ -8225,10 +8225,13 @@ export default {
         this.handleVirtualIdRequest01002();
       }
     },
-    // BIT2 上升沿：01006请求读码 → 清空缓存；下降沿：读码结束
+    // BIT2 上升沿：01006请求读码 → 先校验虚拟ID，通过后清空缓存并TRIGGER；下降沿：读码结束
     bit1658RequestReadCode01006(newVal, oldVal) {
       if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
+        if (!this.validateVirtualIdBeforeRead01006()) {
+          return;
+        }
         this.scanBuffer01006 = [];
         this.addLog('[上货] 01006请求读码，开始缓存条码', 'running');
         // 向01006工位所有扫码枪发送TRIGGER
@@ -8933,6 +8936,48 @@ export default {
     },
 
     // ================= 01006 目的地自动流程 =================
+    /**
+     * 01006请求读码前：校验上货区队首未发送托盘虚拟ID与PLC占位虚拟ID（DBW70）是否一致
+     * @returns {boolean} true=一致可继续读码；false=不一致已写999
+     */
+    validateVirtualIdBeforeRead01006() {
+      const loadingQueue = this.queues[0];
+      const targetTray =
+        loadingQueue &&
+        loadingQueue.trayInfo &&
+        loadingQueue.trayInfo.find(
+          (t) => !t.sendStatus || t.sendStatus === '0'
+        );
+      const queueVirtualId =
+        targetTray && targetTray.virtualId ? String(targetTray.virtualId) : '';
+      const plcVirtualId =
+        this.deviceNodes['01006'] && this.deviceNodes['01006'].trayId
+          ? String(this.deviceNodes['01006'].trayId)
+          : '';
+
+      if (
+        !queueVirtualId ||
+        !plcVirtualId ||
+        plcVirtualId === '0' ||
+        queueVirtualId !== plcVirtualId
+      ) {
+        this.addLog(
+          `[上货] 01006读码前虚拟ID不一致，队列=${
+            queueVirtualId || '空'
+          }，PLC=${plcVirtualId || '空'}，写999`,
+          'warning'
+        );
+        this.writeDestinationError();
+        return false;
+      }
+
+      this.addLog(
+        `[上货] 01006读码前虚拟ID校验通过：${queueVirtualId}`,
+        'running'
+      );
+      return true;
+    },
+
     /**
      * 请求写目的地的核心逻辑：
      * 1. 取01006缓存条码 + 上货区队首未发送托盘
