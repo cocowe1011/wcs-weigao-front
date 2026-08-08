@@ -10543,7 +10543,7 @@ export default {
 
     /**
      * 处理 PDA 通过 WebSocket 发来的 MSE 订单查询请求：
-     * 加括号 -> 调 MSE -> 解析 pallet_list -> 组装 BatchDetailDTO -> 写库 -> IPC 回传结果给 PDA
+     * 加括号 -> 调 MSE -> 已建档则比较/更新目的地；未建档则组装写库 -> IPC 回传结果给 PDA
      */
     async handleMobileMseQuery(data) {
       const { udi, requestId, clientId } = data || {};
@@ -10558,6 +10558,7 @@ export default {
           throw new Error('UDI为空');
         }
         // 1. 加括号（转 GS1 标准格式，作为 MSE FBARCODE 入参）
+        // 入参 udi 由 PDA 侧已 cleanBarcode，此处不再重复清洗
         const parenUdi = this.parseUDICode(udi);
         this.addLog(
           `[MSE]收到PDA查询请求 udi=${udi} -> ${parenUdi}`,
@@ -10577,18 +10578,102 @@ export default {
           throw new Error(`MSE返回异常: ${(res && res.message) || '无数据'}`);
         }
 
-        // 3. 解析 MSE 数据并组装 BatchDetailDTO
+        // 3. 解析 MSE 数据
         const mse = res.data;
+        const mseDest =
+          mse.sterilizer_name_code != null
+            ? String(mse.sterilizer_name_code).trim()
+            : '';
         const palletList = mse.pallet_list || [];
         if (!palletList.length) {
           throw new Error('MSE未返回托盘数据');
         }
+
+        // 4. 已建档：比较并更新档案目的地（不再整单 save，避免重复建档）
+        const existRes = await HttpUtil.get(
+          `/produce_batch/getByGoodsUid?uid=${encodeURIComponent(udi)}`
+        );
+        const existingDetail =
+          existRes && existRes.code === '200' ? existRes.data : null;
+        if (existingDetail && existingDetail.batch) {
+          const batch = existingDetail.batch;
+          const oldDest =
+            batch.sterilizerNameCode != null
+              ? String(batch.sterilizerNameCode).trim()
+              : '';
+          let message = '已建档，目的地无变化';
+          if (oldDest !== mseDest) {
+            const updRes = await HttpUtil.post(
+              '/produce_batch/updateSterilizerNameCode',
+              { id: batch.id, sterilizerNameCode: mseDest }
+            );
+            if (!updRes || updRes.code !== '200') {
+              throw new Error(
+                `更新目的地失败: ${(updRes && updRes.message) || '未知错误'}`
+              );
+            }
+            message = mseDest
+              ? `已更新目的地为 ${mseDest}`
+              : '已清空档案目的地';
+            this.addLog(
+              `[MSE]已建档，目的地 ${oldDest || '(空)'} -> ${
+                mseDest || '(空)'
+              } 灭菌单号=${mse.sterilization_order_no}`,
+              'running'
+            );
+
+            // 批次已在执行且激活目的地与 MSE 新码不一致：cancel 后再 set，保持通行目的地与档案一致
+            const status = String(batch.status || '');
+            const isProducing = status === '1' || status === '2';
+            if (isProducing && mseDest) {
+              const destRes = await HttpUtil.get(
+                `/produce_batch_destination/current?batchId=${batch.id}`
+              );
+              const activeDest =
+                destRes && destRes.code === '200' ? destRes.data : null;
+              const activeCode =
+                activeDest && activeDest.destinationCode
+                  ? String(activeDest.destinationCode).trim()
+                  : '';
+              if (activeCode && activeCode !== mseDest) {
+                await HttpUtil.post('/produce_batch_destination/cancel', {
+                  batchId: batch.id
+                });
+              }
+              if (activeCode !== mseDest) {
+                const setRes = await HttpUtil.post(
+                  '/produce_batch_destination/set',
+                  { batchId: batch.id, destinationCode: mseDest }
+                );
+                if (!setRes || setRes.code !== '200') {
+                  throw new Error(
+                    `同步激活目的地失败: ${
+                      (setRes && setRes.message) || '未知错误'
+                    }`
+                  );
+                }
+                message = `已更新目的地为 ${mseDest}（已同步生产）`;
+              }
+            }
+          } else {
+            this.addLog(
+              `[MSE]已建档，目的地无变化 ${oldDest || '(空)'} 灭菌单号=${
+                mse.sterilization_order_no
+              }`,
+              'running'
+            );
+          }
+          respond(true, message);
+          return;
+        }
+
+        // 5. 未建档：组装 BatchDetailDTO 写库
         const dto = {
           batch: {
             batchNo: mse.sterilization_order_no,
             sterilizationOrderNo: mse.sterilization_order_no,
             palletQuantity: mse.pallet_quantity,
-            sterilizerNameCode: mse.sterilizer_name_code,
+            sterilizerNameCode: mseDest,
             processPlanNameCode: mse.process_plan_name_code,
             status: '0'
           },
@@ -10612,7 +10697,6 @@ export default {
           }))
         };
 
-        // 4. 写库（HTTP 调 Java middle）
         const saveRes = await HttpUtil.post('/produce_batch/save', dto);
         if (!saveRes || saveRes.code !== '200') {
           throw new Error(
