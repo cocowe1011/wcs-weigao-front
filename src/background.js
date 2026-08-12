@@ -2507,7 +2507,7 @@ var variables = {
   W_DBW2: 'DB1001,INT2', // WCS-全线启动 (一直写)
   W_DBW4: 'DB1001,INT4', // WCS-全线停止 (一直写)
   W_DBW6: 'DB1001,INT6', // WCS-允许进料 (一直写)
-  W_DBW8: 'DB1001,INT8', // WCS-故障复位 (一直写)
+  W_DBW8: 'DB1001,INT8', // WCS-故障复位(1)/报警消音(2)，发2秒
   W_DBW10: 'DB1001,INT10', // WCS上货位写虚拟ID
   W_DBW12: 'DB1001,INT12', // WCS上货位写目的地
   W_DBW14: 'DB1001,INT14', // WCS执行出货预热房编号

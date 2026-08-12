@@ -109,6 +109,9 @@
             <button @click="toggleButtonState('fault_reset')">
               <i class="el-icon-refresh"></i><span>故障复位</span>
             </button>
+            <button @click="toggleButtonState('alarm_mute')">
+              <i class="el-icon-bell"></i><span>报警消音</span>
+            </button>
             <button @click="toggleButtonState('clear')">
               <i class="el-icon-delete"></i><span>全线清空</span>
             </button>
@@ -2471,6 +2474,7 @@ export default {
         stop: false,
         reset: false,
         fault_reset: false,
+        alarm_mute: false,
         clear: false
       },
       activeLogType: 'running',
@@ -2955,7 +2959,8 @@ export default {
           bit4: '灭菌急停',
           bit5: '下线急停',
           bit6: '提升机通讯_1',
-          bit7: '提升机通讯_2'
+          bit7: '提升机通讯_2',
+          bit8: '控制室急停'
         },
         'DB1000.DBW1984': {
           bit0: '与3201预热通讯中断',
@@ -9483,6 +9488,7 @@ export default {
               stop: false,
               reset: false,
               fault_reset: false,
+              alarm_mute: false,
               clear: false
             };
             // 全线启动：写入 DB1001.DBW2（WCS-全线启动）
@@ -9512,6 +9518,7 @@ export default {
               stop: false,
               reset: false,
               fault_reset: false,
+              alarm_mute: false,
               clear: false
             };
             // 全线停止：写入 DB1001.DBW4（WCS-全线停止），见 写入PLC点位.csv
@@ -9538,6 +9545,7 @@ export default {
               stop: false,
               reset: false,
               fault_reset: false,
+              alarm_mute: false,
               clear: false
             };
             this.buttonStates[button] = !this.buttonStates[button];
@@ -9559,13 +9567,31 @@ export default {
           type: 'warning'
         })
           .then(() => {
-            // 故障复位：写入 DB1001.DBW8（WCS-故障复位），见 写入PLC点位.csv
+            // 故障复位：DB1001.DBW8 写1，发2秒
             ipcRenderer.send('writeSingleValueToPLC', 'W_DBW8', 1);
             setTimeout(() => {
               ipcRenderer.send('cancelWriteToPLC', 'W_DBW8');
             }, 2000);
             this.$message.success('故障复位成功');
-            this.addLog('故障复位成功');
+            this.addLog('故障复位成功（W_DBW8=1）');
+          })
+          .catch(() => {
+            // 用户取消操作，不做任何处理
+          });
+      } else if (button === 'alarm_mute') {
+        this.$confirm('确定要报警消音吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            // 报警消音：与故障复位同一点位 DB1001.DBW8，写2，发2秒
+            ipcRenderer.send('writeSingleValueToPLC', 'W_DBW8', 2);
+            setTimeout(() => {
+              ipcRenderer.send('cancelWriteToPLC', 'W_DBW8');
+            }, 2000);
+            this.$message.success('报警消音成功');
+            this.addLog('报警消音成功（W_DBW8=2）');
           })
           .catch(() => {
             // 用户取消操作，不做任何处理
