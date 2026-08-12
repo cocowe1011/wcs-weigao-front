@@ -33,7 +33,7 @@
                     class="data-card-border-borderDown"
                     style="font-size: 1.3vw"
                   >
-                    2025000001
+                    {{ executingOrderInfo.orderId }}
                   </div>
                 </div>
               </div>
@@ -41,32 +41,40 @@
                 <div class="data-card-border">
                   <div class="data-card-border-borderTop">产品名称</div>
                   <div class="data-card-border-borderDown">
-                    一次性使用避光静脉输液针
+                    {{ executingOrderInfo.productName }}
                   </div>
                 </div>
               </div>
               <div class="data-card">
                 <div class="data-card-border">
-                  <div class="data-card-border-borderTop">注册证规格型号</div>
-                  <div class="data-card-border-borderDown">0.45×13.5RWLB</div>
+                  <div class="data-card-border-borderTop">规格型号</div>
+                  <div class="data-card-border-borderDown">
+                    {{ executingOrderInfo.spec }}
+                  </div>
                 </div>
               </div>
               <div class="data-card">
                 <div class="data-card-border">
-                  <div class="data-card-border-borderTop">EAS规格型号</div>
-                  <div class="data-card-border-borderDown">B-0.45</div>
+                  <div class="data-card-border-borderTop">产品货号</div>
+                  <div class="data-card-border-borderDown">
+                    {{ executingOrderInfo.productCode }}
+                  </div>
                 </div>
               </div>
               <div class="data-card">
                 <div class="data-card-border">
-                  <div class="data-card-border-borderTop">装量</div>
-                  <div class="data-card-border-borderDown">1000</div>
+                  <div class="data-card-border-borderTop">托盘数</div>
+                  <div class="data-card-border-borderDown">
+                    {{ executingOrderInfo.palletCount }}
+                  </div>
                 </div>
               </div>
               <div class="data-card">
                 <div class="data-card-border">
-                  <div class="data-card-border-borderTop">体积（mm³）</div>
-                  <div class="data-card-border-borderDown">530×350×330</div>
+                  <div class="data-card-border-borderTop">工艺方案</div>
+                  <div class="data-card-border-borderDown">
+                    {{ executingOrderInfo.processPlan }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -7776,6 +7784,45 @@ export default {
     };
   },
   computed: {
+    // 当前执行订单概览（顶部状态卡片）
+    executingOrderInfo() {
+      const empty = {
+        orderId: '--',
+        productName: '--',
+        spec: '--',
+        productCode: '--',
+        palletCount: '--',
+        processPlan: '--'
+      };
+      const detail = this.currentExecutingBatch;
+      if (!detail || !detail.batch) {
+        return empty;
+      }
+      const batch = detail.batch;
+      const pallets = detail.pallets || [];
+      let firstGoods = null;
+      for (let i = 0; i < pallets.length; i++) {
+        const goods = (pallets[i] && pallets[i].goods) || [];
+        if (goods.length > 0) {
+          firstGoods = goods[0];
+          break;
+        }
+      }
+      const palletCount =
+        batch.palletQuantity != null && batch.palletQuantity !== ''
+          ? batch.palletQuantity
+          : pallets.length;
+      return {
+        orderId:
+          batch.sterilizationOrderNo || batch.batchNo || batch.id || '--',
+        productName: (firstGoods && firstGoods.productName) || '--',
+        spec: (firstGoods && firstGoods.spec) || '--',
+        productCode: (firstGoods && firstGoods.productCode) || '--',
+        palletCount:
+          palletCount !== '' && palletCount != null ? palletCount : '--',
+        processPlan: batch.processPlanNameCode || '--'
+      };
+    },
     currentLogs() {
       return this.activeLogType === 'running'
         ? this.runningLogs
