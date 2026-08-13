@@ -8281,9 +8281,9 @@ export default {
     bit1658RequestReadCode01006(newVal, oldVal) {
       if (!this.isDataReady) return;
       if (newVal === '1' && oldVal === '0') {
-        if (!this.validateVirtualIdBeforeRead01006()) {
-          return;
-        }
+        // if (!this.validateVirtualIdBeforeRead01006()) {
+        //   return;
+        // }
         this.scanBuffer01006 = [];
         this.addLog('[上货] 01006请求读码，开始缓存条码', 'running');
         // 向01006工位所有扫码枪发送TRIGGER
