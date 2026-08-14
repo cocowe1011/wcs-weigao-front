@@ -1478,13 +1478,13 @@
             <span class="test-label">上货前电机信号/虚拟ID:</span>
             <div
               style="
-                margin-top: 6px;
+                margin-top: 8px;
                 font-size: 11px;
                 color: #909399;
-                margin-bottom: 4px;
+                margin-bottom: 6px;
               "
             >
-              点击按钮切换电机信号1/0（高亮=1）；虚拟ID写>0标记进货，写0进队列
+              先写虚拟ID(>0)，再点电机按钮标记进货，最后写虚拟ID=0进队列
             </div>
             <div
               style="
@@ -1523,7 +1523,8 @@
                 v-for="config in LOADING_MOTOR_MAP"
                 :key="config.cabinetNo + '-1'"
                 size="mini"
-                :type="loadingMotorStatus[config.motor1] ? 'success' : 'info'"
+                type="success"
+                plain
                 @click="simulateLoadingMotorSignal(config.cabinetNo, 1)"
               >
                 Y{{ config.cabinetNo }}-1
@@ -1532,7 +1533,8 @@
                 v-for="config in LOADING_MOTOR_MAP"
                 :key="config.cabinetNo + '-2'"
                 size="mini"
-                :type="loadingMotorStatus[config.motor2] ? 'warning' : 'info'"
+                type="warning"
+                plain
                 @click="simulateLoadingMotorSignal(config.cabinetNo, 2)"
               >
                 Y{{ config.cabinetNo }}-2
@@ -3297,7 +3299,7 @@ export default {
       // ---- 上货电机占位虚拟ID（独立存储，供watch监听）----
       loadingMotorVirtualId: loadingMotorVirtualIdInit,
       // ---- 测试面板：上货虚拟ID手动写入 ----
-      testVirtualIdLine: '', // 选中的电机ID（如'02015'）
+      testVirtualIdLine: '', // 选中的电机ID（如'09011'）
       testVirtualIdValue: '', // 文本框输入的虚拟ID
 
       // ---- 测试面板配置引用（Vue模板需要访问常量）----
@@ -7989,46 +7991,95 @@ export default {
       });
     });
 
-    // 上货电机监听：改为监听各电机的占位虚拟ID变化，一直监听直到页面关闭
-    // 0 → >0：若电机信号为1，给上货区托盘打"正在进货"标记
-    // >0 → 0：将"正在进货"的托盘移入对应预热队列
+    // 上货电机监听：打开页面直接监听独立存储变量,一直监听直到页面关闭
+    // 创建watch监听器（初始值已在data中定义）
+    // 电机信号上升沿：虚拟ID>0 时给上货区托盘打"正在进货"标识
+    // 虚拟ID >0 → 0：把该线正在进货的托盘移入对应预热队列
     if (!this._loadingMotorWatchers) {
       this._loadingMotorWatchers = [];
     }
+
     LOADING_MOTOR_MAP.forEach(({ cabinetNo, queueName, motor1, motor2 }) => {
-      [
-        [motor1, 1],
-        [motor2, 2]
-      ].forEach(([motorId, slot]) => {
-        if (!this.deviceNodes[motorId]) return;
-        const unwatch = this.$watch(
-          () => this.loadingMotorVirtualId[motorId],
+      if (this.deviceNodes[motor1]) {
+        // 使用$watch监听独立存储变量
+        const unwatch1 = this.$watch(
+          () => this.loadingMotorStatus[motor1],
           (newVal, oldVal) => {
             if (!this.isDataReady) return;
+            // 调试日志
+            console.log(`[watch] ${motor1} newVal=${newVal}, oldVal=${oldVal}`);
             this.addLog(
-              `[watch触发] 上货电机${motorId}虚拟ID变化：${oldVal} → ${newVal}`,
+              `[watch触发] 上货电机${motor1}状态变化：${oldVal} → ${newVal}`,
               'running'
             );
-            if (oldVal === 0 && newVal > 0) {
-              this.handleLoadingVirtualIdRise(
-                cabinetNo,
-                queueName,
-                slot,
-                motorId,
-                newVal
+            // 上升沿检测：false → true
+            if (newVal === true && oldVal === false) {
+              this.addLog(
+                `[watch] 上货电机${motor1}上升沿触发，调用handleLoadingMotorSignal`,
+                'running'
               );
-            } else if (oldVal > 0 && newVal === 0) {
-              this.handleLoadingVirtualIdFall(
-                cabinetNo,
-                queueName,
-                slot,
-                motorId
-              );
+              this.handleLoadingMotorSignal(cabinetNo, queueName, 1, motor1);
             }
           }
         );
-        this._loadingMotorWatchers.push(unwatch);
-      });
+        this._loadingMotorWatchers.push(unwatch1);
+
+        // 虚拟ID监听：>0 → 0 时进队列
+        const unwatchId1 = this.$watch(
+          () => this.loadingMotorVirtualId[motor1],
+          (newVal, oldVal) => {
+            if (!this.isDataReady) return;
+            this.addLog(
+              `[watch触发] 上货电机${motor1}虚拟ID变化：${oldVal} → ${newVal}`,
+              'running'
+            );
+            if (oldVal > 0 && newVal === 0) {
+              this.handleLoadingVirtualIdFall(cabinetNo, queueName, 1, motor1);
+            }
+          }
+        );
+        this._loadingMotorWatchers.push(unwatchId1);
+      }
+      if (this.deviceNodes[motor2]) {
+        // 使用$watch监听独立存储变量
+        const unwatch2 = this.$watch(
+          () => this.loadingMotorStatus[motor2],
+          (newVal, oldVal) => {
+            if (!this.isDataReady) return;
+            // 调试日志
+            console.log(`[watch] ${motor2} newVal=${newVal}, oldVal=${oldVal}`);
+            this.addLog(
+              `[watch触发] 上货电机${motor2}状态变化：${oldVal} → ${newVal}`,
+              'running'
+            );
+            // 上升沿检测：false → true
+            if (newVal === true && oldVal === false) {
+              this.addLog(
+                `[watch] 上货电机${motor2}上升沿触发，调用handleLoadingMotorSignal`,
+                'running'
+              );
+              this.handleLoadingMotorSignal(cabinetNo, queueName, 2, motor2);
+            }
+          }
+        );
+        this._loadingMotorWatchers.push(unwatch2);
+
+        // 虚拟ID监听：>0 → 0 时进队列
+        const unwatchId2 = this.$watch(
+          () => this.loadingMotorVirtualId[motor2],
+          (newVal, oldVal) => {
+            if (!this.isDataReady) return;
+            this.addLog(
+              `[watch触发] 上货电机${motor2}虚拟ID变化：${oldVal} → ${newVal}`,
+              'running'
+            );
+            if (oldVal > 0 && newVal === 0) {
+              this.handleLoadingVirtualIdFall(cabinetNo, queueName, 2, motor2);
+            }
+          }
+        );
+        this._loadingMotorWatchers.push(unwatchId2);
+      }
     });
 
     // 预热柜到灭菌柜电机监听：打开页面直接监听独立存储变量,一直监听直到页面关闭
@@ -8130,20 +8181,30 @@ export default {
       });
 
       // 给上货电机状态、占位虚拟ID变量赋值（独立存储，供watch监听）
-      // 虚拟ID与弹窗显示一致，取 deviceNodes.trayId
+      // 性能优化：只在值变化时赋值，避免不必要的Vue响应式触发
       LOADING_MOTOR_MAP.forEach(({ motor1, motor2 }) => {
-        [motor1, motor2].forEach((motorId) => {
-          const node = this.deviceNodes[motorId];
-          if (!node) return;
-          const newStatus = node.motorStatus;
-          if (newStatus !== this.loadingMotorStatus[motorId]) {
-            this.loadingMotorStatus[motorId] = newStatus;
+        if (this.deviceNodes[motor1]) {
+          const newStatus = this.deviceNodes[motor1].motorStatus;
+          const oldStatus = this.loadingMotorStatus[motor1];
+          if (newStatus !== oldStatus) {
+            this.loadingMotorStatus[motor1] = newStatus;
           }
-          const newVirtualId = Number(node.trayId || 0);
-          if (newVirtualId !== this.loadingMotorVirtualId[motorId]) {
-            this.loadingMotorVirtualId[motorId] = newVirtualId;
+          const newVirtualId = Number(this.deviceNodes[motor1].trayId || 0);
+          if (newVirtualId !== this.loadingMotorVirtualId[motor1]) {
+            this.loadingMotorVirtualId[motor1] = newVirtualId;
           }
-        });
+        }
+        if (this.deviceNodes[motor2]) {
+          const newStatus = this.deviceNodes[motor2].motorStatus;
+          const oldStatus = this.loadingMotorStatus[motor2];
+          if (newStatus !== oldStatus) {
+            this.loadingMotorStatus[motor2] = newStatus;
+          }
+          const newVirtualId = Number(this.deviceNodes[motor2].trayId || 0);
+          if (newVirtualId !== this.loadingMotorVirtualId[motor2]) {
+            this.loadingMotorVirtualId[motor2] = newVirtualId;
+          }
+        }
       });
 
       // ---- DB1000.DBW1658 上货请求信号赋值（上升沿检测由 watch 处理） ----
@@ -9213,20 +9274,19 @@ export default {
       }, 2000);
     },
 
-    // ================= 上货电机虚拟ID自动监听 =================
+    // ================= 上货电机自动监听 =================
     /**
-     * 虚拟ID 0 → >0：若电机信号为1，给上货区匹配托盘打"正在进货"标记
+     * 上货电机 rising edge 回调：虚拟ID>0 时给上货区对应托盘打"正在进货"标识
      * @param {number} cabinetNo  - 灭菌柜编号，如 3201
      * @param {string} queueName  - 目标预热队列名，如 'Y3201'
      * @param {number} slot       - 线号 1 或 2
-     * @param {string} motorId    - 电机ID，如 '02015'
-     * @param {number} virtualId  - 新的虚拟ID值
+     * @param {string} motorId    - 电机ID，如 '09011'
      */
-    handleLoadingVirtualIdRise(cabinetNo, queueName, slot, motorId, virtualId) {
-      // 电机信号必须为1
-      if (this.loadingMotorStatus[motorId] !== true) {
+    handleLoadingMotorSignal(cabinetNo, queueName, slot, motorId) {
+      const virtualId = this.loadingMotorVirtualId[motorId];
+      if (!virtualId || virtualId <= 0) {
         this.addLog(
-          `[上货电机] ${queueName}-线${slot} 虚拟ID变为${virtualId}，但电机${motorId}信号为0，忽略`,
+          `[上货电机] ${queueName}-线${slot} 电机${motorId}信号为1，但虚拟ID为${virtualId}，忽略`,
           'warning'
         );
         return;
@@ -9239,54 +9299,61 @@ export default {
         loadingArea.trayInfo.length === 0
       ) {
         this.addLog(
-          `[上货电机] ${queueName}-线${slot} 虚拟ID变为${virtualId}，上货区无托盘`,
+          `[上货电机] ${queueName}-线${slot} 启动，上货区无托盘`,
           'warning'
         );
         return;
       }
 
-      const sendToCode = `${cabinetNo}${slot}`; // e.g., '32011'
-      // 优先按虚拟ID匹配，其次按目的地匹配（跳过已在进货中的托盘）
-      let tray = loadingArea.trayInfo.find(
-        (t) => String(t.virtualId) === String(virtualId) && !t.loadingMotorId
+      const tray = loadingArea.trayInfo.find(
+        (t) => String(t.virtualId) === String(virtualId)
       );
       if (!tray) {
-        tray = loadingArea.trayInfo.find(
-          (t) => t.sendTo === sendToCode && !t.loadingMotorId
-        );
-      }
-      if (!tray) {
         this.addLog(
-          `[上货电机] ${queueName}-线${slot} 虚拟ID变为${virtualId}，上货区无匹配托盘（虚拟ID或目的地${sendToCode}）`,
+          `[上货电机] ${queueName}-线${slot} 启动，上货区无虚拟ID为 ${virtualId} 的托盘`,
           'warning'
         );
         return;
       }
 
       this.$set(tray, 'loadingMotorId', motorId);
+      // nowTrays 只在 showTrays 里重建，标识变化需要手动刷新弹窗
       if (this.selectedQueueIndex === 0) {
         this.showTrays(0);
       }
+
       this.addLog(
-        `[上货电机] ${queueName}-线${slot} 电机${motorId}虚拟ID=${virtualId}且信号为1：托盘 ${tray.trayCode} 标记为正在进货`
+        `[上货电机] ${queueName}-线${slot} 电机${motorId}信号为1且虚拟ID=${virtualId}：托盘 ${tray.trayCode} 标记为正在进货`
       );
     },
 
     /**
-     * 虚拟ID >0 → 0：将该线"正在进货"的托盘从上货区移入对应预热队列
+     * 上货电机虚拟ID >0 → 0：把该线正在进货的托盘从上货区移入对应预热队列
      * @param {number} cabinetNo  - 灭菌柜编号，如 3201
      * @param {string} queueName  - 目标预热队列名，如 'Y3201'
      * @param {number} slot       - 线号 1 或 2
-     * @param {string} motorId    - 电机ID，如 '02015'
+     * @param {string} motorId    - 电机ID，如 '09011'
      */
     handleLoadingVirtualIdFall(cabinetNo, queueName, slot, motorId) {
       const loadingArea = this.queues[0];
-      const trayIndex = (loadingArea?.trayInfo || []).findIndex(
+      if (
+        !loadingArea ||
+        !loadingArea.trayInfo ||
+        loadingArea.trayInfo.length === 0
+      ) {
+        this.addLog(
+          `[上货电机] ${queueName}-线${slot} 虚拟ID归0，上货区无托盘`,
+          'warning'
+        );
+        return;
+      }
+
+      const trayIndex = loadingArea.trayInfo.findIndex(
         (t) => t.loadingMotorId === motorId
       );
       if (trayIndex === -1) {
         this.addLog(
-          `[上货电机] ${queueName}-线${slot} 虚拟ID归0，上货区无正在进货的托盘`,
+          `[上货电机] ${queueName}-线${slot} 虚拟ID归0，上货区无电机${motorId}正在进货的托盘`,
           'warning'
         );
         return;
@@ -9378,7 +9445,7 @@ export default {
     },
 
     /**
-     * 测试面板：手动切换上货电机信号1/0（不自动恢复）
+     * 测试面板：模拟上货电机上升沿
      * @param {number} cabinetNo - 预热柜编号(3201-3215)
      * @param {number} slot - 列号(1或2)
      */
@@ -9390,17 +9457,23 @@ export default {
       }
 
       const motorId = slot === 1 ? config.motor1 : config.motor2;
-      const newVal = !this.loadingMotorStatus[motorId];
-      this.$set(this.loadingMotorStatus, motorId, newVal);
+
+      // 直接设置为true触发上升沿，1秒后恢复为false
+      this.loadingMotorStatus[motorId] = true;
       this.addLog(
-        `[测试模拟] Y${cabinetNo}-线${slot}电机(${motorId})信号 = ${
-          newVal ? 1 : 0
-        }`
+        `[测试模拟] Y${cabinetNo}-线${slot}电机(${motorId})设置为true`
       );
+
+      setTimeout(() => {
+        this.loadingMotorStatus[motorId] = false;
+        this.addLog(
+          `[测试模拟] Y${cabinetNo}-线${slot}电机(${motorId})恢复为false`
+        );
+      }, 1000);
     },
 
     /**
-     * 测试面板：手动写入上货电机虚拟ID（写0触发进队列）
+     * 测试面板：手动写入上货电机虚拟ID（写0模拟归零进队列）
      */
     applyTestVirtualId() {
       if (!this.testVirtualIdLine) {
