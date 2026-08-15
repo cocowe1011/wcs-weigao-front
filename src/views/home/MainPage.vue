@@ -868,7 +868,7 @@
                         v-if="transferExecuting"
                         type="danger"
                         size="mini"
-                        @click="cancelTransferCabinet"
+                        @click="cancelTransferCabinet()"
                         style="width: 100%; margin-left: 0px"
                         >取消</el-button
                       >
@@ -11264,6 +11264,12 @@ export default {
       }
     },
 
+    writePlcPulse(tag, value) {
+      ipcRenderer.send('writeSingleValueToPLC', tag, value);
+      setTimeout(() => {
+        ipcRenderer.send('cancelWriteToPLC', tag);
+      }, 2000);
+    },
     /**
      * 预热柜到灭菌柜 - 执行
      * 参考写入点位.csv:
@@ -11318,50 +11324,27 @@ export default {
       this.disinfectionRoomLoading = true;
       this.disinfectionExecuting = true;
 
-      // 1. 写入起始预热柜编号到 W_DBW14 (DB1001.DBW14)，2秒后取消
-      this.addLog(`[PLC发送] W_DBW14 = ${fromCabinet} (出货预热房编号)`);
-      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW14', fromCabinet);
-      setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'W_DBW14');
-      }, 2000);
-
-      // 2. 写入目的地灭菌柜编号到 W_DBW16 (DB1001.DBW16)，2秒后取消
-      this.addLog(`[PLC发送] W_DBW16 = ${toCabinet} (进货灭菌柜编号)`);
-      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW16', toCabinet);
-      setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'W_DBW16');
-      }, 2000);
-
-      // 3. 设置起始预热柜对应的 W_DBW18 bit位(true)，2秒后取消
       const fromBitKey = PREHEAT_DBW18_MAP[fromCabinet];
+      const toBitKey = STERILIZE_DBW20_MAP[toCabinet];
+
+      this.addLog(`[PLC发送] W_DBW14 = ${fromCabinet} (出货预热房编号)`);
+      this.writePlcPulse('W_DBW14', fromCabinet);
+      this.addLog(`[PLC发送] W_DBW16 = ${toCabinet} (进货灭菌柜编号)`);
+      this.writePlcPulse('W_DBW16', toCabinet);
       if (fromBitKey) {
         this.addLog(
           `[PLC发送] ${fromBitKey} = true (预热房Y${fromCabinet}出货命令)`
         );
-        ipcRenderer.send('writeSingleValueToPLC', fromBitKey, true);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', fromBitKey);
-        }, 2000);
+        this.writePlcPulse(fromBitKey, true);
       }
-
-      // 4. 设置目的地灭菌柜对应的 W_DBW20 bit位(true)，2秒后取消
-      const toBitKey = STERILIZE_DBW20_MAP[toCabinet];
       if (toBitKey) {
         this.addLog(
           `[PLC发送] ${toBitKey} = true (灭菌柜${toCabinet}进货命令)`
         );
-        ipcRenderer.send('writeSingleValueToPLC', toBitKey, true);
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', toBitKey);
-        }, 2000);
+        this.writePlcPulse(toBitKey, true);
       }
-
-      // 5. 写入小车移栽命令 W_DBW22 = 1 (DB1001.DBW22)，2秒后取消
       this.addLog('[PLC发送] W_DBW22 = 1 (小车移栽命令)');
-      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW22', 1);
-      setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'W_DBW22');
-      }, 2000);
+      this.writePlcPulse('W_DBW22', 1);
 
       // 给源预热队列中所有托盘标记目的地灭菌柜编号（保留原列号后缀，如 32011→32011）
       if (
@@ -11398,9 +11381,13 @@ export default {
       );
     },
     /**
-     * 预热柜到灭菌柜 - 取消执行
+     * 预热柜到灭菌柜 - 取消执行（人工取消时复位已发送的PLC信号）
      */
     cancelDisinfectionRoom() {
+      const wasExecuting = this.disinfectionExecuting;
+      const fromCabinet = Number(this.preheatSelectedFrom);
+      const toCabinet = Number(this.sterilizeSelectedTo);
+
       this.disinfectionExecuting = false;
       this.disinfectionTrayCode = '';
       this.disinfectionNeedQty = 0;
@@ -11408,7 +11395,24 @@ export default {
       this.preheatSelectedFrom = null;
       this.sterilizeSelectedTo = null;
 
-      this.addLog('预热柜到灭菌柜执行已取消');
+      if (wasExecuting) {
+        this.writePlcPulse('W_DBW14', 0);
+        this.writePlcPulse('W_DBW16', 0);
+        const fromBitKey = PREHEAT_DBW18_MAP[fromCabinet];
+        const toBitKey = STERILIZE_DBW20_MAP[toCabinet];
+        if (fromBitKey) {
+          this.writePlcPulse(fromBitKey, false);
+        }
+        if (toBitKey) {
+          this.writePlcPulse(toBitKey, false);
+        }
+        this.writePlcPulse('W_DBW22', 0);
+        this.addLog(
+          '预热柜到灭菌柜执行已取消，已发送W_DBW14/16/22=0及对应bit=false'
+        );
+      } else {
+        this.addLog('预热柜到灭菌柜执行已取消');
+      }
       this.$message.info('已取消预热柜到灭菌柜执行');
     },
     // ================= 预热房移柜 =================
@@ -11464,17 +11468,8 @@ export default {
       this.transferLoading = true;
       this.transferExecuting = true;
 
-      // 1. 写入起始预热房编号到 W_DBW14，2秒后取消
-      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW14', fromCabinet);
-      setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'W_DBW14');
-      }, 2000);
-
-      // 2. 写入终点转柜预热柜编号到 W_DBW190，2秒后取消
-      ipcRenderer.send('writeSingleValueToPLC', 'W_DBW190', toCabinet);
-      setTimeout(() => {
-        ipcRenderer.send('cancelWriteToPLC', 'W_DBW190');
-      }, 2000);
+      this.writePlcPulse('W_DBW14', fromCabinet);
+      this.writePlcPulse('W_DBW190', toCabinet);
       this.addLog(
         `[PLC发送] W_DBW14 = ${fromCabinet} (出货预热房编号)，W_DBW190 = ${toCabinet} (执行转柜预热柜编号)`
       );
@@ -11535,7 +11530,7 @@ export default {
           `[预热房移柜] 预热房Y${fromCabinet}队列不存在或无托盘`,
           'warning'
         );
-        this.cancelTransferCabinet();
+        this.cancelTransferCabinet(true);
         return;
       }
 
@@ -11556,7 +11551,7 @@ export default {
           `[预热房移柜] 起始预热房Y${fromCabinet}已无托盘，自动取消`,
           'warning'
         );
-        this.cancelTransferCabinet();
+        this.cancelTransferCabinet(true);
         return;
       }
 
@@ -11572,7 +11567,7 @@ export default {
         );
         // 若源队列整体已空则取消；否则仅跳过本次
         if (sourceQueue.trayInfo.length === 0) {
-          this.cancelTransferCabinet();
+          this.cancelTransferCabinet(true);
         }
         return;
       }
@@ -11609,9 +11604,10 @@ export default {
     },
     /**
      * 预热房移柜 - 取消执行
-     * @param {boolean} silent - 自动完成时静默清理，不弹取消提示
+     * @param {boolean} silent - 自动完成时静默清理，不弹取消提示、不复位PLC
      */
     cancelTransferCabinet(silent) {
+      const wasExecuting = this.transferExecuting;
       this.transferExecuting = false;
       this.transferTrayCode = '';
       this.transferNeedQty = 0;
@@ -11619,10 +11615,17 @@ export default {
       this.transferSelectedFrom = null;
       this.transferSelectedTo = null;
 
-      if (!silent) {
-        this.addLog('预热房移柜执行已取消');
-        this.$message.info('已取消预热房移柜执行');
+      if (silent === true) {
+        return;
       }
+      if (wasExecuting) {
+        this.writePlcPulse('W_DBW14', 0);
+        this.writePlcPulse('W_DBW190', 0);
+        this.addLog('预热房移柜执行已取消，已发送W_DBW14=0、W_DBW190=0');
+      } else {
+        this.addLog('预热房移柜执行已取消');
+      }
+      this.$message.info('已取消预热房移柜执行');
     },
     /**
      * 下货执行 - 灭菌柜出货
@@ -11648,17 +11651,10 @@ export default {
       const randomTrayNo = Math.floor(Math.random() * 9000) + 1000;
       this.outSterilizeTrayCode = `TP-${cabinetNo}-${randomTrayNo}`;
 
-      // 发送灭菌柜出货命令到 W_DBW186 (DB1001.DBW186)
       const bitKey = STERILIZE_DBW186_MAP[cabinetNo];
       if (bitKey) {
         this.addLog(`[PLC发送] ${bitKey} = true (灭菌柜${cabinetNo}出货命令)`);
-        ipcRenderer.send('writeSingleValueToPLC', bitKey, true);
-        // PLC命令2秒后自动取消（脉冲发送规范）
-        setTimeout(() => {
-          ipcRenderer.send('cancelWriteToPLC', bitKey);
-          // 注意：这里只取消PLC命令，不取消loading状态
-          // loading状态只有手动点击取消按钮时才取消
-        }, 2000);
+        this.writePlcPulse(bitKey, true);
       }
 
       this.addLog(
@@ -11669,16 +11665,23 @@ export default {
       );
     },
     /**
-     * 下货执行 - 取消执行
+     * 下货执行 - 取消执行（人工取消时复位已发送的PLC信号）
      */
     cancelOutSterilize() {
-      // 手动取消时才取消loading和executing状态
+      const wasExecuting = this.outSterilizeExecuting;
+      const bitKey = STERILIZE_DBW186_MAP[this.outSterilizeSelected];
+
       this.outSterilizeExecuting = false;
       this.outSterilizeTrayCode = '';
       this.outSterilizeLoading = false;
       this.outSterilizeSelected = 3201;
 
-      this.addLog('下货执行已取消');
+      if (wasExecuting && bitKey) {
+        this.writePlcPulse(bitKey, false);
+        this.addLog(`下货执行已取消，已发送${bitKey}=false`);
+      } else {
+        this.addLog('下货执行已取消');
+      }
       this.$message.info('已取消下货执行');
     },
     /**
