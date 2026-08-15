@@ -1506,7 +1506,11 @@ function conPLC() {
           conn.addItems('DBW1556');
           conn.addItems('DBW1558');
 
-          // --- 24. 传感器信号区间 (DBW1606 - DBW1656) ---
+          // --- 24. 预热/灭菌启动状态 (DBW1600 / DBW1602) ---
+          conn.addItems('DBW1600'); // 预热运行状态 BIT0~14: 3201~3215预热启动
+          conn.addItems('DBW1602'); // 灭菌预热状态 BIT0~14: 3201~3215灭菌启动
+
+          // --- 25. 传感器信号区间 (DBW1606 - DBW1656) ---
           conn.addItems('DBW1606');
           conn.addItems('DBW1608');
           conn.addItems('DBW1610');
@@ -2470,6 +2474,9 @@ var variables = {
   DBW1554: 'DB1000,INT1554', // 灭菌柜13内实际数量
   DBW1556: 'DB1000,INT1556', // 灭菌柜14内实际数量
   DBW1558: 'DB1000,INT1558', // 灭菌柜15内实际数量
+
+  DBW1600: 'DB1000,INT1600', // 预热运行状态 BIT0~14: 3201~3215预热启动
+  DBW1602: 'DB1000,INT1602', // 灭菌预热状态 BIT0~14: 3201~3215灭菌启动
 
   // 展开定义：传感器信号区间 (DBW1606 - DBW1656)
   DBW1606: 'DB1000,INT1606', // 缓存线传感器信号-1

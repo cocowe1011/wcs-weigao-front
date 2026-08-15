@@ -1174,24 +1174,40 @@
                 object-fit: contain;
               }
 
-              /* 完成状态标签样式 */
+              /* 完成/启动/进货状态标签样式 */
               .analysis-status-marker {
                 position: absolute;
                 transform: translate(-50%, -50%);
                 z-index: 15;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
               }
 
-              /* 自定义状态标签样式，与页面主题色融合，简洁无阴影 */
               .analysis-status-marker :deep(.el-tag) {
-                background-color: rgba(10, 197, 168, 0.85);
-                border: 1px solid rgba(10, 197, 168, 0.95);
-                color: #ffffff;
                 font-size: 11px;
                 height: 18px;
                 line-height: 16px;
                 padding: 0 6px;
                 box-shadow: none;
                 border-radius: 3px;
+                color: #ffffff;
+              }
+
+              .analysis-status-marker :deep(.el-tag--success) {
+                background-color: rgba(10, 197, 168, 0.85);
+                border: 1px solid rgba(10, 197, 168, 0.95);
+              }
+
+              .analysis-status-marker :deep(.el-tag--danger) {
+                background-color: rgba(245, 108, 108, 0.9);
+                border: 1px solid rgba(245, 108, 108, 0.95);
+              }
+
+              .analysis-status-marker :deep(.el-tag--warning) {
+                background-color: rgba(230, 162, 60, 0.9);
+                border: 1px solid rgba(230, 162, 60, 0.95);
               }
             }
           }
