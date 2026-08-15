@@ -211,7 +211,7 @@ export default {
   props: {},
   data() {
     return {
-      activeIndex: '1',
+      activeIndex: '2',
       windowSize: 'max-window',
       showLogout: true,
       dialogFormVisible: false,

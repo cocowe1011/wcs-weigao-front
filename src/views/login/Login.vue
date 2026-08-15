@@ -186,7 +186,7 @@ export default {
               // 跳转主页
               this.$nextTick(() => {
                 this.$router.replace({
-                  path: '/homePage/welcomPage',
+                  path: '/homePage/MainPage',
                   query: { userRole: res.data.userRole }
                 });
               });

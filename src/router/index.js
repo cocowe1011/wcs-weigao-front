@@ -19,6 +19,7 @@ const routes = [
     path: '/homePage',
     name: 'HomePage',
     component: HomePage,
+    redirect: '/homePage/MainPage',
     children: [
       // WelcomPage
       {
