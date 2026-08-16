@@ -979,7 +979,7 @@
                 justify-content: flex-end;
                 
                 transition: border-color 0.2s ease;
-                overflow: hidden;
+                overflow: visible;
                 
                 /* 进度条填充层 - 从底部向上生长 */
                 .capacity-fill {
@@ -1003,7 +1003,7 @@
                   justify-content: center;
                   width: 100%;
                   height: 100%;
-                  padding: 4px 2px;
+                  padding: 8px 2px;
                   box-sizing: border-box;
                   
                   .queue-marker-name {
@@ -1034,6 +1034,74 @@
                     margin-top: 2px;
                   }
                 }
+
+                .queue-door {
+                  position: absolute;
+                  left: 2px;
+                  right: 2px;
+                  z-index: 4;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+
+                  .queue-door-label {
+                    position: absolute;
+                    font-size: 10px;
+                    color: #fff;
+                    background: rgba(0, 0, 0, 0.7);
+                    padding: 2px 4px;
+                    border-radius: 2px;
+                    white-space: nowrap;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                    pointer-events: none;
+                    z-index: 10;
+                  }
+
+                  .queue-door-indicator {
+                    width: 100%;
+                    height: 3px;
+                    border-radius: 1px;
+                    transition: all 0.3s ease;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    background: #909399;
+                    box-sizing: border-box;
+                  }
+
+                  &.door-open .queue-door-indicator {
+                    background: #f5c542;
+                    box-shadow: 0 0 8px rgba(245, 197, 66, 0.6);
+                  }
+
+                  &.door-closed .queue-door-indicator {
+                    background: #f56c6c;
+                    box-shadow: 0 0 8px rgba(245, 108, 108, 0.6);
+                  }
+
+                  &.door-moving .queue-door-indicator {
+                    background: #909399;
+                  }
+
+                  &--out {
+                    top: 3px;
+
+                    .queue-door-label {
+                      bottom: calc(100% + 2px);
+                    }
+                  }
+
+                  &--in {
+                    bottom: 3px;
+
+                    .queue-door-label {
+                      top: calc(100% + 2px);
+                    }
+                  }
+
+                  &:hover .queue-door-label {
+                    opacity: 1;
+                  }
+                }
               }
               
               .queue-marker:hover {
@@ -1057,6 +1125,7 @@
               /* 上货区紧凑标记 - 覆盖高进度条样式，与常州项目普通队列一致 */
               .queue-marker[data-compact] {
                 width: auto;
+                overflow: hidden;
                 background: rgba(10, 30, 50, 0.85);
                 border: 1px solid rgba(64, 158, 255, 0.5);
                 border-radius: 4px;
@@ -1856,72 +1925,6 @@
 
 .position-btn:active {
   transform: scale(0.95);
-}
-
-/* 小车位置滑块样式 */
-.cart-position-test-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-}
-
-.cart-position-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.cart-position-label {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.cart-value {
-  background: rgba(10, 197, 168, 0.2);
-  border: 1px solid rgba(10, 197, 168, 0.3);
-  color: #0ac5a8;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  min-width: 50px;
-  text-align: center;
-}
-
-.cart-position-slider-container {
-  padding: 5px 0;
-}
-
-.cart-position-slider {
-  width: 100%;
-}
-
-.cart-position-slider :deep(.el-slider__runway) {
-  background-color: rgba(255, 255, 255, 0.1);
-  height: 6px;
-}
-
-.cart-position-slider :deep(.el-slider__bar) {
-  background-color: #0ac5a8;
-  height: 6px;
-}
-
-.cart-position-slider :deep(.el-slider__button) {
-  border: 2px solid #0ac5a8;
-  background-color: #fff;
-  width: 20px;
-  height: 20px;
-}
-
-.cart-position-slider :deep(.el-slider__button:hover) {
-  border-color: #0ac5a8;
-  box-shadow: 0 0 5px rgba(10, 197, 168, 0.5);
 }
 
 /* 托盘检索弹窗样式 */

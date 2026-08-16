@@ -521,12 +521,30 @@
                         height: getQueueCapacityPercent(marker.queueId) + '%'
                       }"
                     ></div>
+                    <div
+                      class="queue-door queue-door--out"
+                      :class="getQueueDoorClass(marker, 'out')"
+                    >
+                      <div class="queue-door-label">
+                        {{ getQueueDoorLabel(marker, 'out') }}
+                      </div>
+                      <div class="queue-door-indicator"></div>
+                    </div>
                     <div class="queue-marker-content">
                       <span class="queue-marker-name">{{ marker.name }}</span>
                       <span class="queue-marker-count">{{
                         queues.find((q) => q.id === marker.queueId)?.trayInfo
                           ?.length || 0
                       }}</span>
+                    </div>
+                    <div
+                      class="queue-door queue-door--in"
+                      :class="getQueueDoorClass(marker, 'in')"
+                    >
+                      <div class="queue-door-label">
+                        {{ getQueueDoorLabel(marker, 'in') }}
+                      </div>
+                      <div class="queue-door-indicator"></div>
                     </div>
                   </div>
                   <!-- 紧凑样式（上货区，与常州项目普通队列结构一致） -->
@@ -1621,65 +1639,6 @@
                 @click="simulatePreheatToSterilizeMotor(config.cabinetNo, 2)"
               >
                 {{ config.cabinetNo }}-2
-              </el-button>
-            </div>
-          </div>
-          <div class="test-section">
-            <span class="test-label">小车位置测试:</span>
-            <div class="cart-position-test-container">
-              <div class="cart-position-group">
-                <div class="cart-position-label">
-                  <span>小车1 (19-6210):</span>
-                  <span class="cart-value">{{ cartPositionValues.cart1 }}</span>
-                </div>
-                <div class="cart-position-slider-container">
-                  <el-slider
-                    v-model="cartPositionValues.cart1"
-                    :min="19"
-                    :max="6210"
-                    :step="1"
-                    class="cart-position-slider"
-                  ></el-slider>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="test-section">
-            <span class="test-label">小车指示灯(DBW60.BIT8~11):</span>
-            <div
-              style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px"
-            >
-              <el-button
-                size="mini"
-                type="danger"
-                plain
-                @click="simulateCartIndicator('bit8')"
-              >
-                入口翻转出
-              </el-button>
-              <el-button
-                size="mini"
-                type="success"
-                plain
-                @click="simulateCartIndicator('bit9')"
-              >
-                入口翻转回
-              </el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                plain
-                @click="simulateCartIndicator('bit10')"
-              >
-                出口翻转出
-              </el-button>
-              <el-button
-                size="mini"
-                type="success"
-                plain
-                @click="simulateCartIndicator('bit11')"
-              >
-                出口翻转回
               </el-button>
             </div>
           </div>
@@ -3281,6 +3240,150 @@ export default {
         { cabinetNo: 3202, x: 253, y: 215, completed: '0', starting: '0' },
         { cabinetNo: 3201, x: 178, y: 215, completed: '0', starting: '0' }
       ],
+      // 预热进门开到位 DBW1560 BIT0~14 → 3201~3215
+      preheatInDoorOpen: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 预热进门关到位 DBW1562 BIT0~14 → 3201~3215
+      preheatInDoorClosed: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 预热出门开到位 DBW1564 BIT0~14 → 3201~3215
+      preheatOutDoorOpen: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 预热出门关到位 DBW1566 BIT0~14 → 3201~3215
+      preheatOutDoorClosed: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 灭菌进门开到位 DBW1568 BIT0~14 → 3201~3215
+      sterilizeInDoorOpen: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 灭菌进门关到位 DBW1570 BIT0~14 → 3201~3215
+      sterilizeInDoorClosed: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 灭菌出门开到位 DBW1572 BIT0~14 → 3201~3215
+      sterilizeOutDoorOpen: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
+      // 灭菌出门关到位 DBW1574 BIT0~14 → 3201~3215
+      sterilizeOutDoorClosed: {
+        bit0: '0',
+        bit1: '0',
+        bit2: '0',
+        bit3: '0',
+        bit4: '0',
+        bit5: '0',
+        bit6: '0',
+        bit7: '0',
+        bit8: '0',
+        bit9: '0',
+        bit10: '0',
+        bit11: '0',
+        bit12: '0',
+        bit13: '0',
+        bit14: '0'
+      },
       logId: 1000,
 
       // ---- 预热柜到灭菌柜相关 ----
@@ -8359,6 +8462,136 @@ export default {
       this.sterilizationCompleted[1].starting = getBit(word1602, 5); // BIT13→bit5: 3214灭菌启动
       this.sterilizationCompleted[0].starting = getBit(word1602, 6); // BIT14→bit6: 3215灭菌启动
 
+      // ---- 预热/灭菌柜门开关到位（BIT0~14 → 3201~3215） ----
+      const word1560 = getParsedWord('DBW1560');
+      this.preheatInDoorOpen.bit0 = getBit(word1560, 8); // BIT0→bit8: 3201预热进门开到位
+      this.preheatInDoorOpen.bit1 = getBit(word1560, 9); // BIT1→bit9: 3202预热进门开到位
+      this.preheatInDoorOpen.bit2 = getBit(word1560, 10); // BIT2→bit10: 3203预热进门开到位
+      this.preheatInDoorOpen.bit3 = getBit(word1560, 11); // BIT3→bit11: 3204预热进门开到位
+      this.preheatInDoorOpen.bit4 = getBit(word1560, 12); // BIT4→bit12: 3205预热进门开到位
+      this.preheatInDoorOpen.bit5 = getBit(word1560, 13); // BIT5→bit13: 3206预热进门开到位
+      this.preheatInDoorOpen.bit6 = getBit(word1560, 14); // BIT6→bit14: 3207预热进门开到位
+      this.preheatInDoorOpen.bit7 = getBit(word1560, 15); // BIT7→bit15: 3208预热进门开到位
+      this.preheatInDoorOpen.bit8 = getBit(word1560, 0); // BIT8→bit0: 3209预热进门开到位
+      this.preheatInDoorOpen.bit9 = getBit(word1560, 1); // BIT9→bit1: 3210预热进门开到位
+      this.preheatInDoorOpen.bit10 = getBit(word1560, 2); // BIT10→bit2: 3211预热进门开到位
+      this.preheatInDoorOpen.bit11 = getBit(word1560, 3); // BIT11→bit3: 3212预热进门开到位
+      this.preheatInDoorOpen.bit12 = getBit(word1560, 4); // BIT12→bit4: 3213预热进门开到位
+      this.preheatInDoorOpen.bit13 = getBit(word1560, 5); // BIT13→bit5: 3214预热进门开到位
+      this.preheatInDoorOpen.bit14 = getBit(word1560, 6); // BIT14→bit6: 3215预热进门开到位
+      const word1562 = getParsedWord('DBW1562');
+      this.preheatInDoorClosed.bit0 = getBit(word1562, 8); // BIT0→bit8: 3201预热进门关到位
+      this.preheatInDoorClosed.bit1 = getBit(word1562, 9); // BIT1→bit9: 3202预热进门关到位
+      this.preheatInDoorClosed.bit2 = getBit(word1562, 10); // BIT2→bit10: 3203预热进门关到位
+      this.preheatInDoorClosed.bit3 = getBit(word1562, 11); // BIT3→bit11: 3204预热进门关到位
+      this.preheatInDoorClosed.bit4 = getBit(word1562, 12); // BIT4→bit12: 3205预热进门关到位
+      this.preheatInDoorClosed.bit5 = getBit(word1562, 13); // BIT5→bit13: 3206预热进门关到位
+      this.preheatInDoorClosed.bit6 = getBit(word1562, 14); // BIT6→bit14: 3207预热进门关到位
+      this.preheatInDoorClosed.bit7 = getBit(word1562, 15); // BIT7→bit15: 3208预热进门关到位
+      this.preheatInDoorClosed.bit8 = getBit(word1562, 0); // BIT8→bit0: 3209预热进门关到位
+      this.preheatInDoorClosed.bit9 = getBit(word1562, 1); // BIT9→bit1: 3210预热进门关到位
+      this.preheatInDoorClosed.bit10 = getBit(word1562, 2); // BIT10→bit2: 3211预热进门关到位
+      this.preheatInDoorClosed.bit11 = getBit(word1562, 3); // BIT11→bit3: 3212预热进门关到位
+      this.preheatInDoorClosed.bit12 = getBit(word1562, 4); // BIT12→bit4: 3213预热进门关到位
+      this.preheatInDoorClosed.bit13 = getBit(word1562, 5); // BIT13→bit5: 3214预热进门关到位
+      this.preheatInDoorClosed.bit14 = getBit(word1562, 6); // BIT14→bit6: 3215预热进门关到位
+      const word1564 = getParsedWord('DBW1564');
+      this.preheatOutDoorOpen.bit0 = getBit(word1564, 8); // BIT0→bit8: 3201预热出门开到位
+      this.preheatOutDoorOpen.bit1 = getBit(word1564, 9); // BIT1→bit9: 3202预热出门开到位
+      this.preheatOutDoorOpen.bit2 = getBit(word1564, 10); // BIT2→bit10: 3203预热出门开到位
+      this.preheatOutDoorOpen.bit3 = getBit(word1564, 11); // BIT3→bit11: 3204预热出门开到位
+      this.preheatOutDoorOpen.bit4 = getBit(word1564, 12); // BIT4→bit12: 3205预热出门开到位
+      this.preheatOutDoorOpen.bit5 = getBit(word1564, 13); // BIT5→bit13: 3206预热出门开到位
+      this.preheatOutDoorOpen.bit6 = getBit(word1564, 14); // BIT6→bit14: 3207预热出门开到位
+      this.preheatOutDoorOpen.bit7 = getBit(word1564, 15); // BIT7→bit15: 3208预热出门开到位
+      this.preheatOutDoorOpen.bit8 = getBit(word1564, 0); // BIT8→bit0: 3209预热出门开到位
+      this.preheatOutDoorOpen.bit9 = getBit(word1564, 1); // BIT9→bit1: 3210预热出门开到位
+      this.preheatOutDoorOpen.bit10 = getBit(word1564, 2); // BIT10→bit2: 3211预热出门开到位
+      this.preheatOutDoorOpen.bit11 = getBit(word1564, 3); // BIT11→bit3: 3212预热出门开到位
+      this.preheatOutDoorOpen.bit12 = getBit(word1564, 4); // BIT12→bit4: 3213预热出门开到位
+      this.preheatOutDoorOpen.bit13 = getBit(word1564, 5); // BIT13→bit5: 3214预热出门开到位
+      this.preheatOutDoorOpen.bit14 = getBit(word1564, 6); // BIT14→bit6: 3215预热出门开到位
+      const word1566 = getParsedWord('DBW1566');
+      this.preheatOutDoorClosed.bit0 = getBit(word1566, 8); // BIT0→bit8: 3201预热出门关到位
+      this.preheatOutDoorClosed.bit1 = getBit(word1566, 9); // BIT1→bit9: 3202预热出门关到位
+      this.preheatOutDoorClosed.bit2 = getBit(word1566, 10); // BIT2→bit10: 3203预热出门关到位
+      this.preheatOutDoorClosed.bit3 = getBit(word1566, 11); // BIT3→bit11: 3204预热出门关到位
+      this.preheatOutDoorClosed.bit4 = getBit(word1566, 12); // BIT4→bit12: 3205预热出门关到位
+      this.preheatOutDoorClosed.bit5 = getBit(word1566, 13); // BIT5→bit13: 3206预热出门关到位
+      this.preheatOutDoorClosed.bit6 = getBit(word1566, 14); // BIT6→bit14: 3207预热出门关到位
+      this.preheatOutDoorClosed.bit7 = getBit(word1566, 15); // BIT7→bit15: 3208预热出门关到位
+      this.preheatOutDoorClosed.bit8 = getBit(word1566, 0); // BIT8→bit0: 3209预热出门关到位
+      this.preheatOutDoorClosed.bit9 = getBit(word1566, 1); // BIT9→bit1: 3210预热出门关到位
+      this.preheatOutDoorClosed.bit10 = getBit(word1566, 2); // BIT10→bit2: 3211预热出门关到位
+      this.preheatOutDoorClosed.bit11 = getBit(word1566, 3); // BIT11→bit3: 3212预热出门关到位
+      this.preheatOutDoorClosed.bit12 = getBit(word1566, 4); // BIT12→bit4: 3213预热出门关到位
+      this.preheatOutDoorClosed.bit13 = getBit(word1566, 5); // BIT13→bit5: 3214预热出门关到位
+      this.preheatOutDoorClosed.bit14 = getBit(word1566, 6); // BIT14→bit6: 3215预热出门关到位
+      const word1568 = getParsedWord('DBW1568');
+      this.sterilizeInDoorOpen.bit0 = getBit(word1568, 8); // BIT0→bit8: 3201灭菌进门开到位
+      this.sterilizeInDoorOpen.bit1 = getBit(word1568, 9); // BIT1→bit9: 3202灭菌进门开到位
+      this.sterilizeInDoorOpen.bit2 = getBit(word1568, 10); // BIT2→bit10: 3203灭菌进门开到位
+      this.sterilizeInDoorOpen.bit3 = getBit(word1568, 11); // BIT3→bit11: 3204灭菌进门开到位
+      this.sterilizeInDoorOpen.bit4 = getBit(word1568, 12); // BIT4→bit12: 3205灭菌进门开到位
+      this.sterilizeInDoorOpen.bit5 = getBit(word1568, 13); // BIT5→bit13: 3206灭菌进门开到位
+      this.sterilizeInDoorOpen.bit6 = getBit(word1568, 14); // BIT6→bit14: 3207灭菌进门开到位
+      this.sterilizeInDoorOpen.bit7 = getBit(word1568, 15); // BIT7→bit15: 3208灭菌进门开到位
+      this.sterilizeInDoorOpen.bit8 = getBit(word1568, 0); // BIT8→bit0: 3209灭菌进门开到位
+      this.sterilizeInDoorOpen.bit9 = getBit(word1568, 1); // BIT9→bit1: 3210灭菌进门开到位
+      this.sterilizeInDoorOpen.bit10 = getBit(word1568, 2); // BIT10→bit2: 3211灭菌进门开到位
+      this.sterilizeInDoorOpen.bit11 = getBit(word1568, 3); // BIT11→bit3: 3212灭菌进门开到位
+      this.sterilizeInDoorOpen.bit12 = getBit(word1568, 4); // BIT12→bit4: 3213灭菌进门开到位
+      this.sterilizeInDoorOpen.bit13 = getBit(word1568, 5); // BIT13→bit5: 3214灭菌进门开到位
+      this.sterilizeInDoorOpen.bit14 = getBit(word1568, 6); // BIT14→bit6: 3215灭菌进门开到位
+      const word1570 = getParsedWord('DBW1570');
+      this.sterilizeInDoorClosed.bit0 = getBit(word1570, 8); // BIT0→bit8: 3201灭菌进门关到位
+      this.sterilizeInDoorClosed.bit1 = getBit(word1570, 9); // BIT1→bit9: 3202灭菌进门关到位
+      this.sterilizeInDoorClosed.bit2 = getBit(word1570, 10); // BIT2→bit10: 3203灭菌进门关到位
+      this.sterilizeInDoorClosed.bit3 = getBit(word1570, 11); // BIT3→bit11: 3204灭菌进门关到位
+      this.sterilizeInDoorClosed.bit4 = getBit(word1570, 12); // BIT4→bit12: 3205灭菌进门关到位
+      this.sterilizeInDoorClosed.bit5 = getBit(word1570, 13); // BIT5→bit13: 3206灭菌进门关到位
+      this.sterilizeInDoorClosed.bit6 = getBit(word1570, 14); // BIT6→bit14: 3207灭菌进门关到位
+      this.sterilizeInDoorClosed.bit7 = getBit(word1570, 15); // BIT7→bit15: 3208灭菌进门关到位
+      this.sterilizeInDoorClosed.bit8 = getBit(word1570, 0); // BIT8→bit0: 3209灭菌进门关到位
+      this.sterilizeInDoorClosed.bit9 = getBit(word1570, 1); // BIT9→bit1: 3210灭菌进门关到位
+      this.sterilizeInDoorClosed.bit10 = getBit(word1570, 2); // BIT10→bit2: 3211灭菌进门关到位
+      this.sterilizeInDoorClosed.bit11 = getBit(word1570, 3); // BIT11→bit3: 3212灭菌进门关到位
+      this.sterilizeInDoorClosed.bit12 = getBit(word1570, 4); // BIT12→bit4: 3213灭菌进门关到位
+      this.sterilizeInDoorClosed.bit13 = getBit(word1570, 5); // BIT13→bit5: 3214灭菌进门关到位
+      this.sterilizeInDoorClosed.bit14 = getBit(word1570, 6); // BIT14→bit6: 3215灭菌进门关到位
+      const word1572 = getParsedWord('DBW1572');
+      this.sterilizeOutDoorOpen.bit0 = getBit(word1572, 8); // BIT0→bit8: 3201灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit1 = getBit(word1572, 9); // BIT1→bit9: 3202灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit2 = getBit(word1572, 10); // BIT2→bit10: 3203灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit3 = getBit(word1572, 11); // BIT3→bit11: 3204灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit4 = getBit(word1572, 12); // BIT4→bit12: 3205灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit5 = getBit(word1572, 13); // BIT5→bit13: 3206灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit6 = getBit(word1572, 14); // BIT6→bit14: 3207灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit7 = getBit(word1572, 15); // BIT7→bit15: 3208灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit8 = getBit(word1572, 0); // BIT8→bit0: 3209灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit9 = getBit(word1572, 1); // BIT9→bit1: 3210灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit10 = getBit(word1572, 2); // BIT10→bit2: 3211灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit11 = getBit(word1572, 3); // BIT11→bit3: 3212灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit12 = getBit(word1572, 4); // BIT12→bit4: 3213灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit13 = getBit(word1572, 5); // BIT13→bit5: 3214灭菌出门开到位
+      this.sterilizeOutDoorOpen.bit14 = getBit(word1572, 6); // BIT14→bit6: 3215灭菌出门开到位
+      const word1574 = getParsedWord('DBW1574');
+      this.sterilizeOutDoorClosed.bit0 = getBit(word1574, 8); // BIT0→bit8: 3201灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit1 = getBit(word1574, 9); // BIT1→bit9: 3202灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit2 = getBit(word1574, 10); // BIT2→bit10: 3203灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit3 = getBit(word1574, 11); // BIT3→bit11: 3204灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit4 = getBit(word1574, 12); // BIT4→bit12: 3205灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit5 = getBit(word1574, 13); // BIT5→bit13: 3206灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit6 = getBit(word1574, 14); // BIT6→bit14: 3207灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit7 = getBit(word1574, 15); // BIT7→bit15: 3208灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit8 = getBit(word1574, 0); // BIT8→bit0: 3209灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit9 = getBit(word1574, 1); // BIT9→bit1: 3210灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit10 = getBit(word1574, 2); // BIT10→bit2: 3211灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit11 = getBit(word1574, 3); // BIT11→bit3: 3212灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit12 = getBit(word1574, 4); // BIT12→bit4: 3213灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit13 = getBit(word1574, 5); // BIT13→bit5: 3214灭菌出门关到位
+      this.sterilizeOutDoorClosed.bit14 = getBit(word1574, 6); // BIT14→bit6: 3215灭菌出门关到位
+
       // 如果弹窗处于打开状态，同步更新弹窗内的数据
       if (this.popoverVisible && this.popoverData) {
         if (!this.popoverData.groupId) {
@@ -9148,14 +9381,6 @@ export default {
       }, 1000);
     },
 
-    /** 测试用：模拟小车指示灯位脉冲（DBW60.BIT8~11） */
-    simulateCartIndicator(bitKey) {
-      this.cartIndicator[bitKey] = '1';
-      setTimeout(() => {
-        this.cartIndicator[bitKey] = '0';
-      }, 1000);
-    },
-
     /** 测试用：模拟预热房移柜光电上升沿（DBW60.BIT4/BIT5） */
     simulateTransferPhoto(bit) {
       const field = bit === 4 ? 'transferPhotoBit4' : 'transferPhotoBit5';
@@ -9662,6 +9887,50 @@ export default {
       const maxCapacity = 28;
       const percent = Math.min((currentCount / maxCapacity) * 100, 100);
       return percent;
+    },
+    getQueueDoorBitKey(marker) {
+      const cabinetNo = parseInt(
+        String(marker.name || '').replace(/^Y/, ''),
+        10
+      );
+      if (cabinetNo < 3201 || cabinetNo > 3215) {
+        return '';
+      }
+      return 'bit' + (cabinetNo - 3201);
+    },
+    getQueueDoorLabel(marker, side) {
+      const isPreheat = String(marker.name || '').startsWith('Y');
+      const prefix = isPreheat ? '预热' : '灭菌';
+      return prefix + (side === 'in' ? '进门' : '出门');
+    },
+    getQueueDoorClass(marker, side) {
+      const bitKey = this.getQueueDoorBitKey(marker);
+      if (!bitKey) {
+        return 'door-moving';
+      }
+      const isPreheat = String(marker.name || '').startsWith('Y');
+      let openObj;
+      let closedObj;
+      if (isPreheat) {
+        openObj =
+          side === 'in' ? this.preheatInDoorOpen : this.preheatOutDoorOpen;
+        closedObj =
+          side === 'in' ? this.preheatInDoorClosed : this.preheatOutDoorClosed;
+      } else {
+        openObj =
+          side === 'in' ? this.sterilizeInDoorOpen : this.sterilizeOutDoorOpen;
+        closedObj =
+          side === 'in'
+            ? this.sterilizeInDoorClosed
+            : this.sterilizeOutDoorClosed;
+      }
+      if (closedObj[bitKey] === '1') {
+        return 'door-closed';
+      }
+      if (openObj[bitKey] === '1') {
+        return 'door-open';
+      }
+      return 'door-moving';
     },
 
     // ================= 设备层交互逻辑 =================
