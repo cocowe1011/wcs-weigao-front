@@ -1,5 +1,17 @@
 <template>
   <div class="sterilization-monitor">
+    <!-- 右上角关闭按钮区域 -->
+    <div
+      class="close-area"
+      @mouseenter="showCloseBtn = true"
+      @mouseleave="showCloseBtn = false"
+    >
+      <button v-show="showCloseBtn" class="close-btn" @click="closeApplication">
+        <i class="el-icon-switch-button"></i>
+        <span>退出</span>
+      </button>
+    </div>
+
     <!-- Header -->
     <header class="monitor-header">
       <div class="header-content">
@@ -182,6 +194,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron';
 import HttpUtil from '@/utils/HttpUtil';
 
 const EMPTY_WORKSTATIONS = [
@@ -215,6 +228,7 @@ export default {
   name: 'SterilizationMonitor',
   data() {
     return {
+      showCloseBtn: false, // 控制关闭按钮显示
       currentTime: '',
       currentDate: '',
       footerTime: '',
@@ -436,6 +450,9 @@ export default {
     },
     getPendingCount(station) {
       return station.items.filter((i) => i.status === 'pending').length;
+    },
+    closeApplication() {
+      ipcRenderer.send('close-window');
     }
   },
   mounted() {
@@ -1160,6 +1177,43 @@ export default {
     }
     50% {
       opacity: 0.5;
+    }
+  }
+
+  // 关闭按钮样式 - 低调简洁风格
+  .close-area {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 40px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .close-btn {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &:hover {
+        background: rgba(248, 99, 95, 0.15);
+        border-color: rgba(248, 99, 95, 0.5);
+        color: rgba(248, 99, 95, 0.9);
+      }
+
+      i {
+        font-size: 14px;
+      }
     }
   }
 }
