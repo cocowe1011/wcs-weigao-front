@@ -21,7 +21,7 @@
           </div>
           <div>
             <h1 class="main-title">威高灭菌中心</h1>
-            <p class="sub-title">智能监控系统 v1.0</p>
+            <p class="sub-title">灭菌监控</p>
           </div>
         </div>
         <div class="header-right">
@@ -35,54 +35,50 @@
 
     <!-- Status Panel -->
     <div class="status-panel-container">
-      <div class="status-panel">
-        <div class="status-grid">
-          <div class="status-left">
-            <div class="status-card">
-              <div class="card-label">当前货物批次信息：</div>
-              <div class="card-value card-value-cyan">{{ batchNo }}</div>
-            </div>
-            <div class="status-card">
-              <div class="card-label">当前货物产品信息：</div>
-              <div class="card-value card-value-cyan">
-                {{ productInfoText }}
-              </div>
-            </div>
-            <div class="status-card">
-              <div class="card-label">当前货物待加工数量：</div>
-              <div class="card-value card-value-orange">
-                {{ pendingGoodsCount }}
-              </div>
-            </div>
-            <div class="status-card">
-              <div class="card-label">当前指定预热柜：</div>
-              <div class="card-value card-value-cyan">
-                {{ destinationCabinetText }}
-              </div>
-            </div>
+      <div class="status-panel flow-border">
+        <div class="status-info">
+          <div class="info-item">
+            <span class="info-label">当前货物批次信息</span>
+            <span class="info-value cyan" :title="batchNo">{{ batchNo }}</span>
           </div>
-          <div class="status-right">
-            <div class="batch-title">批次灭菌数量监控</div>
-            <div class="batch-status">
-              <div
-                v-for="(status, index) in batchStatus"
-                :key="index"
-                :class="[
-                  'batch-item',
-                  status ? 'batch-has-tray' : 'batch-empty'
-                ]"
-              >
-                <img
-                  v-if="status"
-                  src="@/assets/weigao-img/tray-daping.png"
-                  alt="托盘"
-                  class="tray-img"
-                />
+          <div class="info-item">
+            <span class="info-label">当前货物产品信息</span>
+            <span class="info-value cyan" :title="productInfoText">{{
+              productInfoText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">规格型号</span>
+            <span class="info-value cyan" :title="specText">{{
+              specText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">产品货号</span>
+            <span class="info-value cyan" :title="productCodeText">{{
+              productCodeText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">工艺方案</span>
+            <span class="info-value cyan" :title="processPlanText">{{
+              processPlanText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">当前指定预热柜</span>
+            <span class="info-value cyan">{{ destinationCabinetText }}</span>
+          </div>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-stats">
+          <div class="batch-stats">
+            <div class="stat-big">
+              <div class="stat-big-value stat-green">
+                {{ trayLoadedCount }}
               </div>
-            </div>
-            <div class="batch-info">
-              已完成: {{ batchCompletedCount }}/{{ batchTotalCount }} | 进行中:
-              {{ batchInProgressCount }} | 预热柜: {{ destinationCabinetText }}
+              <div class="stat-big-total">/ {{ batchTotalCount }}</div>
+              <div class="stat-big-label">已完成/总托盘</div>
             </div>
           </div>
         </div>
@@ -94,7 +90,7 @@
       <div
         v-for="station in workstations"
         :key="station.id"
-        class="workstation-card"
+        class="workstation-card flow-border"
       >
         <div class="workstation-header">
           <div class="workstation-header-left">
@@ -110,26 +106,20 @@
         </div>
 
         <div class="workstation-body">
-          <div class="product-info-card">
-            <div class="info-label">当前货物信息</div>
-            <div class="info-text">{{ station.productInfo }}</div>
-          </div>
-
-          <div class="quantity-grid">
-            <div class="quantity-card quantity-card-blue">
-              <div class="quantity-label">目标数量</div>
-              <input
-                type="number"
-                :value="station.targetQty"
-                readonly
-                class="quantity-input quantity-input-cyan"
-              />
+          <div class="station-meta">
+            <div class="meta-item meta-product">
+              <span class="meta-label">当前货物信息</span>
+              <span class="meta-value" :title="station.productInfo">{{
+                station.productInfo
+              }}</span>
             </div>
-            <div class="quantity-card quantity-card-green">
-              <div class="quantity-label">已扫描数量</div>
-              <div class="quantity-value quantity-value-green">
-                {{ station.scannedQty }}
-              </div>
+            <div class="meta-item meta-qty">
+              <span class="meta-label">目标数量</span>
+              <span class="meta-value cyan">{{ station.targetQty }}</span>
+            </div>
+            <div class="meta-item meta-qty">
+              <span class="meta-label">已扫描数量</span>
+              <span class="meta-value green">{{ station.scannedQty }}</span>
             </div>
           </div>
 
@@ -164,6 +154,50 @@
               <div>
                 扫码成功显示绿色边框，扫码失败显示红色边框，未扫描显示灰色
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧面板：托盘信息 + 故障日志 -->
+      <div class="side-panel flow-border">
+        <div class="tray-panel">
+          <div class="panel-header">
+            <span class="panel-title">托盘信息</span>
+            <span class="panel-extra"
+              >已上货 {{ trayLoadedCount }}/{{ batchStatus.length }}</span
+            >
+          </div>
+          <div class="tray-grid">
+            <div
+              v-for="(loaded, index) in batchStatus"
+              :key="index"
+              :class="['tray-item', loaded ? 'tray-loaded' : 'tray-empty']"
+            >
+              <img
+                src="@/assets/weigao-img/tray-daping.png"
+                alt="托盘"
+                class="tray-img"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="fault-panel">
+          <div class="panel-header">
+            <span class="panel-title">故障日志</span>
+          </div>
+          <div class="fault-list">
+            <div
+              v-for="(log, index) in faultLogs"
+              :key="index"
+              :class="['fault-item', 'fault-' + log.level]"
+            >
+              <span class="fault-time">{{ log.time }}</span>
+              <span class="fault-level">{{ log.levelText }}</span>
+              <span class="fault-message" :title="log.message">{{
+                log.message
+              }}</span>
             </div>
           </div>
         </div>
@@ -213,14 +247,6 @@ const EMPTY_WORKSTATIONS = [
     targetQty: 0,
     scannedQty: 0,
     items: []
-  },
-  {
-    id: 'C',
-    name: 'C工位',
-    productInfo: '--',
-    targetQty: 0,
-    scannedQty: 0,
-    items: []
   }
 ];
 
@@ -237,17 +263,55 @@ export default {
       // 状态面板左侧卡片数据
       batchNo: '--',
       productInfoText: '--',
-      pendingGoodsCount: 0,
+      specText: '--',
+      productCodeText: '--',
+      processPlanText: '--',
       destinationCabinetText: '--',
       // 批次灭菌数量统计
-      batchCompletedCount: 0,
-      batchInProgressCount: 0,
       batchTotalCount: 0,
-      // 工位数据（A/*1、B/*2、C/*3目的地，框架固定三个）
+      // 工位数据（A/B 两个工位）
       workstations: EMPTY_WORKSTATIONS.map((s) => ({ ...s })),
-      // 32格托盘状态
-      batchStatus: Array(32).fill(false)
+      // 托盘格子状态：长度=托盘总数，元素表示该托盘是否已上货
+      batchStatus: [],
+      // 故障日志（暂时写死）
+      faultLogs: [
+        {
+          time: '13:45:12',
+          level: 'error',
+          levelText: '错误',
+          message: 'B工位扫码枪通讯超时，已自动重连'
+        },
+        {
+          time: '11:20:05',
+          level: 'warning',
+          levelText: '警告',
+          message: '预热柜温度传感器读数波动，请检查线路'
+        },
+        {
+          time: '09:15:47',
+          level: 'warning',
+          levelText: '警告',
+          message: 'A工位输送链条电机电流偏高，建议巡检'
+        },
+        {
+          time: '08:02:30',
+          level: 'error',
+          levelText: '错误',
+          message: 'PLC 连接中断 3 秒，已自动恢复'
+        },
+        {
+          time: '07:50:18',
+          level: 'info',
+          levelText: '信息',
+          message: '系统完成例行自检，各模块状态正常'
+        }
+      ]
     };
+  },
+  computed: {
+    trayLoadedCount() {
+      return this.batchStatus.filter(Boolean).length;
+    }
   },
   methods: {
     formatTime(date) {
@@ -281,27 +345,16 @@ export default {
           this.batchNo = batch.batchNo || '--';
 
           const allGoods = (pallets || []).flatMap((p) => p.goods || []);
-          this.productInfoText =
-            allGoods.length > 0 ? allGoods[0].productName || '--' : '--';
-          this.pendingGoodsCount = allGoods.filter(
-            (g) => g.scanStatus === '0'
-          ).length;
+          const firstGood = allGoods.length > 0 ? allGoods[0] : null;
+          this.productInfoText = (firstGood && firstGood.productName) || '--';
+          this.specText = (firstGood && firstGood.spec) || '--';
+          this.productCodeText = (firstGood && firstGood.productCode) || '--';
+          this.processPlanText = batch.processPlanNameCode || '--';
 
-          // 批次统计与32格状态
+          // 批次统计与托盘格子状态
           const palletList = pallets || [];
           this.batchTotalCount = palletList.length;
-          this.batchCompletedCount = palletList.filter(
-            (p) => p.trayStatus === '2'
-          ).length;
-          this.batchInProgressCount = palletList.filter(
-            (p) => p.loadStatus === '1' && p.trayStatus !== '2'
-          ).length;
-          this.batchStatus = Array(32)
-            .fill(false)
-            .map(
-              (_, i) =>
-                i < palletList.length && palletList[i].loadStatus === '1'
-            );
+          this.batchStatus = palletList.map((p) => p.loadStatus === '1');
 
           // 目的地（预热柜）
           try {
@@ -340,7 +393,7 @@ export default {
           } catch (e) {
             console.error('获取上货区队列失败:', e);
           }
-          // ABC工位展示用托盘列表：关联上货区队列过滤已删除的托盘
+          // AB工位展示用托盘列表：关联上货区队列过滤已删除的托盘
           const displayPallets = loadingPalletIds
             ? palletList.filter((p) => loadingPalletIds.has(String(p.id)))
             : palletList;
@@ -363,18 +416,6 @@ export default {
             const matches = displayPallets.filter(
               (p) =>
                 p.sendDestinationCode && String(p.sendDestinationCode) !== '999'
-            );
-            if (!matches.length) return null;
-            return matches.sort((a, b) => {
-              const ta = a.sendTime ? new Date(a.sendTime).getTime() : 0;
-              const tb = b.sendTime ? new Date(b.sendTime).getTime() : 0;
-              return tb - ta;
-            })[0];
-          };
-          // C工位=最新一个发送999目的地的托盘
-          const latest999 = () => {
-            const matches = displayPallets.filter(
-              (p) => p.sendDestinationCode === '999'
             );
             if (!matches.length) return null;
             return matches.sort((a, b) => {
@@ -414,17 +455,16 @@ export default {
           };
           this.workstations = [
             buildStation('A', 'A工位（01002）', latestByVirtualId()),
-            buildStation('B', 'B工位（01006）', latestNon999()),
-            buildStation('C', 'C工位（异常）', latest999())
+            buildStation('B', 'B工位（01006）', latestNon999())
           ];
         } else {
           this.batchNo = '--';
           this.productInfoText = '--';
-          this.pendingGoodsCount = 0;
+          this.specText = '--';
+          this.productCodeText = '--';
+          this.processPlanText = '--';
           this.destinationCabinetText = '--';
-          this.batchStatus = Array(32).fill(false);
-          this.batchCompletedCount = 0;
-          this.batchInProgressCount = 0;
+          this.batchStatus = [];
           this.batchTotalCount = 0;
           this.workstations = EMPTY_WORKSTATIONS.map((s) => ({ ...s }));
         }
@@ -473,6 +513,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@property --flow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .sterilization-monitor {
   height: 100%;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
@@ -483,7 +529,7 @@ export default {
 
   // Header Styles
   .monitor-header {
-    height: 70px;
+    height: 56px;
     border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     background: rgba(15, 23, 42, 0.8);
 
@@ -500,61 +546,53 @@ export default {
         gap: 12px;
 
         .logo-icon {
-          width: 44px;
-          height: 44px;
-          border-radius: 8px;
-          background: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 6px rgba(8, 145, 178, 0.15);
-          border: 1px solid rgba(34, 211, 238, 0.3);
-          position: relative;
+          width: 36px;
+          height: 36px;
+          border-radius: 6px;
           overflow: hidden;
+          flex-shrink: 0;
 
           .logo-img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            position: relative;
-            z-index: 1;
           }
         }
 
         .main-title {
-          font-size: 22px;
-          font-weight: bold;
-          background: linear-gradient(90deg, #22d3ee 0%, #60a5fa 100%);
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          font-size: 18px;
+          font-weight: 700;
+          color: #e2e8f0;
           margin: 0;
+          line-height: 1.2;
         }
 
         .sub-title {
           font-size: 12px;
           color: #94a3b8;
-          margin: 4px 0 0 0;
+          margin: 2px 0 0 0;
         }
       }
 
       .header-right {
         display: flex;
         align-items: center;
-        gap: 24px;
 
         .time-display {
           text-align: right;
 
           .current-time {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 700;
             color: #22d3ee;
+            line-height: 1.2;
+            font-family: 'Courier New', monospace;
           }
 
           .current-date {
-            font-size: 14px;
+            font-size: 12px;
             color: #94a3b8;
+            margin-top: 2px;
           }
         }
       }
@@ -567,207 +605,105 @@ export default {
     flex-shrink: 0;
 
     .status-panel {
-      border-radius: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(6, 182, 212, 0.3);
-      background: linear-gradient(
-        135deg,
-        rgba(15, 23, 42, 0.8) 0%,
-        rgba(30, 41, 59, 0.6) 100%
-      );
-      padding: 16px;
-      position: relative;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
 
-      .status-grid {
-        display: grid;
-        grid-template-columns: 2fr 3fr;
-        gap: 12px;
-        align-items: stretch;
+      .status-info {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        min-width: 0;
 
-        .status-left {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          grid-template-rows: repeat(2, 1fr);
-          gap: 12px;
-          align-content: stretch;
+        .info-item {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 6px;
+          min-width: 0;
+          padding-left: 20px;
+          border-left: 1px solid rgba(71, 85, 105, 0.3);
 
-          .status-card {
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(
-              135deg,
-              rgba(30, 41, 59, 0.8) 0%,
-              rgba(15, 23, 42, 0.6) 100%
-            );
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid rgba(34, 211, 238, 0.2);
-            border-left: 2px solid rgba(34, 211, 238, 0.6);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            position: relative;
+          &:first-child {
+            padding-left: 0;
+            border-left: none;
+          }
+
+          .info-label {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+          }
+
+          .info-value {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
 
-            &::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 2px;
-              height: 100%;
-              background: linear-gradient(180deg, #22d3ee 0%, #3b82f6 100%);
-              opacity: 0.8;
-              transition: all 0.3s ease;
-            }
-
-            &:hover {
-              transform: translateY(-2px);
-              border-color: rgba(34, 211, 238, 0.4);
-              border-left-color: rgba(34, 211, 238, 1);
-              box-shadow: 0 4px 16px rgba(34, 211, 238, 0.08);
-
-              &::before {
-                opacity: 1;
-                width: 3px;
-                box-shadow: 0 0 6px rgba(34, 211, 238, 0.2);
-              }
-            }
-
-            .card-label {
-              font-size: 12px;
-              color: #94a3b8;
-              margin-bottom: 6px;
-              font-weight: 500;
-              letter-spacing: 0.5px;
-            }
-
-            .card-value {
-              flex: 1;
-              display: flex;
-              align-items: center;
-              font-size: 16px;
-              font-weight: 700;
-              line-height: 1.2;
-
-              &.card-value-cyan {
-                color: #22d3ee;
-                text-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
-              }
-
-              &.card-value-orange {
-                font-size: 18px;
-                font-weight: 800;
-                color: #fb923c;
-                text-shadow: 0 0 8px rgba(251, 146, 60, 0.3);
-              }
+            &.cyan {
+              color: #22d3ee;
             }
           }
         }
+      }
 
-        .status-right {
-          background: linear-gradient(
-            135deg,
-            rgba(30, 41, 59, 0.6) 0%,
-            rgba(15, 23, 42, 0.4) 100%
-          );
-          border-radius: 10px;
-          padding: 12px;
-          border: 1px solid rgba(34, 211, 238, 0.2);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      .status-divider {
+        width: 1px;
+        height: 44px;
+        background: rgba(71, 85, 105, 0.4);
+        margin: 0 28px;
+        flex-shrink: 0;
+      }
 
-          .batch-title {
-            font-size: 13px;
-            color: #e2e8f0;
-            margin-bottom: 10px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-align: center;
-          }
+      .status-stats {
+        flex-shrink: 0;
+        width: 280px;
 
-          .batch-status {
-            display: grid;
-            grid-template-columns: repeat(16, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 5px;
-            margin-bottom: 10px;
+        .batch-stats {
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-            .batch-item {
-              width: 26px;
-              height: 26px;
-              border-radius: 5px;
-              border: 1px solid rgba(71, 85, 105, 0.3);
-              transition: all 0.3s ease;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              overflow: hidden;
-              position: relative;
+          .stat-big {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
 
-              &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                border-radius: 6px;
-                background: linear-gradient(
-                  135deg,
-                  rgba(34, 211, 238, 0.1) 0%,
-                  rgba(59, 130, 246, 0.05) 100%
-                );
-                opacity: 0;
-                transition: opacity 0.3s ease;
-              }
+            .stat-big-value {
+              font-size: 38px;
+              font-weight: 800;
+              line-height: 1.1;
+              font-family: 'Courier New', monospace;
 
-              &:hover::before {
-                opacity: 1;
-              }
-
-              &.batch-has-tray {
-                border-color: rgba(16, 185, 129, 0.5);
-                background: linear-gradient(
-                  135deg,
-                  rgba(16, 185, 129, 0.15) 0%,
-                  rgba(34, 197, 94, 0.1) 100%
-                );
-                box-shadow: 0 1px 4px rgba(16, 185, 129, 0.1);
-
-                &:hover {
-                  transform: scale(1.1);
-                  border-color: rgba(16, 185, 129, 0.7);
-                  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
-                }
-
-                .tray-img {
-                  width: 100%;
-                  height: 100%;
-                  object-fit: contain;
-                  filter: brightness(1.1);
-                }
-              }
-
-              &.batch-empty {
-                border-color: rgba(71, 85, 105, 0.2);
-                background: rgba(30, 41, 59, 0.3);
-
-                &:hover {
-                  border-color: rgba(71, 85, 105, 0.4);
-                  background: rgba(30, 41, 59, 0.5);
-                }
+              &.stat-green {
+                color: #10b981;
               }
             }
-          }
 
-          .batch-info {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #94a3b8;
-            text-align: center;
-            padding: 8px 12px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 8px;
-            border: 1px solid rgba(71, 85, 105, 0.2);
-            font-weight: 500;
+            .stat-big-total {
+              font-size: 20px;
+              font-weight: 700;
+              color: #64748b;
+              font-family: 'Courier New', monospace;
+            }
+
+            .stat-big-label {
+              margin-left: 6px;
+              font-size: 13px;
+              color: #94a3b8;
+              font-weight: 600;
+              letter-spacing: 2px;
+            }
           }
         }
       }
@@ -778,7 +714,7 @@ export default {
   .workstations-container {
     padding: 0 12px 12px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1.35fr 1.35fr 1fr;
     gap: 12px;
     flex: 1;
     overflow: hidden;
@@ -789,18 +725,17 @@ export default {
       border: 1px solid rgba(6, 182, 212, 0.3);
       background: rgba(15, 23, 42, 0.5);
       overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-      transition: box-shadow 0.3s;
+      transition: border-color 0.3s;
       display: flex;
       flex-direction: column;
       min-height: 0;
 
       &:hover {
-        box-shadow: 0 2px 12px rgba(6, 182, 212, 0.1);
+        border-color: rgba(6, 182, 212, 0.5);
       }
 
       .workstation-header {
-        background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+        background: #1e293b;
         padding: 12px;
         border-bottom: 1px solid rgba(6, 182, 212, 0.3);
         display: flex;
@@ -873,105 +808,58 @@ export default {
         overflow: hidden;
         min-height: 0;
 
-        .product-info-card {
+        .station-meta {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8px;
+          flex-shrink: 0;
           background: rgba(30, 41, 59, 0.5);
           border-radius: 8px;
-          padding: 8px;
           border: 1px solid rgba(71, 85, 105, 0.5);
-          margin-bottom: 8px;
-          flex-shrink: 0;
+          padding: 8px 10px;
 
-          .info-label {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 4px;
-          }
+          .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
 
-          .info-text {
-            font-size: 14px;
-            color: #e2e8f0;
-          }
-        }
-
-        .quantity-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 6px;
-          margin-bottom: 8px;
-          flex-shrink: 0;
-
-          .quantity-card {
-            background: rgba(30, 41, 59, 0.3);
-            border-radius: 6px;
-            padding: 4px 6px;
-            border: 1px solid rgba(71, 85, 105, 0.2);
-            transition: all 0.2s ease;
-
-            &:hover {
-              background: rgba(30, 41, 59, 0.4);
-              border-color: rgba(71, 85, 105, 0.4);
-            }
-
-            &.quantity-card-blue {
-              border-color: rgba(34, 211, 238, 0.2);
-              background: rgba(34, 211, 238, 0.05);
-
-              &:hover {
-                border-color: rgba(34, 211, 238, 0.4);
-                background: rgba(34, 211, 238, 0.1);
-              }
-            }
-
-            &.quantity-card-green {
-              border-color: rgba(16, 185, 129, 0.2);
-              background: rgba(16, 185, 129, 0.05);
-
-              &:hover {
-                border-color: rgba(16, 185, 129, 0.4);
-                background: rgba(16, 185, 129, 0.1);
-              }
-            }
-
-            .quantity-label {
-              font-size: 10px;
+            .meta-label {
+              font-size: 12px;
               color: #94a3b8;
-              margin-bottom: 2px;
-              font-weight: 500;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
             }
 
-            .quantity-input {
-              width: 100%;
-              background: transparent;
-              border: none;
-              border-radius: 4px;
-              padding: 2px 4px;
-              font-family: 'Courier New', monospace;
+            .meta-value {
               font-size: 14px;
-              text-align: center;
+              color: #e2e8f0;
               font-weight: 600;
-              outline: none;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
 
-              &.quantity-input-cyan {
+              &.cyan {
                 color: #22d3ee;
+                font-family: 'Courier New', monospace;
+              }
+
+              &.green {
+                color: #10b981;
+                font-family: 'Courier New', monospace;
               }
             }
 
-            .quantity-value {
-              width: 100%;
-              background: transparent;
-              border: none;
-              border-radius: 4px;
-              padding: 2px 4px;
-              font-family: 'Courier New', monospace;
-              font-size: 14px;
-              text-align: center;
-              font-weight: 600;
+            &.meta-product {
+              flex: 1;
+              padding-right: 12px;
+            }
 
-              &.quantity-value-green {
-                color: #10b981;
-              }
+            &.meta-qty {
+              flex-shrink: 0;
+              padding-left: 12px;
+              border-left: 1px solid rgba(71, 85, 105, 0.4);
+              min-width: 80px;
+              text-align: center;
+              align-items: center;
             }
           }
         }
@@ -1105,11 +993,152 @@ export default {
         }
       }
     }
+
+    // 右侧面板：托盘信息 + 故障日志
+    .side-panel {
+      border-radius: 10px;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      background: rgba(15, 23, 42, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+        background: #1e293b;
+        flex-shrink: 0;
+
+        .panel-title {
+          font-size: 13px;
+          color: #e2e8f0;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+        }
+
+        .panel-extra {
+          font-size: 12px;
+          color: #22d3ee;
+          font-family: 'Courier New', monospace;
+          font-weight: 600;
+        }
+      }
+
+      .tray-panel {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+
+        .tray-grid {
+          padding: 10px 12px 12px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          align-content: flex-start;
+
+          .tray-item {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .tray-img {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+            }
+
+            &.tray-loaded .tray-img {
+              opacity: 1;
+            }
+
+            &.tray-empty .tray-img {
+              opacity: 0.18;
+              filter: grayscale(1);
+            }
+          }
+        }
+      }
+
+      .fault-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+
+        .fault-list {
+          flex: 1;
+          overflow-y: auto;
+          padding: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          min-height: 0;
+
+          &::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 3px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: rgba(6, 182, 212, 0.4);
+            border-radius: 3px;
+
+            &:hover {
+              background: rgba(6, 182, 212, 0.6);
+            }
+          }
+
+          .fault-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.2);
+            font-size: 12px;
+
+            .fault-time {
+              font-family: 'Courier New', monospace;
+              color: #64748b;
+              flex-shrink: 0;
+            }
+
+            .fault-level {
+              flex-shrink: 0;
+              font-size: 11px;
+              font-weight: 600;
+              color: #94a3b8;
+            }
+
+            .fault-message {
+              color: #cbd5e1;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              min-width: 0;
+            }
+          }
+        }
+      }
+    }
   }
 
   // Footer
   .monitor-footer {
-    height: 48px;
+    height: 32px;
     border-top: 1px solid rgba(6, 182, 212, 0.3);
     background: rgba(15, 23, 42, 0.8);
     flex-shrink: 0;
@@ -1125,24 +1154,23 @@ export default {
         .system-status {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
 
           .status-pulse {
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #10b981;
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
           }
 
           .status-label {
-            font-size: 14px;
+            font-size: 12px;
             color: #cbd5e1;
           }
 
           .status-value {
-            font-size: 14px;
+            font-size: 12px;
             color: #10b981;
             font-weight: 600;
           }
@@ -1152,17 +1180,17 @@ export default {
       .footer-right {
         display: flex;
         align-items: center;
-        gap: 24px;
+        gap: 20px;
         font-size: 12px;
         color: #94a3b8;
 
         .footer-item {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
 
           i {
-            font-size: 16px;
+            font-size: 14px;
           }
         }
       }
@@ -1178,6 +1206,52 @@ export default {
     50% {
       opacity: 0.5;
     }
+  }
+
+  @keyframes flow-border-spin {
+    to {
+      --flow-angle: 360deg;
+    }
+  }
+
+  .flow-border {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: conic-gradient(
+        from var(--flow-angle),
+        transparent 0deg,
+        transparent 300deg,
+        rgba(34, 211, 238, 0.08) 322deg,
+        rgba(34, 211, 238, 0.5) 342deg,
+        rgba(186, 230, 253, 0.7) 351deg,
+        rgba(34, 211, 238, 0.5) 360deg
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 4;
+      animation: flow-border-spin 6.5s linear infinite;
+    }
+  }
+
+  .status-panel.flow-border::after {
+    animation-duration: 8s;
+  }
+
+  .workstation-card:nth-child(2).flow-border::after {
+    animation-delay: -2.2s;
+  }
+
+  .side-panel.flow-border::after {
+    animation-delay: -4s;
   }
 
   // 关闭按钮样式 - 低调简洁风格
