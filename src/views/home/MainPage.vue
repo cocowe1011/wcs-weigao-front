@@ -10856,6 +10856,7 @@ export default {
         if (this.alarmLogs.length > 100) {
           this.alarmLogs.pop();
         }
+        this.pushAlarmToMobile(log);
       }
       // 同时写入本地文件
       const logTypeText = type === 'running' ? '运行日志' : '报警日志';
@@ -11352,6 +11353,17 @@ export default {
         this.addLog(`[MSE]查询失败: ${msg}`, 'alarm');
         respond(false, msg);
       }
+    },
+    pushAlarmToMobile(logData) {
+      const alarmData = {
+        id: logData.id,
+        message: logData.message,
+        timestamp: logData.timestamp,
+        type: logData.type || 'alarm',
+        source: '消毒车间',
+        unread: true
+      };
+      ipcRenderer.send('push-alarm-to-mobile', alarmData);
     },
     showMobileConnectionStatus() {
       this.mobileConnectionDialogVisible = true;
