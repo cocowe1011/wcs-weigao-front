@@ -1,273 +1,235 @@
 <template>
-  <div class="monitor-viewport">
-    <div class="monitor-stage" :style="stageStyle">
-      <div class="sterilization-monitor">
-        <!-- 右上角关闭按钮区域 -->
-        <div
-          class="close-area"
-          @mouseenter="showCloseBtn = true"
-          @mouseleave="showCloseBtn = false"
-        >
-          <button
-            v-show="showCloseBtn"
-            class="close-btn"
-            @click="closeApplication"
-          >
-            <i class="el-icon-switch-button"></i>
-            <span>退出</span>
+  <div class="sterilization-monitor">
+    <!-- 右上角关闭按钮区域 -->
+    <div
+      class="close-area"
+      @mouseenter="showCloseBtn = true"
+      @mouseleave="showCloseBtn = false"
+    >
+      <button v-show="showCloseBtn" class="close-btn" @click="closeApplication">
+        <i class="el-icon-switch-button"></i>
+        <span>退出</span>
+      </button>
+    </div>
+
+    <!-- Header -->
+    <header class="monitor-header">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="logo-icon">
+            <img src="@/assets/fengke-logo.jpg" alt="logo" class="logo-img" />
+          </div>
+          <div>
+            <h1 class="main-title">威高灭菌中心</h1>
+            <p class="sub-title">灭菌监控</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="time-display">
+            <div class="current-time">{{ currentTime }}</div>
+            <div class="current-date">{{ currentDate }}</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Status Panel -->
+    <div class="status-panel-container">
+      <div class="status-panel flow-border">
+        <div class="status-info">
+          <div class="info-item">
+            <span class="info-label">当前货物批次信息</span>
+            <span class="info-value cyan" :title="batchNo">{{ batchNo }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">当前货物产品信息</span>
+            <span class="info-value cyan" :title="productInfoText">{{
+              productInfoText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">规格型号</span>
+            <span class="info-value cyan" :title="specText">{{
+              specText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">产品货号</span>
+            <span class="info-value cyan" :title="productCodeText">{{
+              productCodeText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">工艺方案</span>
+            <span class="info-value cyan" :title="processPlanText">{{
+              processPlanText
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">当前指定预热柜</span>
+            <span class="info-value cyan">{{ destinationCabinetText }}</span>
+          </div>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-stats">
+          <div class="batch-stats">
+            <div class="stat-big">
+              <div class="stat-big-value stat-green">
+                {{ trayLoadedCount }}
+              </div>
+              <div class="stat-big-total">/ {{ batchTotalCount }}</div>
+              <div class="stat-big-label">已完成/总托盘</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workstations -->
+    <div class="workstations-container">
+      <div
+        v-for="station in workstations"
+        :key="station.id"
+        class="workstation-card flow-border"
+      >
+        <div class="workstation-header">
+          <div class="workstation-header-left">
+            <div class="station-badge">{{ station.name }}</div>
+            <div class="station-status">
+              <div class="status-dot"></div>
+              <span>运行中</span>
+            </div>
+          </div>
+          <button class="refresh-button">
+            <i class="el-icon-refresh"></i>
           </button>
         </div>
 
-        <!-- Header -->
-        <header class="monitor-header">
-          <div class="header-content">
-            <div class="header-left">
-              <div class="logo-icon">
-                <img
-                  src="@/assets/fengke-logo.jpg"
-                  alt="logo"
-                  class="logo-img"
-                />
+        <div class="workstation-body">
+          <div class="station-meta">
+            <div class="meta-item meta-product">
+              <span class="meta-label">当前货物信息</span>
+              <span class="meta-value" :title="station.productInfo">{{
+                station.productInfo
+              }}</span>
+            </div>
+            <div class="meta-item meta-qty">
+              <span class="meta-label">目标数量</span>
+              <span class="meta-value cyan">{{ station.targetQty }}</span>
+            </div>
+            <div class="meta-item meta-qty">
+              <span class="meta-label">已扫描数量</span>
+              <span class="meta-value green">{{ station.scannedQty }}</span>
+            </div>
+          </div>
+
+          <div class="items-card">
+            <div class="items-header">
+              <div class="items-title">产品编号列表</div>
+              <div class="items-stats">
+                <span class="stat-success"
+                  >✓ {{ getSuccessCount(station) }}</span
+                >
+                /
+                <span class="stat-failed">✗ {{ getFailedCount(station) }}</span>
+                /
+                <span class="stat-pending"
+                  >○ {{ getPendingCount(station) }}</span
+                >
+              </div>
+            </div>
+            <div class="items-grid">
+              <div
+                v-for="item in station.items"
+                :key="item.id"
+                :class="['item-box', getItemStatusClass(item.status)]"
+              >
+                <div class="item-code" :title="item.code">{{ item.code }}</div>
+              </div>
+            </div>
+            <div class="items-tip">
+              <div class="tip-icon">
+                <i class="el-icon-warning-outline"></i>
               </div>
               <div>
-                <h1 class="main-title">威高灭菌中心</h1>
-                <p class="sub-title">灭菌监控</p>
-              </div>
-            </div>
-            <div class="header-right">
-              <div class="time-display">
-                <div class="current-time">{{ currentTime }}</div>
-                <div class="current-date">{{ currentDate }}</div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <!-- Status Panel -->
-        <div class="status-panel-container">
-          <div class="status-panel flow-border">
-            <div class="status-info">
-              <div class="info-item">
-                <span class="info-label">当前货物批次信息</span>
-                <span class="info-value cyan" :title="batchNo">{{
-                  batchNo
-                }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">当前货物产品信息</span>
-                <span class="info-value cyan" :title="productInfoText">{{
-                  productInfoText
-                }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">规格型号</span>
-                <span class="info-value cyan" :title="specText">{{
-                  specText
-                }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">产品货号</span>
-                <span class="info-value cyan" :title="productCodeText">{{
-                  productCodeText
-                }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">工艺方案</span>
-                <span class="info-value cyan" :title="processPlanText">{{
-                  processPlanText
-                }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">当前指定预热柜</span>
-                <span class="info-value cyan">{{
-                  destinationCabinetText
-                }}</span>
-              </div>
-            </div>
-            <div class="status-divider"></div>
-            <div class="status-stats">
-              <div class="batch-stats">
-                <div class="stat-big">
-                  <div class="stat-big-value stat-green">
-                    {{ trayLoadedCount }}
-                  </div>
-                  <div class="stat-big-total">/ {{ batchTotalCount }}</div>
-                  <div class="stat-big-label">已完成/总托盘</div>
-                </div>
+                扫码成功显示绿色边框，扫码失败显示红色边框，未扫描显示灰色
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Workstations -->
-        <div class="workstations-container">
-          <div
-            v-for="station in workstations"
-            :key="station.id"
-            class="workstation-card flow-border"
-          >
-            <div class="workstation-header">
-              <div class="workstation-header-left">
-                <div class="station-badge">{{ station.name }}</div>
-                <div class="station-status">
-                  <div class="status-dot"></div>
-                  <span>运行中</span>
-                </div>
-              </div>
-              <button class="refresh-button">
-                <i class="el-icon-refresh"></i>
-              </button>
-            </div>
-
-            <div class="workstation-body">
-              <div class="station-meta">
-                <div class="meta-item meta-product">
-                  <span class="meta-label">当前货物信息</span>
-                  <span class="meta-value" :title="station.productInfo">{{
-                    station.productInfo
-                  }}</span>
-                </div>
-                <div class="meta-item meta-qty">
-                  <span class="meta-label">目标数量</span>
-                  <span class="meta-value cyan">{{ station.targetQty }}</span>
-                </div>
-                <div class="meta-item meta-qty">
-                  <span class="meta-label">已扫描数量</span>
-                  <span class="meta-value green">{{ station.scannedQty }}</span>
-                </div>
-              </div>
-
-              <div class="items-card">
-                <div class="items-header">
-                  <div class="items-title">产品编号列表</div>
-                  <div class="items-stats">
-                    <span class="stat-success"
-                      >✓ {{ getSuccessCount(station) }}</span
-                    >
-                    /
-                    <span class="stat-failed"
-                      >✗ {{ getFailedCount(station) }}</span
-                    >
-                    /
-                    <span class="stat-pending"
-                      >○ {{ getPendingCount(station) }}</span
-                    >
-                  </div>
-                </div>
-                <div class="items-grid">
-                  <div
-                    v-for="item in station.items"
-                    :key="item.id"
-                    :class="['item-box', getItemStatusClass(item.status)]"
-                  >
-                    <div class="item-code" :title="item.code">
-                      {{ item.code }}
-                    </div>
-                  </div>
-                </div>
-                <div class="items-tip">
-                  <div class="tip-icon">
-                    <i class="el-icon-warning-outline"></i>
-                  </div>
-                  <div>
-                    扫码成功显示绿色边框，扫码失败显示红色边框，未扫描显示灰色
-                  </div>
-                </div>
-              </div>
-            </div>
+      <!-- 右侧面板：托盘信息 + 故障日志 -->
+      <div class="side-panel flow-border">
+        <div class="tray-panel">
+          <div class="panel-header">
+            <span class="panel-title">托盘信息</span>
+            <span class="panel-extra"
+              >已上货 {{ trayLoadedCount }}/{{ batchStatus.length }}</span
+            >
           </div>
-
-          <!-- 右侧面板：托盘信息 + 故障日志 -->
-          <div class="side-panel flow-border">
-            <div class="tray-panel">
-              <div class="panel-header">
-                <span class="panel-title">托盘信息</span>
-                <span class="panel-extra"
-                  >已上货 {{ trayLoadedCount }}/{{ batchStatus.length }}</span
-                >
-              </div>
-              <div class="tray-grid">
-                <div
-                  v-for="(loaded, index) in batchStatus"
-                  :key="index"
-                  :class="['tray-item', loaded ? 'tray-loaded' : 'tray-empty']"
-                >
-                  <img
-                    src="@/assets/weigao-img/tray-daping.png"
-                    alt="托盘"
-                    class="tray-img"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="fault-panel">
-              <div class="panel-header">
-                <span class="panel-title">故障日志</span>
-              </div>
-              <div class="fault-list">
-                <div v-if="faultLogs.length === 0" class="fault-empty">
-                  暂无故障
-                </div>
-                <div
-                  v-for="(log, index) in faultLogs"
-                  :key="log.id || index"
-                  :class="['fault-item', 'fault-' + log.level]"
-                >
-                  <span class="fault-time">{{ log.time }}</span>
-                  <span class="fault-level">{{ log.levelText }}</span>
-                  <span class="fault-message" :title="log.message">{{
-                    log.message
-                  }}</span>
-                </div>
-              </div>
+          <div class="tray-grid">
+            <div
+              v-for="(loaded, index) in batchStatus"
+              :key="index"
+              :class="['tray-item', loaded ? 'tray-loaded' : 'tray-empty']"
+            >
+              <img
+                src="@/assets/weigao-img/tray-daping.png"
+                alt="托盘"
+                class="tray-img"
+              />
             </div>
           </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="monitor-footer">
-          <div class="footer-content">
-            <div class="footer-left">
-              <div
-                class="system-status"
-                :class="{ disconnected: !apiConnected }"
-              >
-                <div class="status-pulse"></div>
-                <span class="status-label">接口状态：</span>
-                <span class="status-value">{{
-                  apiConnected ? '正常' : '异常'
-                }}</span>
-              </div>
-              <div
-                class="system-status"
-                :class="{ disconnected: !wsConnected }"
-              >
-                <div class="status-pulse"></div>
-                <span class="status-label">Socket状态：</span>
-                <span class="status-value">{{
-                  wsConnected ? '已连接' : '重连中'
-                }}</span>
-              </div>
-            </div>
-            <div class="footer-right">
-              <div class="footer-item">最后更新: {{ footerTime }}</div>
-              <div class="footer-item">© 2025 威高灭菌中心</div>
+        <div class="fault-panel">
+          <div class="panel-header">
+            <span class="panel-title">故障日志</span>
+          </div>
+          <div class="fault-list">
+            <div
+              v-for="(log, index) in faultLogs"
+              :key="index"
+              :class="['fault-item', 'fault-' + log.level]"
+            >
+              <span class="fault-time">{{ log.time }}</span>
+              <span class="fault-level">{{ log.levelText }}</span>
+              <span class="fault-message" :title="log.message">{{
+                log.message
+              }}</span>
             </div>
           </div>
-        </footer>
+        </div>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="monitor-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <div class="system-status">
+            <div class="status-pulse"></div>
+            <span class="status-label">系统状态：</span>
+            <span class="status-value">服务器运行正常</span>
+          </div>
+        </div>
+        <div class="footer-right">
+          <div class="footer-item">
+            <i class="el-icon-connection"></i>
+            <span>网络正常</span>
+          </div>
+          <div class="footer-item">最后更新: {{ footerTime }}</div>
+          <div class="footer-item">© 2025 威高灭菌中心</div>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron';
 import HttpUtil from '@/utils/HttpUtil';
-import AlarmWebSocketClient from '@/utils/AlarmWebSocketClient';
-
-const DESIGN_WIDTH = 1920;
-const DESIGN_HEIGHT = 1080;
 
 const EMPTY_WORKSTATIONS = [
   {
@@ -311,29 +273,47 @@ export default {
       workstations: EMPTY_WORKSTATIONS.map((s) => ({ ...s })),
       // 托盘格子状态：长度=托盘总数，元素表示该托盘是否已上货
       batchStatus: [],
-      faultLogs: [],
-      wsClient: null,
-      wsConnected: false,
-      apiConnected: false,
-      scaleX: 1,
-      scaleY: 1
+      // 故障日志（暂时写死）
+      faultLogs: [
+        {
+          time: '13:45:12',
+          level: 'error',
+          levelText: '错误',
+          message: 'B工位扫码枪通讯超时，已自动重连'
+        },
+        {
+          time: '11:20:05',
+          level: 'warning',
+          levelText: '警告',
+          message: '预热柜温度传感器读数波动，请检查线路'
+        },
+        {
+          time: '09:15:47',
+          level: 'warning',
+          levelText: '警告',
+          message: 'A工位输送链条电机电流偏高，建议巡检'
+        },
+        {
+          time: '08:02:30',
+          level: 'error',
+          levelText: '错误',
+          message: 'PLC 连接中断 3 秒，已自动恢复'
+        },
+        {
+          time: '07:50:18',
+          level: 'info',
+          levelText: '信息',
+          message: '系统完成例行自检，各模块状态正常'
+        }
+      ]
     };
   },
   computed: {
     trayLoadedCount() {
       return this.batchStatus.filter(Boolean).length;
-    },
-    stageStyle() {
-      return {
-        transform: `scale(${this.scaleX}, ${this.scaleY})`
-      };
     }
   },
   methods: {
-    updateScale() {
-      this.scaleX = window.innerWidth / DESIGN_WIDTH;
-      this.scaleY = window.innerHeight / DESIGN_HEIGHT;
-    },
     formatTime(date) {
       return date.toLocaleTimeString('zh-CN', {
         hour: '2-digit',
@@ -360,7 +340,6 @@ export default {
           '/produce_batch/getCurrentExecuting'
         );
         if (batchRes && batchRes.data) {
-          this.apiConnected = true;
           const { batch, pallets } = batchRes.data;
 
           this.batchNo = batch.batchNo || '--';
@@ -479,7 +458,6 @@ export default {
             buildStation('B', 'B工位（01006）', latestNon999())
           ];
         } else {
-          this.apiConnected = true;
           this.batchNo = '--';
           this.productInfoText = '--';
           this.specText = '--';
@@ -491,7 +469,6 @@ export default {
           this.workstations = EMPTY_WORKSTATIONS.map((s) => ({ ...s }));
         }
       } catch (e) {
-        this.apiConnected = false;
         console.error('灭菌监控数据轮询失败:', e);
       }
     },
@@ -516,62 +493,20 @@ export default {
     },
     closeApplication() {
       ipcRenderer.send('close-window');
-    },
-    initWebSocket() {
-      this.wsClient = new AlarmWebSocketClient({
-        onConnected: () => {
-          this.wsConnected = true;
-        },
-        onDisconnected: () => {
-          this.wsConnected = false;
-        },
-        onError: () => {
-          this.wsConnected = false;
-        },
-        onAlarmReceived: this.onAlarmReceived
-      });
-      this.wsClient.start();
-    },
-    onAlarmReceived(alarmLog) {
-      const log = {
-        id: alarmLog.id,
-        time: this.formatAlarmTime(alarmLog.timestamp),
-        level: 'error',
-        levelText: '错误',
-        message: alarmLog.message || '--'
-      };
-      this.faultLogs.unshift(log);
-      if (this.faultLogs.length > 100) {
-        this.faultLogs.pop();
-      }
-    },
-    formatAlarmTime(timestamp) {
-      if (!timestamp) return '--';
-      const date = new Date(timestamp);
-      if (Number.isNaN(date.getTime())) return '--';
-      return this.formatTime(date);
     }
   },
   mounted() {
-    this.updateScale();
-    window.addEventListener('resize', this.updateScale);
     this.updateTime();
     this.timer = setInterval(this.updateTime, 1000);
     this.pollData();
     this.pollTimer = setInterval(this.pollData, 2000);
-    this.initWebSocket();
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.updateScale);
     if (this.timer) {
       clearInterval(this.timer);
     }
     if (this.pollTimer) {
       clearInterval(this.pollTimer);
-    }
-    if (this.wsClient) {
-      this.wsClient.disconnect();
-      this.wsClient = null;
     }
   }
 };
@@ -584,25 +519,8 @@ export default {
   inherits: false;
 }
 
-.monitor-viewport {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: #0f172a;
-  cursor: none;
-}
-
-.monitor-stage {
-  width: 1920px;
-  height: 1080px;
-  transform-origin: 0 0;
-  overflow: hidden;
-}
-
 .sterilization-monitor {
-  width: 100%;
   height: 100%;
-  position: relative;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   color: #f1f5f9;
   display: flex;
@@ -1182,15 +1100,6 @@ export default {
             }
           }
 
-          .fault-empty {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #64748b;
-            font-size: 13px;
-          }
-
           .fault-item {
             display: flex;
             align-items: center;
@@ -1242,10 +1151,6 @@ export default {
       justify-content: space-between;
 
       .footer-left {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-
         .system-status {
           display: flex;
           align-items: center;
@@ -1269,16 +1174,6 @@ export default {
             color: #10b981;
             font-weight: 600;
           }
-
-          &.disconnected {
-            .status-pulse {
-              background: #f59e0b;
-            }
-
-            .status-value {
-              color: #f59e0b;
-            }
-          }
         }
       }
 
@@ -1296,10 +1191,6 @@ export default {
 
           i {
             font-size: 14px;
-          }
-
-          &.disconnected {
-            color: #f59e0b;
           }
         }
       }
@@ -1365,7 +1256,7 @@ export default {
 
   // 关闭按钮样式 - 低调简洁风格
   .close-area {
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
     width: 80px;
@@ -1374,11 +1265,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: none;
-
-    &:hover {
-      cursor: default;
-    }
 
     .close-btn {
       padding: 6px 12px;
