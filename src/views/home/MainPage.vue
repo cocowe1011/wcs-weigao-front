@@ -11178,6 +11178,40 @@ export default {
     },
 
     /**
+     * 扫描 MSE pallet_list 全部货物，按写库用的 cleanBarcode(udi) 统计重复项。
+     * 空码跳过；跨托盘相同 uid 也算重复。
+     * @returns {{ uid: string, count: number }[]}
+     */
+    findDuplicateMseUids(palletList) {
+      const countMap = {};
+      for (const p of palletList || []) {
+        for (const m of p.material_details || []) {
+          const uid = this.cleanBarcode(m && m.udi);
+          if (!uid) continue;
+          countMap[uid] = (countMap[uid] || 0) + 1;
+        }
+      }
+      return Object.keys(countMap)
+        .filter((uid) => countMap[uid] > 1)
+        .map((uid) => ({ uid, count: countMap[uid] }));
+    },
+
+    /**
+     * 未建档写库前校验：同一灭菌单内 uid 不可重复，否则后续 getByGoodsUid 会报错。
+     */
+    assertNoDuplicateMseUids(palletList) {
+      const dups = this.findDuplicateMseUids(palletList);
+      if (!dups.length) return;
+      const shown = dups
+        .slice(0, 3)
+        .map((d) => `${d.uid}（出现${d.count}次）`);
+      const extra = dups.length > 3 ? `等共${dups.length}个` : '';
+      throw new Error(
+        `MSE返回存在重复UDI码，不予入库：${shown.join('、')}${extra}`
+      );
+    },
+
+    /**
      * 处理 PDA 通过 WebSocket 发来的 MSE 订单查询请求：
      * 加括号 -> 调 MSE -> 已建档则比较/更新目的地；未建档则组装写库 -> IPC 回传结果给 PDA
      */
@@ -11302,6 +11336,9 @@ export default {
           respond(true, message);
           return;
         }
+
+        // 未建档写库前：整单 uid 不可重复，否则后续 getByGoodsUid 会报错
+        this.assertNoDuplicateMseUids(palletList);
 
         // 5. 未建档：组装 BatchDetailDTO 写库
         const dto = {
