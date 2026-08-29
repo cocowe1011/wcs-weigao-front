@@ -123,7 +123,7 @@
             width="170"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" width="90" align="center" fixed="right">
+          <el-table-column label="操作" width="130" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button
                 type="text"
@@ -131,6 +131,14 @@
                 @click="showDetail(scope.row)"
               >
                 详情
+              </el-button>
+              <el-button
+                type="text"
+                size="small"
+                class="invalidate-btn"
+                @click="handleInvalidate(scope.row)"
+              >
+                作废
               </el-button>
             </template>
           </el-table-column>
@@ -635,6 +643,48 @@ export default {
       }
     },
 
+    async handleInvalidate(row) {
+      if (!row || !row.id) {
+        this.$message.warning('批次ID无效');
+        return;
+      }
+      try {
+        await this.$confirm(
+          `确定作废批次「${row.sterilizationOrderNo || row.batchNo}」吗？将删除该批次及其托盘、货物和目的地记录，此操作不可恢复！`,
+          '作废确认',
+          {
+            confirmButtonText: '确定作废',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        );
+      } catch (e) {
+        // 用户取消
+        return;
+      }
+      this.loading = true;
+      try {
+        const res = await HttpUtil.post('/produce_batch/invalidate', {
+          id: row.id
+        });
+        if (res && res.data) {
+          this.$message.success('作废成功');
+          // 当前页删完最后一条时回退一页，避免停留在空页
+          if (this.tableData.length === 1 && this.pagination.pageNum > 1) {
+            this.pagination.pageNum -= 1;
+          }
+          this.handleSearch();
+        } else {
+          this.$message.error((res && res.message) || '作废失败，请重试');
+        }
+      } catch (error) {
+        console.error('作废批次失败:', error);
+        this.$message.error('作废失败，请重试');
+      } finally {
+        this.loading = false;
+      }
+    },
+
     getStatusText(status) {
       const statusMap = {
         0: '待确认',
@@ -669,6 +719,15 @@ export default {
 
 <style lang="less" scoped>
 .order-query-dialog {
+  .invalidate-btn {
+    color: #f56c6c;
+
+    &:hover,
+    &:focus {
+      color: #f78989;
+    }
+  }
+
   .query-form {
     padding: 10px 0;
     margin-bottom: 10px;
