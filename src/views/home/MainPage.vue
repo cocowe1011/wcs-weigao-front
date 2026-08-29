@@ -11202,9 +11202,7 @@ export default {
     assertNoDuplicateMseUids(palletList) {
       const dups = this.findDuplicateMseUids(palletList);
       if (!dups.length) return;
-      const shown = dups
-        .slice(0, 3)
-        .map((d) => `${d.uid}（出现${d.count}次）`);
+      const shown = dups.slice(0, 3).map((d) => `${d.uid}（出现${d.count}次）`);
       const extra = dups.length > 3 ? `等共${dups.length}个` : '';
       throw new Error(
         `MSE返回存在重复UDI码，不予入库：${shown.join('、')}${extra}`
