@@ -1936,6 +1936,54 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <!-- 管理员授权弹窗（全线清空） -->
+    <el-dialog
+      title="全线清空授权验证"
+      :visible.sync="showAuthDialog"
+      width="460px"
+      :close-on-click-modal="false"
+      append-to-body
+    >
+      <div class="auth-warning-tip">
+        <i class="el-icon-warning"></i>
+        <div class="auth-warning-text">
+          <span class="auth-warning-title">风险提示</span>
+          <span
+            >全线清空将清除所有队列、扫码及日志数据，且不可恢复，请确认是否需要清空。</span
+          >
+        </div>
+      </div>
+      <el-form
+        :model="authForm"
+        ref="authForm"
+        :rules="authRules"
+        label-width="100px"
+      >
+        <el-form-item label="管理员账号" prop="adminCode">
+          <el-input
+            v-model="authForm.adminCode"
+            placeholder="请输入管理员账号"
+            @keyup.enter.native="confirmAuth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="管理员密码" prop="adminPassword">
+          <el-input
+            v-model="authForm.adminPassword"
+            type="password"
+            placeholder="请输入管理员密码"
+            show-password
+            @keyup.enter.native="confirmAuth"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelAuth">取 消</el-button>
+        <el-button type="primary" @click="confirmAuth" :loading="authLoading"
+          >确认授权</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -2415,6 +2463,21 @@ export default {
     });
 
     return {
+      // ---- 管理员授权验证（全线清空） ----
+      showAuthDialog: false,
+      authLoading: false,
+      authForm: {
+        adminCode: '',
+        adminPassword: ''
+      },
+      authRules: {
+        adminCode: [
+          { required: true, message: '请输入管理员账号', trigger: 'blur' }
+        ],
+        adminPassword: [
+          { required: true, message: '请输入管理员密码', trigger: 'blur' }
+        ]
+      },
       // ---- 轮询数据（批次 + 目的地） ----
       currentExecutingBatch: null, // BatchDetailDTO: { batch, pallets }
       currentDestination: null, // ProduceBatchDestination: { destinationCode, ... }
@@ -10149,27 +10212,57 @@ export default {
             // 用户取消操作，不做任何处理
           });
       } else if (button === 'clear') {
-        this.$confirm('确定要全线清空吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-          .then(() => {
-            // 把所有的队列，初试状态都清空
-            this.queues.forEach((queue) => {
-              queue.trayInfo = [];
-            });
-            this.nowScanTrayInfo = {};
-            this.runningLogs = []; // 修改为空数组
-            this.alarmLogs = []; // 修改为空数组
-            this.nowTrays = [];
-            this.$message.success('全线清空成功');
-            this.addLog('全线清空成功');
+        // 全线清空为高危操作，需管理员授权验证后执行
+        this.authForm.adminCode = '';
+        this.authForm.adminPassword = '';
+        this.showAuthDialog = true;
+      }
+    },
+    cancelAuth() {
+      this.showAuthDialog = false;
+      this.authForm.adminCode = '';
+      this.authForm.adminPassword = '';
+      this.$nextTick(() => {
+        if (this.$refs.authForm) {
+          this.$refs.authForm.clearValidate();
+        }
+      });
+    },
+    confirmAuth() {
+      this.$refs.authForm.validate((valid) => {
+        if (!valid) return;
+        this.authLoading = true;
+        const param = {
+          userCode: this.authForm.adminCode,
+          userPassword: this.authForm.adminPassword
+        };
+        HttpUtil.post('/login/login', param)
+          .then((res) => {
+            this.authLoading = false;
+            if (res.data && res.data.userRole === 'ADMIN') {
+              this.cancelAuth();
+              this.clearAllLineData();
+            } else {
+              this.$message.error('授权失败，仅管理员账号可授权清空');
+            }
           })
           .catch(() => {
-            // 用户取消操作，不做任何处理
+            this.authLoading = false;
+            this.$message.error('账号或密码错误，授权失败');
           });
-      }
+      });
+    },
+    clearAllLineData() {
+      // 把所有的队列，初试状态都清空
+      this.queues.forEach((queue) => {
+        queue.trayInfo = [];
+      });
+      this.nowScanTrayInfo = {};
+      this.runningLogs = []; // 修改为空数组
+      this.alarmLogs = []; // 修改为空数组
+      this.nowTrays = [];
+      this.$message.success('全线清空成功');
+      this.addLog('全线清空成功');
     },
     formatTime(timestamp) {
       const date = new Date(timestamp);
@@ -12122,6 +12215,43 @@ export default {
       opacity: 0.5;
       cursor: not-allowed !important;
     }
+  }
+}
+
+/* 管理员授权弹窗风险提示（append-to-body 需 ::v-deep 穿透） */
+::v-deep .auth-warning-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 15px;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 4px;
+  margin-bottom: 22px;
+
+  i {
+    color: #ff4d4f;
+    font-size: 16px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .auth-warning-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .auth-warning-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #cf1322;
+  }
+
+  span {
+    font-size: 13px;
+    color: #595959;
+    line-height: 1.5;
   }
 }
 </style>
