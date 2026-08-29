@@ -123,7 +123,12 @@
             width="170"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" width="130" align="center" fixed="right">
+          <el-table-column
+            label="操作"
+            width="130"
+            align="center"
+            fixed="right"
+          >
             <template slot-scope="scope">
               <el-button
                 type="text"
@@ -650,7 +655,9 @@ export default {
       }
       try {
         await this.$confirm(
-          `确定作废批次「${row.sterilizationOrderNo || row.batchNo}」吗？将删除该批次及其托盘、货物和目的地记录，此操作不可恢复！`,
+          `确定作废批次「${
+            row.sterilizationOrderNo || row.batchNo
+          }」吗？将删除该批次及其托盘、货物和目的地记录，此操作不可恢复！`,
           '作废确认',
           {
             confirmButtonText: '确定作废',
