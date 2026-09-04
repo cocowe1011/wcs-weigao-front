@@ -10577,10 +10577,27 @@ export default {
     async deleteTray(tray) {
       if (!this.selectedQueue || !tray) return;
 
+      const trayInfo = Array.isArray(this.selectedQueue.trayInfo)
+        ? this.selectedQueue.trayInfo
+        : [];
+      const index = this.findTrayInfoIndexByCode(tray.id);
+      if (index < 0 || index >= trayInfo.length) {
+        this.$message.error('找不到要删除的托盘');
+        return;
+      }
+      const sourceTray = trayInfo[index];
+      // 上货区托盘关联建档数据：删除时同步把后台托盘/货物恢复为刚建档时的状态，保证可重新上货
+      const resetPalletId =
+        this.selectedQueue.id === 1 && sourceTray.palletId
+          ? String(sourceTray.palletId)
+          : '';
+
       try {
         // 确认是否删除
         await this.$confirm(
-          '确认要删除该托盘吗？删除后请注意是否需要同步修改PLC队列数据！',
+          resetPalletId
+            ? '确认要删除该托盘吗？删除后后台托盘、货物数据将恢复为刚建档时的状态（虚拟ID、上货、扫码、目的地记录全部清空），可重新上货；请注意是否需要同步修改PLC队列数据！'
+            : '确认要删除该托盘吗？删除后请注意是否需要同步修改PLC队列数据！',
           '提示',
           {
             confirmButtonText: '确定',
@@ -10589,32 +10606,87 @@ export default {
           }
         );
 
-        const index = this.findTrayInfoIndexByCode(tray.id);
-        if (index >= 0 && index < this.selectedQueue.trayInfo.length) {
-          this.selectedQueue.trayInfo.splice(index, 1);
-
-          // 更新队列数据
-          this.updateQueueTrays(
-            this.selectedQueue.id,
-            this.selectedQueue.trayInfo
+        // 先恢复后台数据，成功后再移除队列托盘，避免后台失败造成前后台不一致
+        if (resetPalletId) {
+          const restored = await this.resetPalletToArchived(
+            resetPalletId,
+            sourceTray
           );
-
-          // 刷新显示
-          this.showTrays(this.selectedQueueIndex);
-
-          // 添加删除托盘日志
-          this.addLog(
-            `托盘 ${tray.id} 已从 ${this.selectedQueue.queueName} 删除`
-          );
-
-          this.$message.success('托盘删除成功');
-        } else {
-          this.$message.error('找不到要删除的托盘');
+          if (!restored) return;
         }
+
+        this.selectedQueue.trayInfo.splice(index, 1);
+
+        // 更新队列数据
+        this.updateQueueTrays(
+          this.selectedQueue.id,
+          this.selectedQueue.trayInfo
+        );
+
+        // 刷新显示
+        this.showTrays(this.selectedQueueIndex);
+
+        // 添加删除托盘日志
+        this.addLog(
+          `托盘 ${tray.id} 已从 ${this.selectedQueue.queueName} 删除`
+        );
+
+        this.$message.success('托盘删除成功');
       } catch (error) {
         if (error !== 'cancel') {
           this.$message.error('删除托盘失败，请重试');
         }
+      }
+    },
+    /**
+     * 把后台托盘及其货物恢复为刚建档时的状态（上货区删除托盘时调用）：
+     * 托盘清空虚拟ID/上货信息/扫码汇总/目的地发送信息，货物回到未扫，
+     * 批次若已自动完结则一并回退为生产中并恢复激活目的地
+     * @param {string} palletId - 建档托盘ID
+     * @param {object} sourceTray - 上货区队列中的原始托盘数据
+     * @returns {Promise<boolean>} 是否恢复成功
+     */
+    async resetPalletToArchived(palletId, sourceTray) {
+      const palletName = (sourceTray && sourceTray.palletNo) || palletId;
+      // 全屏loading：恢复期间锁定页面，避免重复操作托盘队列
+      const loading = this.$loading({
+        lock: true,
+        text: `正在恢复托盘 ${palletName} 的建档数据...`,
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      try {
+        const res = await HttpUtil.post('/produce_pallet/reset', {
+          id: palletId
+        });
+        if (!res || res.code !== '200') {
+          const msg = (res && res.message) || '未知错误';
+          this.addLog(
+            `[上货] 托盘${palletName}恢复建档状态失败: ${msg}`,
+            'warning'
+          );
+          this.$message.error(`恢复托盘建档数据失败：${msg}`);
+          return false;
+        }
+        this.addLog(
+          `[上货] 托盘${palletName}已恢复建档状态，虚拟ID/上货/扫码/目的地记录已清空，可重新上货`,
+          'running'
+        );
+        // 批次可能被回退为生产中，立即刷新本地批次与目的地缓存
+        await this.pollBatchAndDestination();
+        return true;
+      } catch (error) {
+        console.error('恢复托盘建档状态失败:', error);
+        this.addLog(
+          `[上货] 托盘${palletName}恢复建档状态异常: ${
+            (error && error.message) || error
+          }`,
+          'warning'
+        );
+        this.$message.error('恢复托盘建档数据失败，请重试');
+        return false;
+      } finally {
+        loading.close();
       }
     },
     // 上移托盘（柜队列仅与同线相邻托盘交换）
