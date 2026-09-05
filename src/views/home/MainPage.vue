@@ -8321,6 +8321,22 @@ export default {
       }
     });
 
+    // SP_01002 光电（01002工位 DBW1606 bit1）下降沿：托盘离开上货位 → 清空大屏上货失败报警
+    this.$watch(
+      () => this.deviceNodes['01002'] && this.deviceNodes['01002'].sensorStatus,
+      (newVal, oldVal) => {
+        if (!this.isDataReady) return;
+        // 下降沿：true → false
+        if (oldVal === true && newVal === false) {
+          this.clearLoadingFailOnScreen();
+          this.addLog(
+            '[上货] SP_01002光电下降沿，清空大屏上货失败报警',
+            'running'
+          );
+        }
+      }
+    );
+
     ipcRenderer.on('receivedMsg', (event, values, values2) => {
       // S7 PLC 位解析工具: 逻辑bit序号 → word中的实际bit位置
       // S7大端序: 逻辑bit0→word.bit8, bit7→word.bit15, bit8→word.bit0, bit15→word.bit7
@@ -9413,8 +9429,9 @@ export default {
             'running'
           );
         } else {
-          // 匹配失败
-          this.writeVirtualIdError();
+          // 匹配失败：后端已逐条码归因，res.message 为详细原因（如哪个条码不属于当前批次/托盘已上货），
+          // 前端只展示不本地复制匹配逻辑
+          this.writeVirtualIdError(res && res.message);
         }
       } catch (e) {
         console.error('01002虚拟ID请求处理失败:', e);
@@ -9422,9 +9439,14 @@ export default {
       }
     },
 
-    /** 匹配失败：虚拟ID写999，DB1001.DBW6写2，持续2秒 */
-    writeVirtualIdError() {
-      this.addLog('[上货] 条码匹配失败，写虚拟ID=999，DBW6=2', 'warning');
+    /** 匹配失败：虚拟ID写999，DB1001.DBW6写2，持续2秒
+     *  @param {string} [reason] 后端逐条码归因返回的详细失败原因，仅用于日志展示
+     */
+    writeVirtualIdError(reason) {
+      const head = reason ? `[上货] ${reason}` : '[上货] 条码匹配失败';
+      this.addLog(`${head}，写虚拟ID=999，DBW6=2`, 'warning');
+      // 推送失败原因到大屏标题区（红大字），SP_01002光电下降沿时清空
+      this.pushLoadingFailToScreen(reason || '条码匹配失败');
       // 写虚拟ID 999
       ipcRenderer.send('writeSingleValueToPLC', 'W_DBW10', 999);
       // 写 WCS-允许进料 = 2（批次上货错误）
@@ -11564,6 +11586,28 @@ export default {
         unread: true
       };
       ipcRenderer.send('push-alarm-to-mobile', alarmData);
+    },
+    /** 推送上货失败信息到大屏标题区（复用报警WS广播，type=loading_fail 供大屏区分显示位置） */
+    pushLoadingFailToScreen(message) {
+      ipcRenderer.send('push-alarm-to-mobile', {
+        id: 'loading_fail_' + Date.now(),
+        message: message,
+        timestamp: new Date().getTime(),
+        type: 'loading_fail',
+        source: '01002上货',
+        unread: true
+      });
+    },
+    /** 通知大屏清空上货失败报警（SP_01002光电下降沿触发） */
+    clearLoadingFailOnScreen() {
+      ipcRenderer.send('push-alarm-to-mobile', {
+        id: 'loading_clear_' + Date.now(),
+        message: '',
+        timestamp: new Date().getTime(),
+        type: 'loading_clear',
+        source: '01002上货',
+        unread: false
+      });
     },
     showMobileConnectionStatus() {
       this.mobileConnectionDialogVisible = true;
