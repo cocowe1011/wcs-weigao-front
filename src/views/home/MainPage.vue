@@ -483,10 +483,15 @@
                   :key="node.id"
                   class="device-signal-node"
                   :class="{
+                    'status-fault': getDisplayFault(node),
                     'status-active':
-                      hasAnyStatus(node) && getDisplayStatus(node),
+                      !getDisplayFault(node) &&
+                      hasAnyStatus(node) &&
+                      getDisplayStatus(node),
                     'status-idle':
-                      hasAnyStatus(node) && !getDisplayStatus(node),
+                      !getDisplayFault(node) &&
+                      hasAnyStatus(node) &&
+                      !getDisplayStatus(node),
                     'is-selected': currentSelectedNodeId === node.id
                   }"
                   :data-x="node.x"
@@ -965,6 +970,16 @@
                           {{ popoverData.sensorStatus ? '启动' : '停止' }}
                         </span>
                       </div>
+                      <div
+                        v-for="(fault, faultIndex) in getActiveFaultNames(
+                          popoverData
+                        )"
+                        :key="'fault-' + faultIndex"
+                        class="status-line is-fault"
+                      >
+                        <span class="line-label">故障</span>
+                        <span class="line-value">{{ fault }}</span>
+                      </div>
                     </div>
 
                     <div class="data-capsules">
@@ -1026,6 +1041,16 @@
                             <span class="line-value">
                               {{ device.sensorStatus ? '启动' : '停止' }}
                             </span>
+                          </div>
+                          <div
+                            v-for="(fault, faultIndex) in getActiveFaultNames(
+                              device
+                            )"
+                            :key="device.id + '-fault-' + faultIndex"
+                            class="status-line is-fault"
+                          >
+                            <span class="line-label">故障</span>
+                            <span class="line-value">{{ fault }}</span>
                           </div>
                         </div>
 
@@ -3513,6 +3538,9 @@ export default {
           trayIdAddr: 'DBW62',
           destinationAddr: 'DBW800',
           motorName: '01001',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 0 } // 上线01001输送故障
+          ],
           sensorName: 'SP_01001'
         },
         '01002': {
@@ -3528,6 +3556,13 @@ export default {
           trayIdAddr: 'DBW64',
           destinationAddr: 'DBW802',
           motorName: '01002',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 1 }, // 上线01002输送故障
+            { db: 'DBW1994', bit: 0 }, // 上线01002左侧托盘剧中气缸超时
+            { db: 'DBW1994', bit: 1 }, // 上线01002右侧托盘剧中气缸超时
+            { db: 'DBW1994', bit: 2 }, // 上线01002左侧货物剧中气缸超时
+            { db: 'DBW1994', bit: 3 } // 上线01002右侧货物剧中气缸超时
+          ],
           sensorName: 'SP_01002'
         },
         '01004': {
@@ -3543,6 +3578,9 @@ export default {
           trayIdAddr: 'DBW66',
           destinationAddr: 'DBW804',
           motorName: '01004',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 3 } // 上线01004输送故障
+          ],
           sensorName: 'SP_01004'
         },
         '01005': {
@@ -3558,6 +3596,9 @@ export default {
           trayIdAddr: 'DBW68',
           destinationAddr: 'DBW806',
           motorName: '01005',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 4 } // 上线01005输送故障
+          ],
           sensorName: 'SP_01005'
         },
         '01006': {
@@ -3573,6 +3614,11 @@ export default {
           trayIdAddr: 'DBW70',
           destinationAddr: 'DBW808',
           motorName: '01006',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 5 }, // 上线01006输送故障
+            { db: 'DBW1994', bit: 4 }, // 上线01006左侧货物剧中气缸超时
+            { db: 'DBW1994', bit: 5 } // 上线01006右侧货物剧中气缸超时
+          ],
           sensorName: 'SP_01006'
         },
         '01008': {
@@ -3590,6 +3636,9 @@ export default {
           trayIdAddr: 'DBW72',
           destinationAddr: 'DBW810',
           motorName: '01008',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 7 } // 上线01008输送故障
+          ],
           sensorName: 'SP_01009'
         },
         '01009': {
@@ -3607,6 +3656,9 @@ export default {
           trayIdAddr: 'DBW72',
           destinationAddr: 'DBW810',
           motorName: '01009',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 8 } // 上线01009输送故障
+          ],
           sensorName: 'SP_01009'
         },
         '01011': {
@@ -3624,6 +3676,9 @@ export default {
           trayIdAddr: 'DBW76',
           destinationAddr: 'DBW814',
           motorName: '01011',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 10 } // 上线01011输送故障
+          ],
           sensorName: 'SP_01011'
         },
         '01012': {
@@ -3641,6 +3696,9 @@ export default {
           trayIdAddr: 'DBW76',
           destinationAddr: 'DBW814',
           motorName: '01012',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 11 } // 上线01012输送故障
+          ],
           sensorName: 'SP_01012'
         },
         '01013A': {
@@ -3658,6 +3716,9 @@ export default {
           trayIdAddr: 'DBW80',
           destinationAddr: 'DBW818',
           motorName: '01013A',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 12 } // 上线01013输送故障
+          ],
           sensorName: 'SP_01013-1'
         },
         '01013B': {
@@ -3675,6 +3736,9 @@ export default {
           trayIdAddr: 'DBW82',
           destinationAddr: 'DBW820',
           motorName: '01013B',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 12 } // 上线01013输送故障
+          ],
           sensorName: 'SP_01013-2'
         },
         '01019A': {
@@ -3692,6 +3756,9 @@ export default {
           trayIdAddr: 'DBW104',
           destinationAddr: 'DBW842',
           motorName: '01019A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 2 } // 上线01019输送故障
+          ],
           sensorName: 'SP_01019-1'
         },
         '01019B': {
@@ -3709,6 +3776,9 @@ export default {
           trayIdAddr: 'DBW106',
           destinationAddr: 'DBW844',
           motorName: '01019B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 2 } // 上线01019输送故障
+          ],
           sensorName: 'SP_01019-2'
         },
         '01014A': {
@@ -3726,6 +3796,9 @@ export default {
           trayIdAddr: 'DBW84',
           destinationAddr: 'DBW822',
           motorName: '01014A',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 13 } // 上线01014输送故障
+          ],
           sensorName: 'SP_01014'
         },
         '01014B': {
@@ -3743,6 +3816,9 @@ export default {
           trayIdAddr: 'DBW86',
           destinationAddr: 'DBW824',
           motorName: '01014B',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 13 } // 上线01014输送故障
+          ],
           sensorName: 'SP_01014'
         },
         '01020A': {
@@ -3760,6 +3836,9 @@ export default {
           trayIdAddr: 'DBW108',
           destinationAddr: 'DBW846',
           motorName: '01020A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 3 } // 上线01020输送故障
+          ],
           sensorName: 'SP_01020'
         },
         '01020B': {
@@ -3777,6 +3856,9 @@ export default {
           trayIdAddr: 'DBW110',
           destinationAddr: 'DBW848',
           motorName: '01020B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 3 } // 上线01020输送故障
+          ],
           sensorName: 'SP_01020'
         },
         '01015A': {
@@ -3794,6 +3876,9 @@ export default {
           trayIdAddr: 'DBW88',
           destinationAddr: 'DBW826',
           motorName: '01015A',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 14 } // 上线01015输送故障
+          ],
           sensorName: 'SP_01015'
         },
         '01015B': {
@@ -3811,6 +3896,9 @@ export default {
           trayIdAddr: 'DBW90',
           destinationAddr: 'DBW828',
           motorName: '01015B',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 14 } // 上线01015输送故障
+          ],
           sensorName: 'SP_01015'
         },
         '01021A': {
@@ -3828,6 +3916,9 @@ export default {
           trayIdAddr: 'DBW112',
           destinationAddr: 'DBW1900',
           motorName: '01021A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 4 } // 上线01021输送故障
+          ],
           sensorName: 'SP_01021'
         },
         '01021B': {
@@ -3845,6 +3936,9 @@ export default {
           trayIdAddr: 'DBW114',
           destinationAddr: 'DBW1902',
           motorName: '01021B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 4 } // 上线01021输送故障
+          ],
           sensorName: 'SP_01021'
         },
         '01016A': {
@@ -3862,6 +3956,9 @@ export default {
           trayIdAddr: 'DBW92',
           destinationAddr: 'DBW830',
           motorName: '01016A',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 15 } // 上线01016输送故障
+          ],
           sensorName: 'SP_01016'
         },
         '01016B': {
@@ -3879,6 +3976,9 @@ export default {
           trayIdAddr: 'DBW94',
           destinationAddr: 'DBW832',
           motorName: '01016B',
+          faultAddrs: [
+            { db: 'DBW1928', bit: 15 } // 上线01016输送故障
+          ],
           sensorName: 'SP_01016'
         },
         '01022A': {
@@ -3896,6 +3996,9 @@ export default {
           trayIdAddr: 'DBW116',
           destinationAddr: 'DBW1904',
           motorName: '01022A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 5 } // 上线01022输送故障
+          ],
           sensorName: 'SP_01022'
         },
         '01022B': {
@@ -3913,6 +4016,9 @@ export default {
           trayIdAddr: 'DBW118',
           destinationAddr: 'DBW1906',
           motorName: '01022B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 5 } // 上线01022输送故障
+          ],
           sensorName: 'SP_01022'
         },
         '01017A': {
@@ -3930,6 +4036,9 @@ export default {
           trayIdAddr: 'DBW96',
           destinationAddr: 'DBW834',
           motorName: '01017A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 0 } // 上线01017输送故障
+          ],
           sensorName: 'SP_01017'
         },
         '01017B': {
@@ -3947,6 +4056,9 @@ export default {
           trayIdAddr: 'DBW98',
           destinationAddr: 'DBW836',
           motorName: '01017B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 0 } // 上线01017输送故障
+          ],
           sensorName: 'SP_01017'
         },
         '01023A': {
@@ -3964,6 +4076,9 @@ export default {
           trayIdAddr: 'DBW1800',
           destinationAddr: 'DBW1908',
           motorName: '01023A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 6 } // 上线01023输送故障
+          ],
           sensorName: 'SP_01023'
         },
         '01023B': {
@@ -3981,6 +4096,9 @@ export default {
           trayIdAddr: 'DBW1802',
           destinationAddr: 'DBW1910',
           motorName: '01023B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 6 } // 上线01023输送故障
+          ],
           sensorName: 'SP_01023'
         },
         '01018A': {
@@ -3998,6 +4116,9 @@ export default {
           trayIdAddr: 'DBW100',
           destinationAddr: 'DBW838',
           motorName: '01018A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 1 } // 上线01018输送故障
+          ],
           sensorName: 'SP_01018'
         },
         '01018B': {
@@ -4015,6 +4136,9 @@ export default {
           trayIdAddr: 'DBW102',
           destinationAddr: 'DBW840',
           motorName: '01018B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 1 } // 上线01018输送故障
+          ],
           sensorName: 'SP_01018'
         },
         '01024A': {
@@ -4032,6 +4156,9 @@ export default {
           trayIdAddr: 'DBW1804',
           destinationAddr: 'DBW1912',
           motorName: '01024A',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 7 } // 上线01024输送故障
+          ],
           sensorName: 'SP_01024'
         },
         '01024B': {
@@ -4049,6 +4176,9 @@ export default {
           trayIdAddr: 'DBW1806',
           destinationAddr: 'DBW1914',
           motorName: '01024B',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 7 } // 上线01024输送故障
+          ],
           sensorName: 'SP_01024'
         },
         // '01025': {
@@ -4081,6 +4211,9 @@ export default {
           trayIdAddr: 'DBW1808',
           destinationAddr: 'DBW1916',
           motorName: '01026',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 9 } // 上线01026输送故障
+          ],
           sensorName: 'SP_01027'
         },
         '01027': {
@@ -4098,6 +4231,9 @@ export default {
           trayIdAddr: 'DBW1808',
           destinationAddr: 'DBW1916',
           motorName: '01027',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 10 } // 上线01027输送故障
+          ],
           sensorName: 'SP_01027'
         },
         // '01028': {
@@ -4130,6 +4266,9 @@ export default {
           trayIdAddr: 'DBW1812',
           destinationAddr: 'DBW1920',
           motorName: '01029',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 12 } // 上线01029输送故障
+          ],
           sensorName: 'SP_01030'
         },
         '01030': {
@@ -4147,6 +4286,9 @@ export default {
           trayIdAddr: 'DBW1812',
           destinationAddr: 'DBW1920',
           motorName: '01030',
+          faultAddrs: [
+            { db: 'DBW1930', bit: 13 } // 上线01030输送故障
+          ],
           sensorName: 'SP_01030'
         },
         '02014': {
@@ -4895,6 +5037,9 @@ export default {
           trayIdAddr: 'DBW522',
           destinationAddr: 'DBW1262',
           motorName: '07012',
+          faultAddrs: [
+            { db: 'DBW1974', bit: 11 } // 灭菌下线07012输送故障
+          ],
           sensorName: 'SP_07011'
         },
         '07021': {
@@ -4929,6 +5074,9 @@ export default {
           trayIdAddr: 'DBW536',
           destinationAddr: 'DBW1276',
           motorName: '07022',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 5 } // 下线07022输送故障
+          ],
           sensorName: 'SP_07021'
         },
         '07018': {
@@ -4963,6 +5111,9 @@ export default {
           trayIdAddr: 'DBW532',
           destinationAddr: 'DBW1272',
           motorName: '07019',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 2 } // 下线07019输送故障
+          ],
           sensorName: 'SP_07018'
         },
         '08014': {
@@ -5421,6 +5572,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 1 },
           sensorAddr: { db: 'DBW1610', bit: 3 },
           motorName: '02002',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 1 } // 预热02002输送故障
+          ],
           sensorName: 'SP02002-2'
         },
         '02001': {
@@ -5432,6 +5586,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 0 },
           sensorAddr: { db: 'DBW1610', bit: 1 },
           motorName: '02001',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 0 } // 预热02001输送故障
+          ],
           sensorName: 'SP02001-2'
         },
         '02004': {
@@ -5443,6 +5600,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 3 },
           sensorAddr: { db: 'DBW1610', bit: 7 },
           motorName: '02004',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 3 } // 预热02004输送故障
+          ],
           sensorName: 'SP02004-2'
         },
         '02003': {
@@ -5454,6 +5614,9 @@ export default {
           motorAddr: { db: 'DBW10', bit: 2 },
           sensorAddr: { db: 'DBW1610', bit: 5 },
           motorName: '02003',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 2 } // 预热02003输送故障
+          ],
           sensorName: 'SP02003-2'
         },
         '03002': {
@@ -5465,6 +5628,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 1 },
           sensorAddr: { db: 'DBW1616', bit: 3 },
           motorName: '03002',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 1 } // 预热03002输送故障
+          ],
           sensorName: 'SP03002-2'
         },
         '03001': {
@@ -5476,6 +5642,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 0 },
           sensorAddr: { db: 'DBW1616', bit: 1 },
           motorName: '03001',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 0 } // 预热03001输送故障
+          ],
           sensorName: 'SP03001-2'
         },
         '03004': {
@@ -5487,6 +5656,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 3 },
           sensorAddr: { db: 'DBW1616', bit: 7 },
           motorName: '03004',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 3 } // 预热03004输送故障
+          ],
           sensorName: 'SP03004-2'
         },
         '03003': {
@@ -5498,6 +5670,9 @@ export default {
           motorAddr: { db: 'DBW16', bit: 2 },
           sensorAddr: { db: 'DBW1616', bit: 5 },
           motorName: '03003',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 2 } // 预热03003输送故障
+          ],
           sensorName: 'SP03003-2'
         },
         '04002': {
@@ -5509,6 +5684,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 1 },
           sensorAddr: { db: 'DBW1622', bit: 3 },
           motorName: '04002',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 1 } // 预热04002输送故障
+          ],
           sensorName: 'SP04002-2'
         },
         '04001': {
@@ -5520,6 +5698,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 0 },
           sensorAddr: { db: 'DBW1622', bit: 1 },
           motorName: '04001',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 0 } // 预热04001输送故障
+          ],
           sensorName: 'SP04001-2'
         },
         '04004': {
@@ -5531,6 +5712,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 3 },
           sensorAddr: { db: 'DBW1622', bit: 7 },
           motorName: '04004',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 3 } // 预热04004输送故障
+          ],
           sensorName: 'SP04004-2'
         },
         '04003': {
@@ -5542,6 +5726,9 @@ export default {
           motorAddr: { db: 'DBW22', bit: 2 },
           sensorAddr: { db: 'DBW1622', bit: 5 },
           motorName: '04003',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 2 } // 预热04003输送故障
+          ],
           sensorName: 'SP04003-2'
         },
         '05002': {
@@ -5553,6 +5740,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 1 },
           sensorAddr: { db: 'DBW1628', bit: 3 },
           motorName: '05002',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 1 } // 预热05002输送故障
+          ],
           sensorName: 'SP05002-2'
         },
         '05001': {
@@ -5564,6 +5754,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 0 },
           sensorAddr: { db: 'DBW1628', bit: 1 },
           motorName: '05001',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 0 } // 预热05001输送故障
+          ],
           sensorName: 'SP05001-2'
         },
         '05004': {
@@ -5575,6 +5768,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 3 },
           sensorAddr: { db: 'DBW1628', bit: 7 },
           motorName: '05004',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 3 } // 预热05004输送故障
+          ],
           sensorName: 'SP05004-2'
         },
         '05003': {
@@ -5586,6 +5782,9 @@ export default {
           motorAddr: { db: 'DBW28', bit: 2 },
           sensorAddr: { db: 'DBW1628', bit: 5 },
           motorName: '05003',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 2 } // 预热05003输送故障
+          ],
           sensorName: 'SP05003-2'
         },
         '06002': {
@@ -5597,6 +5796,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 1 },
           sensorAddr: { db: 'DBW1634', bit: 3 },
           motorName: '06002',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 1 } // 预热06002输送故障
+          ],
           sensorName: 'SP06002-2'
         },
         '06001': {
@@ -5608,6 +5810,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 0 },
           sensorAddr: { db: 'DBW1634', bit: 1 },
           motorName: '06001',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 0 } // 预热06001输送故障
+          ],
           sensorName: 'SP06001-2'
         },
         '06004': {
@@ -5619,6 +5824,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 3 },
           sensorAddr: { db: 'DBW1634', bit: 7 },
           motorName: '06004',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 3 } // 预热06004输送故障
+          ],
           sensorName: 'SP06004-2'
         },
         '06003': {
@@ -5630,6 +5838,9 @@ export default {
           motorAddr: { db: 'DBW34', bit: 2 },
           sensorAddr: { db: 'DBW1634', bit: 5 },
           motorName: '06003',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 2 } // 预热06003输送故障
+          ],
           sensorName: 'SP06003-2'
         },
         '07002': {
@@ -5641,6 +5852,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 1 },
           sensorAddr: { db: 'DBW1640', bit: 3 },
           motorName: '07002',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 1 } // 预热07002输送故障
+          ],
           sensorName: 'SP07002-2'
         },
         '07001': {
@@ -5652,6 +5866,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 0 },
           sensorAddr: { db: 'DBW1640', bit: 1 },
           motorName: '07001',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 0 } // 预热07001输送故障
+          ],
           sensorName: 'SP07001-2'
         },
         '07004': {
@@ -5663,6 +5880,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 3 },
           sensorAddr: { db: 'DBW1640', bit: 7 },
           motorName: '07004',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 3 } // 预热07004输送故障
+          ],
           sensorName: 'SP07004-2'
         },
         '07003': {
@@ -5674,6 +5894,9 @@ export default {
           motorAddr: { db: 'DBW40', bit: 2 },
           sensorAddr: { db: 'DBW1640', bit: 5 },
           motorName: '07003',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 2 } // 预热07003输送故障
+          ],
           sensorName: 'SP07003-2'
         },
         '08002': {
@@ -5685,6 +5908,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 1 },
           sensorAddr: { db: 'DBW1646', bit: 3 },
           motorName: '08002',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 1 } // 预热08002输送故障
+          ],
           sensorName: 'SP08002-2'
         },
         '08001': {
@@ -5696,6 +5922,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 0 },
           sensorAddr: { db: 'DBW1646', bit: 1 },
           motorName: '08001',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 0 } // 预热08001输送故障
+          ],
           sensorName: 'SP08001-2'
         },
         '08004': {
@@ -5707,6 +5936,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 3 },
           sensorAddr: { db: 'DBW1646', bit: 7 },
           motorName: '08004',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 3 } // 预热08004输送故障
+          ],
           sensorName: 'SP08004-2'
         },
         '08003': {
@@ -5718,6 +5950,9 @@ export default {
           motorAddr: { db: 'DBW46', bit: 2 },
           sensorAddr: { db: 'DBW1646', bit: 5 },
           motorName: '08003',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 2 } // 预热08003输送故障
+          ],
           sensorName: 'SP08003-2'
         },
         '09002': {
@@ -5729,6 +5964,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 1 },
           sensorAddr: { db: 'DBW1652', bit: 3 },
           motorName: '09002',
+          faultAddrs: [
+            { db: 'DBW1974', bit: 1 } // 预热09002输送故障
+          ],
           sensorName: 'SP09004-2'
         },
         '09001': {
@@ -5740,6 +5978,9 @@ export default {
           motorAddr: { db: 'DBW52', bit: 0 },
           sensorAddr: { db: 'DBW1652', bit: 1 },
           motorName: '09001',
+          faultAddrs: [
+            { db: 'DBW1974', bit: 0 } // 预热09001输送故障
+          ],
           sensorName: 'SP09003-2'
         },
         // 以下为预热第三排的电机信号
@@ -5749,7 +5990,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW10', bit: 5 },
-          motorName: '02006'
+          motorName: '02006',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 5 } // 灭菌02006输送故障
+          ]
         },
         '02005': {
           name: '02005',
@@ -5757,7 +6001,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW10', bit: 4 },
-          motorName: '02005'
+          motorName: '02005',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 4 } // 灭菌02005输送故障
+          ]
         },
         '02008': {
           name: '02008',
@@ -5765,7 +6012,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW10', bit: 7 },
-          motorName: '02008'
+          motorName: '02008',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 7 } // 灭菌02008输送故障
+          ]
         },
         '02007': {
           name: '02007',
@@ -5773,7 +6023,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW10', bit: 6 },
-          motorName: '02007'
+          motorName: '02007',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 6 } // 灭菌02007输送故障
+          ]
         },
         '03006': {
           name: '03006',
@@ -5781,7 +6034,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW16', bit: 5 },
-          motorName: '03006'
+          motorName: '03006',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 5 } // 灭菌03006输送故障
+          ]
         },
         '03005': {
           name: '03005',
@@ -5789,7 +6045,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW16', bit: 4 },
-          motorName: '03005'
+          motorName: '03005',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 4 } // 灭菌03005输送故障
+          ]
         },
         '03008': {
           name: '03008',
@@ -5797,7 +6056,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW16', bit: 7 },
-          motorName: '03008'
+          motorName: '03008',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 7 } // 灭菌03008输送故障
+          ]
         },
         '03007': {
           name: '03007',
@@ -5805,7 +6067,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW16', bit: 6 },
-          motorName: '03007'
+          motorName: '03007',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 6 } // 灭菌03007输送故障
+          ]
         },
         '04006': {
           name: '04006',
@@ -5813,7 +6078,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW22', bit: 5 },
-          motorName: '04006'
+          motorName: '04006',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 5 } // 灭菌04006输送故障
+          ]
         },
         '04005': {
           name: '04005',
@@ -5821,7 +6089,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW22', bit: 4 },
-          motorName: '04005'
+          motorName: '04005',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 4 } // 灭菌04005输送故障
+          ]
         },
         '04008': {
           name: '04008',
@@ -5829,7 +6100,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW22', bit: 7 },
-          motorName: '04008'
+          motorName: '04008',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 7 } // 灭菌04008输送故障
+          ]
         },
         '04007': {
           name: '04007',
@@ -5837,7 +6111,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW22', bit: 6 },
-          motorName: '04007'
+          motorName: '04007',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 6 } // 灭菌04007输送故障
+          ]
         },
         '05006': {
           name: '05006',
@@ -5845,7 +6122,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW28', bit: 5 },
-          motorName: '05006'
+          motorName: '05006',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 5 } // 灭菌05006输送故障
+          ]
         },
         '05005': {
           name: '05005',
@@ -5853,7 +6133,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW28', bit: 4 },
-          motorName: '05005'
+          motorName: '05005',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 4 } // 灭菌05005输送故障
+          ]
         },
         '05008': {
           name: '05008',
@@ -5861,7 +6144,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW28', bit: 7 },
-          motorName: '05008'
+          motorName: '05008',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 7 } // 灭菌05008输送故障
+          ]
         },
         '05007': {
           name: '05007',
@@ -5869,7 +6155,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW28', bit: 6 },
-          motorName: '05007'
+          motorName: '05007',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 6 } // 灭菌05007输送故障
+          ]
         },
         '06006': {
           name: '06006',
@@ -5877,7 +6166,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW34', bit: 5 },
-          motorName: '06006'
+          motorName: '06006',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 5 } // 灭菌06006输送故障
+          ]
         },
         '06005': {
           name: '06005',
@@ -5885,7 +6177,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW34', bit: 4 },
-          motorName: '06005'
+          motorName: '06005',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 4 } // 灭菌06005输送故障
+          ]
         },
         '06008': {
           name: '06008',
@@ -5893,7 +6188,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW34', bit: 7 },
-          motorName: '06008'
+          motorName: '06008',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 7 } // 灭菌06008输送故障
+          ]
         },
         '06007': {
           name: '06007',
@@ -5901,7 +6199,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW34', bit: 6 },
-          motorName: '06007'
+          motorName: '06007',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 6 } // 灭菌06007输送故障
+          ]
         },
         '07006': {
           name: '07006',
@@ -5909,7 +6210,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW40', bit: 5 },
-          motorName: '07006'
+          motorName: '07006',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 5 } // 灭菌07006输送故障
+          ]
         },
         '07005': {
           name: '07005',
@@ -5917,7 +6221,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW40', bit: 4 },
-          motorName: '07005'
+          motorName: '07005',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 4 } // 灭菌07005输送故障
+          ]
         },
         '07008': {
           name: '07008',
@@ -5925,7 +6232,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW40', bit: 7 },
-          motorName: '07008'
+          motorName: '07008',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 7 } // 灭菌07008输送故障
+          ]
         },
         '07007': {
           name: '07007',
@@ -5933,7 +6243,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW40', bit: 6 },
-          motorName: '07007'
+          motorName: '07007',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 6 } // 灭菌07007输送故障
+          ]
         },
         '08006': {
           name: '08006',
@@ -5941,7 +6254,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW46', bit: 5 },
-          motorName: '08006'
+          motorName: '08006',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 5 } // 灭菌08006输送故障
+          ]
         },
         '08005': {
           name: '08005',
@@ -5949,7 +6265,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW46', bit: 4 },
-          motorName: '08005'
+          motorName: '08005',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 4 } // 灭菌08005输送故障
+          ]
         },
         '08008': {
           name: '08008',
@@ -5957,7 +6276,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW46', bit: 7 },
-          motorName: '08008'
+          motorName: '08008',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 7 } // 灭菌0808输送故障
+          ]
         },
         '08007': {
           name: '08007',
@@ -5965,7 +6287,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW46', bit: 6 },
-          motorName: '08007'
+          motorName: '08007',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 6 } // 灭菌08007输送故障
+          ]
         },
         '09004': {
           name: '09004',
@@ -5973,7 +6298,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW52', bit: 3 },
-          motorName: '09004'
+          motorName: '09004',
+          faultAddrs: [
+            { db: 'DBW1974', bit: 3 } // 灭菌09004输送故障
+          ]
         },
         '09003': {
           name: '09003',
@@ -5981,7 +6309,10 @@ export default {
           y: 180,
           motorStatus: false,
           motorAddr: { db: 'DBW52', bit: 2 },
-          motorName: '09003'
+          motorName: '09003',
+          faultAddrs: [
+            { db: 'DBW1974', bit: 2 } // 灭菌09003输送故障
+          ]
         },
         // 以上为第三排电机信号
         // 以下为出货/电机光电信号
@@ -6599,6 +6930,9 @@ export default {
           trayIdAddr: 'DBW546',
           destinationAddr: 'DBW1286',
           motorName: '07028',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 11 } // 下线07028输送故障
+          ],
           sensorName: 'SP_07028-2'
         },
         '07029': {
@@ -6613,6 +6947,9 @@ export default {
           trayIdAddr: 'DBW546',
           destinationAddr: 'DBW1286',
           motorName: '07029',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 12 } // 下线07029输送故障
+          ],
           sensorName: 'SP_07028-1'
         },
         '07025': {
@@ -6629,6 +6966,9 @@ export default {
           trayIdAddr: 'DBW542',
           destinationAddr: 'DBW1282',
           motorName: '07025',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 8 } // 下线07025输送故障
+          ],
           sensorName: 'SP_07025-2'
         },
         '07026': {
@@ -6643,6 +6983,9 @@ export default {
           trayIdAddr: 'DBW542',
           destinationAddr: 'DBW1282',
           motorName: '07026',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 9 } // 下线07026输送故障
+          ],
           sensorName: 'SP_07025-1'
         },
         '07035': {
@@ -6689,6 +7032,9 @@ export default {
           trayIdAddr: 'DBW552',
           destinationAddr: 'DBW1292',
           motorName: '07032',
+          faultAddrs: [
+            { db: 'DBW1976', bit: 15 } // 下线07032输送故障
+          ],
           sensorName: 'SP_07032-2'
         },
         '07033': {
@@ -6703,6 +7049,9 @@ export default {
           trayIdAddr: 'DBW552',
           destinationAddr: 'DBW1292',
           motorName: '07033',
+          faultAddrs: [
+            { db: 'DBW1978', bit: 0 } // 下线07033输送故障
+          ],
           sensorName: 'SP_07032-1'
         },
         '08028': {
@@ -7324,6 +7673,9 @@ export default {
           trayIdAddr: 'DBW120',
           destinationAddr: 'DBW860',
           motorName: '02009',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 8 } // 预热上线02009输送故障
+          ],
           sensorName: 'SP_02009'
         },
         '02016': {
@@ -7340,6 +7692,9 @@ export default {
           trayIdAddr: 'DBW130',
           destinationAddr: 'DBW870',
           motorName: '02016',
+          faultAddrs: [
+            { db: 'DBW1932', bit: 15 } // 预热上线02016输送故障
+          ],
           sensorName: 'SP_02016'
         },
         '03009': {
@@ -7356,6 +7711,9 @@ export default {
           trayIdAddr: 'DBW200',
           destinationAddr: 'DBW940',
           motorName: '03009',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 8 } // 预热上线03009输送故障
+          ],
           sensorName: 'SP_03009'
         },
         '03016': {
@@ -7372,6 +7730,9 @@ export default {
           trayIdAddr: 'DBW210',
           destinationAddr: 'DBW950',
           motorName: '03016',
+          faultAddrs: [
+            { db: 'DBW1938', bit: 15 } // 预热上线03016输送故障
+          ],
           sensorName: 'SP_03016'
         },
         '04009': {
@@ -7388,6 +7749,9 @@ export default {
           trayIdAddr: 'DBW280',
           destinationAddr: 'DBW1020',
           motorName: '04009',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 8 } // 预热上线04009输送故障
+          ],
           sensorName: 'SP_04009'
         },
         '04016': {
@@ -7404,6 +7768,9 @@ export default {
           trayIdAddr: 'DBW290',
           destinationAddr: 'DBW1030',
           motorName: '04016',
+          faultAddrs: [
+            { db: 'DBW1944', bit: 15 } // 预热上线04016输送故障
+          ],
           sensorName: 'SP_04016'
         },
         '05009': {
@@ -7420,6 +7787,9 @@ export default {
           trayIdAddr: 'DBW360',
           destinationAddr: 'DBW1100',
           motorName: '05009',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 8 } // 预热上线05009输送故障
+          ],
           sensorName: 'SP_05009'
         },
         '05016': {
@@ -7436,6 +7806,9 @@ export default {
           trayIdAddr: 'DBW370',
           destinationAddr: 'DBW1110',
           motorName: '05016',
+          faultAddrs: [
+            { db: 'DBW1950', bit: 15 } // 预热上线05016输送故障
+          ],
           sensorName: 'SP_05016'
         },
         '06009': {
@@ -7452,6 +7825,9 @@ export default {
           trayIdAddr: 'DBW440',
           destinationAddr: 'DBW1180',
           motorName: '06009',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 8 } // 预热上线06009输送故障
+          ],
           sensorName: 'SP_06009'
         },
         '06016': {
@@ -7468,6 +7844,9 @@ export default {
           trayIdAddr: 'DBW450',
           destinationAddr: 'DBW1190',
           motorName: '06016',
+          faultAddrs: [
+            { db: 'DBW1956', bit: 15 } // 预热上线06016输送故障
+          ],
           sensorName: 'SP_06016'
         },
         '07009': {
@@ -7484,6 +7863,9 @@ export default {
           trayIdAddr: 'DBW520',
           destinationAddr: 'DBW1260',
           motorName: '07009',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 8 } // 预热上线07009输送故障
+          ],
           sensorName: 'SP_07009'
         },
         '07016': {
@@ -7500,6 +7882,10 @@ export default {
           trayIdAddr: 'DBW530',
           destinationAddr: 'DBW1270',
           motorName: '07016',
+          faultAddrs: [
+            { db: 'DBW1962', bit: 15 }, // 预热上线07016输送故障
+            { db: 'DBW1974', bit: 15 } // 预热上线07016输送故障
+          ],
           sensorName: 'SP_07016'
         },
         '08009': {
@@ -7516,6 +7902,9 @@ export default {
           trayIdAddr: 'DBW600',
           destinationAddr: 'DBW1340',
           motorName: '08009',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 8 } // 预热上线08009输送故障
+          ],
           sensorName: 'SP_08009'
         },
         '08016': {
@@ -7532,6 +7921,9 @@ export default {
           trayIdAddr: 'DBW610',
           destinationAddr: 'DBW1350',
           motorName: '08016',
+          faultAddrs: [
+            { db: 'DBW1968', bit: 15 } // 预热上线08016输送故障
+          ],
           sensorName: 'SP_08016'
         },
         '09005': {
@@ -7548,6 +7940,9 @@ export default {
           trayIdAddr: 'DBW680',
           destinationAddr: 'DBW1420',
           motorName: '09005',
+          faultAddrs: [
+            { db: 'DBW1974', bit: 4 } // 预热上线09005输送故障
+          ],
           sensorName: 'SP_09005'
         },
         // 以后为补充后最后一排的夹缝的光电电机设备状态
@@ -7565,6 +7960,9 @@ export default {
           trayIdAddr: 'DBW140',
           destinationAddr: 'DBW880',
           motorName: '02023',
+          faultAddrs: [
+            { db: 'DBW1934', bit: 6 } // 灭菌下线02023输送故障
+          ],
           sensorName: 'SP_02023-2'
         },
         'SP_02023-1': {
@@ -7579,6 +7977,9 @@ export default {
           trayIdAddr: 'DBW140',
           destinationAddr: 'DBW880',
           motorName: '02023',
+          faultAddrs: [
+            { db: 'DBW1934', bit: 6 } // 灭菌下线02023输送故障
+          ],
           sensorName: 'SP_02023-1'
         },
         'SP_02030-2': {
@@ -7595,6 +7996,9 @@ export default {
           trayIdAddr: 'DBW150',
           destinationAddr: 'DBW890',
           motorName: '02030',
+          faultAddrs: [
+            { db: 'DBW1934', bit: 13 } // 灭菌下线02030输送故障
+          ],
           sensorName: 'SP_02030-2'
         },
         'SP_02030-1': {
@@ -7609,6 +8013,9 @@ export default {
           trayIdAddr: 'DBW150',
           destinationAddr: 'DBW890',
           motorName: '02030',
+          faultAddrs: [
+            { db: 'DBW1934', bit: 13 } // 灭菌下线02030输送故障
+          ],
           sensorName: 'SP_02030-1'
         },
         'SP_03023-2': {
@@ -7625,6 +8032,9 @@ export default {
           trayIdAddr: 'DBW220',
           destinationAddr: 'DBW960',
           motorName: '03023',
+          faultAddrs: [
+            { db: 'DBW1940', bit: 6 } // 灭菌下线03023输送故障
+          ],
           sensorName: 'SP_03023-2'
         },
         'SP_03023-1': {
@@ -7639,6 +8049,9 @@ export default {
           trayIdAddr: 'DBW220',
           destinationAddr: 'DBW960',
           motorName: '03023',
+          faultAddrs: [
+            { db: 'DBW1940', bit: 6 } // 灭菌下线03023输送故障
+          ],
           sensorName: 'SP_03023-1'
         },
         'SP_03030-2': {
@@ -7655,6 +8068,9 @@ export default {
           trayIdAddr: 'DBW230',
           destinationAddr: 'DBW970',
           motorName: '03030',
+          faultAddrs: [
+            { db: 'DBW1940', bit: 13 } // 灭菌下线03030输送故障
+          ],
           sensorName: 'SP_03030-2'
         },
         'SP_03030-1': {
@@ -7669,6 +8085,9 @@ export default {
           trayIdAddr: 'DBW230',
           destinationAddr: 'DBW970',
           motorName: '03030',
+          faultAddrs: [
+            { db: 'DBW1940', bit: 13 } // 灭菌下线03030输送故障
+          ],
           sensorName: 'SP_03030-1'
         },
         'SP_04023-2': {
@@ -7685,6 +8104,9 @@ export default {
           trayIdAddr: 'DBW300',
           destinationAddr: 'DBW1040',
           motorName: '04023',
+          faultAddrs: [
+            { db: 'DBW1946', bit: 6 } // 灭菌下线04023输送故障
+          ],
           sensorName: 'SP_04023-2'
         },
         'SP_04023-1': {
@@ -7699,6 +8121,9 @@ export default {
           trayIdAddr: 'DBW300',
           destinationAddr: 'DBW1040',
           motorName: '04023',
+          faultAddrs: [
+            { db: 'DBW1946', bit: 6 } // 灭菌下线04023输送故障
+          ],
           sensorName: 'SP_04023-1'
         },
         'SP_04030-2': {
@@ -7715,6 +8140,9 @@ export default {
           trayIdAddr: 'DBW310',
           destinationAddr: 'DBW1050',
           motorName: '04030',
+          faultAddrs: [
+            { db: 'DBW1946', bit: 13 } // 灭菌下线04030输送故障
+          ],
           sensorName: 'SP_04030-2'
         },
         'SP_04030-1': {
@@ -7729,6 +8157,9 @@ export default {
           trayIdAddr: 'DBW310',
           destinationAddr: 'DBW1050',
           motorName: '04030',
+          faultAddrs: [
+            { db: 'DBW1946', bit: 13 } // 灭菌下线04030输送故障
+          ],
           sensorName: 'SP_04030-1'
         },
         'SP_05023-2': {
@@ -7745,6 +8176,9 @@ export default {
           trayIdAddr: 'DBW380',
           destinationAddr: 'DBW1120',
           motorName: '05023',
+          faultAddrs: [
+            { db: 'DBW1952', bit: 6 } // 灭菌下线05023输送故障
+          ],
           sensorName: 'SP_05023-2'
         },
         'SP_05023-1': {
@@ -7759,6 +8193,9 @@ export default {
           trayIdAddr: 'DBW380',
           destinationAddr: 'DBW1120',
           motorName: '05023',
+          faultAddrs: [
+            { db: 'DBW1952', bit: 6 } // 灭菌下线05023输送故障
+          ],
           sensorName: 'SP_05023-1'
         },
         'SP_05030-2': {
@@ -7775,6 +8212,9 @@ export default {
           trayIdAddr: 'DBW390',
           destinationAddr: 'DBW1130',
           motorName: '05030',
+          faultAddrs: [
+            { db: 'DBW1952', bit: 13 } // 灭菌下线05030输送故障
+          ],
           sensorName: 'SP_05030-2'
         },
         'SP_05030-1': {
@@ -7789,6 +8229,9 @@ export default {
           trayIdAddr: 'DBW390',
           destinationAddr: 'DBW1130',
           motorName: '05030',
+          faultAddrs: [
+            { db: 'DBW1952', bit: 13 } // 灭菌下线05030输送故障
+          ],
           sensorName: 'SP_05030-1'
         },
         'SP_06023-2': {
@@ -7805,6 +8248,9 @@ export default {
           trayIdAddr: 'DBW460',
           destinationAddr: 'DBW1200',
           motorName: '06023',
+          faultAddrs: [
+            { db: 'DBW1958', bit: 6 } // 灭菌下线06023输送故障
+          ],
           sensorName: 'SP_06023-2'
         },
         'SP_06023-1': {
@@ -7819,6 +8265,9 @@ export default {
           trayIdAddr: 'DBW460',
           destinationAddr: 'DBW1200',
           motorName: '06023',
+          faultAddrs: [
+            { db: 'DBW1958', bit: 6 } // 灭菌下线06023输送故障
+          ],
           sensorName: 'SP_06023-1'
         },
         'SP_06030-2': {
@@ -7835,6 +8284,9 @@ export default {
           trayIdAddr: 'DBW470',
           destinationAddr: 'DBW1210',
           motorName: '06030',
+          faultAddrs: [
+            { db: 'DBW1958', bit: 13 } // 灭菌下线06030输送故障
+          ],
           sensorName: 'SP_06030-2'
         },
         'SP_06030-1': {
@@ -7849,6 +8301,9 @@ export default {
           trayIdAddr: 'DBW470',
           destinationAddr: 'DBW1210',
           motorName: '06030',
+          faultAddrs: [
+            { db: 'DBW1958', bit: 13 } // 灭菌下线06030输送故障
+          ],
           sensorName: 'SP_06030-1'
         },
         'SP_07023-2': {
@@ -7865,6 +8320,9 @@ export default {
           trayIdAddr: 'DBW540',
           destinationAddr: 'DBW1280',
           motorName: '07023',
+          faultAddrs: [
+            { db: 'DBW1964', bit: 6 } // 灭菌下线07023输送故障
+          ],
           sensorName: 'SP_07023-2'
         },
         'SP_07023-1': {
@@ -7879,6 +8337,9 @@ export default {
           trayIdAddr: 'DBW540',
           destinationAddr: 'DBW1280',
           motorName: '07023',
+          faultAddrs: [
+            { db: 'DBW1964', bit: 6 } // 灭菌下线07023输送故障
+          ],
           sensorName: 'SP_07023-1'
         },
         'SP_07030-2': {
@@ -7895,6 +8356,10 @@ export default {
           trayIdAddr: 'DBW550',
           destinationAddr: 'DBW1290',
           motorName: '07030',
+          faultAddrs: [
+            { db: 'DBW1964', bit: 13 }, // 灭菌下线07030输送故障
+            { db: 'DBW1976', bit: 13 } // 下线07030输送故障
+          ],
           sensorName: 'SP_07030-2'
         },
         'SP_07030-1': {
@@ -7909,6 +8374,10 @@ export default {
           trayIdAddr: 'DBW550',
           destinationAddr: 'DBW1290',
           motorName: '07030',
+          faultAddrs: [
+            { db: 'DBW1964', bit: 13 }, // 灭菌下线07030输送故障
+            { db: 'DBW1976', bit: 13 } // 下线07030输送故障
+          ],
           sensorName: 'SP_07030-1'
         },
         'SP_08023-2': {
@@ -7925,6 +8394,9 @@ export default {
           trayIdAddr: 'DBW620',
           destinationAddr: 'DBW1360',
           motorName: '08023',
+          faultAddrs: [
+            { db: 'DBW1970', bit: 6 } // 灭菌下线08023输送故障
+          ],
           sensorName: 'SP_08023-2'
         },
         'SP_08023-1': {
@@ -7939,6 +8411,9 @@ export default {
           trayIdAddr: 'DBW620',
           destinationAddr: 'DBW1360',
           motorName: '08023',
+          faultAddrs: [
+            { db: 'DBW1970', bit: 6 } // 灭菌下线08023输送故障
+          ],
           sensorName: 'SP_08023-1'
         },
         'SP_08030-2': {
@@ -7955,6 +8430,9 @@ export default {
           trayIdAddr: 'DBW630',
           destinationAddr: 'DBW1370',
           motorName: '08030',
+          faultAddrs: [
+            { db: 'DBW1970', bit: 13 } // 灭菌下线08030输送故障
+          ],
           sensorName: 'SP_08030-2'
         },
         'SP_08030-1': {
@@ -7969,6 +8447,9 @@ export default {
           trayIdAddr: 'DBW630',
           destinationAddr: 'DBW1370',
           motorName: '08030',
+          faultAddrs: [
+            { db: 'DBW1970', bit: 13 } // 灭菌下线08030输送故障
+          ],
           sensorName: 'SP_08030-1'
         },
         'SP_09012-2': {
@@ -8321,16 +8802,16 @@ export default {
       }
     });
 
-    // SP_01002 光电（01002工位 DBW1606 bit1）下降沿：托盘离开上货位 → 清空大屏上货失败报警
+    // SP_01001 光电（01001工位 DBW1606 bit0）下降沿：托盘离开上货位 → 清空大屏上货失败报警
     this.$watch(
-      () => this.deviceNodes['01002'] && this.deviceNodes['01002'].sensorStatus,
+      () => this.deviceNodes['01001'] && this.deviceNodes['01001'].sensorStatus,
       (newVal, oldVal) => {
         if (!this.isDataReady) return;
         // 下降沿：true → false
         if (oldVal === true && newVal === false) {
           this.clearLoadingFailOnScreen();
           this.addLog(
-            '[上货] SP_01002光电下降沿，清空大屏上货失败报警',
+            '[上货] SP_01001光电下降沿，清空大屏上货失败报警',
             'running'
           );
         }
@@ -9445,7 +9926,7 @@ export default {
     writeVirtualIdError(reason) {
       const head = reason ? `[上货] ${reason}` : '[上货] 条码匹配失败';
       this.addLog(`${head}，写虚拟ID=999，DBW6=2`, 'warning');
-      // 推送失败原因到大屏标题区（红大字），SP_01002光电下降沿时清空
+      // 推送失败原因到大屏标题区（红大字），SP_01001光电下降沿时清空
       this.pushLoadingFailToScreen(reason || '条码匹配失败');
       // 写虚拟ID 999
       ipcRenderer.send('writeSingleValueToPLC', 'W_DBW10', 999);
@@ -9955,6 +10436,53 @@ export default {
         }
       }
       return false;
+    },
+    isAlarmBitOn(db, logicalBit) {
+      const word = this.alarmPoints[db];
+      if (word === undefined || word === null) {
+        return false;
+      }
+      const actualBit = logicalBit < 8 ? logicalBit + 8 : logicalBit - 8;
+      return ((word >> actualBit) & 1) === 1;
+    },
+    isNodeFault(node) {
+      const addrs = node && node.faultAddrs;
+      if (!addrs || !addrs.length) {
+        return false;
+      }
+      return addrs.some((addr) => this.isAlarmBitOn(addr.db, addr.bit));
+    },
+    getDisplayFault(node) {
+      if (!node) {
+        return false;
+      }
+      if (!node.groupId) {
+        return this.isNodeFault(node);
+      }
+      const groupIds = this.groupIndex?.[node.groupId] || [];
+      for (const id of groupIds) {
+        const device = this.deviceNodes[id];
+        if (device && this.isNodeFault(device)) {
+          return true;
+        }
+      }
+      return false;
+    },
+    getActiveFaultNames(node) {
+      const addrs = node && node.faultAddrs;
+      if (!addrs || !addrs.length) {
+        return [];
+      }
+      const names = [];
+      addrs.forEach((addr) => {
+        if (!this.isAlarmBitOn(addr.db, addr.bit)) {
+          return;
+        }
+        const bitKey = 'bit' + addr.bit;
+        const alarmMessage = this.alarmMapping['DB1000.' + addr.db]?.[bitKey];
+        names.push(alarmMessage || addr.db + '.' + bitKey);
+      });
+      return names;
     },
 
     // ================= 队列容量进度条 =================
@@ -11598,7 +12126,7 @@ export default {
         unread: true
       });
     },
-    /** 通知大屏清空上货失败报警（SP_01002光电下降沿触发） */
+    /** 通知大屏清空上货失败报警（SP_01001光电下降沿触发） */
     clearLoadingFailOnScreen() {
       ipcRenderer.send('push-alarm-to-mobile', {
         id: 'loading_clear_' + Date.now(),

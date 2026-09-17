@@ -466,6 +466,33 @@
                     box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.1);
                   }
                 }
+
+                &.status-fault {
+                  .signal-base {
+                    border-color: #f56c6c;
+                    box-shadow: 0 0 0 1px rgba(245, 108, 108, 0.45),
+                      0 0 10px rgba(245, 108, 108, 0.55), 0 2px 6px rgba(0, 0, 0, 0.55);
+                    animation: pulse-fault 1.2s ease-in-out infinite;
+                  }
+
+                  .signal-core {
+                    background: radial-gradient(circle at 35% 35%, #ff9a9a, #f56c6c 70%);
+                    box-shadow: 0 0 4px rgba(245, 108, 108, 0.95),
+                      0 0 8px rgba(245, 108, 108, 0.55), inset 0 0 1px #ffffff;
+                  }
+                }
+
+                @keyframes pulse-fault {
+                  0%,
+                  100% {
+                    box-shadow: 0 0 0 1px rgba(245, 108, 108, 0.45),
+                      0 0 10px rgba(245, 108, 108, 0.55), 0 2px 6px rgba(0, 0, 0, 0.55);
+                  }
+                  50% {
+                    box-shadow: 0 0 0 1px rgba(255, 160, 160, 0.7),
+                      0 0 16px rgba(245, 108, 108, 0.8), 0 2px 8px rgba(0, 0, 0, 0.6);
+                  }
+                }
               }
             }
             
@@ -565,6 +592,23 @@
                   .line-value {
                     color: #d93030;
                     background: #fde8e8;
+                  }
+                }
+
+                .status-line.is-fault {
+                  border-color: #f5b7b7;
+                  background: #fff1f0;
+
+                  .line-label {
+                    color: #c45656;
+                  }
+
+                  .line-value {
+                    color: #c45656;
+                    background: #fde2e2;
+                    max-width: 180px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                   }
                 }
               }
