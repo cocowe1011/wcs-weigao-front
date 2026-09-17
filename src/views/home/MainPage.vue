@@ -1183,9 +1183,13 @@
                       <div
                         v-for="(tray, index) in col.trays"
                         :key="'tray-' + col.key + '-' + tray.id + '-' + index"
+                        :id="'tray-card-' + tray.id"
                         class="tray-item"
                         :class="{
-                          dragging: isDragging && draggedTray?.id === tray.id
+                          dragging: isDragging && draggedTray?.id === tray.id,
+                          'tray-item--highlight':
+                            highlightedTrayCode &&
+                            String(highlightedTrayCode) === String(tray.id)
                         }"
                         :draggable="!isOperator"
                         @dragstart="
@@ -1319,9 +1323,13 @@
                       <div
                         v-for="(tray, index) in nowTraysOther"
                         :key="'tray-other-' + tray.id + '-' + index"
+                        :id="'tray-card-' + tray.id"
                         class="tray-item"
                         :class="{
-                          dragging: isDragging && draggedTray?.id === tray.id
+                          dragging: isDragging && draggedTray?.id === tray.id,
+                          'tray-item--highlight':
+                            highlightedTrayCode &&
+                            String(highlightedTrayCode) === String(tray.id)
                         }"
                         :draggable="!isOperator"
                         @dragstart="
@@ -1708,7 +1716,7 @@
     <el-dialog
       title="托盘检索"
       :visible.sync="traySearchDialogVisible"
-      width="821px"
+      width="1100px"
       append-to-body
       :close-on-click-modal="false"
     >
@@ -1717,45 +1725,14 @@
           :model="traySearchForm"
           ref="traySearchForm"
           label-width="100px"
+          @submit.native.prevent
         >
           <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="托盘号" prop="trayCode">
+            <el-col :span="24">
+              <el-form-item label="UDI码" prop="udi">
                 <el-input
-                  v-model="traySearchForm.trayCode"
-                  placeholder="请输入托盘号进行查询"
-                  clearable
-                >
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="灭菌单号" prop="orderId">
-                <el-input
-                  v-model="traySearchForm.orderId"
-                  placeholder="请输入灭菌单号进行查询"
-                  clearable
-                >
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="物料编码" prop="productCode">
-                <el-input
-                  v-model="traySearchForm.productCode"
-                  placeholder="请输入物料编码进行查询"
-                  clearable
-                >
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="物料名称" prop="productName">
-                <el-input
-                  v-model="traySearchForm.productName"
-                  placeholder="请输入物料名称进行查询"
+                  v-model="traySearchForm.udi"
+                  placeholder="支持扫码、粘贴或部分匹配，将在全部队列中模糊查询"
                   clearable
                 >
                 </el-input>
@@ -1770,62 +1747,100 @@
           class="search-result"
         >
           <el-divider content-position="left">
-            查询结果 (共 {{ searchResults.length }} 个托盘)
+            查询结果 (共 {{ searchResults.length }} 个托盘，点击行可定位)
           </el-divider>
           <el-table
             :data="searchResults"
+            class="tray-search-table"
             style="width: 100%"
             stripe
             border
             height="300"
             :max-height="300"
+            @row-click="locateTrayFromSearch"
           >
             <el-table-column
               prop="trayCode"
               label="托盘号"
-              width="180"
+              width="110"
               align="center"
+              show-overflow-tooltip
             ></el-table-column>
+            <el-table-column
+              prop="palletNo"
+              label="托盘编码"
+              width="130"
+              align="center"
+              show-overflow-tooltip
+            >
+              <template slot-scope="scope">
+                {{ scope.row.palletNo || '--' }}
+              </template>
+            </el-table-column>
             <el-table-column
               prop="orderNo"
               label="灭菌单号"
-              width="180"
+              width="140"
               align="center"
+              show-overflow-tooltip
             >
               <template slot-scope="scope">
                 {{ scope.row.orderNo || '--' }}
               </template>
             </el-table-column>
             <el-table-column
-              prop="productCode"
-              label="物料编码"
-              width="150"
-              align="center"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.productCode || '--' }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="productName"
-              label="物料名称"
-              width="150"
-              align="center"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.productName || '--' }}
-              </template>
-            </el-table-column>
-            <el-table-column
               prop="queueName"
               label="当前队列"
-              width="120"
+              width="100"
               align="center"
             >
               <template slot-scope="scope">
                 <span style="color: red; font-weight: bold">{{
                   scope.row.queueName
                 }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="sequenceNumber"
+              label="序号"
+              width="70"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{
+                  scope.row.sequenceNumber > 0 ? scope.row.sequenceNumber : '--'
+                }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="columnLabel"
+              label="列位置"
+              width="80"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.columnLabel || '--' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="sendTo"
+              label="柜位置"
+              width="100"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.sendTo || '--' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="matchedUdi"
+              label="命中UDI"
+              min-width="160"
+              align="center"
+              show-overflow-tooltip
+            >
+              <template slot-scope="scope">
+                {{ scope.row.matchedUdi || '--' }}
               </template>
             </el-table-column>
           </el-table>
@@ -3202,13 +3217,11 @@ export default {
       traySearchDialogVisible: false,
       searchLoading: false,
       traySearchForm: {
-        trayCode: '',
-        orderId: '',
-        productCode: '',
-        productName: ''
+        udi: ''
       },
       searchResults: [],
       hasSearched: false,
+      highlightedTrayCode: '',
       isSubmitting: false,
       newTrayForm: {
         trayCode: '',
@@ -11379,24 +11392,46 @@ export default {
     // 显示托盘检索弹窗
     showTraySearchDialog() {
       this.traySearchDialogVisible = true;
-      this.traySearchForm.trayCode = '';
-      this.traySearchForm.orderId = '';
-      this.traySearchForm.productCode = '';
-      this.traySearchForm.productName = '';
+      this.traySearchForm.udi = '';
       this.searchResults = [];
       this.hasSearched = false;
     },
+    getTrayColumnLabel(queueName, sendTo) {
+      if (!queueName || queueName === '上货区') return '--';
+      const line = this.getSendToLine(sendTo);
+      if (line === '1') return '1列';
+      if (line === '2') return '2列';
+      return '--';
+    },
+    getTrayUdiCandidates(tray) {
+      const candidates = [];
+      if (tray && tray.udi) candidates.push(tray.udi);
+      if (tray && Array.isArray(tray.barcodes)) {
+        tray.barcodes.forEach((code) => {
+          if (code) candidates.push(code);
+        });
+      }
+      return candidates;
+    },
+    findMatchedUdi(tray, udiQuery) {
+      const cleanedQuery = this.cleanBarcode(udiQuery);
+      const candidates = this.getTrayUdiCandidates(tray);
+      if (!cleanedQuery) {
+        return candidates[0] || '';
+      }
+      for (const code of candidates) {
+        const cleaned = this.cleanBarcode(code);
+        if (cleaned && cleaned.includes(cleanedQuery)) {
+          return code;
+        }
+      }
+      return '';
+    },
     // 托盘检索方法
     async searchTray() {
-      // 检查至少有一个查询条件
-      const hasSearchCondition =
-        this.traySearchForm.trayCode.trim() ||
-        this.traySearchForm.orderId.trim() ||
-        this.traySearchForm.productCode.trim() ||
-        this.traySearchForm.productName.trim();
-
-      if (!hasSearchCondition) {
-        this.$message.warning('请至少输入一个查询条件');
+      const udiQuery = (this.traySearchForm.udi || '').trim();
+      if (!udiQuery) {
+        this.$message.warning('请输入UDI码');
         return;
       }
 
@@ -11405,64 +11440,29 @@ export default {
       this.searchResults = [];
 
       try {
-        const searchCriteria = {
-          trayCode: this.traySearchForm.trayCode.trim(),
-          orderId: this.traySearchForm.orderId.trim(),
-          productCode: this.traySearchForm.productCode.trim(),
-          productName: this.traySearchForm.productName.trim()
-        };
-
-        // 在所有队列中查找符合条件的托盘
+        // 在所有队列中按 UDI 模糊查找托盘
         const foundTrays = [];
 
-        for (const queue of this.queues) {
-          if (queue.trayInfo && Array.isArray(queue.trayInfo)) {
-            for (const tray of queue.trayInfo) {
-              // 检查是否符合所有输入的查询条件
-              let matches = true;
-
-              if (
-                searchCriteria.trayCode &&
-                String(tray.trayCode || '').trim() !==
-                  String(searchCriteria.trayCode).trim()
-              ) {
-                matches = false;
-              }
-              if (
-                searchCriteria.orderId &&
-                (!tray.orderNo ||
-                  !String(tray.orderNo).includes(searchCriteria.orderId))
-              ) {
-                matches = false;
-              }
-              if (
-                searchCriteria.productCode &&
-                (!tray.productCode ||
-                  !String(tray.productCode).includes(
-                    searchCriteria.productCode
-                  ))
-              ) {
-                matches = false;
-              }
-              if (
-                searchCriteria.productName &&
-                (!tray.productName ||
-                  !String(tray.productName).includes(
-                    searchCriteria.productName
-                  ))
-              ) {
-                matches = false;
-              }
-
-              if (matches) {
-                foundTrays.push({
-                  ...tray,
-                  queueName: queue.queueName
-                });
-              }
+        this.queues.forEach((queue, queueIndex) => {
+          if (!queue.trayInfo || !Array.isArray(queue.trayInfo)) return;
+          queue.trayInfo.forEach((tray) => {
+            const matchedUdi = this.findMatchedUdi(tray, udiQuery);
+            if (matchedUdi) {
+              foundTrays.push({
+                ...tray,
+                queueName: queue.queueName,
+                queueIndex,
+                sequenceNumber: tray.sequenceNumber || '',
+                columnLabel: this.getTrayColumnLabel(
+                  queue.queueName,
+                  tray.sendTo
+                ),
+                sendTo: tray.sendTo || '',
+                matchedUdi
+              });
             }
-          }
-        }
+          });
+        });
 
         if (foundTrays.length > 0) {
           this.searchResults = foundTrays;
@@ -11480,6 +11480,41 @@ export default {
       } finally {
         this.searchLoading = false;
       }
+    },
+    locateTrayFromSearch(row) {
+      if (!row) return;
+      const queueIndex = Number(row.queueIndex);
+      if (Number.isNaN(queueIndex) || queueIndex < 0) {
+        this.$message.warning('未找到该托盘所在队列');
+        return;
+      }
+      this.showTrays(queueIndex);
+      this.highlightedTrayCode = String(row.trayCode || '');
+      this.traySearchDialogVisible = false;
+      if (this._trayHighlightTimer) {
+        clearTimeout(this._trayHighlightTimer);
+      }
+      this.$nextTick(() => {
+        const el = document.getElementById(
+          'tray-card-' + this.highlightedTrayCode
+        );
+        if (el && typeof el.scrollIntoView === 'function') {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+      this._trayHighlightTimer = setTimeout(() => {
+        this.highlightedTrayCode = '';
+        this._trayHighlightTimer = null;
+      }, 3000);
+      const columnText =
+        row.columnLabel && row.columnLabel !== '--' ? row.columnLabel : '';
+      const seqText = row.sequenceNumber > 0 ? `序号${row.sequenceNumber}` : '';
+      const posParts = [row.queueName, columnText, seqText].filter(Boolean);
+      this.addLog(
+        `托盘定位：${
+          row.trayCode || row.palletNo || '--'
+        } 当前在 ${posParts.join(' ')}`
+      );
     },
     async submitAddTray() {
       if (!this.selectedQueue) return;
@@ -12771,6 +12806,10 @@ export default {
     window.removeEventListener('resize', this.updateMarkerPositions);
     this._removeWebSocketIpcListeners();
     this.disconnectAllScanners();
+    if (this._trayHighlightTimer) {
+      clearTimeout(this._trayHighlightTimer);
+      this._trayHighlightTimer = null;
+    }
     if (this._isDataReadyTimer) {
       clearTimeout(this._isDataReadyTimer);
       this._isDataReadyTimer = null;

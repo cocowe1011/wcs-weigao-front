@@ -374,9 +374,7 @@
                 transform: translate(-50%, -50%); /* 居中对齐 */
                 cursor: pointer;
                 z-index: 100;
-                transition: transform 0.2s ease, filter 0.2s ease;
                 box-sizing: border-box;
-                will-change: transform;
 
                 .tray-icon {
                   position: absolute;
@@ -393,29 +391,13 @@
                 }
 
                 &:hover {
-                  transform: translate(-50%, -50%) scale(1.12);
                   z-index: 101;
-                  filter: brightness(1.06);
                 }
 
                 &.is-selected {
                   .signal-base {
-                    border-color: #b8c4d6;
-                    box-shadow: 0 0 0 1px rgba(214, 229, 255, 0.45),
-                      0 0 10px rgba(64, 158, 255, 0.45), 0 2px 6px rgba(0, 0, 0, 0.55);
-                    animation: pulse-glow 1.5s ease-in-out infinite;
-                  }
-                }
-
-                @keyframes pulse-glow {
-                  0%,
-                  100% {
-                    box-shadow: 0 0 0 1px rgba(214, 229, 255, 0.45),
-                      0 0 10px rgba(64, 158, 255, 0.45), 0 2px 6px rgba(0, 0, 0, 0.55);
-                  }
-                  50% {
-                    box-shadow: 0 0 0 1px rgba(230, 240, 255, 0.65),
-                      0 0 14px rgba(64, 158, 255, 0.65), 0 2px 8px rgba(0, 0, 0, 0.6);
+                    border-color: #409eff;
+                    box-shadow: none;
                   }
                 }
 
@@ -1721,6 +1703,10 @@
                 transform: scale(0.98);
                 border: 1px dashed rgba(255, 255, 255, 0.3);
               }
+              .tray-item.tray-item--highlight {
+                border-color: #e6a23c;
+                background: rgba(230, 162, 60, 0.16);
+              }
               /* 添加空状态样式 */
               .empty-state {
                 display: flex;
@@ -1972,6 +1958,10 @@
 .tray-search-form {
   .search-result {
     margin-top: 20px;
+  }
+
+  .tray-search-table {
+    cursor: pointer;
   }
 
   .no-result {
