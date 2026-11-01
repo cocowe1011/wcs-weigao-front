@@ -10927,14 +10927,21 @@ export default {
       const plcRange = plcRanges[`cart${cartId}`];
       if (!plcRange) return;
 
-      // 计算比例（基于新的范围起点）
-      const ratio = value / plcRange.max;
+      // PLC 超出 0~量程时把比例夹在 0~1，小车停在画面最小/最大位置
+      const numericValue = Number(value);
+      const safeValue = Number.isFinite(numericValue) ? numericValue : 0;
+      const ratio =
+        plcRange.max === 0
+          ? 0
+          : Math.min(1, Math.max(0, safeValue / plcRange.max));
 
-      // 根据比例计算y轴位置（PLC原点对应y轴最小值，PLC终点对应y轴最大值）
+      // PLC 0 对应最小位置，PLC 量程终点对应最大位置
       const xPosition = xRange.min + (xRange.max - xRange.min) * ratio;
 
       // 更新小车位置
-      cart.x = Math.round(xPosition);
+      cart.x = Math.round(
+        Math.min(xRange.max, Math.max(xRange.min, xPosition))
+      );
 
       // 更新视图
       this.$nextTick(() => {
