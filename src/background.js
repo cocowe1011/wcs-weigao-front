@@ -257,11 +257,18 @@ app.on('ready', () => {
     writeValuesToPLC(arg1, arg2);
   });
   // writeSingleValueToPLC - 单独给PLC某个变量写值，通过批量写入数组实现
+  // 这条是 WCS 界面 IPC。同一地址若之前是 PDA 放进周期写的，改归 WCS，断联时不再清 0。
   ipcMain.on('writeSingleValueToPLC', (event, arg1, arg2) => {
+    if (alarmWebSocketServer) {
+      alarmWebSocketServer.forgetPdaPlcWrite(arg1);
+    }
     writeSingleValueToPLC(arg1, arg2);
   });
-  // cancelWriteToPLC - 取消PLC某个变量的写入
+  // cancelWriteToPLC - 取消PLC某个变量的写入（同样只代表 WCS 取消）
   ipcMain.on('cancelWriteToPLC', (event, arg1) => {
+    if (alarmWebSocketServer) {
+      alarmWebSocketServer.forgetPdaPlcWrite(arg1);
+    }
     cancelWriteToPLC(arg1);
   });
   // 获取PLC变量定义（只在组件挂载时调用一次，因为启动后不会变）
@@ -2727,7 +2734,7 @@ function writeValuesToPLC(add, values) {
 function writeSingleValueToPLC(add, values) {
   if (!variables[add]) {
     console.warn(`Address ${add} not found in variables.`);
-    return;
+    return false;
   }
 
   // 查找地址在批量写入数组中的索引
@@ -2737,6 +2744,7 @@ function writeSingleValueToPLC(add, values) {
     // 地址已存在，直接更新值（这个操作是原子的）
     writeStrArr[index] = values;
     console.log(`更新PLC地址 ${add} 的值为：${values}`);
+    return true;
   } else {
     // 地址不存在，使用原子性操作添加到批量写入数组
     const newAddArr = [...writeAddArr, add];
@@ -2749,6 +2757,7 @@ function writeSingleValueToPLC(add, values) {
     writeStrArr.push(...newStrArr);
 
     console.log(`添加PLC地址 ${add} 到批量写入数组，值：${values}`);
+    return true;
   }
 }
 

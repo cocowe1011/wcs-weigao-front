@@ -1,5 +1,13 @@
 const WebSocket = require('ws');
 
+/** 断联时保留，不改写成 0。手自动：1 自动 / 2 手动，0 不是合法模式。 */
+const PDA_DISCONNECT_KEEP = new Set(['W_DBW34']);
+
+function isNonZeroPlcValue(value) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric !== 0;
+}
+
 /**
  * PDA/移动端 WebSocket 服务端：供 PDA 连接电脑端，扫码数据上报、报警推送等
  */
@@ -36,7 +44,9 @@ class AlarmWebSocketServer {
             req.socket.remoteAddress ||
             'Unknown',
           connectedAt: new Date(),
-          lastPing: Date.now()
+          lastPing: Date.now(),
+          // 仅本连接通过 plc_write 放下、且尚未取消的值。WCS 的 IPC 写入不进这里。
+          plcWrites: new Map()
         };
 
         this.clients.set(clientId, clientInfo);
@@ -58,13 +68,12 @@ class AlarmWebSocketServer {
         });
 
         ws.on('close', () => {
-          console.log(`移动端客户端断开连接: ${clientId}`);
-          this.clients.delete(clientId);
+          this.detachClient(clientId, 'close');
         });
 
         ws.on('error', (error) => {
           console.error(`客户端连接错误 ${clientId}:`, error);
-          this.clients.delete(clientId);
+          this.detachClient(clientId, 'error');
         });
 
         ws.on('pong', () => {
@@ -233,7 +242,16 @@ class AlarmWebSocketServer {
     // 使用 global 对象存储引用，供 WebSocket 服务端调用
     if (global.writeSingleValueToPLC) {
       try {
-        global.writeSingleValueToPLC(address, value);
+        const written = global.writeSingleValueToPLC(address, value);
+        if (!written) {
+          this.sendToClient(clientId, {
+            type: 'plc_write_response',
+            success: false,
+            message: `PLC 地址未定义: ${address}`
+          });
+          return;
+        }
+        this.rememberPdaPlcWrite(clientId, address, value);
         console.log(`[PDA PLC写入] 地址: ${address}, 值: ${value}`);
         this.sendToClient(clientId, {
           type: 'plc_write_response',
@@ -277,6 +295,7 @@ class AlarmWebSocketServer {
     if (global.cancelWriteToPLC) {
       try {
         global.cancelWriteToPLC(address);
+        this.forgetClientPdaPlcWrite(clientId, address);
         console.log(`[PDA PLC取消写入] 地址: ${address}`);
         this.sendToClient(clientId, {
           type: 'plc_cancel_write_response',
@@ -326,7 +345,7 @@ class AlarmWebSocketServer {
         return true;
       } catch (error) {
         console.error(`发送消息给客户端 ${clientId} 失败:`, error);
-        this.clients.delete(clientId);
+        this.detachClient(clientId, 'send-failed');
         return false;
       }
     }
@@ -362,19 +381,106 @@ class AlarmWebSocketServer {
     return clientList;
   }
 
+  /**
+   * 记下该 PDA 连接当前放在周期写数组里的值。
+   * 写 0 表示点动松开，不再算「正在写的非 0」。
+   */
+  rememberPdaPlcWrite(clientId, address, value) {
+    const client = this.clients.get(clientId);
+    if (!client) return;
+    if (!client.plcWrites) client.plcWrites = new Map();
+    if (!isNonZeroPlcValue(value)) {
+      client.plcWrites.delete(address);
+      return;
+    }
+    client.plcWrites.set(address, Number(value));
+  }
+
+  /** 该 PDA 自己取消了这个地址 */
+  forgetClientPdaPlcWrite(clientId, address) {
+    const client = this.clients.get(clientId);
+    if (!client || !client.plcWrites) return;
+    client.plcWrites.delete(address);
+  }
+
+  /**
+   * WCS 界面经 IPC 写或取消了这个地址，周期写槽位改归 WCS。
+   * 之后断联不能再把这个地址清 0，否则会冲掉 WCS 刚写下的值。
+   */
+  forgetPdaPlcWrite(address) {
+    if (!address) return;
+    this.clients.forEach((client) => {
+      if (client.plcWrites) client.plcWrites.delete(address);
+    });
+  }
+
+  anotherPdaStillWriting(address, exceptClientId) {
+    for (const [id, client] of this.clients) {
+      if (id === exceptClientId || !client.plcWrites) continue;
+      if (isNonZeroPlcValue(client.plcWrites.get(address))) return true;
+    }
+    return false;
+  }
+
+  /**
+   * 连接断开、心跳超时、发送失败时：该 PDA 还在周期写的非 0 值直接改写 0。
+   * 手自动 W_DBW34 保留。别的 PDA 仍占用同一地址时不清。
+   */
+  clearPdaPlcWritesOnDisconnect(clientId, client) {
+    if (!client.plcWrites || client.plcWrites.size === 0) return;
+    const pending = client.plcWrites;
+    client.plcWrites = new Map();
+    pending.forEach((value, address) => {
+      if (PDA_DISCONNECT_KEEP.has(address)) {
+        console.log(`[PDA断联] 保留 ${address}=${value}`);
+        return;
+      }
+      if (!isNonZeroPlcValue(value)) return;
+      if (this.anotherPdaStillWriting(address, clientId)) {
+        console.log(
+          `[PDA断联] ${clientId} ${address}=${value} 仍有其他PDA在写，跳过清零`
+        );
+        return;
+      }
+      if (typeof global.writeSingleValueToPLC !== 'function') {
+        console.error('[PDA断联清零] writeSingleValueToPLC 未定义');
+        return;
+      }
+      const ok = global.writeSingleValueToPLC(address, 0);
+      console.log(
+        `[PDA断联清零] ${clientId} ${address} ${value} -> 0${
+          ok ? '' : '（写入未生效）'
+        }`
+      );
+    });
+  }
+
+  detachClient(clientId, reason) {
+    const client = this.clients.get(clientId);
+    if (!client || client.detaching) return;
+    client.detaching = true;
+    this.clearPdaPlcWritesOnDisconnect(clientId, client);
+    this.clients.delete(clientId);
+    console.log(`移动端客户端断开连接: ${clientId}, 原因: ${reason}`);
+  }
+
   startHeartbeat() {
     setInterval(() => {
       const now = Date.now();
       this.clients.forEach((client, clientId) => {
         if (client.ws.readyState === WebSocket.OPEN) {
           if (now - client.lastPing > 30000) {
-            client.ws.terminate();
-            this.clients.delete(clientId);
+            this.detachClient(clientId, 'heartbeat-timeout');
+            try {
+              client.ws.terminate();
+            } catch (error) {
+              console.error(`终止客户端 ${clientId} 失败:`, error);
+            }
           } else {
             client.ws.ping();
           }
         } else {
-          this.clients.delete(clientId);
+          this.detachClient(clientId, 'not-open');
         }
       });
     }, 15000);
