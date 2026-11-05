@@ -12461,7 +12461,10 @@ export default {
           result += `(01)${cleanUdi.substr(position, 14)}`;
           position += 14;
         }
-        // 批号 (10) 变长：查找后续 "11" + 合法日期
+        // 批号 (10) 变长：靠 "11"(生产日期) + "17"(有效期) 组合定位边界。
+        // 不能只判 "11"+合法日期：批号形如 20261101 时，第 5-6 位的 "11" 加上其后的
+        // "011126" 会被当成日期，导致批号被截断成 "2026"、后续 AI 全部错位，
+        // 最终触发下方无损校验回退成裸串。因此要求 11 之后必须紧跟合法的 17。
         if (
           position + 2 < cleanUdi.length &&
           cleanUdi.substr(position, 2) === '10'
@@ -12475,14 +12478,24 @@ export default {
             const dd = parseInt(dateStr.substr(4, 2));
             return mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31;
           };
+          const candidates = [];
           for (let i = 1; i < remaining.length - 7; i++) {
-            const potentialDate = remaining.substr(i + 2, 6);
-            if (remaining.substr(i, 2) === '11' && isValidDate(potentialDate)) {
-              result += `(10)${remaining.substr(0, i)}`;
-              position += i;
-              foundNext = true;
-              break;
-            }
+            if (remaining.substr(i, 2) !== '11') continue;
+            const prodDate = remaining.substr(i + 2, 6);
+            if (!isValidDate(prodDate)) continue;
+            const expIndex = i + 2 + 6;
+            if (remaining.substr(expIndex, 2) !== '17') continue;
+            const expDate = remaining.substr(expIndex + 2, 6);
+            if (!isValidDate(expDate)) continue;
+            candidates.push({ i, prodDate, expDate });
+          }
+          // 多解时优先保留生产日期不晚于有效期的候选，仍多解则取最靠前的
+          const hit =
+            candidates.find((c) => c.prodDate <= c.expDate) || candidates[0];
+          if (hit) {
+            result += `(10)${remaining.substr(0, hit.i)}`;
+            position += hit.i;
+            foundNext = true;
           }
           if (!foundNext && position + 8 <= cleanUdi.length) {
             result += `(10)${cleanUdi.substr(position, 8)}`;
