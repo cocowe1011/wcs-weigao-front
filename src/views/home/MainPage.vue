@@ -2050,6 +2050,10 @@
 <script>
 import HttpUtil from '@/utils/HttpUtil';
 import HttpUtilMes from '@/utils/HttpUtilMes';
+import {
+  parseUDICode as parseGs1Udi,
+  cleanUid as cleanUidByGs1
+} from '@/utils/gs1Udi';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
@@ -10273,12 +10277,10 @@ export default {
     },
 
     // ================= 扫码模拟 =================
-    // ---- 条码清洗：去除非字母数字字符 ----
+    // ---- 条码清洗：剥掉扫描引擎前缀后去除非字母数字字符。
+    // 与 parseUDICode 的前缀剥离规则保持一致，否则会出现 MSE 查得到、本地 uid 查不到（重复建档）----
     cleanBarcode(code) {
-      if (!code) return '';
-      return String(code)
-        .replace(/[^a-zA-Z0-9]/g, '')
-        .trim();
+      return cleanUidByGs1(code);
     },
 
     // ================= 扫码枪TCP连接管理 =================
@@ -12440,124 +12442,11 @@ export default {
     },
 
     /**
-     * 将原始扫码串解析为 GS1 标准带括号格式（MSE FBARCODE 入参要求）
-     * 例：0126932992101039... -> (01)26932992101039(10)...(11)...(17)...(91)...(21)...
+     * 将原始扫码串解析为 GS1 标准带括号格式（MSE FBARCODE 入参要求）。
+     * 扫码串里的 GS 分隔符会保留并优先按标准字段长度切开。
      */
     parseUDICode(rawUdi) {
-      if (!rawUdi) return '';
-      let cleanUdi = String(rawUdi)
-        .replace(/^F<'?/, '')
-        .replace(/[^0-9A-Za-z]/g, '')
-        .trim();
-      if (!cleanUdi) return '';
-      try {
-        let result = '';
-        let position = 0;
-        if (cleanUdi.substr(0, 2) === '01') {
-          position = 2;
-        }
-        // GTIN (01) 14位
-        if (position + 14 <= cleanUdi.length) {
-          result += `(01)${cleanUdi.substr(position, 14)}`;
-          position += 14;
-        }
-        // 批号 (10) 变长：靠 "11"(生产日期) + "17"(有效期) 组合定位边界。
-        // 不能只判 "11"+合法日期：批号形如 20261101 时，第 5-6 位的 "11" 加上其后的
-        // "011126" 会被当成日期，导致批号被截断成 "2026"、后续 AI 全部错位，
-        // 最终触发下方无损校验回退成裸串。因此要求 11 之后必须紧跟合法的 17。
-        if (
-          position + 2 < cleanUdi.length &&
-          cleanUdi.substr(position, 2) === '10'
-        ) {
-          position += 2;
-          let foundNext = false;
-          const remaining = cleanUdi.substr(position);
-          const isValidDate = (dateStr) => {
-            if (!/^\d{6}$/.test(dateStr)) return false;
-            const mm = parseInt(dateStr.substr(2, 2));
-            const dd = parseInt(dateStr.substr(4, 2));
-            return mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31;
-          };
-          const candidates = [];
-          for (let i = 1; i < remaining.length - 7; i++) {
-            if (remaining.substr(i, 2) !== '11') continue;
-            const prodDate = remaining.substr(i + 2, 6);
-            if (!isValidDate(prodDate)) continue;
-            const expIndex = i + 2 + 6;
-            if (remaining.substr(expIndex, 2) !== '17') continue;
-            const expDate = remaining.substr(expIndex + 2, 6);
-            if (!isValidDate(expDate)) continue;
-            candidates.push({ i, prodDate, expDate });
-          }
-          // 多解时优先保留生产日期不晚于有效期的候选，仍多解则取最靠前的
-          const hit =
-            candidates.find((c) => c.prodDate <= c.expDate) || candidates[0];
-          if (hit) {
-            result += `(10)${remaining.substr(0, hit.i)}`;
-            position += hit.i;
-            foundNext = true;
-          }
-          if (!foundNext && position + 8 <= cleanUdi.length) {
-            result += `(10)${cleanUdi.substr(position, 8)}`;
-            position += 8;
-          }
-        }
-        // 生产日期 (11) 6位
-        if (
-          position + 2 < cleanUdi.length &&
-          cleanUdi.substr(position, 2) === '11'
-        ) {
-          position += 2;
-          if (position + 6 <= cleanUdi.length) {
-            result += `(11)${cleanUdi.substr(position, 6)}`;
-            position += 6;
-          }
-        }
-        // 有效期 (17) 6位
-        if (
-          position + 2 < cleanUdi.length &&
-          cleanUdi.substr(position, 2) === '17'
-        ) {
-          position += 2;
-          if (position + 6 <= cleanUdi.length) {
-            result += `(17)${cleanUdi.substr(position, 6)}`;
-            position += 6;
-          }
-        }
-        // 公司内部信息 (91) 变长：到下一个 "21"
-        if (
-          position + 2 < cleanUdi.length &&
-          cleanUdi.substr(position, 2) === '91'
-        ) {
-          position += 2;
-          const remainingPart = cleanUdi.substr(position);
-          const ai21Index = remainingPart.indexOf('21');
-          if (ai21Index !== -1) {
-            result += `(91)${remainingPart.substr(0, ai21Index)}`;
-            position += ai21Index;
-          }
-        }
-        // 序列号 (21) 剩余
-        if (
-          position + 2 < cleanUdi.length &&
-          cleanUdi.substr(position, 2) === '21'
-        ) {
-          position += 2;
-          if (position < cleanUdi.length) {
-            result += `(21)${cleanUdi.substr(position)}`;
-          }
-        }
-        // 无损保证：加括号后去括号必须与原始清洗值完全一致，否则说明解析丢/改了字符，
-        // 回退为原始清洗值，确保 cleanBarcode(parseUDICode(x)) === x，
-        // 从而库里存的 uid 与 PDA 扫码查询条码始终一致（避免重复建档/查不到）
-        if (!result || result.replace(/[^0-9A-Za-z]/g, '') !== cleanUdi) {
-          return cleanUdi;
-        }
-        return result;
-      } catch (error) {
-        console.error('UDI解析失败:', error);
-        return rawUdi;
-      }
+      return parseGs1Udi(rawUdi);
     },
 
     /**
@@ -12605,14 +12494,21 @@ export default {
         });
       };
       try {
-        if (!udi) {
+        // 一次确定本地查档 UID；空包装、空白和仅分隔符不应请求 MSE。
+        const uid = this.cleanBarcode(udi);
+        if (!uid) {
           throw new Error('UDI为空');
         }
         // 1. 加括号（转 GS1 标准格式，作为 MSE FBARCODE 入参）
-        // 入参 udi 由 PDA 侧已 cleanBarcode，此处不再重复清洗
+        // PDA 扫码保留 GS；手输没有分隔符时 parseUDICode 走日期兜底
         const parenUdi = this.parseUDICode(udi);
+        if (!parenUdi || this.cleanBarcode(parenUdi) !== uid) {
+          throw new Error('UDI解析前后内容不一致');
+        }
+        // 日志里把 GS 分隔符显示成 <GS>，便于现场判断扫描引擎有没有输出分隔符
+        const shownUdi = String(udi).split('\x1d').join('<GS>');
         this.addLog(
-          `[MSE]收到PDA查询请求 udi=${udi} -> ${parenUdi}`,
+          `[MSE]收到PDA查询请求 udi=${shownUdi} -> ${parenUdi}`,
           'running'
         );
 
@@ -12641,8 +12537,9 @@ export default {
         }
 
         // 4. 已建档：比较并更新档案目的地（不再整单 save，避免重复建档）
+        // 库里 uid 存的是去掉分隔符的纯串，查档必须用清洗值，不能带 GS
         const existRes = await HttpUtil.get(
-          `/produce_batch/getByGoodsUid?uid=${encodeURIComponent(udi)}`
+          `/produce_batch/getByGoodsUid?uid=${encodeURIComponent(uid)}`
         );
         const existingDetail =
           existRes && existRes.code === '200' ? existRes.data : null;
