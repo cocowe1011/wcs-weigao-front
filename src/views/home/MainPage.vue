@@ -2058,6 +2058,7 @@ import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
 import permissionMixin from '@/mixins/permissionMixin';
+import { setLoadingFailMessage } from '@/utils/loadingFailState';
 
 const net = require('net');
 
@@ -3143,6 +3144,8 @@ export default {
       },
       // ---- 01002 上货流程 ----
       scanBuffer01002: [], // 01002 当前读码会话缓存的条码列表
+      // 虚拟ID请求限流：从本次放行的请求开始计时，5秒内重复触发直接忽略
+      lastVirtualIdReqTime: null,
       // ---- 01006 目的地流程 ----
       scanBuffer01006: [], // 01006 当前读码会话缓存的条码列表
       // DB1000.DBW1658 各bit当前值，watch中做上升沿检测
@@ -10442,6 +10445,16 @@ export default {
      * 3. 匹配失败：虚拟ID写999，DB1001.DBW6写2持续2秒
      */
     async handleVirtualIdRequest01002() {
+      const now = Date.now();
+      if (
+        this.lastVirtualIdReqTime !== null &&
+        now - this.lastVirtualIdReqTime < 5000
+      ) {
+        this.addLog('[上货] 虚拟ID请求限流：5秒内重复触发，已忽略', 'warning');
+        return;
+      }
+      this.lastVirtualIdReqTime = now;
+
       if (!this.currentExecutingBatch) {
         this.addLog('[上货] 请求写虚拟ID但无运行中的批次，忽略', 'warning');
         return;
@@ -12682,6 +12695,8 @@ export default {
     },
     /** 推送上货失败信息到大屏标题区（复用报警WS广播，type=loading_fail 供大屏区分显示位置） */
     pushLoadingFailToScreen(message) {
+      // 主控室与大屏使用同一触发点，同步显示最新一次上货失败原因。
+      setLoadingFailMessage(message);
       ipcRenderer.send('push-alarm-to-mobile', {
         id: 'loading_fail_' + Date.now(),
         message: message,
@@ -12693,6 +12708,8 @@ export default {
     },
     /** 通知大屏清空上货失败报警（SP_01001光电下降沿触发） */
     clearLoadingFailOnScreen() {
+      // 沿用 SP_01001 光电下降沿恢复逻辑，主控室浮窗同步消失。
+      setLoadingFailMessage('');
       ipcRenderer.send('push-alarm-to-mobile', {
         id: 'loading_clear_' + Date.now(),
         message: '',

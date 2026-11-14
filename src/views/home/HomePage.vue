@@ -1,5 +1,6 @@
 <template>
   <div class="homePage">
+    <loading-fail-alert :message="loadingFailState.message" />
     <div class="maskDiv">
       <div class="maskDiv-top">
         <div
@@ -9,11 +10,12 @@
         >
           <img
             src="@/assets/fengke-logo.jpg"
-            style="width: 38px; height: 38px"
+            class="brand-logo"
+            alt="丰科智能标志"
           />
-          <div style="margin-left: 10px; height: 100%">
-            <div class="maskDiv-top-left-top-title">WCS系统</div>
-            <div class="maskDiv-top-left-top-title2">wcs</div>
+          <div class="brand-copy">
+            <div class="brand-name">丰科智能</div>
+            <div class="brand-system">WCS系统</div>
           </div>
         </div>
         <div class="maskDiv-top-mid">
@@ -202,15 +204,19 @@ import { ipcRenderer } from 'electron';
 import StatusMonitor from '@/components/StatusMonitoring.vue';
 import HttpUtil from '@/utils/HttpUtil';
 import config from '@/config';
+import LoadingFailAlert from '@/components/LoadingFailAlert.vue';
+import { loadingFailState } from '@/utils/loadingFailState';
 const remote = require('electron').remote;
 export default {
   name: 'HomePage',
   components: {
-    StatusMonitor
+    StatusMonitor,
+    LoadingFailAlert
   },
   props: {},
   data() {
     return {
+      loadingFailState,
       activeIndex: '2',
       windowSize: 'max-window',
       showLogout: true,
@@ -575,27 +581,32 @@ export default {
         &.no-drag {
           -webkit-app-region: no-drag;
         }
-        &-top-title {
-          font-size: 16px;
-          font-weight: 550;
-          letter-spacing: 0px;
-          color: rgba(28, 28, 40, 1);
-          text-align: left;
-          vertical-align: top;
-          height: 30px;
-          display: flex;
-          align-items: flex-end;
+        .brand-logo {
+          width: 38px;
+          height: 38px;
+          flex-shrink: 0;
+          object-fit: contain;
         }
-        &-top-title2 {
-          font-size: 14px;
-          font-weight: 400;
-          letter-spacing: 1.2px;
-          color: rgba(70, 91, 101, 1);
-          text-align: left;
-          vertical-align: top;
-          height: 20px;
+        .brand-copy {
           display: flex;
-          align-items: flex-start;
+          flex-direction: column;
+          justify-content: center;
+          margin-left: 10px;
+          white-space: nowrap;
+        }
+        .brand-name {
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 24px;
+          letter-spacing: 1px;
+          color: #24364b;
+        }
+        .brand-system {
+          font-size: 11px;
+          font-weight: 500;
+          line-height: 16px;
+          letter-spacing: 1px;
+          color: #526477;
         }
       }
       &-min,
