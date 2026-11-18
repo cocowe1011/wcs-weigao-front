@@ -11292,7 +11292,8 @@ export default {
     },
     isSameOrderPallet(tray, pallet) {
       if (!tray || !pallet) return false;
-      if (tray.palletId && String(tray.palletId) === String(pallet.id)) return true;
+      if (tray.palletId && String(tray.palletId) === String(pallet.id))
+        return true;
       return !!(
         pallet.virtualId &&
         String(tray.virtualId || tray.trayCode) === String(pallet.virtualId)
