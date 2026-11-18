@@ -1731,7 +1731,12 @@
       </div>
     </div>
     <!-- 订单查询对话框 -->
-    <OrderQueryDialog :visible.sync="orderQueryDialogVisible" />
+    <OrderQueryDialog
+      :visible.sync="orderQueryDialogVisible"
+      :queues="queues"
+      :add-pallet-to-queue="addOrderPalletToQueue"
+      :reset-pallet-loading="resetOrderPalletLoading"
+    />
     <!-- 托盘检索弹窗 -->
     <el-dialog
       title="托盘检索"
@@ -9274,6 +9279,10 @@ export default {
         .sort((a, b) => Number(a.queueName) - Number(b.queueName));
     }
   },
+  created() {
+    this.addOrderPalletToQueue = this.addOrderPalletToQueue.bind(this);
+    this.resetOrderPalletLoading = this.resetOrderPalletLoading.bind(this);
+  },
   mounted() {
     this.initializeMarkers();
     this.loadQueueInfoFromDatabase();
@@ -11280,6 +11289,102 @@ export default {
     // 显示订单查询对话框
     showOrderQueryDialog() {
       this.orderQueryDialogVisible = true;
+    },
+    isSameOrderPallet(tray, pallet) {
+      if (!tray || !pallet) return false;
+      if (tray.palletId && String(tray.palletId) === String(pallet.id)) return true;
+      return !!(
+        pallet.virtualId &&
+        String(tray.virtualId || tray.trayCode) === String(pallet.virtualId)
+      );
+    },
+    async addOrderPalletToQueue(pallet, batch, queueName, line) {
+      const target = this.queues.find((q) => q.queueName === queueName);
+      const preheat = /^Y32(0[1-9]|1[0-5])$/.test(queueName);
+      if (!target || (queueName !== '上货区' && !preheat)) {
+        throw new Error('请选择上货区或预热房');
+      }
+      const existed = this.queues.find((q) =>
+        (q.trayInfo || []).some((t) => this.isSameOrderPallet(t, pallet))
+      );
+      if (existed) {
+        throw new Error(`该托盘已在${existed.queueName}队列中`);
+      }
+      const res = await HttpUtil.post(
+        '/produce_pallet/syncManualQueue',
+        { id: pallet.id, batchId: batch.id },
+        { params: { queueName, line: preheat ? line : undefined } }
+      );
+      if (!res || res.code !== '200' || !res.data || !res.data.virtualId) {
+        throw new Error((res && res.message) || '更新托盘状态失败');
+      }
+      const updated = res.data;
+      const goods = updated.goods || [];
+      const firstGoods = goods[0] || {};
+      const sendCode = preheat ? queueName.slice(1) + String(line) : '';
+      const tray = {
+        palletId: String(updated.id),
+        trayCode: String(updated.virtualId),
+        virtualId: String(updated.virtualId),
+        trayTime: updated.loadTime || moment().format('YYYY-MM-DD HH:mm:ss'),
+        batchId: String(updated.batchId),
+        destination: preheat ? sendCode : updated.sendDestinationCode || '',
+        sendStatus: preheat ? '1' : updated.sendStatus || '0',
+        sendTo: preheat
+          ? sendCode
+          : updated.sendStatus === '1'
+          ? updated.sendDestinationCode || ''
+          : '',
+        state: '1',
+        barcodes: goods.map((g) => g.uid),
+        palletNo: updated.palletNo,
+        orderNo: batch.sterilizationOrderNo,
+        sterilizerNameCode: batch.sterilizerNameCode,
+        processPlanNameCode: batch.processPlanNameCode,
+        toWarehouse: updated.toWarehouse,
+        productCode: firstGoods.productCode,
+        productName: firstGoods.productName,
+        spec: firstGoods.spec,
+        productionBatchNumber: firstGoods.productionBatchNumber,
+        productionDate: firstGoods.productionDate,
+        udi: firstGoods.uid,
+        goodsCount: goods.length
+      };
+      if (preheat) {
+        const existingCount = (target.trayInfo || []).filter(
+          (t) => t.sequenceNumber && t.sequenceNumber > 0
+        ).length;
+        tray.sequenceNumber = Math.ceil((existingCount + 1) / 2);
+      }
+      if (!Array.isArray(target.trayInfo)) {
+        this.$set(target, 'trayInfo', []);
+      }
+      target.trayInfo.push(tray);
+      this.updateQueueInfo(target.id);
+      if (this.selectedQueue && this.selectedQueue.id === target.id) {
+        this.showTrays(this.selectedQueueIndex);
+      }
+      this.addLog(
+        `[订单查询] 托盘${tray.palletNo}（虚拟ID=${tray.virtualId}）已加入${queueName}`
+      );
+      await this.pollBatchAndDestination();
+    },
+    async resetOrderPalletLoading(pallet) {
+      const ok = await this.resetPalletToArchived(pallet.id, pallet);
+      if (!ok) return false;
+      this.queues.forEach((queue) => {
+        if (!Array.isArray(queue.trayInfo)) return;
+        const left = queue.trayInfo.filter(
+          (t) => !this.isSameOrderPallet(t, pallet)
+        );
+        if (left.length === queue.trayInfo.length) return;
+        queue.trayInfo = left;
+        this.updateQueueInfo(queue.id);
+        if (this.selectedQueue && this.selectedQueue.id === queue.id) {
+          this.showTrays(this.selectedQueueIndex);
+        }
+      });
+      return true;
     },
     toggleButtonState(button) {
       if (button === 'start') {

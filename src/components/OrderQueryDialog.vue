@@ -305,8 +305,80 @@
               {{ (scope.row.goods || []).length }}
             </template>
           </el-table-column>
+          <el-table-column
+            v-if="addPalletToQueue && resetPalletLoading"
+            label="操作"
+            fixed="right"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <el-button
+                type="text"
+                size="small"
+                :disabled="busy"
+                @click="openQueuePicker(row)"
+                >加入队列</el-button
+              >
+              <el-button
+                type="text"
+                size="small"
+                :disabled="busy"
+                @click="confirmResetLoading(row)"
+                >重置上货</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
       </div>
+    </el-dialog>
+
+    <el-dialog
+      title="加入队列"
+      :visible.sync="queuePickerVisible"
+      width="420px"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <el-form v-if="selectedPallet" label-width="90px">
+        <el-form-item label="托盘号">
+          {{ selectedPallet.palletNo || selectedPallet.id }}
+        </el-form-item>
+        <el-form-item label="目标队列">
+          <el-select
+            v-model="targetQueue"
+            placeholder="请选择队列"
+            style="width: 220px"
+          >
+            <el-option
+              v-for="queue in availableQueues"
+              :key="queue.queueName"
+              :label="
+                queue.queueName === '上货区'
+                  ? '上货区'
+                  : '预热房 ' + queue.queueName
+              "
+              :value="queue.queueName"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="isPreheatQueue" label="线路">
+          <el-radio-group v-model="targetLine">
+            <el-radio :label="1">1 线</el-radio>
+            <el-radio :label="2">2 线</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="queuePickerVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="busy"
+          :disabled="!targetQueue || (isPreheatQueue && !targetLine)"
+          @click="submitAddToQueue"
+          >加入队列</el-button
+        >
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -339,7 +411,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
-    }
+    },
+    queues: { type: Array, default: () => [] },
+    addPalletToQueue: Function,
+    resetPalletLoading: Function
   },
   data() {
     return {
@@ -355,10 +430,25 @@ export default {
       detailVisible: false,
       detailLoading: false,
       detailBatch: null,
-      detailPallets: []
+      detailPallets: [],
+      queuePickerVisible: false,
+      selectedPallet: null,
+      targetQueue: '',
+      targetLine: null,
+      busy: false
     };
   },
   computed: {
+    availableQueues() {
+      return this.queues.filter(
+        (queue) =>
+          queue.queueName === '上货区' ||
+          /^Y32(0[1-9]|1[0-5])$/.test(queue.queueName)
+      );
+    },
+    isPreheatQueue() {
+      return /^Y32(0[1-9]|1[0-5])$/.test(this.targetQueue);
+    },
     dialogVisible: {
       get() {
         return this.visible;
@@ -645,6 +735,76 @@ export default {
         this.$message.error('查询批次详情失败，请重试');
       } finally {
         this.detailLoading = false;
+      }
+    },
+
+    openQueuePicker(pallet) {
+      this.selectedPallet = pallet;
+      this.targetQueue = '';
+      this.targetLine = null;
+      this.queuePickerVisible = true;
+    },
+
+    async submitAddToQueue() {
+      if (this.busy || !this.targetQueue) return;
+      if (this.isPreheatQueue && !this.targetLine) return;
+      this.busy = true;
+      try {
+        await this.addPalletToQueue(
+          this.selectedPallet,
+          this.detailBatch,
+          this.targetQueue,
+          this.isPreheatQueue ? this.targetLine : null
+        );
+        this.queuePickerVisible = false;
+        this.$message.success(`托盘已加入${this.targetQueue}`);
+        await this.showDetail(this.detailBatch);
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          '加入队列失败';
+        this.$message.error(message);
+      } finally {
+        this.busy = false;
+      }
+    },
+
+    async confirmResetLoading(pallet) {
+      if (this.busy) return;
+      try {
+        await this.$confirm(
+          `确认重置托盘「${
+            pallet.palletNo || pallet.id
+          }」的上货信息？虚拟ID、上货、扫码和目的地记录会清空，可以重新上货。`,
+          '重置上货',
+          {
+            type: 'warning',
+            confirmButtonText: '重置上货',
+            cancelButtonText: '取消'
+          }
+        );
+      } catch (e) {
+        return;
+      }
+      this.busy = true;
+      try {
+        const ok = await this.resetPalletLoading(pallet, this.detailBatch);
+        if (ok === false) return;
+        this.$message.success('托盘已重置，可重新上货');
+        await this.showDetail(this.detailBatch);
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          '重置上货失败';
+        this.$message.error(message);
+      } finally {
+        this.busy = false;
       }
     },
 
