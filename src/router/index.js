@@ -2,13 +2,14 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Login from '../views/login/Login.vue';
 import HomePage from '../views/home/HomePage.vue';
+import monitorConfig from '@/monitor.config';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: monitorConfig.enabled ? '/homePage/MainPage' : '/login'
   },
   {
     path: '/login',

@@ -18,7 +18,7 @@
             <div class="brand-system">WCS系统</div>
           </div>
         </div>
-        <div class="maskDiv-top-mid">
+        <div v-if="!isMonitor" class="maskDiv-top-mid">
           <el-menu
             :default-active="activeIndex"
             class="el-menu-demo"
@@ -35,7 +35,7 @@
             <el-menu-item index="5">关于</el-menu-item>
           </el-menu>
         </div>
-        <div class="version-view">
+        <div v-if="!isMonitor" class="version-view">
           <div
             class="el-divider el-divider--vertical"
             style="margin-right: 15px"
@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="maskDiv-down">
-        <StatusMonitor></StatusMonitor>
+        <StatusMonitor v-if="!isMonitor"></StatusMonitor>
         <keep-alive>
           <router-view />
         </keep-alive>
@@ -206,6 +206,7 @@ import HttpUtil from '@/utils/HttpUtil';
 import config from '@/config';
 import LoadingFailAlert from '@/components/LoadingFailAlert.vue';
 import { loadingFailState } from '@/utils/loadingFailState';
+import monitorConfig from '@/monitor.config';
 const remote = require('electron').remote;
 export default {
   name: 'HomePage',
@@ -217,6 +218,7 @@ export default {
   data() {
     return {
       loadingFailState,
+      isMonitor: monitorConfig.enabled,
       activeIndex: '2',
       windowSize: 'max-window',
       showLogout: true,
@@ -331,7 +333,7 @@ export default {
       }
     },
     closewindow() {
-      if (this.userRole === 'ADMIN') {
+      if (this.isMonitor || this.userRole === 'ADMIN') {
         ipcRenderer.send('close-window');
         return;
       }

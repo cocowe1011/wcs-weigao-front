@@ -1,13 +1,13 @@
 <template>
   <div
     class="smart-workshop"
-    :class="{ 'readonly-mode': isOperator }"
+    :class="{ 'readonly-mode': isOperator, 'monitor-mode': isMonitor }"
     @click="handleGlobalClick"
   >
     <!-- 内容区包装器 -->
     <div class="content-wrapper">
       <!-- 左侧面板 -->
-      <div class="side-info-panel">
+      <div v-if="!isMonitor" class="side-info-panel">
         <!-- PLC状态与订单信息区域 -->
         <div class="plc-info-section">
           <div class="section-header">
@@ -183,7 +183,16 @@
         <div class="floor-container">
           <div class="floor-left">
             <div class="floor-title">
-              <i class="el-icon-set-up"></i> 作业区域
+              <i class="el-icon-set-up"></i>
+              <span>作业区域</span>
+              <span
+                v-if="isMonitor"
+                class="monitor-link-badge"
+                :class="monitorLinkClass"
+              >
+                <i class="monitor-link-dot"></i>
+                {{ monitorLinkText }}
+              </span>
             </div>
             <div class="floor-image-container" ref="floorImageContainer">
               <div class="image-wrapper">
@@ -463,7 +472,7 @@
                         <el-checkbox
                           v-model="skipScanCheck"
                           size="mini"
-                          :disabled="isOperator"
+                          :disabled="isOperator || isMonitor"
                           >不判断扫码</el-checkbox
                         >
                       </div>
@@ -1162,7 +1171,7 @@
                 <h3>{{ selectedQueue.queueName }}</h3>
                 <div class="queue-header-actions">
                   <el-button
-                    v-if="!isOperator"
+                    v-if="!isOperator && !isMonitor"
                     type="primary"
                     size="small"
                     @click="showAddTrayDialog"
@@ -1211,7 +1220,7 @@
                             highlightedTrayCode &&
                             String(highlightedTrayCode) === String(tray.id)
                         }"
-                        :draggable="!isOperator"
+                        :draggable="!isOperator && !isMonitor"
                         @dragstart="
                           handleDragStart($event, tray, selectedQueueIndex)
                         "
@@ -1291,7 +1300,10 @@
                           </div>
                           <span class="tray-time">{{ tray.time }}</span>
                         </div>
-                        <div class="tray-actions" v-if="!isOperator">
+                        <div
+                          class="tray-actions"
+                          v-if="!isOperator && !isMonitor"
+                        >
                           <el-button
                             type="primary"
                             size="mini"
@@ -1351,7 +1363,7 @@
                             highlightedTrayCode &&
                             String(highlightedTrayCode) === String(tray.id)
                         }"
-                        :draggable="!isOperator"
+                        :draggable="!isOperator && !isMonitor"
                         @dragstart="
                           handleDragStart($event, tray, selectedQueueIndex)
                         "
@@ -1423,7 +1435,10 @@
                           </div>
                           <span class="tray-time">{{ tray.time }}</span>
                         </div>
-                        <div class="tray-actions" v-if="!isOperator">
+                        <div
+                          class="tray-actions"
+                          v-if="!isOperator && !isMonitor"
+                        >
                           <el-button
                             type="primary"
                             size="mini"
@@ -1465,7 +1480,7 @@
       </div>
     </div>
     <!-- 测试面板 -->
-    <div class="test-panel-container" v-if="!isOperator">
+    <div class="test-panel-container" v-if="!isOperator && !isMonitor">
       <!-- 测试按钮 -->
       <div class="test-toggle-btn" @click="showTestPanel = !showTestPanel">
         <i class="el-icon-setting"></i>
@@ -2064,6 +2079,8 @@ import { ipcRenderer } from 'electron';
 import OrderQueryDialog from '@/components/OrderQueryDialog.vue';
 import permissionMixin from '@/mixins/permissionMixin';
 import { setLoadingFailMessage } from '@/utils/loadingFailState';
+import monitorConfig from '@/monitor.config';
+import monitorSnapshot from '@/utils/monitorSnapshot';
 
 const net = require('net');
 
@@ -3211,6 +3228,7 @@ export default {
       },
       nowScanTrayInfo: {},
       isDataReady: false, // 添加数据准备就绪标志位
+      monitorLink: '',
       showTestPanel: false,
       orderQueryDialogVisible: false,
       // PDA 互联
@@ -9129,6 +9147,19 @@ export default {
     };
   },
   computed: {
+    isMonitor() {
+      return monitorConfig.enabled;
+    },
+    monitorLinkClass() {
+      return this.monitorLink === 'connected'
+        ? 'is-connected'
+        : 'is-disconnected';
+    },
+    monitorLinkText() {
+      return this.monitorLink === 'connected'
+        ? '已远程连接WCS监控'
+        : '未连接WCS';
+    },
     // 当前执行订单概览（顶部状态卡片）
     executingOrderInfo() {
       const empty = {
@@ -9284,6 +9315,10 @@ export default {
     this.resetOrderPalletLoading = this.resetOrderPalletLoading.bind(this);
   },
   mounted() {
+    if (monitorConfig.enabled) {
+      this.startMonitorClient();
+      return;
+    }
     this.initializeMarkers();
     this.loadQueueInfoFromDatabase();
     this.buildGroupIndex();
@@ -9829,6 +9864,7 @@ export default {
     this._isDataReadyTimer = setTimeout(() => {
       this.addLog('isDataReady数据加载完成');
       this.isDataReady = true;
+      this.startMonitorPublish();
     }, 3000);
   },
   watch: {
@@ -10083,6 +10119,89 @@ export default {
     }
   },
   methods: {
+    startMonitorPublish() {
+      this._monitorLastExec = '';
+      this._monitorLastQueues = '';
+      this._monitorTimer = setInterval(() => {
+        ipcRenderer.send('monitor-snapshot', monitorSnapshot.buildPoints(this));
+        try {
+          const execText = JSON.stringify(monitorSnapshot.buildExec(this));
+          if (execText !== this._monitorLastExec) {
+            this._monitorLastExec = execText;
+            ipcRenderer.send('monitor-snapshot', JSON.parse(execText));
+          }
+        } catch (error) {
+          console.error('执行状态快照打包失败', error);
+        }
+        try {
+          const queuesText = JSON.stringify(monitorSnapshot.buildQueues(this));
+          if (queuesText !== this._monitorLastQueues) {
+            this._monitorLastQueues = queuesText;
+            ipcRenderer.send('monitor-snapshot', JSON.parse(queuesText));
+          }
+        } catch (error) {
+          console.error('队列快照打包失败', error);
+        }
+      }, 1000);
+    },
+    startMonitorClient() {
+      this.initializeMarkers();
+      this.buildGroupIndex();
+      this.monitorLink = 'disconnected';
+      this._monitorRetry = 0;
+      this.connectMonitorSocket();
+    },
+    connectMonitorSocket() {
+      if (this._monitorSocket) {
+        this._monitorSocket.onclose = null;
+        this._monitorSocket.close();
+      }
+      const url = `ws://${monitorConfig.host}:${monitorConfig.port}`;
+      let socket;
+      try {
+        socket = new window.WebSocket(url);
+      } catch (error) {
+        this.scheduleMonitorRetry();
+        return;
+      }
+      this._monitorSocket = socket;
+      socket.onopen = () => {
+        this.monitorLink = 'connected';
+        this._monitorRetry = 0;
+      };
+      socket.onmessage = (event) => {
+        let frame;
+        try {
+          frame = JSON.parse(event.data);
+        } catch (error) {
+          return;
+        }
+        if (frame.type === 'points') {
+          monitorSnapshot.applyPoints(this, frame);
+        } else if (frame.type === 'exec') {
+          monitorSnapshot.applyExec(this, frame);
+        } else if (frame.type === 'queues') {
+          monitorSnapshot.applyQueues(this, frame);
+        }
+      };
+      socket.onclose = () => {
+        this.monitorLink = 'disconnected';
+        this.scheduleMonitorRetry();
+      };
+      socket.onerror = () => {
+        this.monitorLink = 'disconnected';
+      };
+    },
+    scheduleMonitorRetry() {
+      const delays = [1000, 2000, 5000];
+      const delay =
+        delays[Math.min(this._monitorRetry || 0, delays.length - 1)];
+      this._monitorRetry = (this._monitorRetry || 0) + 1;
+      clearTimeout(this._monitorRetryTimer);
+      this._monitorRetryTimer = setTimeout(() => {
+        this.connectMonitorSocket();
+      }, delay);
+    },
     // ================= 出库请求处理（DBW1670/1672） =================
     /**
      * 处理出库请求：从灭菌柜队列中出队托盘并写入PLC
@@ -13456,6 +13575,19 @@ export default {
     }
   },
   beforeDestroy() {
+    if (this._monitorTimer) {
+      clearInterval(this._monitorTimer);
+      this._monitorTimer = null;
+    }
+    if (this._monitorRetryTimer) {
+      clearTimeout(this._monitorRetryTimer);
+      this._monitorRetryTimer = null;
+    }
+    if (this._monitorSocket) {
+      this._monitorSocket.onclose = null;
+      this._monitorSocket.close();
+      this._monitorSocket = null;
+    }
     window.removeEventListener('resize', this.updateMarkerPositions);
     this._removeWebSocketIpcListeners();
     this.disconnectAllScanners();
@@ -13588,6 +13720,63 @@ export default {
     font-size: 13px;
     color: #595959;
     line-height: 1.5;
+  }
+}
+
+.monitor-mode :deep(.floor-title) {
+  display: flex;
+  align-items: center;
+}
+
+.monitor-link-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+
+  .monitor-link-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+
+  &.is-connected {
+    color: #b7f0d2;
+    background: rgba(15, 123, 76, 0.35);
+
+    .monitor-link-dot {
+      background: #3dd68c;
+    }
+  }
+
+  &.is-disconnected {
+    color: #ffd0cb;
+    background: rgba(180, 35, 24, 0.35);
+
+    .monitor-link-dot {
+      background: #ff6b6b;
+    }
+  }
+}
+
+.monitor-mode {
+  :deep(.main-content) {
+    padding-left: 5px;
+  }
+
+  :deep(.preheating-room-marker) {
+    select,
+    .el-select,
+    .el-button,
+    button {
+      pointer-events: none;
+      cursor: default !important;
+    }
   }
 }
 </style>

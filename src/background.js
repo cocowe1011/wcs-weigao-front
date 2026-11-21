@@ -28,6 +28,18 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const config = require('./config');
+const monitorConfig = require('./monitor.config');
+const MonitorHub = require('./utils/MonitorHub');
+
+if (monitorConfig.enabled) {
+  const monitorUserData = path.join(
+    app.getPath('appData'),
+    'wcs-weigao-monitor'
+  );
+  fs.mkdirSync(monitorUserData, { recursive: true });
+  app.setPath('userData', monitorUserData);
+  logger.transports.file.file = monitorUserData + '/app.log';
+}
 
 // ==================== 路径配置 ====================
 // 磁盘盘符（开发环境D，生产环境E）
@@ -142,21 +154,21 @@ app.on('before-quit', () => {
   flushLogBuffer();
 });
 
-// 单实例锁，防止应用被多开 - 必须在app.ready之前检查
-const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  // 直接退出，不创建任何窗口，避免白色背景框
-  console.log('检测到已有程序运行，直接退出');
-  // 使用 process.exit 确保立即退出，避免任何延迟
-  process.exit(0);
-} else {
-  app.on('second-instance', (event, argv, workingDirectory) => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      if (!mainWindow.isVisible()) mainWindow.show();
-      mainWindow.focus();
-    }
-  });
+// 现场包禁止多开。监控包单独开窗口，开发时不能和现场抢同一把锁。
+if (!monitorConfig.enabled) {
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
+    console.log('检测到已有程序运行，直接退出');
+    process.exit(0);
+  } else {
+    app.on('second-instance', (event, argv, workingDirectory) => {
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        if (!mainWindow.isVisible()) mainWindow.show();
+        mainWindow.focus();
+      }
+    });
+  }
 }
 
 global.sharedObject = {
@@ -164,6 +176,7 @@ global.sharedObject = {
 };
 
 let alarmWebSocketServer = null;
+let monitorHub = null;
 let mainWindow = null;
 let currentUserRole = ''; // 记录当前用户角色
 let isFullScreenMode = false; // 记录自定义全屏状态
@@ -180,14 +193,19 @@ app.on('ready', () => {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
-      webSecurity: false
+      webSecurity: false,
+      // 窗口最小化后仍按原间隔推监控快照，避免 Chromium 放慢页面定时器
+      backgroundThrottling: false
     },
     icon: './build/icons/icon.ico'
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    const runtimeEnv = process['env'] || {};
+    const devBase = runtimeEnv.MONITOR_DEV_PORT
+      ? 'http://localhost:' + runtimeEnv.MONITOR_DEV_PORT + '/'
+      : process.env.WEBPACK_DEV_SERVER_URL;
+    mainWindow.loadURL(devBase);
     if (!process.env.IS_TEST) mainWindow.webContents.openDevTools();
   } else {
     createProtocol('app');
@@ -196,13 +214,23 @@ app.on('ready', () => {
     // mainWindow.webContents.openDevTools();
   }
 
-  // PDA WebSocket 服务器：移动端连接电脑端
-  try {
-    alarmWebSocketServer = new AlarmWebSocketServer(8081);
-    alarmWebSocketServer.setMainWindow(mainWindow);
-    logger.info('PDA WebSocket 服务器已启动，端口: 8081');
-  } catch (error) {
-    logger.error('PDA WebSocket 服务器启动失败:', error);
+  if (!monitorConfig.enabled) {
+    // PDA WebSocket 服务器：移动端连接电脑端
+    try {
+      alarmWebSocketServer = new AlarmWebSocketServer(8081);
+      alarmWebSocketServer.setMainWindow(mainWindow);
+      logger.info('PDA WebSocket 服务器已启动，端口: 8081');
+    } catch (error) {
+      logger.error('PDA WebSocket 服务器启动失败:', error);
+    }
+
+    try {
+      monitorHub = new MonitorHub(monitorConfig.port);
+      monitorHub.start();
+      logger.info('监控广播已启动，端口: ' + monitorConfig.port);
+    } catch (error) {
+      logger.error('监控广播启动失败:', error);
+    }
   }
 
   // 设置用户角色，用于主进程权限控制
@@ -343,8 +371,16 @@ app.on('ready', () => {
       height: screen.getPrimaryDisplay().workAreaSize.height - 20
     });
   });
+  ipcMain.on('monitor-snapshot', (event, frame) => {
+    if (monitorHub) {
+      monitorHub.publish(frame);
+    }
+  });
   // 启动plc conPLC
   ipcMain.on('conPLC', (event, arg1, arg2) => {
+    if (monitorConfig.enabled) {
+      return;
+    }
     if (process.env.NODE_ENV === 'production') {
       conPLC();
     }
@@ -382,8 +418,12 @@ app.on('ready', () => {
     closeStatus = true;
     e.preventDefault(); //先阻止一下默认行为，不然直接关了，提示框只会闪一下
 
-    // 非ADMIN用户且未授权（如任务栏右键关闭），禁止关闭并提示
-    if (currentUserRole !== 'ADMIN' && !isCloseAuthorized) {
+    // 非ADMIN用户且未授权（如任务栏右键关闭），禁止关闭并提示。监控包只看画面，允许关闭。
+    if (
+      !monitorConfig.enabled &&
+      currentUserRole !== 'ADMIN' &&
+      !isCloseAuthorized
+    ) {
       const wasAlwaysOnTop = mainWindow.isAlwaysOnTop();
       if (wasAlwaysOnTop) {
         mainWindow.setAlwaysOnTop(false);
@@ -459,7 +499,7 @@ app.on('ready', () => {
     }, 500);
   }
   setAppTray();
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && !monitorConfig.enabled) {
     try {
       const javaPath = path.join(
         __static,

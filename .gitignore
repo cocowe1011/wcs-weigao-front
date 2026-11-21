@@ -24,6 +24,7 @@ pnpm-debug.log*
 
 #Electron-builder output
 /dist_electron
+/dist_electron_monitor
 package-lock.json
 /public/jre
 /public/jarlib

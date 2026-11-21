@@ -7,7 +7,9 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
+    "electron:build:monitor": "node scripts/build-monitor.js",
     "electron:serve": "vue-cli-service electron:serve",
+    "electron:serve:monitor": "node scripts/serve-monitor.js",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
@@ -30,6 +32,7 @@
     "vue-cookies": "^1.8.2",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2",
+    "ws": "^7.5.10",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
